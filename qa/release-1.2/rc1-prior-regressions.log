@@ -1,0 +1,10 @@
+
+Running 3 tests using 1 worker
+
+(node:64049) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 qa/release-1.1/release-audit.spec.ts:48:5 › hidden and details visibility changes refresh readings without scrolling (3.9s)
+  ✓  2 qa/release-1.1/release-audit.spec.ts:72:5 › concurrent correction and panel saves retain both successful changes (176ms)
+  ✓  3 qa/release-1.1/release-audit.spec.ts:101:5 › recognized kana dictionary verbs remain available for exploration (256ms)
+
+  3 passed (5.0s)

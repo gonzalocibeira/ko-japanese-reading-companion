@@ -153,7 +153,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   function definitionText(html, language) {
     const template = document.createElement("template");
     template.innerHTML = html;
-    let japanese2 = false, partOfSpeech = false;
+    let japanese3 = false, partOfSpeech = false;
     const out = [];
     const clean = (element4) => {
       const copy = element4.cloneNode(true);
@@ -163,11 +163,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     for (const element4 of template.content.querySelectorAll("h2,h3,h4,h5,h6,ol")) {
       if (element4.closest("table,dl,.toc")) continue;
       if (element4.tagName === "H2") {
-        japanese2 = /^(Japanese|日本語)(?:\s|$)/u.test(clean(element4));
+        japanese3 = /^(Japanese|日本語)(?:\s|$)/u.test(clean(element4));
         partOfSpeech = false;
         continue;
       }
-      if (!japanese2) continue;
+      if (!japanese3) continue;
       if (element4.tagName !== "OL") {
         const heading = clean(element4);
         if (!/^語義(?:\s|$)/u.test(heading)) partOfSpeech = /^(Noun|Proper noun|Verb|Adjective|Adverb|Pronoun|Particle|Conjunction|Interjection|Prefix|Suffix|Counter|Numeral|Determiner|Phrase|Proverb|Idiom|Affix|名詞|固有名詞|動詞|形容詞|形容動詞|副詞|代名詞|助詞|接続詞|感動詞|接頭辞|接尾辞|助数詞|数詞|連体詞|成句|熟語|ことわざ|熟字訓|語素)(?:\s|[:：0-9０-９]|$)/u.test(heading);
@@ -186,6 +186,111 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   var init_definitions = __esm({
     "src/definitions.ts"() {
       "use strict";
+    }
+  });
+
+  // src/adjective-playground.ts
+  function valid(base) {
+    return japanese.test(base.lemma) && base.lemma.length <= 40 && /^[\p{Script=Hiragana}ー]+$/u.test(base.reading) && (base.kind === "na" || base.kind === "i" && base.lemma.endsWith("\u3044") && base.reading.endsWith("\u3044"));
+  }
+  function stem(value, base) {
+    if (["\u3044\u3044", "\u3088\u3044", "\u826F\u3044"].includes(value)) return value === "\u826F\u3044" ? "\u826F" : "\u3088";
+    if (base.goodCompound && value.endsWith("\u3044\u3044")) return value.slice(0, -2) + "\u3088";
+    return value.slice(0, -1);
+  }
+  function render(value, base, s) {
+    const i = base.kind === "i", root = i ? stem(value, base) : value;
+    const adverb = root + (i ? "\u304F" : "\u306B");
+    if (s.family === "prenominal") return value + (i ? "" : "\u306A");
+    if (s.family === "adverbial") return adverb;
+    if (s.family === "linking") return root + (i ? "\u304F\u3066" : "\u3067");
+    if (s.family === "conditional") return root + (s.negative ? i ? "\u304F\u306A\u3051\u308C\u3070" : "\u3067\u306F\u306A\u3051\u308C\u3070" : i ? "\u3051\u308C\u3070" : "\u306A\u3089");
+    if (s.family === "conditionalTara") return root + (s.negative ? i ? "\u304F\u306A\u304B\u3063\u305F\u3089" : "\u3067\u306F\u306A\u304B\u3063\u305F\u3089" : i ? "\u304B\u3063\u305F\u3089" : "\u3060\u3063\u305F\u3089");
+    if (s.family === "become" || s.family === "make") {
+      const become = s.family === "become";
+      const ending = s.polite ? s.negative ? s.past ? "\u307E\u305B\u3093\u3067\u3057\u305F" : "\u307E\u305B\u3093" : s.past ? "\u307E\u3057\u305F" : "\u307E\u3059" : s.negative ? s.past ? "\u306A\u304B\u3063\u305F" : "\u306A\u3044" : s.past ? become ? "\u3063\u305F" : "\u305F" : become ? "\u308B" : "\u308B";
+      return adverb + (s.polite ? become ? "\u306A\u308A" : "\u3057" : s.negative ? become ? "\u306A\u3089" : "\u3057" : s.past ? become ? "\u306A" : "\u3057" : become ? "\u306A" : "\u3059") + ending;
+    }
+    if (i) return (s.negative ? root + (s.past ? "\u304F\u306A\u304B\u3063\u305F" : "\u304F\u306A\u3044") : s.past ? root + "\u304B\u3063\u305F" : value) + (s.polite ? "\u3067\u3059" : "");
+    return root + (s.polite ? s.negative ? s.past ? "\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3067\u3057\u305F" : "\u3067\u306F\u3042\u308A\u307E\u305B\u3093" : s.past ? "\u3067\u3057\u305F" : "\u3067\u3059" : s.negative ? s.past ? "\u3067\u306F\u306A\u304B\u3063\u305F" : "\u3067\u306F\u306A\u3044" : s.past ? "\u3060\u3063\u305F" : "\u3060");
+  }
+  function adjectiveConstruction(base, state) {
+    const i = base.kind === "i", root = i ? stem(base.lemma, base) : base.lemma;
+    const rules = { simple: i ? "Keep \u3044 in the affirmative nonpast; otherwise replace it with \u304B\u3063\u305F, \u304F\u306A\u3044, or \u304F\u306A\u304B\u3063\u305F. Add \u3067\u3059 for polite speech." : "Add \u3060\uFF0F\u3067\u3059; use \u3060\u3063\u305F\uFF0F\u3067\u3057\u305F for past, and \u3067\u306F\u306A\u3044\uFF0F\u3067\u306F\u3042\u308A\u307E\u305B\u3093 for negatives.", prenominal: i ? "Keep the dictionary form before a noun." : "Add \u306A before a noun.", adverbial: i ? "Replace final \u3044 with \u304F to modify an action." : "Add \u306B to modify an action.", linking: i ? "Replace final \u3044 with \u304F\u3066 to connect descriptions." : "Add \u3067 to connect descriptions.", conditional: i ? "Replace final \u3044 with \u3051\u308C\u3070; for a negative condition use \u304F\u306A\u3051\u308C\u3070." : "Add \u306A\u3089; for a negative condition use \u3067\u306F\u306A\u3051\u308C\u3070.", conditionalTara: i ? "Replace final \u3044 with \u304B\u3063\u305F\u3089; for a negative condition use \u304F\u306A\u304B\u3063\u305F\u3089." : "Add \u3060\u3063\u305F\u3089; for a negative condition use \u3067\u306F\u306A\u304B\u3063\u305F\u3089.", become: i ? "Replace final \u3044 with \u304F and add \u306A\u308B. Conjugate \u306A\u308B for tense, negation, and politeness." : "Add \u306B and \u306A\u308B. Conjugate \u306A\u308B for tense, negation, and politeness.", make: i ? "Replace final \u3044 with \u304F and add \u3059\u308B. Conjugate \u3059\u308B for tense, negation, and politeness." : "Add \u306B and \u3059\u308B. Conjugate \u3059\u308B for tense, negation, and politeness." };
+    const irregular = i && (base.reading === "\u3044\u3044" || base.goodCompound) && !["prenominal"].includes(state.family) && !(state.family === "simple" && !state.past && !state.negative);
+    return `${base.lemma} \u2192 ${render(base.lemma, base, state)}. ${irregular ? `\u3044\u3044 changes to the \u3088\u3044 stem (${root}). ` : ""}${rules[state.family]}`;
+  }
+  function createAdjectivePlayground(base, source) {
+    if (!valid(base)) throw new Error("Unsupported dictionary adjective");
+    const forms = [];
+    for (const family of adjectiveFamilies) for (const past of family.controls.includes("past") ? [false, true] : [false]) for (const negative of family.controls.includes("negative") ? [false, true] : [false]) for (const polite of family.controls.includes("polite") ? [false, true] : [false]) {
+      const state = { family: family.id, past, negative, polite, spoken: false };
+      forms.push({ ...state, id: [family.id, +past, +negative, +polite].join(":"), text: render(base.lemma, base, state), reading: render(base.reading, { ...base, lemma: base.reading }, state) });
+    }
+    const text = source?.text ?? base.lemma, reading = source?.reading ?? base.reading;
+    const aliases = [];
+    for (const form of forms) {
+      if (base.kind === "na" && form.text.includes("\u3067\u306F")) aliases.push({ ...form, text: form.text.replace("\u3067\u306F", "\u3058\u3083"), reading: form.reading.replace("\u3067\u306F", "\u3058\u3083") });
+      if (base.kind === "i" && form.family === "simple" && form.polite && form.negative) aliases.push({ ...form, text: stem(base.lemma, base) + (form.past ? "\u304F\u3042\u308A\u307E\u305B\u3093\u3067\u3057\u305F" : "\u304F\u3042\u308A\u307E\u305B\u3093"), reading: stem(base.reading, base) + (form.past ? "\u304F\u3042\u308A\u307E\u305B\u3093\u3067\u3057\u305F" : "\u304F\u3042\u308A\u307E\u305B\u3093") });
+    }
+    const matches2 = text === base.lemma && reading === base.reading ? [forms[0]] : [...forms, ...aliases].filter((form) => form.text === text && form.reading === reading);
+    if (!matches2.length) throw new Error("Unsupported adjective source form");
+    const initial = matches2.find((x) => x.family === "simple") ?? matches2[0];
+    return { start: source?.start ?? 0, end: source?.end ?? text.length, source: text, sourceReading: reading, lemma: base.lemma, base, forms, initial: { ...initial }, sourceMatches: matches2, requiresChoice: false };
+  }
+  function bases(word) {
+    if (word.adjectiveBases?.length) return word.adjectiveBases.filter(valid);
+    if (word.pos === "\u5F62\u5BB9\u8A5E" && word.posDetail === "\u81EA\u7ACB" && word.lemmaReading) return [{ lemma: word.lemma, reading: hiragana(word.lemmaReading), kind: "i", ...word.verbClass === "\u4E0D\u5909\u5316\u578B" && word.lemma.endsWith("\u3044\u3044") ? { goodCompound: true } : {} }].filter(valid);
+    if (word.pos === "\u540D\u8A5E" && word.posDetail === "\u5F62\u5BB9\u52D5\u8A5E\u8A9E\u5E79") return [{ lemma: word.lemma, reading: hiragana(word.reading), kind: "na" }].filter(valid);
+    return [];
+  }
+  function dictionaryAdjectiveCandidates(input, words) {
+    if (words.length !== 1 || words[0].start !== 0 || words[0].end !== input.length) return [];
+    return bases(words[0]).filter((base) => base.lemma === input);
+  }
+  function buildAdjectivePlayground(text, words, wordIndex) {
+    if (!Number.isInteger(wordIndex) || wordIndex < 0 || wordIndex >= words.length) return;
+    let best;
+    for (let start = Math.max(0, wordIndex - 11); start <= wordIndex; start++) for (const base of bases(words[start])) {
+      const first = words[start];
+      if (first.pos === "\u52A9\u52D5\u8A5E") continue;
+      const prev = words[start - 1];
+      if (prev && prev.end === first.start && (prev.pos === "\u52D5\u8A5E" || prev.pos === "\u5F62\u5BB9\u8A5E" || ["\u3066", "\u3067"].includes(text.slice(prev.start, prev.end)))) continue;
+      let reading = "";
+      for (let end = start; end < Math.min(words.length, start + 12); end++) {
+        const word = words[end];
+        if (word.start < 0 || word.end <= word.start || word.end > text.length || word.end - first.start > 80 || end > start && words[end - 1].end !== word.start) break;
+        reading += hiragana(word.reading);
+        if (end < wordIndex) continue;
+        const next = words[end + 1], adjacent = next && next.start === word.end;
+        if (adjacent && (next.pos === "\u52A9\u52D5\u8A5E" || next.pos === "\u52D5\u8A5E" || next.pos === "\u5F62\u5BB9\u8A5E" || ["\u3066", "\u3067", "\u3070", "\u305F\u3089", "\u306A\u3089"].includes(text.slice(next.start, next.end)))) continue;
+        try {
+          const model2 = createAdjectivePlayground(base, { text: text.slice(first.start, word.end), reading, start: first.start, end: word.end });
+          if (adjacent && ["\u306F", "\u3082"].includes(text.slice(next.start, next.end)) && ["linking", "adverbial"].includes(model2.initial.family)) continue;
+          if (!best || model2.start < best.start || model2.start === best.start && model2.end > best.end) best = model2;
+        } catch {
+        }
+      }
+    }
+    return best;
+  }
+  var finite, adjectiveFamilies, japanese;
+  var init_adjective_playground = __esm({
+    "src/adjective-playground.ts"() {
+      "use strict";
+      init_shared();
+      finite = ["past", "negative", "polite"];
+      adjectiveFamilies = [
+        { id: "simple", label: "Basic predicate", group: "Everyday forms", description: "Describe a quality or state. Nonpast can describe the present or future.", controls: finite },
+        { id: "prenominal", label: "Before a noun", group: "Everyday forms", description: "Place this form immediately before a noun. The noun is not supplied here.", controls: [] },
+        { id: "adverbial", label: "Modify an action: \uFF5E\u304F\uFF0F\uFF5E\u306B", group: "Everyday forms", description: "Describe how an action is done. Whether it makes sense depends on the adjective and action.", controls: [] },
+        { id: "linking", label: "Connect: \uFF5E\u304F\u3066\uFF0F\uFF5E\u3067", group: "Everyday forms", description: "Link descriptions, sometimes giving a reason. This does not choose the relationship for your sentence.", controls: [] },
+        { id: "conditional", label: "If: \uFF5E\u3051\u308C\u3070\uFF0F\uFF5E\u306A\u3089", group: "Conditions", description: "Set a condition. \u306A-adjectives use \u306A\u3089; these patterns are not interchangeable in every context.", controls: ["negative"] },
+        { id: "conditionalTara", label: "If or when: \uFF5E\u305F\u3089", group: "Conditions", description: "Set a condition or describe when something happens; \u305F does not independently mean past here.", controls: ["negative"] },
+        { id: "become", label: "Become: \uFF5E\u304F\u306A\u308B\uFF0F\uFF5E\u306B\u306A\u308B", group: "Changes of state", description: "Describe becoming this way. Switches change \u306A\u308B, the verb of change.", controls: finite },
+        { id: "make", label: "Make: \uFF5E\u304F\u3059\u308B\uFF0F\uFF5E\u306B\u3059\u308B", group: "Changes of state", description: "Describe making something this way. Switches change \u3059\u308B; participants may need different particles.", controls: finite }
+      ];
+      japanese = /^[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々ー]+$/u;
     }
   });
 
@@ -392,8 +497,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 
   // src/verb-playground.ts
   function validBase(base) {
-    if (!base.lemma || base.lemma.length > 40 || !japanese.test(base.lemma) || !kana.test(base.reading) || helperLemmas.has(base.lemma) || irregularLexemes.has(base.lemma)) return false;
-    if (base.prefix && (!japanese.test(base.prefix) || !base.prefixReading || !kana.test(base.prefixReading) || base.lemma !== "\u3059\u308B" || (base.prefix + base.lemma).length > 40)) return false;
+    if (!base.lemma || base.lemma.length > 40 || !japanese2.test(base.lemma) || !kana.test(base.reading) || helperLemmas.has(base.lemma) || irregularLexemes.has(base.lemma)) return false;
+    if (base.prefix && (!japanese2.test(base.prefix) || !base.prefixReading || !kana.test(base.prefixReading) || base.lemma !== "\u3059\u308B" || (base.prefix + base.lemma).length > 40)) return false;
     if (base.verbClass === "\u4E00\u6BB5") return base.lemma.endsWith("\u308B") && base.reading.endsWith("\u308B");
     if (base.verbClass === "\u30B5\u5909\u30FB\u30B9\u30EB") return base.lemma === "\u3059\u308B" && base.reading === "\u3059\u308B";
     if (base.verbClass === "\u30AB\u5909\u30FB\u6765\u30EB" || base.verbClass === "\u30AB\u5909\u30FB\u30AF\u30EB") return ["\u6765\u308B", "\u304F\u308B"].includes(base.lemma) && base.reading === "\u304F\u308B";
@@ -468,8 +573,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     if (family === "conditionalTara") return add(finiteForm(base, { ...state, past: true }), "\u3089");
     if (family === "volitional") {
       if (state.polite) return add(elementary(base, "Conjunctive"), "\u307E\u3057\u3087\u3046");
-      const stem = elementary(base, "Volitional");
-      return base.verbClass === "\u4E00\u6BB5" || isSuru(base) || isKuru(base) ? stem : add(stem, "\u3046");
+      const stem2 = elementary(base, "Volitional");
+      return base.verbClass === "\u4E00\u6BB5" || isSuru(base) || isKuru(base) ? stem2 : add(stem2, "\u3046");
     }
     if (family === "request") return state.negative ? add(elementary(base, "Negative"), "\u306A\u3044\u3067\u304F\u3060\u3055\u3044") : add(elementary(base, "Te"), "\u304F\u3060\u3055\u3044");
     if (family === "imperative") return elementary(base, "Imperative");
@@ -592,7 +697,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     return best;
   }
   function dictionaryVerbCandidates(input, words) {
-    if (!input || input.length > 40 || !japanese.test(input) || !words.length || words[0].start !== 0 || words.at(-1).end !== input.length) return [];
+    if (!input || input.length > 40 || !japanese2.test(input) || !words.length || words[0].start !== 0 || words.at(-1).end !== input.length) return [];
     if (words.some((word, index) => word.start < 0 || word.end <= word.start || word.end > input.length || index > 0 && !contiguous(words, index - 1, index))) return [];
     if (input === "\u304F\u308B") return [
       { lemma: "\u6765\u308B", reading: "\u304F\u308B", verbClass: "\u30AB\u5909\u30FB\u6765\u30EB", label: "\u6765\u308B \u2014 come" },
@@ -631,8 +736,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     if (source.lemma === "\u3044\u308C\u308B" && source.reading === "\u3044\u308C\u308B") return false;
     for (const candidate of dictionaryVerbCandidates(query, words)) {
       if (candidate.prefix || candidate.verbClass !== "\u4E00\u6BB5" && !isKuru(candidate)) continue;
-      const stem = elementary(candidate, "Negative");
-      if (stem.text + "\u308C\u308B" === source.lemma && stem.reading + "\u308C\u308B" === source.reading) return true;
+      const stem2 = elementary(candidate, "Negative");
+      if (stem2.text + "\u308C\u308B" === source.lemma && stem2.reading + "\u308C\u308B" === source.reading) return true;
       if (isKuru(candidate) && source.lemma === "\u3053\u308C\u308B" && source.reading === "\u3053\u308C\u308B") return true;
     }
     return false;
@@ -645,36 +750,51 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       if (potential?.text === source.lemma && potential.reading === source.reading) return candidate;
     }
   }
-  var finite, verbFamilies, godan, kana, japanese, helperLemmas, irregularLexemes, lexicalRestrictions, restrictedFamilies, isSuru, isKuru, potentialRows;
+  function verbConstruction(base, state) {
+    const full = verbBaseText(base), result = (base.prefix ?? "") + generate(base, state).text;
+    const steps = { simple: "Conjugate the dictionary verb.", potential: "Godan: change the final u-row to the e-row and add \u308B. Ichidan: replace \u308B with \u3089\u308C\u308B. \u3059\u308B becomes \u3067\u304D\u308B; \u6765\u308B becomes \u6765\u3089\u308C\u308B.", passive: "Godan: use the a-row stem (\u3046 \u2192 \u308F) + \u308C\u308B. Ichidan: replace \u308B with \u3089\u308C\u308B. \u3059\u308B \u2192 \u3055\u308C\u308B; \u6765\u308B \u2192 \u6765\u3089\u308C\u308B.", causative: "Godan: use the a-row stem (\u3046 \u2192 \u308F) + \u305B\u308B. Ichidan: replace \u308B with \u3055\u305B\u308B. \u3059\u308B \u2192 \u3055\u305B\u308B; \u6765\u308B \u2192 \u6765\u3055\u305B\u308B.", causativePassive: "Build the full causative, then replace its final \u308B with \u3089\u308C\u308B.", desire: "Add \u305F\u3044 to the \u307E\u3059 stem, then use \u3044-adjective endings for tense and negation; add \u3067\u3059 for politeness.", te: "Use the class-specific \u3066\uFF0F\u3067 form; for negative use the negative stem + \u306A\u304F\u3066.", without: "Use the negative stem + \u306A\u3044\u3067.", conditionalBa: "Godan: e-row + \u3070. Ichidan: replace \u308B with \u308C\u3070. Negative: negative stem + \u306A\u3051\u308C\u3070.", conditionalTara: "Build the past form (plain or polite, affirmative or negative), then add \u3089.", volitional: "Godan: o-row + \u3046. Ichidan: replace \u308B with \u3088\u3046. \u3059\u308B \u2192 \u3057\u3088\u3046; \u6765\u308B \u2192 \u6765\u3088\u3046. Polite: \u307E\u3059 stem + \u307E\u3057\u3087\u3046.", request: "Use the \u3066\uFF0F\u3067 form + \u304F\u3060\u3055\u3044; negative: negative stem + \u306A\u3044\u3067\u304F\u3060\u3055\u3044.", imperative: "Godan: final e-row. Ichidan: replace \u308B with \u308D. \u3059\u308B \u2192 \u3057\u308D; \u6765\u308B \u2192 \u6765\u3044.", prohibition: "Add \u306A to the dictionary form.", teIru: "Use the \u3066\uFF0F\u3067 form + \u3044\u308B; conjugate \u3044\u308B. Spoken shortening drops its initial \u3044.", teMiru: "Use the \u3066\uFF0F\u3067 form + \u307F\u308B; conjugate \u307F\u308B as ichidan.", teOku: "Use the \u3066\uFF0F\u3067 form + \u304A\u304F; conjugate \u304A\u304F as godan. Spoken \u3066\u304A\u304F\uFF0F\u3067\u304A\u304F becomes \u3068\u304F\uFF0F\u3069\u304F.", teShimau: "Use the \u3066\uFF0F\u3067 form + \u3057\u307E\u3046; conjugate \u3057\u307E\u3046 as godan. Spoken \u3066\u3057\u307E\u3046\uFF0F\u3067\u3057\u307E\u3046 becomes \u3061\u3083\u3046\uFF0F\u3058\u3083\u3046." };
+    let rule = steps[state.family];
+    if (["simple", "potential", "passive", "causative", "causativePassive", "teIru", "teMiru", "teOku", "teShimau"].includes(state.family)) {
+      const target = derived(base, state.family, state.spoken);
+      if (state.polite) rule += " Use its \u307E\u3059 stem + " + (state.negative ? state.past ? "\u307E\u305B\u3093\u3067\u3057\u305F" : "\u307E\u305B\u3093" : state.past ? "\u307E\u3057\u305F" : "\u307E\u3059") + ".";
+      else if (state.negative) rule += " Use its negative stem + " + (state.past ? "\u306A\u304B\u3063\u305F" : "\u306A\u3044") + ".";
+      else if (state.past) rule += " Use its class-specific \u305F\uFF0F\u3060 past form.";
+      else rule += " Keep the resulting dictionary form.";
+      if (target !== base) rule += " Resulting base: " + (base.prefix ?? "") + target.lemma + ".";
+      if (base.reading === "\u3042\u308B" && state.negative) rule += " \u3042\u308B has the irregular negative \u306A\u3044.";
+    }
+    return `${full} \u2192 ${result}. ${rule}`;
+  }
+  var finite2, verbFamilies, godan, kana, japanese2, helperLemmas, irregularLexemes, lexicalRestrictions, restrictedFamilies, isSuru, isKuru, potentialRows;
   var init_verb_playground = __esm({
     "src/verb-playground.ts"() {
       "use strict";
       init_kamiya_min();
       init_shared();
-      finite = ["past", "negative", "polite"];
+      finite2 = ["past", "negative", "polite"];
       verbFamilies = [
-        { id: "simple", label: "Basic", group: "Everyday forms", description: "State an action or situation. Nonpast can describe the present, habits, or the future.", controls: finite },
+        { id: "simple", label: "Basic", group: "Everyday forms", description: "State an action or situation. Nonpast can describe the present, habits, or the future.", controls: finite2 },
         { id: "te", label: "Connect: \uFF5E\u3066\uFF0F\uFF5E\u306A\u304F\u3066", group: "Everyday forms", description: "Connect an affirmative or negative statement to what follows, sometimes giving a reason. Negative \uFF5E\u306A\u304F\u3066 differs from \uFF5E\u306A\u3044\u3067.", controls: ["negative"] },
         { id: "without", label: "Without doing: \uFF5E\u306A\u3044\u3067", group: "Everyday forms", description: "Describe not doing an action, or make a casual negative request. This differs from \uFF5E\u306A\u304F\u3066.", controls: [] },
-        { id: "desire", label: "Want to: \uFF5E\u305F\u3044", group: "Everyday forms", description: "Express a desire to do something. Who wants it and the surrounding context matter.", controls: finite },
-        { id: "potential", label: "Can: potential", group: "Ability and voice", description: "Express ability or possibility. Ichidan verbs and \u6765\u308B share this spelling with passive and some respectful uses.", controls: finite },
-        { id: "passive", label: "Passive", group: "Ability and voice", description: "Present someone or something as affected by an action. Participants and particles may need changes.", controls: finite },
-        { id: "causative", label: "Make or let: causative", group: "Ability and voice", description: "Express making or allowing someone to act; the sentence determines which meaning applies.", controls: finite },
-        { id: "causativePassive", label: "Be made to: causative-passive", group: "Ability and voice", description: "Express being made to act. This playground uses the full form, not the shortened causative-passive.", controls: finite },
+        { id: "desire", label: "Want to: \uFF5E\u305F\u3044", group: "Everyday forms", description: "Express a desire to do something. Who wants it and the surrounding context matter.", controls: finite2 },
+        { id: "potential", label: "Can: potential", group: "Ability and voice", description: "Express ability or possibility. Ichidan verbs and \u6765\u308B share this spelling with passive and some respectful uses.", controls: finite2 },
+        { id: "passive", label: "Passive", group: "Ability and voice", description: "Present someone or something as affected by an action. Participants and particles may need changes.", controls: finite2 },
+        { id: "causative", label: "Make or let: causative", group: "Ability and voice", description: "Express making or allowing someone to act; the sentence determines which meaning applies.", controls: finite2 },
+        { id: "causativePassive", label: "Be made to: causative-passive", group: "Ability and voice", description: "Express being made to act. This playground uses the full form, not the shortened causative-passive.", controls: finite2 },
         { id: "conditionalBa", label: "If: \uFF5E\u3070", group: "Conditions and intentions", description: "Set a condition. This form has no independent past or polite switch here.", controls: ["negative"] },
         { id: "conditionalTara", label: "If or when: \uFF5E\u305F\u3089", group: "Conditions and intentions", description: "Set a condition or say when something happens. Its \u305F does not by itself locate the condition in the past.", controls: ["negative", "polite"] },
         { id: "volitional", label: "Intention or invitation", group: "Conditions and intentions", description: "Express an intention or invitation. The polite form ends in \uFF5E\u307E\u3057\u3087\u3046.", controls: ["polite"] },
         { id: "request", label: "Please: \uFF5E\u3066\u304F\u3060\u3055\u3044", group: "Requests and commands", description: "Make an affirmative or negative request. Politeness also depends on context.", controls: ["negative"] },
         { id: "imperative", label: "Direct command", group: "Requests and commands", description: "Give a direct, forceful command. This is not a polite request.", controls: [] },
         { id: "prohibition", label: "Do not: \uFF5E\u308B\u306A", group: "Requests and commands", description: "Give a direct prohibition. This is stronger than a negative request.", controls: [] },
-        { id: "teIru", label: "Ongoing or resulting state: \uFF5E\u3066\u3044\u308B", group: "Everyday constructions", description: "Describe an ongoing action, repeated activity, or resulting state. The verb and context determine the meaning.", controls: [...finite, "spoken"] },
-        { id: "teMiru", label: "Try doing: \uFF5E\u3066\u307F\u308B", group: "Everyday constructions", description: "Try an action to see what happens. This differs from trying hard or attempting unsuccessfully.", controls: finite },
-        { id: "teOku", label: "Prepare or leave: \uFF5E\u3066\u304A\u304F", group: "Everyday constructions", description: "Do something in preparation, or leave a situation as it is.", controls: [...finite, "spoken"] },
-        { id: "teShimau", label: "Finish or end up: \uFF5E\u3066\u3057\u307E\u3046", group: "Everyday constructions", description: "Express completion or an unintended result, sometimes with regret. Regret is not automatic.", controls: [...finite, "spoken"] }
+        { id: "teIru", label: "Ongoing or resulting state: \uFF5E\u3066\u3044\u308B", group: "Everyday constructions", description: "Describe an ongoing action, repeated activity, or resulting state. The verb and context determine the meaning.", controls: [...finite2, "spoken"] },
+        { id: "teMiru", label: "Try doing: \uFF5E\u3066\u307F\u308B", group: "Everyday constructions", description: "Try an action to see what happens. This differs from trying hard or attempting unsuccessfully.", controls: finite2 },
+        { id: "teOku", label: "Prepare or leave: \uFF5E\u3066\u304A\u304F", group: "Everyday constructions", description: "Do something in preparation, or leave a situation as it is.", controls: [...finite2, "spoken"] },
+        { id: "teShimau", label: "Finish or end up: \uFF5E\u3066\u3057\u307E\u3046", group: "Everyday constructions", description: "Express completion or an unintended result, sometimes with regret. Regret is not automatic.", controls: [...finite2, "spoken"] }
       ];
       godan = /* @__PURE__ */ new Set(["\u4E94\u6BB5\u30FB\u30AB\u884C\u30A4\u97F3\u4FBF", "\u4E94\u6BB5\u30FB\u30AB\u884C\u4FC3\u97F3\u4FBF", "\u4E94\u6BB5\u30FB\u30AC\u884C", "\u4E94\u6BB5\u30FB\u30B5\u884C", "\u4E94\u6BB5\u30FB\u30BF\u884C", "\u4E94\u6BB5\u30FB\u30CA\u884C", "\u4E94\u6BB5\u30FB\u30D0\u884C", "\u4E94\u6BB5\u30FB\u30DE\u884C", "\u4E94\u6BB5\u30FB\u30E9\u884C", "\u4E94\u6BB5\u30FB\u30EF\u884C\u4FC3\u97F3\u4FBF"]);
       kana = /^[\p{Script=Hiragana}ー]+$/u;
-      japanese = /^[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々ー]+$/u;
+      japanese2 = /^[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々ー]+$/u;
       helperLemmas = /* @__PURE__ */ new Set(["\u308C\u308B", "\u3089\u308C\u308B", "\u305B\u308B", "\u3055\u305B\u308B"]);
       irregularLexemes = /* @__PURE__ */ new Set(["\u554F\u3046", "\u8ACB\u3046", "\u4E5E\u3046", "\u604B\u3046", "\u3086\u304F", "\u5F80\u304F", "\u901D\u304F", "\u306A\u3055\u308B", "\u70BA\u3055\u308B", "\u304F\u3060\u3055\u308B", "\u4E0B\u3055\u308B", "\u304A\u3063\u3057\u3083\u308B", "\u4EF0\u308B", "\u3044\u3089\u3063\u3057\u3083\u308B", "\u3054\u3056\u308B", "\u5FA1\u5EA7\u308B"]);
       lexicalRestrictions = /* @__PURE__ */ new Set(["\u3067\u304D\u308B", "\u51FA\u6765\u308B"]);
@@ -813,6 +933,67 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         { id: "knocking", category: "sounds", keywords: ["knock", "tap", "bang", "door"], sceneUse: "Knocking on a door", initialVariant: 0, variants: [
           { aliases: [], term: "\u3068\u3093\u3068\u3093", gloss: "Repeated light taps or knocks.", example: "\u6249\u3092\u3068\u3093\u3068\u3093\u3068\u8EFD\u304F\u305F\u305F\u3044\u305F\u3002", translation: "I tapped lightly on the door.", sceneDescription: "A hand gives a door small, repeated taps with short sound marks.", otherUses: "Also describes smooth progress or two amounts being roughly equal, including breaking even. This scene shows knocking only.", reference: daijisen("\u3068\u3093\u3068\u3093", 586781) },
           { aliases: [], term: "\u3069\u3093\u3069\u3093", gloss: "Repeated strong, heavy knocks or bangs.", example: "\u5916\u304B\u3089\u3001\u30C9\u30A2\u3092\u3069\u3093\u3069\u3093\u305F\u305F\u304F\u97F3\u304C\u3057\u305F\u3002", translation: "I heard someone banging repeatedly on the door from outside.", sceneDescription: "A hand knocks firmly on a door with broad impact marks.", otherUses: "Also describes rapid progress, increasing amounts, or doing more and more. Sound intensity is the comparison in this scene.", reference: ninjal("dondon") }
+        ] },
+        // 1.2: six food/texture, five sound, and four daily-action comparisons.
+        { "id": "eating", "category": "body", "sceneUse": "Taking bites and chewing", "keywords": ["food", "eat", "bite", "chew", "mouth"], "initialVariant": 0, "variants": [
+          { "term": "\u3071\u304F\u3071\u304F", "aliases": [], "gloss": "Taking one bite after another with an opening mouth.", "example": "\u5F1F\u306F\u304A\u306B\u304E\u308A\u3092\u3071\u304F\u3071\u304F\u98DF\u3079\u305F\u3002", "translation": "My little brother ate his rice ball in eager bites.", "sceneDescription": "A mouth opens toward a rice ball.", "otherUses": "Also describes repeated opening and closing, such as a fish\u2019s mouth. This scene shows eating.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%B1%E3%81%8F%E3%81%B1%E3%81%8F-600437" } },
+          { "term": "\u3082\u3050\u3082\u3050", "aliases": [], "gloss": "Chewing with food held in the mouth.", "example": "\u59B9\u306F\u30D1\u30F3\u3092\u3082\u3050\u3082\u3050\u304B\u3093\u3067\u3044\u308B\u3002", "translation": "My little sister is munching her bread.", "sceneDescription": "Rounded cheeks move as someone chews bread.", "otherUses": "Can also describe muffled or indistinct speech. Taking bites and chewing can happen in the same meal.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%82%82%E3%81%90%E3%82%82%E3%81%90-645412" } }
+        ] },
+        { "id": "thinCrunch", "category": "texture", "sceneUse": "Different crunchy bites", "keywords": ["food", "crunch", "seaweed", "pickle", "bite"], "initialVariant": 0, "variants": [
+          { "term": "\u3071\u308A\u3071\u308A", "aliases": [], "gloss": "A brittle crunch, as with thin, dry food.", "example": "\u713C\u3044\u305F\u306E\u308A\u304C\u3071\u308A\u3071\u308A\u3057\u3066\u3044\u308B\u3002", "translation": "The toasted seaweed is crisp.", "sceneDescription": "A thin sheet of seaweed snaps into pieces.", "otherUses": "Also describes stiff material or the sound of tearing. The scene illustrates seaweed, not every crunchy food.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%B1%E3%82%8A%E3%81%B1%E3%82%8A-605380" } },
+          { "term": "\u307D\u308A\u307D\u308A", "aliases": [], "gloss": "A light repeated crunch while eating.", "example": "\u304D\u3085\u3046\u308A\u306E\u6F2C\u7269\u3092\u307D\u308A\u307D\u308A\u98DF\u3079\u305F\u3002", "translation": "I ate the cucumber pickles with a light crunch.", "sceneDescription": "Small pickle slices are bitten with short sound marks.", "otherUses": "Can also describe light scratching. Food and the speaker\u2019s impression affect which crunch word fits.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%BD%E3%82%8A%E3%81%BD%E3%82%8A-631608" } }
+        ] },
+        { "id": "viscosity", "category": "texture", "sceneUse": "Flowing food textures", "keywords": ["food", "thick", "melt", "cheese", "soup", "liquid"], "initialVariant": 0, "variants": [
+          { "term": "\u3068\u308D\u3068\u308D", "aliases": [], "gloss": "Soft and smoothly flowing, as melted cheese.", "example": "\u30C1\u30FC\u30BA\u304C\u3068\u308D\u3068\u308D\u306B\u6EB6\u3051\u305F\u3002", "translation": "The cheese melted into a soft, flowing texture.", "sceneDescription": "Melted cheese stretches gently from a spoon.", "otherUses": "Also describes gentle heat, slow movement, or dozing. This scene shows melting food.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%A8%E3%82%8D%E3%81%A8%E3%82%8D-586493" } },
+          { "term": "\u3069\u308D\u3069\u308D", "aliases": [], "gloss": "Thick and viscous, as a heavy liquid.", "example": "\u7C89\u3092\u5165\u308C\u3059\u304E\u3066\u3001\u30B9\u30FC\u30D7\u304C\u3069\u308D\u3069\u308D\u306B\u306A\u3063\u305F\u3002", "translation": "I added too much flour and the soup became very thick.", "sceneDescription": "A thick soup falls heavily from a ladle.", "otherUses": "Also used for mud, tangled relationships, and some rumbling sounds. It is not always an evaluation of taste.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%A9%E3%82%8D%E3%81%A9%E3%82%8D-586494" } }
+        ] },
+        { "id": "flavor", "category": "texture", "sceneUse": "Light and rich flavors", "keywords": ["food", "soup", "flavor", "taste", "rich", "light"], "initialVariant": 0, "variants": [
+          { "term": "\u3042\u3063\u3055\u308A", "aliases": [], "gloss": "Light in flavor without a heavy richness.", "example": "\u663C\u306F\u3042\u3063\u3055\u308A\u3057\u305F\u30B9\u30FC\u30D7\u3092\u9078\u3093\u3060\u3002", "translation": "For lunch I chose a light soup.", "sceneDescription": "A clear bowl of soup has a few small ingredients.", "otherUses": "Can also describe an uncomplicated attitude or something done easily. This scene concerns flavor.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/assari.html" } },
+          { "term": "\u3053\u3063\u3066\u308A", "aliases": [], "gloss": "Rich and heavy in flavor or oils.", "example": "\u3053\u306E\u30E9\u30FC\u30E1\u30F3\u306E\u30B9\u30FC\u30D7\u306F\u3053\u3063\u3066\u308A\u3057\u3066\u3044\u308B\u3002", "translation": "This ramen broth is rich and heavy.", "sceneDescription": "A ramen bowl contains a dense broth with oil droplets.", "otherUses": "Can also describe a thick application or a thorough scolding. Richness does not by itself mean good or bad.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%93%E3%81%A4%E3%81%A6%E3%82%8A-3210803" } }
+        ] },
+        { "id": "elasticFood", "category": "texture", "sceneUse": "Springy and wobbly food", "keywords": ["food", "shrimp", "jelly", "springy", "wobble", "soft"], "initialVariant": 0, "variants": [
+          { "term": "\u3077\u308A\u3077\u308A", "aliases": [], "gloss": "Firmly springy and pleasant to bite.", "example": "\u3053\u306E\u30A8\u30D3\u306F\u3077\u308A\u3077\u308A\u3057\u3066\u3044\u308B\u3002", "translation": "This shrimp has a firm, springy bite.", "sceneDescription": "A curled shrimp springs back after a gentle press.", "otherUses": "Also describes visible irritation or other elastic surfaces. This scene illustrates a food texture.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%B7%E3%82%8A%E3%81%B7%E3%82%8A-621501" } },
+          { "term": "\u3077\u3088\u3077\u3088", "aliases": [], "gloss": "Soft and yielding with a wobble.", "example": "\u76BF\u306E\u30BC\u30EA\u30FC\u304C\u3077\u3088\u3077\u3088\u63FA\u308C\u3066\u3044\u308B\u3002", "translation": "The jelly on the plate is wobbling softly.", "sceneDescription": "A soft dome of jelly wobbles on a plate.", "otherUses": "Can describe soft elastic material or flesh. It does not simply mean the opposite of \u3077\u308A\u3077\u308A.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%B7%E3%82%88%E3%81%B7%E3%82%88-736213" } }
+        ] },
+        { "id": "freshCrunch", "category": "texture", "sceneUse": "Firm bites and fresh crispness", "keywords": ["food", "crunch", "cartilage", "lettuce", "vegetable", "fresh"], "initialVariant": 0, "variants": [
+          { "term": "\u3053\u308A\u3053\u308A", "aliases": [], "gloss": "A firm, resistant crunch when bitten.", "example": "\u8EDF\u9AA8\u3092\u3053\u308A\u3053\u308A\u3068\u304B\u3093\u3060\u3002", "translation": "I chewed the cartilage with a firm crunch.", "sceneDescription": "Small firm pieces resist a pair of stylized teeth.", "otherUses": "Also describes stiff or knotted muscles. This scene concerns the resistance of food when chewed.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%93%E3%82%8A%E3%81%93%E3%82%8A-505187" } },
+          { "term": "\u3057\u3083\u304D\u3057\u3083\u304D", "aliases": [], "gloss": "Fresh, crisp texture with a clean bite.", "example": "\u3053\u306E\u30EC\u30BF\u30B9\u306F\u3057\u3083\u304D\u3057\u3083\u304D\u3057\u3066\u3044\u308B\u3002", "translation": "This lettuce is fresh and crisp.", "sceneDescription": "A fresh lettuce leaf bends and snaps.", "otherUses": "Also describes brisk, efficient behavior. The food examples illustrate different sensations rather than a universal ranking.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%97%E3%82%84%E3%81%8D%E3%81%97%E3%82%84%E3%81%8D-3212007" } }
+        ] },
+        { "id": "rattling", "category": "sounds", "sceneUse": "Rattling and rumbling objects", "keywords": ["sound", "rattle", "window", "shutter", "rumble"], "initialVariant": 0, "variants": [
+          { "term": "\u304C\u305F\u304C\u305F", "aliases": [], "gloss": "Repeated rattling as something shakes.", "example": "\u98A8\u3067\u7A93\u304C\u304C\u305F\u304C\u305F\u9CF4\u3063\u305F\u3002", "translation": "The window rattled in the wind.", "sceneDescription": "A window shakes inside its frame.", "otherUses": "Also describes trembling, instability, or complaints. This scene shows a loose window.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/gatagata.html" } },
+          { "term": "\u304C\u3089\u304C\u3089", "aliases": [], "gloss": "A loud rolling or rattling sound.", "example": "\u5E97\u306E\u30B7\u30E3\u30C3\u30BF\u30FC\u304C\u304C\u3089\u304C\u3089\u3068\u4E0A\u304C\u3063\u305F\u3002", "translation": "The shop shutter rolled up with a rattle.", "sceneDescription": "A ridged shutter rises with broad sound marks.", "otherUses": "Also used for an empty place, gargling, or a hoarse voice. This scene shows a shutter.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/garagara.html" } }
+        ] },
+        { "id": "metalSounds", "category": "sounds", "sceneUse": "Forceful and ringing metal sounds", "keywords": ["sound", "metal", "hammer", "bell", "ring", "loud"], "initialVariant": 0, "variants": [
+          { "term": "\u304C\u3093\u304C\u3093", "aliases": [], "gloss": "A loud, forceful sound repeated insistently.", "example": "\u5DE5\u4E8B\u73FE\u5834\u3067\u91D1\u5C5E\u3092\u304C\u3093\u304C\u3093\u305F\u305F\u3044\u3066\u3044\u308B\u3002", "translation": "Metal is being hammered loudly at the construction site.", "sceneDescription": "A hammer strikes a metal plate with heavy marks.", "otherUses": "Also describes a pounding headache or vigorous activity. This scene illustrates hammering.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/gangan.html" } },
+          { "term": "\u304B\u3093\u304B\u3093", "aliases": [], "gloss": "A clear, high metallic ringing.", "example": "\u8E0F\u5207\u306E\u9418\u304C\u304B\u3093\u304B\u3093\u9CF4\u3063\u3066\u3044\u308B\u3002", "translation": "The railway crossing bell is ringing.", "sceneDescription": "A crossing bell rings beside a striped barrier.", "otherUses": "Also describes strong sunlight or anger. Sound quality and context matter, not only volume.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%8B%E3%82%93%E3%81%8B%E3%82%93-469383" } }
+        ] },
+        { "id": "quietVoices", "category": "sounds", "sceneUse": "Whispers and muttering", "keywords": ["sound", "voice", "whisper", "mutter", "quiet", "speech"], "initialVariant": 0, "variants": [
+          { "term": "\u3072\u305D\u3072\u305D", "aliases": [], "gloss": "Speaking quietly so others will not hear.", "example": "\u4E8C\u4EBA\u306F\u3072\u305D\u3072\u305D\u3068\u76F8\u8AC7\u3057\u305F\u3002", "translation": "The two spoke together in whispers.", "sceneDescription": "Two people lean toward a small shared speech bubble.", "otherUses": "Can convey secrecy or quietness. This scene shows a private conversation.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%B2%E3%81%9D%E3%81%B2%E3%81%9D-610349" } },
+          { "term": "\u3076\u3064\u3076\u3064", "aliases": [], "gloss": "Muttering words in a low voice.", "example": "\u5144\u306F\u3076\u3064\u3076\u3064\u8A00\u3044\u306A\u304C\u3089\u7247\u4ED8\u3051\u305F\u3002", "translation": "My older brother tidied up while muttering.", "sceneDescription": "One person mutters beside a pile of belongings.", "otherUses": "Also describes bumps, small pieces, or interruption. Muttering may express complaint but does not always do so.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%B6%E3%81%A4%E3%81%B6%E3%81%A4-619464" } }
+        ] },
+        { "id": "smallDrops", "category": "sounds", "sceneUse": "Drops falling", "keywords": ["sound", "water", "drip", "rain", "drops"], "initialVariant": 0, "variants": [
+          { "term": "\u307D\u305F\u307D\u305F", "aliases": [], "gloss": "Liquid falling in distinct repeated drops.", "example": "\u86C7\u53E3\u304B\u3089\u6C34\u304C\u307D\u305F\u307D\u305F\u843D\u3061\u3066\u3044\u308B\u3002", "translation": "Water is dripping from the tap.", "sceneDescription": "Separate drops fall from a tap into a basin.", "otherUses": "Also used for other dripping liquids. This scene shows a small leak.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%BD%E3%81%9F%E3%81%BD%E3%81%9F-630379" } },
+          { "term": "\u307D\u3064\u307D\u3064", "aliases": [], "gloss": "Small, scattered drops beginning to fall.", "example": "\u5098\u306B\u96E8\u304C\u307D\u3064\u307D\u3064\u5F53\u305F\u308A\u59CB\u3081\u305F\u3002", "translation": "Scattered raindrops began tapping my umbrella.", "sceneDescription": "A few raindrops land at separated points on an umbrella.", "otherUses": "Also describes scattered objects, intermittent speech, or something starting little by little. This scene shows light rain.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%BD%E3%81%A4%E3%81%BD%E3%81%A4-630850" } }
+        ] },
+        { "id": "conversation", "category": "sounds", "sceneUse": "Ways of talking", "keywords": ["sound", "speech", "chatter", "fluent", "conversation"], "initialVariant": 0, "variants": [
+          { "term": "\u307A\u3061\u3083\u304F\u3061\u3083", "aliases": [], "gloss": "Chattering busily about everyday things.", "example": "\u53CB\u9054\u3068\u307A\u3061\u3083\u304F\u3061\u3083\u304A\u3057\u3083\u3079\u308A\u3057\u305F\u3002", "translation": "I chatted away with my friends.", "sceneDescription": "Two friends exchange many small speech bubbles.", "otherUses": "Often conveys an observer\u2019s impression of chatter and can sound critical. This scene shows casual conversation.", "reference": { "label": "Daijisen \xB7 Japanese reference", "url": "https://kotobank.jp/word/%E3%81%BA%E3%81%A1%E3%82%84%E3%81%8F%E3%81%A1%E3%82%84-3218342" } },
+          { "term": "\u307A\u3089\u307A\u3089", "aliases": [], "gloss": "Speaking a language fluently.", "example": "\u59C9\u306F\u30B9\u30DA\u30A4\u30F3\u8A9E\u304C\u307A\u3089\u307A\u3089\u3060\u3002", "translation": "My older sister speaks Spanish fluently.", "sceneDescription": "A speaker sends a continuous line of words toward a globe.", "otherUses": "Also describes nonstop chatter, turning pages, or thin material. This scene shows language fluency.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/perapera.html" } }
+        ] },
+        { "id": "discretion", "category": "movement", "sceneUse": "Unnoticed and gentle actions", "keywords": ["action", "quiet", "secret", "gentle", "careful"], "initialVariant": 0, "variants": [
+          { "term": "\u3053\u3063\u305D\u308A", "aliases": [], "gloss": "Acting without other people noticing.", "example": "\u53CB\u9054\u3078\u306E\u8D08\u308A\u7269\u3092\u3053\u3063\u305D\u308A\u96A0\u3057\u305F\u3002", "translation": "I secretly hid a gift for my friend.", "sceneDescription": "A person hides a wrapped gift behind a screen.", "otherUses": "The emphasis is on avoiding notice; an action need not be physically gentle.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/kossori.html" } },
+          { "term": "\u305D\u3063\u3068", "aliases": [], "gloss": "Acting gently and with little disturbance.", "example": "\u7720\u3063\u3066\u3044\u308B\u732B\u306E\u305D\u3070\u306B\u6BDB\u5E03\u3092\u305D\u3063\u3068\u7F6E\u3044\u305F\u3002", "translation": "I gently placed a blanket beside the sleeping cat.", "sceneDescription": "A hand carefully lowers a blanket beside a sleeping cat.", "otherUses": "Can also mean leaving without attracting attention or leaving someone alone. This scene illustrates gentle handling.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/sotto.html" } }
+        ] },
+        { "id": "unhurried", "category": "movement", "sceneUse": "Delaying and relaxing", "keywords": ["action", "delay", "relax", "time", "leisure"], "initialVariant": 0, "variants": [
+          { "term": "\u3050\u305A\u3050\u305A", "aliases": [], "gloss": "Delaying instead of getting on with something.", "example": "\u51FA\u767A\u524D\u306B\u3050\u305A\u3050\u305A\u3057\u3066\u3044\u305F\u3089\u3001\u30D0\u30B9\u3092\u9003\u3057\u305F\u3002", "translation": "I dawdled before leaving and missed the bus.", "sceneDescription": "A person hesitates beside a bag while a bus leaves.", "otherUses": "Also describes grumbling, fussing, or a stuffy nose. This scene shows an unwelcome delay.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/guzuguzu.html" } },
+          { "term": "\u306E\u3093\u3073\u308A", "aliases": [], "gloss": "Spending time at an unhurried, relaxed pace.", "example": "\u4F11\u65E5\u306F\u5EAD\u3067\u306E\u3093\u3073\u308A\u904E\u3054\u3057\u305F\u3002", "translation": "I spent my day off relaxing in the garden.", "sceneDescription": "A seated person rests beside a plant and a cup.", "otherUses": "Can also imply being too slow when there is a deadline. The scene shows welcome leisure.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/nonbiri.html" } }
+        ] },
+        { "id": "neatness", "category": "movement", "sceneUse": "Exact fits and orderly actions", "keywords": ["action", "neat", "tidy", "exact", "fit", "organize"], "initialVariant": 0, "variants": [
+          { "term": "\u304D\u3063\u3061\u308A", "aliases": [], "gloss": "Fitting or doing something exactly.", "example": "\u7BB1\u306B\u672C\u304C\u304D\u3063\u3061\u308A\u53CE\u307E\u3063\u305F\u3002", "translation": "The books fitted exactly into the box.", "sceneDescription": "Books fill a box with no gaps at either end.", "otherUses": "Also describes exact amounts, punctuality, and thorough work. This scene shows a close fit.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/kicchiri.html" } },
+          { "term": "\u304D\u3061\u3093\u3068", "aliases": [], "gloss": "Doing or arranging something properly and neatly.", "example": "\u9774\u3092\u7384\u95A2\u306B\u304D\u3061\u3093\u3068\u4E26\u3079\u305F\u3002", "translation": "I arranged the shoes neatly in the entrance.", "sceneDescription": "Pairs of shoes stand in orderly rows.", "otherUses": "Also describes reliability, proper behavior, or regularity. Exactness and tidiness can overlap.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/kichinto.html" } }
+        ] },
+        { "id": "smoothWork", "category": "movement", "sceneUse": "Smooth progress and prompt action", "keywords": ["action", "work", "write", "prompt", "quick", "smooth"], "initialVariant": 0, "variants": [
+          { "term": "\u3059\u3089\u3059\u3089", "aliases": [], "gloss": "Proceeding smoothly without getting stuck.", "example": "\u624B\u7D19\u306E\u8A00\u8449\u304C\u3059\u3089\u3059\u3089\u66F8\u3051\u305F\u3002", "translation": "I was able to write the letter smoothly.", "sceneDescription": "A pen draws an uninterrupted line across a letter.", "otherUses": "Also describes fluent reading or answering. This scene shows ease of writing, not just speed.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/surasura.html" } },
+          { "term": "\u3055\u3063\u3055\u3068", "aliases": [], "gloss": "Doing something promptly without lingering.", "example": "\u98DF\u4E8B\u306E\u5F8C\u3001\u3055\u3063\u3055\u3068\u98DF\u5668\u3092\u7247\u4ED8\u3051\u305F\u3002", "translation": "After eating, I promptly cleared the dishes.", "sceneDescription": "Hands carry a stack of dishes away from a table.", "otherUses": "In instructions it can sound impatient or brusque. This scene describes prompt action.", "reference": { "label": "NINJAL \xB7 Japanese reference", "url": "https://www2.ninjal.ac.jp/Onomatope/50_on/sassato.html" } }
         ] }
       ];
     }
@@ -849,7 +1030,35 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     node.append(...children);
     return node;
   }
-  function scene(entry, index, play) {
+  function setMimeticLegacyAnimations(value) {
+    const next = value === true;
+    if (next === showLegacyAnimations) return;
+    showLegacyAnimations = next;
+    for (const ref of scenes) {
+      const root = ref.deref();
+      if (root) root.dispatchEvent(new Event("mimetic-style-change"));
+      else scenes.delete(ref);
+    }
+  }
+  function scene(entry, index) {
+    if (showLegacyAnimations) return legacyScene(entry, index);
+    const art = document.createElement("div");
+    art.className = "mimetic-art mimetic-print";
+    art.setAttribute("aria-hidden", "true");
+    art.dataset.scene = entry.id;
+    art.dataset.variant = String(index);
+    art.dataset.playing = "true";
+    art.dataset.style = "woodblock";
+    const frames = document.createElement("span");
+    frames.className = "mimetic-frames";
+    const path = `art/mimetics/${entry.id}-${index}.webp`;
+    const url = typeof chrome !== "undefined" && chrome.runtime?.getURL ? chrome.runtime.getURL(path) : path;
+    frames.style.backgroundImage = `url("${url}")`;
+    frames.style.transform = `translateX(-${(posterFrames[entry.id]?.[index] ?? 5) * 100 / 12}%)`;
+    art.append(frames);
+    return art;
+  }
+  function legacyScene(entry, index) {
     const svg = svgNode("svg", { viewBox: "0 0 240 124", "aria-hidden": "true", focusable: "false", class: "mimetic-art" });
     const stroke = { fill: "none", stroke: "currentColor", "stroke-width": 2, "stroke-linecap": "round", "stroke-linejoin": "round" };
     const line = (d, attrs = {}) => svgNode("path", { ...stroke, d, ...attrs });
@@ -886,7 +1095,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const checklist = (x, y2) => at("", x, y2, [box(0, 0, 37, 46, { fill: "var(--paper)" }), line("M6 11 9 14 14 7M6 25 9 28 14 21M18 12H30M18 26H30M6 38H30", { stroke: "var(--accent)" })]);
     svg.dataset.scene = entry.id;
     svg.dataset.variant = String(index);
-    svg.dataset.playing = String(play);
+    svg.dataset.playing = "true";
     const renderers = { rolling: () => {
       svg.append(line("M12 104H228"), line("M30 70H60m-8-6 8 6-8 6", { class: "mimetic-trail" }));
       const object = index === 0 ? [circle(0, 0, 12, { fill: "var(--accent)" }), line("M-7-7 7 7M7-7-7 7", { stroke: "var(--paper)" })] : [
@@ -1048,6 +1257,74 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     }, knocking: () => {
       svg.append(box(122, 14, 62, 101, { fill: "var(--paper)" }), box(131, 23, 43, 32), circle(173, 76, 3, { fill: "var(--accent)" }), motion("mimetic-knock", [line("M40 64H74V52Q74 46 80 46H100Q106 46 106 53V60H113V75Q113 87 101 87H80V81H40Z", { fill: "var(--surface)" }), line("M82 54V65M91 53V65M100 54V65")]), soundMarks(193, 68, index === 1));
       if (index === 1) svg.append(line("M112 37 117 43M111 95 117 90", { stroke: "var(--accent)", "stroke-width": 3 }));
+    }, eating: () => {
+      svg.append(face(88, 58, 34, "happy"), line("M47 108H199"));
+      if (index === 0) svg.append(motion("mimetic-knock", [line("M149 85 168 43Q172 35 178 43L199 85Z", { fill: "var(--paper)" }), box(164, 69, 20, 18, { fill: "var(--accent)" })]), line("M81 68Q89 57 100 68Q89 85 81 68Z", { fill: "var(--accent)" }));
+      else svg.append(motion("mimetic-pulse", [circle(65, 69, 8, { fill: "var(--sand)" }), circle(111, 69, 8, { fill: "var(--sand)" })]), box(152, 49, 42, 34, { fill: "var(--sand)" }), line("M159 45Q173 24 188 45M159 59H187M159 70H180"));
+    }, thinCrunch: () => {
+      svg.append(line("M40 105H202"));
+      if (index === 0) svg.append(motion("mimetic-crack", [line("M55 28 110 20 101 91 48 98Z", { fill: "var(--accent)" }), line("M122 21 178 31 189 97 130 90Z", { fill: "var(--accent)" }), line("M63 40 96 33M60 55 94 48M137 38 167 45M139 57 171 63", { stroke: "var(--paper)" })]), soundMarks(195, 53));
+      else {
+        for (let n = 0; n < 4; n++) svg.append(motion("mimetic-bob", [circle(65 + n * 35, 70 + n % 2 * 9, 13, { fill: "var(--surface)" }), circle(65 + n * 35, 70 + n % 2 * 9, 6, { stroke: "var(--accent)" })]));
+        svg.append(soundMarks(201, 51));
+      }
+    }, viscosity: () => {
+      svg.append(line("M51 82Q120 125 190 82Z", { fill: "var(--surface)" }), line("M48 81H193"));
+      if (index === 0) svg.append(line("M106 26H204M106 26Q87 27 83 40H117Q119 30 106 26Z", { fill: "var(--sand)" }), motion("mimetic-stretch", [line("M89 41Q87 62 103 78M110 41Q115 62 118 78", { stroke: "var(--accent)", "stroke-width": 5 })]));
+      else svg.append(line("M154 19 113 42M93 37Q72 60 112 64Q135 55 113 42Z", { fill: "var(--surface)" }), motion("mimetic-drop", [line("M100 64Q89 83 102 87Q119 90 110 65Z", { fill: "var(--accent)" })]), line("M65 87Q100 72 134 88T179 87", { stroke: "var(--accent)", "stroke-width": 4 }));
+    }, flavor: () => {
+      svg.append(line("M43 62Q51 111 120 111Q186 111 198 62Z", { fill: "var(--surface)" }), svgNode("ellipse", { ...stroke, cx: 120, cy: 62, rx: 77, ry: 18, fill: index === 0 ? "var(--paper)" : "var(--sand)" }));
+      if (index === 0) svg.append(circle(92, 61, 4, { fill: "var(--accent)" }), line("M130 60h15M114 67h8", { stroke: "var(--accent)" }), motion("mimetic-rise", [line("M105 38Q95 28 107 17M133 37Q126 27 137 13")]));
+      else {
+        for (let n = 0; n < 9; n++) svg.append(circle(67 + n * 12, 60 + (n % 3 - 1) * 5, 3 + n % 3, { fill: "var(--accent)" }));
+        svg.append(motion("mimetic-rise", [line("M80 35Q62 22 79 9M120 34Q104 21 119 7M161 36Q143 22 157 9", { "stroke-width": 3 })]));
+      }
+    }, elasticFood: () => {
+      svg.append(svgNode("ellipse", { ...stroke, cx: 120, cy: 106, rx: 79, ry: 9 }));
+      if (index === 0) svg.append(motion("mimetic-stretch", [line("M164 69Q154 28 116 34Q71 38 71 73Q73 104 111 99Q136 96 133 78Q126 67 112 79Q100 86 99 71Q101 53 120 56Q139 57 146 78Z", { fill: "var(--sand)" }), line("M80 53 100 64M95 39 107 57M117 35 120 56M139 42 131 59M151 53 139 68", { stroke: "var(--accent)" }), line("M164 69 185 56 179 82Z", { fill: "var(--accent)" })]));
+      else svg.append(motion("mimetic-sway", [line("M67 100Q69 38 120 36Q174 38 176 100Q120 113 67 100Z", { fill: "var(--sand)" }), svgNode("ellipse", { ...stroke, cx: 120, cy: 41, rx: 21, ry: 7, fill: "var(--accent)" }), line("M83 87Q87 60 97 57", { stroke: "var(--paper)", "stroke-width": 4 })]));
+    }, freshCrunch: () => {
+      if (index === 0) svg.append(box(60, 28, 122, 19), line("M72 28V41M89 28V41M110 28V41M134 28V41M156 28V41"), motion("mimetic-press", [line("M70 76 88 59 107 69 103 89 81 95ZM124 69 145 57 163 75 152 95 130 91Z", { fill: "var(--sand)" })]), soundMarks(198, 75));
+      else svg.append(motion("mimetic-crack", [line("M111 106Q31 76 61 35Q77 15 98 36Q113 17 131 32Q162 13 177 43Q206 71 111 106Z", { fill: "var(--surface)" }), line("M111 106 118 40M114 83 79 52M116 66 154 43M111 94 160 69", { stroke: "var(--accent)" })]), soundMarks(207, 56));
+    }, rattling: () => {
+      if (index === 0) svg.append(box(60, 13, 118, 101), motion("mimetic-restless", [box(69, 23, 100, 82, { fill: "var(--paper)" }), line("M119 23V105M69 64H169")]), line("M36 40 49 47M185 80 201 87", { stroke: "var(--accent)" }));
+      else {
+        svg.append(box(57, 12, 130, 102, { fill: "var(--paper)" }));
+        const ridges = [];
+        for (let n = 0; n < 7; n++) ridges.push(line(`M62 ${22 + n * 10}H182`));
+        svg.append(motion("mimetic-lift", ridges), soundMarks(201, 57, true));
+      }
+    }, metalSounds: () => {
+      if (index === 0) svg.append(box(54, 87, 116, 15), motion("mimetic-nod", [line("M109 67 137 20 151 29 123 75Z", { fill: "var(--sand)" }), line("M101 48 144 72 135 88 92 64Z", { fill: "var(--surface)" })]), soundMarks(190, 76, true));
+      else svg.append(line("M90 113V25H146M142 17V29"), motion("mimetic-sway", [line("M123 64Q126 29 143 29Q159 29 164 64ZM117 65H170", { fill: "var(--sand)" }), circle(143, 71, 4, { fill: "var(--accent)" })]), line("M43 95H191", { stroke: "var(--accent)", "stroke-width": 7 }), soundMarks(190, 46));
+    }, quietVoices: () => {
+      if (index === 0) svg.append(person(70, 41, "neutral"), person(164, 41, "neutral"), motion("mimetic-bob", [bubble(91, 7, 43)]), line("M94 55h4m4 0h4m4 0h4", { stroke: "var(--accent)" }));
+      else svg.append(person(75, 38, "angry"), box(144, 70, 48, 39), line("M151 80H186M156 90H180"), motion("mimetic-pulse", [bubble(94, 14, 34), line("M102 25h3m5 0h3", { stroke: "var(--accent)" })]));
+    }, smallDrops: () => {
+      if (index === 0) svg.append(line("M47 24H126V51H100V39H47Z", { fill: "var(--surface)" }), line("M38 94Q120 130 202 94M38 94H202"), drop(113, 62, 4), drop(113, 81, 4));
+      else {
+        svg.append(line("M52 72Q120 10 188 72Q167 61 143 72Q120 61 98 72Q73 61 52 72ZM120 70V108Q120 119 109 111", { fill: "var(--surface)" }), drop(78, 24, 3), drop(152, 18, 3), motion("mimetic-pulse", [line("M69 50l-6-7M169 50l7-8", { stroke: "var(--accent)" })]));
+      }
+    }, conversation: () => {
+      if (index === 0) svg.append(person(66, 48, "happy"), person(170, 48, "happy"), motion("mimetic-bob", [bubble(24, 5, 32), bubble(81, 10, 32), bubble(156, 4, 48)]));
+      else svg.append(person(62, 43, "happy"), circle(177, 72, 31), svgNode("ellipse", { ...stroke, cx: 177, cy: 72, rx: 13, ry: 31 }), line("M146 72H208M153 54H201M153 90H201"), motion("mimetic-slide", [bubble(92, 12, 40)]));
+    }, discretion: () => {
+      if (index === 0) svg.append(person(72, 35, "neutral"), box(130, 12, 54, 101, { fill: "var(--paper)" }), motion("mimetic-slide", [box(81, 79, 31, 26, { fill: "var(--sand)" }), line("M96 79V105M81 87H112M96 79Q77 59 86 57Q99 55 96 79Q112 56 115 63Q119 76 96 79", { stroke: "var(--accent)" })]));
+      else svg.append(line("M135 98Q123 79 143 74Q159 61 177 78Q197 89 179 101Z", { fill: "var(--surface)" }), line("M146 83l4 3m16-3 4 3M176 79 180 67 185 84"), motion("mimetic-press", [line("M50 46H111L130 77H72Z", { fill: "var(--sand)" }), line("M56 49 76 27 105 45", { fill: "var(--surface)" })]));
+    }, unhurried: () => {
+      if (index === 0) svg.append(person(54, 39, "worried"), bag(77, 78), clock(41, 19), motion("mimetic-slide", [box(126, 40, 82, 54), box(135, 49, 21, 16, { fill: "var(--paper)" }), box(166, 49, 21, 16, { fill: "var(--paper)" }), circle(142, 98, 8), circle(193, 98, 8)]));
+      else svg.append(motion("mimetic-breathe", [person(92, 36, "happy", true)]), box(73, 84, 50, 12), line("M176 107V57M176 82Q142 85 149 66Q172 60 176 82ZM176 72Q199 70 198 48Q174 48 176 72Z", { fill: "var(--surface)" }), box(163, 101, 27, 14), line("M40 88H62L59 105H43Z"));
+    }, neatness: () => {
+      if (index === 0) {
+        svg.append(box(48, 72, 147, 40));
+        for (let n = 0; n < 6; n++) svg.append(motion("mimetic-lift", [box(53 + n * 23, 31 + n % 2 * 9, 22, 76 - n % 2 * 9, { fill: n % 2 ? "var(--sand)" : "var(--surface)" }), line(`M${60 + n * 23} 53V91`, { stroke: "var(--accent)" })]));
+      } else {
+        svg.append(box(47, 17, 147, 94, { fill: "var(--paper)" }));
+        for (let n = 0; n < 3; n++) for (let k2 = 0; k2 < 2; k2++) svg.append(motion("mimetic-bob", [line(`M${61 + n * 44} ${36 + k2 * 40}q-6 12 2 17h16q9-6 0-17Z`, { fill: "var(--surface)" })]));
+      }
+    }, smoothWork: () => {
+      if (index === 0) svg.append(line("M63 20H168L181 108H48Z", { fill: "var(--paper)" }), line("M70 47H148M67 65H142M65 85H156", { stroke: "var(--accent)" }), motion("mimetic-slide", [line("M91 75 137 21 143 27 100 82Z", { fill: "var(--sand)" })]));
+      else svg.append(line("M37 99H203M52 99V116M186 99V116"), motion("mimetic-slide", [svgNode("ellipse", { ...stroke, cx: 111, cy: 78, rx: 35, ry: 8 }), svgNode("ellipse", { ...stroke, cx: 111, cy: 69, rx: 35, ry: 8 }), svgNode("ellipse", { ...stroke, cx: 111, cy: 60, rx: 35, ry: 8 }), line("M57 72 80 80M150 80 173 71", { stroke: "var(--accent)", "stroke-width": 4 })]));
     } };
     renderers[entry.id]();
     return svg;
@@ -1083,8 +1360,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const stage = element("div", "mimetic-stage");
     const caption = element("figcaption", "mimetic-caption");
     figure.append(stage, caption);
-    const replay = element("button", "mimetic-replay", "Replay scene");
-    replay.type = "button";
     const motionNote = element("p", "mimetic-motion-note", "Reduced motion: the illustration stays still.");
     const uses = element("p", "mimetic-uses");
     const reference = element("a", "mimetic-reference");
@@ -1095,11 +1370,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       const button = element("button", "mimetic-choice", variant.term);
       button.type = "button";
       button.lang = "ja";
-      button.addEventListener("click", () => update(index, true));
+      button.addEventListener("click", () => update(index));
       controls.append(button);
       return button;
     });
-    function update(index, play) {
+    function update(index) {
       selected = index;
       const variant = entry.variants[index];
       for (const [i, button] of buttons.entries()) button.setAttribute("aria-pressed", String(i === index));
@@ -1122,16 +1397,18 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         reference.removeAttribute("href");
         reference.hidden = true;
       }
-      stage.replaceChildren(scene(entry, index, play));
+      stage.replaceChildren(scene(entry, index));
     }
-    replay.addEventListener("click", () => stage.replaceChildren(scene(entry, selected, true)));
+    root.addEventListener("mimetic-style-change", () => stage.replaceChildren(scene(entry, selected)));
+    for (const ref of scenes) if (!ref.deref()) scenes.delete(ref);
+    scenes.add(new WeakRef(root));
     const more = element("details", "mimetic-more");
     more.append(element("summary", "", "Other uses & reference"), element("p", "", "These are related expressions, each shown in one context."), uses, reference);
-    root.append(heading, context, controls, detail, figure, replay, motionNote, examples, more);
-    update(selected, false);
+    root.append(heading, context, controls, detail, figure, motionNote, examples, more);
+    update(selected);
     return root;
   }
-  var spellings, svgNS, mimeticStyles;
+  var spellings, svgNS, showLegacyAnimations, scenes, posterFrames, mimeticStyles;
   var init_mimetic_playground = __esm({
     "src/mimetic-playground.ts"() {
       "use strict";
@@ -1146,12 +1423,23 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         }
       }
       svgNS = "http://www.w3.org/2000/svg";
+      showLegacyAnimations = false;
+      scenes = /* @__PURE__ */ new Set();
+      posterFrames = {
+        relief: [9, 8],
+        stomach: [5, 10],
+        smile: [8, 8],
+        crispness: [8, 8],
+        thinCrunch: [8, 8],
+        freshCrunch: [8, 8],
+        neatness: [10, 10]
+      };
       mimeticStyles = `
 .mimetic-playground{min-width:0;margin-top:12px;padding-top:12px;border-top:2px solid var(--line);color:var(--ink);font:12px/1.55 var(--body,system-ui)}
 .mimetic-playground .mimetic-heading{margin:0 0 8px;font:800 11px/1.4 var(--mono,monospace);text-transform:uppercase}
 .mimetic-playground .mimetic-context,.mimetic-playground .mimetic-uses{margin:8px 0;color:var(--muted,var(--ink));font-size:11px}
 .mimetic-controls{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.mimetic-controls .mimetic-choice{flex:1;min-width:0;white-space:nowrap;font-size:16px}
-.mimetic-playground .mimetic-choice,.mimetic-playground .mimetic-replay{margin:0;padding:7px 9px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font:700 12px/1.4 var(--body,system-ui)}
+.mimetic-playground .mimetic-choice{margin:0;padding:7px 9px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font:700 12px/1.4 var(--body,system-ui)}
 .mimetic-playground .mimetic-choice[aria-pressed=true]{background:var(--accent);color:var(--paper)}
 .mimetic-playground button:focus-visible,.mimetic-playground a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .mimetic-playground .mimetic-term{margin:8px 0 2px;font-size:21px;font-weight:700}
@@ -1160,42 +1448,46 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .mimetic-playground .mimetic-translation{margin:2px 0 8px;color:var(--muted,var(--ink))}
 .mimetic-figure{margin:12px 0 8px}.mimetic-stage{overflow:hidden;background:var(--paper);border:1px solid var(--line)}
 .mimetic-art{display:block;width:100%;height:auto;max-height:180px;color:var(--ink)}.mimetic-trail{opacity:.55}
+.mimetic-print{position:relative;aspect-ratio:2/1;overflow:hidden;background:#f3e7ce;max-height:none;contain:paint}
+.mimetic-frames{display:block;width:1200%;height:100%;background-size:100% 100%;background-repeat:no-repeat;image-rendering:pixelated;transform:translateX(-41.6666667%)}
+.mimetic-print[data-playing=true] .mimetic-frames{animation:mimetic-print-frames 2.4s steps(11,end) infinite}
+@keyframes mimetic-print-frames{0%{transform:translateX(0)}91.6666667%,100%{transform:translateX(-91.6666667%)}}
 .mimetic-playground .mimetic-caption{padding:5px 0;font-size:11px;overflow-wrap:anywhere}
 .mimetic-playground .mimetic-reference{display:inline-block;margin:4px 0;font-size:10px;color:var(--accent);overflow-wrap:anywhere;text-underline-offset:3px}
 .mimetic-more{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font-size:11px;color:var(--muted)}.mimetic-more summary{cursor:pointer;font-weight:600}.mimetic-motion-note{display:none}.mimetic-art .mimetic-spin{transform-origin:120px 65px}.mimetic-art .mimetic-orbit{transform-origin:120px 65px}.mimetic-art .mimetic-expression{transform-origin:120px 65px}.mimetic-art .mimetic-spark,.mimetic-art .mimetic-wheel{transform-box:fill-box;transform-origin:center}
-.mimetic-art[data-playing=true] .mimetic-roll{animation:mimetic-roll 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-wheel{animation:mimetic-wheel 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-spin{animation:mimetic-spin 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-orbit{animation:mimetic-spin 2.4s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-spark{animation:mimetic-spark 1.8s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-glare{animation:mimetic-glare 1.8s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-rainfall{animation:mimetic-rainfall .65s ease-in-out 3}
-.mimetic-art[data-playing=true] .mimetic-touch{animation:mimetic-touch 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-expression{animation:mimetic-expression 1.8s ease-in-out 1}
+.mimetic-art[data-playing=true] .mimetic-roll{animation:mimetic-roll 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-wheel{animation:mimetic-wheel 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-spin{animation:mimetic-spin 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-orbit{animation:mimetic-spin 2.4s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-spark{animation:mimetic-spark 1.8s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-glare{animation:mimetic-glare 1.8s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-rainfall{animation:mimetic-rainfall .65s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-touch{animation:mimetic-touch 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-expression{animation:mimetic-expression 1.8s ease-in-out infinite}
 .mimetic-art .mimetic-pulse,.mimetic-art .mimetic-breathe,.mimetic-art .mimetic-tilt,.mimetic-art .mimetic-nod,.mimetic-art .mimetic-sway,.mimetic-art .mimetic-stretch{transform-box:fill-box;transform-origin:center}
-.mimetic-art[data-playing=true] .mimetic-pulse{animation:mimetic-pulse 1.8s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-bob{animation:mimetic-bob 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-restless{animation:mimetic-restless 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-breathe{animation:mimetic-breathe 2.2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-clear{animation:mimetic-clear 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-tilt{animation:mimetic-tilt 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-nod{animation:mimetic-nod 2.2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-sag{animation:mimetic-sag 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-sway{animation:mimetic-sway 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-stagger{animation:mimetic-stagger 2.3s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-rise{animation:mimetic-rise 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-slow-walk{animation:mimetic-slow-walk 2.4s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-walk{animation:mimetic-walk 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-sort{animation:mimetic-sort 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-gaze{animation:mimetic-gaze 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-laugh{animation:mimetic-laugh .7s ease-in-out 3}
-.mimetic-art[data-playing=true] .mimetic-drop{animation:mimetic-drop .7s ease-in-out 3}
-.mimetic-art[data-playing=true] .mimetic-press{animation:mimetic-press 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-stretch{animation:mimetic-stretch 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-lift{animation:mimetic-lift 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-slide{animation:mimetic-slide 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-crack{animation:mimetic-crack 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-knock{animation:mimetic-knock .6s ease-in-out 3}
+.mimetic-art[data-playing=true] .mimetic-pulse{animation:mimetic-pulse 1.8s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-bob{animation:mimetic-bob 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-restless{animation:mimetic-restless 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-breathe{animation:mimetic-breathe 2.2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-clear{animation:mimetic-clear 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-tilt{animation:mimetic-tilt 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-nod{animation:mimetic-nod 2.2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-sag{animation:mimetic-sag 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-sway{animation:mimetic-sway 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-stagger{animation:mimetic-stagger 2.3s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-rise{animation:mimetic-rise 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-slow-walk{animation:mimetic-slow-walk 2.4s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-walk{animation:mimetic-walk 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-sort{animation:mimetic-sort 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-gaze{animation:mimetic-gaze 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-laugh{animation:mimetic-laugh .7s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-drop{animation:mimetic-drop .7s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-press{animation:mimetic-press 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-stretch{animation:mimetic-stretch 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-lift{animation:mimetic-lift 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-slide{animation:mimetic-slide 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-crack{animation:mimetic-crack 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-knock{animation:mimetic-knock .6s ease-in-out infinite}
 @keyframes mimetic-roll{0%,100%{translate:0 0}50%{translate:80px 0}}
 @keyframes mimetic-wheel{0%,100%{rotate:0deg}50%{rotate:150deg}}
 @keyframes mimetic-spin{0%{rotate:0deg}100%{rotate:720deg}}
@@ -1227,22 +1519,22 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 @keyframes mimetic-slide{0%,100%{translate:0 0}50%{translate:30px 0}}
 @keyframes mimetic-crack{0%,100%{translate:0 0}50%{translate:0 -3px}}
 @keyframes mimetic-knock{0%,100%{translate:0 0}50%{translate:7px 0}}
-@media(prefers-reduced-motion:reduce){.mimetic-art[data-playing=true] *{animation:none!important}.mimetic-playground .mimetic-replay{display:none}.mimetic-playground .mimetic-motion-note{display:block;margin:6px 0;font-size:11px;color:var(--muted,var(--ink))}}
+@media(prefers-reduced-motion:reduce){.mimetic-art[data-playing=true] *{animation:none!important}.mimetic-playground .mimetic-motion-note{display:block;margin:6px 0;font-size:11px;color:var(--muted,var(--ink))}}
 `;
     }
   });
 
   // src/meaning-forks.ts
   function endings(lemma) {
-    const stem = lemma.slice(0, -1);
+    const stem2 = lemma.slice(0, -1);
     return [
-      { tokens: [[stem, lemma, "\u9023\u7528\u5F62"], ["\u307E\u305B", "\u307E\u3059", "\u672A\u7136\u5F62"], ["\u3093", "\u3093", "\u57FA\u672C\u5F62"], ["\u3067\u3057", "\u3067\u3059", "\u9023\u7528\u5F62"], ["\u305F", "\u305F", "\u57FA\u672C\u5F62"]], past: true, negative: true, polite: true },
-      { tokens: [[stem, lemma, "\u9023\u7528\u5F62"], ["\u307E\u3057", "\u307E\u3059", "\u9023\u7528\u5F62"], ["\u305F", "\u305F", "\u57FA\u672C\u5F62"]], past: true, negative: false, polite: true },
-      { tokens: [[stem, lemma, "\u9023\u7528\u5F62"], ["\u307E\u305B", "\u307E\u3059", "\u672A\u7136\u5F62"], ["\u3093", "\u3093", "\u57FA\u672C\u5F62"]], past: false, negative: true, polite: true },
-      { tokens: [[stem, lemma, "\u672A\u7136\u5F62"], ["\u306A\u304B\u3063", "\u306A\u3044", "\u9023\u7528\u30BF\u63A5\u7D9A"], ["\u305F", "\u305F", "\u57FA\u672C\u5F62"]], past: true, negative: true, polite: false },
-      { tokens: [[stem, lemma, "\u672A\u7136\u5F62"], ["\u306A\u3044", "\u306A\u3044", "\u57FA\u672C\u5F62"]], past: false, negative: true, polite: false },
-      { tokens: [[stem, lemma, "\u9023\u7528\u5F62"], ["\u307E\u3059", "\u307E\u3059", "\u57FA\u672C\u5F62"]], past: false, negative: false, polite: true },
-      { tokens: [[stem, lemma, "\u9023\u7528\u5F62"], ["\u305F", "\u305F", "\u57FA\u672C\u5F62"]], past: true, negative: false, polite: false },
+      { tokens: [[stem2, lemma, "\u9023\u7528\u5F62"], ["\u307E\u305B", "\u307E\u3059", "\u672A\u7136\u5F62"], ["\u3093", "\u3093", "\u57FA\u672C\u5F62"], ["\u3067\u3057", "\u3067\u3059", "\u9023\u7528\u5F62"], ["\u305F", "\u305F", "\u57FA\u672C\u5F62"]], past: true, negative: true, polite: true },
+      { tokens: [[stem2, lemma, "\u9023\u7528\u5F62"], ["\u307E\u3057", "\u307E\u3059", "\u9023\u7528\u5F62"], ["\u305F", "\u305F", "\u57FA\u672C\u5F62"]], past: true, negative: false, polite: true },
+      { tokens: [[stem2, lemma, "\u9023\u7528\u5F62"], ["\u307E\u305B", "\u307E\u3059", "\u672A\u7136\u5F62"], ["\u3093", "\u3093", "\u57FA\u672C\u5F62"]], past: false, negative: true, polite: true },
+      { tokens: [[stem2, lemma, "\u672A\u7136\u5F62"], ["\u306A\u304B\u3063", "\u306A\u3044", "\u9023\u7528\u30BF\u63A5\u7D9A"], ["\u305F", "\u305F", "\u57FA\u672C\u5F62"]], past: true, negative: true, polite: false },
+      { tokens: [[stem2, lemma, "\u672A\u7136\u5F62"], ["\u306A\u3044", "\u306A\u3044", "\u57FA\u672C\u5F62"]], past: false, negative: true, polite: false },
+      { tokens: [[stem2, lemma, "\u9023\u7528\u5F62"], ["\u307E\u3059", "\u307E\u3059", "\u57FA\u672C\u5F62"]], past: false, negative: false, polite: true },
+      { tokens: [[stem2, lemma, "\u9023\u7528\u5F62"], ["\u305F", "\u305F", "\u57FA\u672C\u5F62"]], past: true, negative: false, polite: false },
       { tokens: [[lemma, lemma, "\u57FA\u672C\u5F62"]], past: false, negative: false, polite: false }
     ];
   }
@@ -1400,6 +1692,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 
   // src/exploration.ts
   function wordExplorations(text, words, wordIndex, surface, overrides) {
+    const adjective = buildAdjectivePlayground(text, words, wordIndex);
     const verb = buildVerbPlayground(text, words, wordIndex);
     const meaning = buildMeaningForks(text, words, wordIndex);
     const corrected = (start, end) => Object.keys(overrides).some((word) => {
@@ -1411,6 +1704,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       return false;
     });
     return {
+      ...adjective && !corrected(adjective.start, adjective.end) ? { adjective } : {},
       ...verb && !corrected(verb.start, verb.end) ? { verb } : {},
       ...meaning && !corrected(meaning.start, meaning.end) ? { meaning } : {},
       mimetic: matchMimeticAt(text, words, wordIndex)?.entry ?? findMimetic(surface)
@@ -1451,11 +1745,18 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     return span;
   }
   function renderVerbPlayground(model2) {
+    return renderWordForms(model2, verbFamilies, "Verb Playground", "Verb form", (state) => verbConstruction(model2.base, state));
+  }
+  function renderAdjectivePlayground(model2) {
+    return renderWordForms(model2, adjectiveFamilies, "Adjective Playground", "Adjective form", (state) => adjectiveConstruction(model2.base, state));
+  }
+  function renderWordForms(model2, familyList, title, formLabel, construction) {
     const section = document.createElement("section");
     section.className = "verb-playground";
-    section.setAttribute("aria-label", "Verb Playground");
+    section.setAttribute("aria-label", title);
+    if (title === "Adjective Playground") section.classList.add("adjective-playground");
     const heading = document.createElement("h4");
-    heading.textContent = "Verb Playground";
+    heading.textContent = title;
     const description = document.createElement("p");
     description.className = "verb-instruction";
     description.textContent = "Choose a form and adjust its ending.";
@@ -1464,15 +1765,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     familyLabel.append(document.createTextNode("Form "));
     const select = document.createElement("select");
     select.className = "verb-family";
-    select.setAttribute("aria-label", "Verb form");
+    select.setAttribute("aria-label", formLabel);
     familyLabel.append(select);
     const explanation = document.createElement("p");
     explanation.className = "verb-explanation";
     const controls = document.createElement("div");
     controls.className = "verb-controls";
+    const recipe = document.createElement("p");
+    recipe.className = "form-construction";
     const state = { ...model2.initial };
     let pristine = true, chosen = !model2.requiresChoice;
-    const families = verbFamilies.filter((family) => model2.forms.some((form) => form.family === family.id));
+    const families = familyList.filter((family) => model2.forms.some((form) => form.family === family.id));
     const groups = /* @__PURE__ */ new Map();
     for (const family of families) {
       let group = groups.get(family.group);
@@ -1499,13 +1802,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         seen.add(match.family);
         const button = document.createElement("button");
         button.type = "button";
-        button.textContent = verbFamilies.find((family) => family.id === match.family)?.label ?? match.family;
+        button.textContent = familyList.find((family) => family.id === match.family)?.label ?? match.family;
         button.addEventListener("click", () => {
           Object.assign(state, match);
           chosen = true;
           pristine = true;
           paintControls();
-          render();
+          render2();
           select.focus();
         });
         choices.append(button);
@@ -1515,11 +1818,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     result.className = "verb-result";
     result.setAttribute("aria-live", "polite");
     result.setAttribute("aria-atomic", "true");
-    const render = () => {
+    const render2 = () => {
       const family = families.find((family2) => family2.id === state.family);
       const variant = model2.forms.find((form) => form.family === state.family && form.past === state.past && form.negative === state.negative && form.polite === state.polite && form.spoken === state.spoken);
-      const japanese2 = annotated(pristine ? model2.source : variant?.text ?? model2.source, pristine ? model2.sourceReading : variant?.reading ?? model2.sourceReading, model2.source);
-      japanese2.className = "verb-japanese";
+      const japanese3 = annotated(pristine ? model2.source : variant?.text ?? model2.source, pristine ? model2.sourceReading : variant?.reading ?? model2.sourceReading, model2.source);
+      japanese3.className = "verb-japanese";
       const caption = document.createElement("p");
       caption.className = "verb-state";
       const traits = [];
@@ -1531,11 +1834,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         if (state.spoken) traits.push("Spoken shortening");
       } else traits.push("Original spelling \xB7 Choose an interpretation above");
       caption.textContent = traits.join(" \xB7 ");
-      result.replaceChildren(japanese2, caption);
+      result.replaceChildren(japanese3, caption);
       familyLabel.hidden = controls.hidden = explanation.hidden = !chosen;
       choices.hidden = chosen;
       select.value = state.family;
       explanation.textContent = family?.description ?? "";
+      recipe.hidden = !chosen;
+      recipe.textContent = chosen ? "How this form is built: " + construction(state) + (pristine && variant?.text !== model2.source ? " The original spelling is preserved above; this rule shows the standard generated form." : "") : "";
     };
     const paintControls = () => {
       controls.replaceChildren();
@@ -1549,7 +1854,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         input.addEventListener("change", () => {
           state[key] = input.checked;
           pristine = false;
-          render();
+          render2();
         });
         container.append(input, document.createTextNode(label));
         controls.append(container);
@@ -1562,7 +1867,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       for (const key of ["past", "negative", "polite", "spoken"]) if (!family.controls.includes(key)) state[key] = false;
       pristine = false;
       paintControls();
-      render();
+      render2();
     });
     const reset = document.createElement("button");
     reset.type = "button";
@@ -1573,7 +1878,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       chosen = !model2.requiresChoice;
       pristine = true;
       paintControls();
-      render();
+      render2();
     });
     const output = document.createElement("div");
     output.className = "verb-output";
@@ -1588,9 +1893,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const note = document.createElement("p");
     note.textContent = "Underlined characters differ from the original. Reset restores its exact spelling. These forms are demonstrations; the surrounding sentence and social context may need other changes.";
     help.append(summary, note);
-    section.append(heading, description, choices, familyLabel, controls, output, explanation, help);
+    section.append(heading, description, choices, familyLabel, controls, output, recipe, explanation, help);
     paintControls();
-    render();
+    render2();
     return section;
   }
   function withOriginal(base, original) {
@@ -1706,6 +2011,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         return wrapper;
       } });
     }
+    if (models.adjective) {
+      const model2 = models.adjective;
+      options.push({ label: "Adjective Playground", source: model2.source, reading: model2.sourceReading, render: () => renderAdjectivePlayground(model2) });
+    }
     if (models.mimetic) {
       const model2 = models.mimetic;
       options.push({ label: "Mimetic Playground", render: () => renderMimeticPlayground(model2) });
@@ -1748,6 +2057,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   var init_exploration = __esm({
     "src/exploration.ts"() {
       "use strict";
+      init_adjective_playground();
       init_shared();
       init_verb_playground();
       init_mimetic_playground();
@@ -1820,7 +2130,7 @@ ${meaningForkStyles}
       disposed = true;
       cancel();
     };
-    const verbIntro = "Enter a dictionary-form verb here, or open a word\u2019s playground in Reading view. Everything works offline.";
+    const verbIntro = "Enter a dictionary-form verb or adjective here, or open a word\u2019s playground in Reading view. Everything works offline.";
     const intro = element3("p", "playground-intro", verbIntro);
     const tabs = element3("div", "playground-tabs");
     tabs.setAttribute("role", "tablist");
@@ -1849,15 +2159,15 @@ ${meaningForkStyles}
     filters.append(searchLabel, categoryLabel);
     const form = element3("form", "playground-verb-input");
     form.noValidate = true;
-    const inputLabel = element3("label", "", "Dictionary-form verb");
+    const inputLabel = element3("label", "", "Dictionary-form word");
     const input = element3("input", "");
     input.type = "text";
     input.maxLength = 40;
     input.autocomplete = "off";
     input.spellcheck = false;
-    input.placeholder = "\u98DF\u3079\u308B or \u52C9\u5F37\u3059\u308B";
+    input.placeholder = "\u98DF\u3079\u308B, \u9AD8\u3044, or \u9759\u304B";
     inputLabel.append(input);
-    const submit = element3("button", "", "Check verb locally");
+    const submit = element3("button", "", "Check word locally");
     submit.type = "submit";
     const feedback = element3("p", "playground-feedback");
     feedback.setAttribute("role", "status");
@@ -1902,8 +2212,8 @@ ${meaningForkStyles}
     });
     const showSelection = (panel, origin) => {
       if (!catalog.hidden) catalogScroll = scroller.scrollTop;
-      back.textContent = tab === "verbs" ? "\u2190 Change verb" : "\u2190 Examples";
-      back.setAttribute("aria-label", tab === "verbs" ? "Change verb" : "Back to examples");
+      back.textContent = tab === "verbs" ? "\u2190 Change word" : "\u2190 Examples";
+      back.setAttribute("aria-label", tab === "verbs" ? "Change word" : "Back to examples");
       returnFocus = origin;
       selection.replaceChildren(panel);
       catalog.hidden = true;
@@ -1946,7 +2256,7 @@ ${meaningForkStyles}
       feedback.textContent = "";
       if (disposed) return;
       if (!value || Array.from(value).length > 40 || !/^[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々ー]+$/u.test(value)) {
-        feedback.textContent = "Enter one dictionary-form verb, such as \u98DF\u3079\u308B or \u52C9\u5F37\u3059\u308B (up to 40 characters).";
+        feedback.textContent = "Enter one dictionary-form verb or adjective, such as \u98DF\u3079\u308B, \u9AD8\u3044, or \u9759\u304B (up to 40 characters).";
         return;
       }
       controller = new AbortController();
@@ -1955,10 +2265,11 @@ ${meaningForkStyles}
       submit.disabled = true;
       feedback.textContent = "Checking the bundled dictionary\u2026";
       try {
-        const candidates = dictionaryVerbCandidates(value, (await options.tokenize([value], current.signal))[0] ?? []);
+        const words = (await options.tokenize([value], current.signal))[0] ?? [];
+        const candidates = dictionaryVerbCandidates(value, words), adjectives = dictionaryAdjectiveCandidates(value, words);
         if (disposed || current.signal.aborted || id !== request) return;
-        if (!candidates.length) {
-          feedback.textContent = "Use a recognized dictionary-form verb, such as \u98DF\u3079\u308B, \u8AAD\u3080, or \u52C9\u5F37\u3059\u308B. Sentences and conjugated forms cannot be entered here.";
+        if (!candidates.length && !adjectives.length) {
+          feedback.textContent = "Use a recognized dictionary-form verb or adjective, such as \u98DF\u3079\u308B, \u9AD8\u3044, or \u9759\u304B (without \u306A). Sentences and conjugated forms cannot be entered here.";
           return;
         }
         const choices = [];
@@ -1973,9 +2284,25 @@ ${meaningForkStyles}
         }
         feedback.textContent = !choices.length ? "That derived construction is outside the supported forms. Try its original dictionary verb." : choices.length > 1 ? "Choose the dictionary entry or interpretation you intend." : "Confirm the dictionary form, reading, and class to begin.";
         confirm(choices);
+        for (const base of adjectives) {
+          const button = element3("button", "", `Use ${base.lemma} \xB7 ${base.reading} \xB7 ${base.kind === "i" ? "\u3044-adjective" : "\u306A-adjective"}`);
+          button.type = "button";
+          button.addEventListener("click", () => {
+            if (disposed) return;
+            cancel();
+            feedback.textContent = "";
+            const model2 = createAdjectivePlayground(base), panel = element3("div", "explore-panel");
+            const original = element3("div", "playground-original");
+            original.append(element3("p", "explore-source-label", "Original word"), annotated(model2.source, model2.sourceReading));
+            panel.append(original, renderAdjectivePlayground(model2));
+            showSelection(panel, button);
+          });
+          confirmation.append(button);
+        }
+        if (adjectives.length) feedback.textContent = "Confirm the dictionary form, reading, and class to begin.";
       } catch {
         if (disposed || current.signal.aborted || id !== request) return;
-        feedback.textContent = "The local dictionary could not finish. Try again, or click a verb in Reading view to explore it.";
+        feedback.textContent = "The local dictionary could not finish. Try again, or click a word in Reading view to explore it.";
       } finally {
         if (!disposed && !current.signal.aborted && id === request) {
           form.removeAttribute("aria-busy");
@@ -2036,7 +2363,7 @@ ${meaningForkStyles}
       }
       renderResults();
     };
-    for (const [id, label] of [["verbs", "Verbs"], ["mimetics", "Mimetics"]]) {
+    for (const [id, label] of [["verbs", "Word forms"], ["mimetics", "Mimetics"]]) {
       const button = element3("button", "", label);
       button.type = "button";
       button.setAttribute("role", "tab");
@@ -2079,6 +2406,7 @@ ${meaningForkStyles}
   var init_playground_browser = __esm({
     "src/playground-browser.ts"() {
       "use strict";
+      init_adjective_playground();
       init_shared();
       init_verb_playground();
       init_mimetic_playground();
@@ -2558,11 +2886,11 @@ ${playgroundBrowserStyles}
           const context = this.wordContexts.get(button);
           if (context) {
             const models = wordExplorations(context.text, context.words, context.index, surface, this.overrides);
-            if (models.verb || models.mimetic || models.meaning) {
+            if (models.verb || models.adjective || models.mimetic || models.meaning) {
               const explore = document.createElement("button");
               explore.type = "button";
               explore.className = "explore-toggle";
-              explore.textContent = models.verb && !models.mimetic && !models.meaning ? "Try verb forms" : "Open playgrounds";
+              explore.textContent = models.verb || models.adjective ? "Try word forms" : "Open playgrounds";
               explore.setAttribute("aria-expanded", "false");
               const panel = renderExplorations(models, { tokenize: (texts, signal) => this.tokenizePlayground(texts, signal) });
               this.exploration = panel;
@@ -2704,6 +3032,7 @@ ${playgroundBrowserStyles}
   var require_content = __commonJS({
     "src/content.ts"() {
       init_reading_panel();
+      init_mimetic_playground();
       init_preferences();
       init_pacing();
       init_geometry();
@@ -3454,6 +3783,7 @@ ${playgroundBrowserStyles}
         if (request?.type === "status") respond({ message, state: statusState, toolbarAvailability });
       });
       chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === "local" && changes.showLegacyAnimations) setMimeticLegacyAnimations(changes.showLegacyAnimations.newValue);
         if (area !== "local" || !["enabled", "excluded", "siteAppearance", "readingOverrides", "docsReadingView", "readingView"].some((key) => key in changes)) return;
         const wasReading = readingModeEnabled();
         if (changes.enabled) enabled = changes.enabled.newValue !== false;
@@ -3473,9 +3803,10 @@ ${playgroundBrowserStyles}
         schedule(0);
       });
       async function start() {
-        const state = await chrome.storage.local.get({ enabled: true, excluded: [], siteAppearance: {}, readingOverrides: {}, docsReadingView: {}, readingView: null });
+        const state = await chrome.storage.local.get({ enabled: true, excluded: [], siteAppearance: {}, readingOverrides: {}, docsReadingView: {}, readingView: null, showLegacyAnimations: false });
         enabled = state.enabled !== false;
         excluded = Array.isArray(state.excluded) ? state.excluded : [];
+        setMimeticLegacyAnimations(state.showLegacyAnimations);
         readingAppearance = appearanceForSite(state.siteAppearance, hostname);
         overrides = validOverrides(state.readingOverrides);
         legacyView = state.docsReadingView;

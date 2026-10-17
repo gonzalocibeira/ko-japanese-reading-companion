@@ -1,4 +1,5 @@
 import {ReadingPanel,type ReadingRun} from './reading-panel';
+import {setMimeticLegacyAnimations} from './mimetic-playground';
 import {appearance,appearanceForSite,validOverrides,readingViewPreferences,panelEnabled,updateReadingView,type Appearance} from './preferences';
 import {AdaptivePacer} from './pacing';
 import { CollisionIndex } from './geometry';
@@ -526,6 +527,7 @@ async function scan() {
 }
 chrome.runtime.onMessage.addListener((request, _sender, respond) => { if (request?.type === 'status') respond({message,state:statusState,toolbarAvailability} satisfies PageStatus); });
 chrome.storage.onChanged.addListener((changes, area) => {
+  if(area==='local' && changes.showLegacyAnimations)setMimeticLegacyAnimations(changes.showLegacyAnimations.newValue);
   if(area!=='local' || !['enabled','excluded','siteAppearance','readingOverrides','docsReadingView','readingView'].some(key=>key in changes))return;
   const wasReading=readingModeEnabled();
   if(changes.enabled)enabled=changes.enabled.newValue!==false;
@@ -541,7 +543,8 @@ chrome.storage.onChanged.addListener((changes, area) => {
   schedule(0);
 });
 async function start() {
-  const state = await chrome.storage.local.get({enabled:true, excluded:[],siteAppearance:{},readingOverrides:{},docsReadingView:{},readingView:null}); enabled = state.enabled !== false; excluded = Array.isArray(state.excluded) ? state.excluded : [];
+  const state = await chrome.storage.local.get({enabled:true, excluded:[],siteAppearance:{},readingOverrides:{},docsReadingView:{},readingView:null,showLegacyAnimations:false}); enabled = state.enabled !== false; excluded = Array.isArray(state.excluded) ? state.excluded : [];
+  setMimeticLegacyAnimations(state.showLegacyAnimations);
   readingAppearance=appearanceForSite(state.siteAppearance,hostname);overrides=validOverrides(state.readingOverrides);legacyView=state.docsReadingView;rawView=state.readingView;viewSettings=readingViewPreferences(rawView,legacyView);reader?.setOverrides(overrides);reader?.appearance(viewSettings,readingAppearance);
   if (docs) { registerPages(document); watchDocsInputs(document); }
   watchInput(document);

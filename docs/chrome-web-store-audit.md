@@ -1,5 +1,13 @@
 # Chrome Web Store release audit
 
+For the current **1.2.0 RC1** GitHub prerelease, see the [1.2 release audit](release-1.2-audit.md). Store submission remains separate. The 1.1.0 record below is historical.
+
+## 1.2 RC store preparation
+
+Use `ko-japanese-reading-companion-1.2.0-chrome-web-store.zip` from the [RC1 prerelease](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.2.0-rc.1), with manifest.json at its root, only when preparing a separately authorized store submission. Confirm the RC testing outcome before promoting it. The manifest version remains 1.2.0, with unchanged permissions, host access, CSP, and network origins.
+
+Align the listing and dashboard with Word forms for verbs/adjectives, 90 mimetic expressions in 45 comparisons, looping bundled artwork with reduced-motion stills, the local legacy-animation preference, the dismissible update banner, and About’s changelog and GitHub suggestion link. The [privacy policy](privacy-policy.md), effective 18 October 2026, includes local announcement-dismissal storage and public GitHub suggestions. RC1 publication does not update the Chrome Web Store.
+
 ## 1.1.0 GitHub release · 17 October 2026
 
 Version 1.1.0 is published as the [GitHub release](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.1.0), with the source, a manual-install ZIP, the separate store-submission ZIP, and [SHA-256 checksums](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.1.0/SHA256SUMS). The manual ZIP contains the runtime in `dist/`; the store ZIP has `manifest.json` at its root. Both contain the same 51 runtime files and omit development assets. GitHub publication does not submit or update the Chrome Web Store listing.

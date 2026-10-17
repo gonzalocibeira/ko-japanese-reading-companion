@@ -1,3 +1,5 @@
+import {recoverContextualCommand} from './command-dictionary';
+import {adjectiveDictionaryBases} from './adjective-dictionary';
 import {readWithOverrides} from './preferences';
 import kuromoji from 'kuromoji';
 import { align, hiragana, ReadingCache, type Reading, type Word } from './shared';
@@ -47,12 +49,16 @@ async function run(data: any) {
           const start=text.indexOf(token.surface_form,offset);if(start<0)continue;
           offset=start+token.surface_form.length;
           if(/[\p{L}\p{N}]/u.test(token.surface_form)) {
-            const lemma=token.basic_form && token.basic_form!=='*'?token.basic_form:token.surface_form;
-            const verb=token.pos==='動詞' && token.word_type==='KNOWN';
-            const inflected=token.word_type==='KNOWN' && token.conjugated_type && token.conjugated_type!=='*';
-            entries.push({start,end:offset,lemma,reading:hiragana(token.reading ?? ''),pos:token.pos,posDetail:token.pos_detail_1,
-              ...(inflected?{verbClass:token.conjugated_type,verbForm:token.conjugated_form}:{}),
-              ...(verb?{lemmaReading:lemmaReading(tokenizer,lemma)}:{})});
+            const metadata=recoverContextualCommand(tokenizer,text,offset,token);
+            const lemma=metadata.basic_form && metadata.basic_form!=='*'?metadata.basic_form:metadata.surface_form;
+            const verb=metadata.pos==='動詞' && metadata.word_type==='KNOWN';
+            const adjective=metadata.word_type==='KNOWN' && (metadata.pos==='形容詞' || metadata.pos==='名詞' && metadata.pos_detail_1==='形容動詞語幹');
+            const adjectiveBases=metadata.word_type==='KNOWN'?adjectiveDictionaryBases(tokenizer,adjective?lemma:metadata.surface_form):[];
+            const inflected=metadata.word_type==='KNOWN' && metadata.conjugated_type && metadata.conjugated_type!=='*';
+            entries.push({start,end:offset,lemma,reading:hiragana(metadata.reading ?? ''),pos:metadata.pos,posDetail:metadata.pos_detail_1,
+              ...(inflected?{verbClass:metadata.conjugated_type,verbForm:metadata.conjugated_form}:{}),
+              ...(adjectiveBases.length?{adjectiveBases}:{}),
+              ...(verb || adjective?{lemmaReading:lemmaReading(tokenizer,lemma)}:{})});
           }
         }
         words.push(entries);

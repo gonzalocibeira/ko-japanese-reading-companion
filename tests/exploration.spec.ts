@@ -3,6 +3,7 @@ import {resolve} from 'node:path';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {createServer,type Server} from 'node:http';
+import {mimeticEntries} from '../src/mimetic-data';
 
 let context:BrowserContext,profile:string,server:Server,base:string;
 const requests:string[]=[];
@@ -10,7 +11,11 @@ const text=['本を読んでいませんでした。','ボールがころころ�
 const fixture=`<!doctype html><meta charset="utf-8"><style>body{font:24px/2.8 system-ui;margin:48px}p{margin:0}</style><main>${text.map((line,i)=>`<p id="line-${i}">${line}</p>`).join('')}</main>`;
 
 test.beforeAll(async()=>{
-  server=createServer((_req,res)=>{res.setHeader('Content-Type','text/html; charset=utf-8');res.end(fixture);});
+  server=createServer((req,res)=>{
+    res.setHeader('Content-Type','text/html; charset=utf-8');
+    if(req.url==='/strict')res.setHeader('Content-Security-Policy',"default-src 'self'; style-src 'unsafe-inline'; img-src 'self'");
+    res.end(fixture);
+  });
   await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));
   base=`http://127.0.0.1:${(server.address() as {port:number}).port}`;
   profile=await mkdtemp(resolve(tmpdir(),'ko-exploration-'));
@@ -39,6 +44,61 @@ async function open(page:Page,surface:string) {
   await reader(page,`function(){this.querySelector('[data-surface="${surface}"]').click();this.querySelector('.explore-toggle')?.click()}`);
   await expect.poll(()=>reader(page,`function(){return this.querySelector('.definition-body')?.getAttribute('aria-busy')}`)).toBe('false');
 }
+
+test('About defaults to new animations, persists legacy choice, and updates open cards offline',async()=>{
+  const worker=context.serviceWorkers()[0];
+  await worker.evaluate(()=>chrome.storage.local.remove('showLegacyAnimations'));
+  const extension=new URL(worker.url()).host;
+  const page=await context.newPage(),about=await context.newPage();
+  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+  try {
+    await page.goto(base);await open(page,'ころころ');
+    await expect.poll(()=>reader(page,`function(){return this.querySelector('.mimetic-art')?.dataset.style}`)).toBe('woodblock');
+    const url=await reader(page,`function(){return this.querySelector('.mimetic-frames').style.backgroundImage.slice(5,-2)}`);
+    // The packaged image is accessible from a real webpage, not only extension UI.
+    expect(await page.evaluate(async url=>{const image=new Image();image.src=url;await image.decode();return [image.naturalWidth,image.naturalHeight];},url)).toEqual([4608,192]);
+    await about.goto(`chrome-extension://${extension}/about.html`);
+    const toggle=about.getByRole('switch',{name:'Show legacy animations',exact:true});
+    await expect(toggle).toBeEnabled();await expect(toggle).not.toBeChecked();
+    await context.setOffline(true);
+    await toggle.check();
+    await expect.poll(()=>reader(page,`function(){return this.querySelector('.mimetic-art')?.tagName}`)).toBe('svg');
+    expect(await reader(page,`function(){return this.querySelector('.mimetic-term')?.textContent}`)).toBe('ころころ');
+    await about.reload();await expect(toggle).toBeEnabled();await expect(toggle).toBeChecked();
+    await toggle.uncheck();
+    await expect.poll(()=>reader(page,`function(){return this.querySelector('.mimetic-art')?.dataset.style}`)).toBe('woodblock');
+    expect(await reader(page,`function(){return this.querySelector('.mimetic-term')?.textContent}`)).toBe('ころころ');
+    await about.reload();await expect(toggle).toBeEnabled();await expect(toggle).not.toBeChecked();
+    await about.setViewportSize({width:320,height:850});
+    expect(await about.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    expect(errors).toEqual([]);
+  } finally {
+    await context.setOffline(false);await worker.evaluate(()=>chrome.storage.local.remove('showLegacyAnimations'));
+    await page.close();await about.close();
+  }
+});
+
+test('new mimetic images also load on pages with restrictive image CSP',async()=>{
+  const page=await context.newPage();
+  try {
+    await page.goto(base+'/strict');await open(page,'ころころ');
+    const url=await reader(page,`function(){return this.querySelector('.mimetic-frames').style.backgroundImage.slice(5,-2)}`);
+    expect(await page.evaluate(async url=>{const image=new Image();image.src=url;await image.decode();return [image.naturalWidth,image.naturalHeight];},url)).toEqual([4608,192]);
+  } finally {await page.close();}
+});
+
+test('every new mimetic animation ships locally and decodes offline',async()=>{
+  const extension=new URL(context.serviceWorkers()[0].url()).host;
+  const about=await context.newPage();
+  try {
+    await about.goto(`chrome-extension://${extension}/about.html`);await context.setOffline(true);
+    const paths=mimeticEntries.flatMap(entry=>[0,1].map(index=>`art/mimetics/${entry.id}-${index}.webp`));
+    const sizes=await about.evaluate(async paths=>Promise.all(paths.map(async path=>{
+      const image=new Image();image.src=chrome.runtime.getURL(path);await image.decode();return [image.naturalWidth,image.naturalHeight];
+    })),paths);
+    expect(sizes).toHaveLength(90);expect(sizes.every(([w,h])=>w===4608&&h===192)).toBe(true);
+  } finally {await context.setOffline(false);await about.close();}
+});
 const plainResult=`function(){const node=this.querySelector('.verb-japanese')?.cloneNode(true);node?.querySelectorAll('rt').forEach(rt=>rt.remove());return node?.textContent}`;
 
 test('verb controls explore the full chain locally, preserve source, reset, and survive unchanged redraws',async()=>{
@@ -48,7 +108,7 @@ test('verb controls explore the full chain locally, preserve source, reset, and 
     await open(page,'読ん');
     expect(requests.map(url=>new URL(url).searchParams.get('page'))).toEqual(['読む','読む']);
     const wordRequests=requests.slice();
-    expect(await reader(page,`function(){return this.querySelector('.explore-toggle').textContent}`)).toBe('Try verb forms');
+    expect(await reader(page,`function(){return this.querySelector('.explore-toggle').textContent}`)).toBe('Try word forms');
     await expect.poll(()=>reader(page,plainResult)).toBe('読んでいませんでした');
     expect(await reader(page,`function(){return Array.from(this.querySelectorAll('.verb-controls input'),input=>input.checked)}`)).toEqual([true,true,true,false]);
     await reader(page,`function(){this.querySelectorAll('.verb-controls input')[2].click()}`);
@@ -75,7 +135,7 @@ test('all local tools work offline and an edit clears the old exploration',async
     await context.setOffline(true);
     expect(await reader(page,`function(){return !!this.querySelector('.mimetic-playground')}`)).toBe(true);
     await open(page,'食べ');
-    expect(await reader(page,`function(){return this.querySelector('.explore-toggle').textContent}`)).toBe('Open playgrounds');
+    expect(await reader(page,`function(){return this.querySelector('.explore-toggle').textContent}`)).toBe('Try word forms');
     await reader(page,`function(){Array.from(this.querySelectorAll('.explore-tools button')).find(button=>button.textContent==='Meaning Forks')?.click()}`);
     await expect.poll(()=>reader(page,`function(){return this.querySelector('.meaning-forks')?.textContent}`)).toContain('Potential');
     expect(await reader(page,`function(){return this.querySelector('.explore-source rt')?.textContent}`)).toBe('た');
@@ -136,7 +196,7 @@ test('mimetic catalog, new page expressions, and attested rain alias stay local'
     expect(await reader(page,`function(){return this.querySelector('.mimetic-term')?.textContent}`)).toBe('ざあざあ');
     await browse(page);
     await reader(page,`function(){Array.from(this.querySelectorAll('[role="tab"]')).find(button=>button.textContent==='Mimetics').click()}`);
-    expect(await reader(page,`function(){return this.querySelectorAll('.playground-entry').length}`)).toBe(60);
+    expect(await reader(page,`function(){return this.querySelectorAll('.playground-entry').length}`)).toBe(90);
     await reader(page,`function(){const input=this.querySelector('.playground-search');input.value='ﾋﾝﾔﾘ';input.dispatchEvent(new Event('input',{bubbles:true}))}`);
     expect(await reader(page,`function(){return this.querySelectorAll('.playground-entry').length}`)).toBe(1);
     await reader(page,`function(){this.querySelector('.playground-entry').click()}`);
@@ -174,7 +234,7 @@ test('exploration fits a narrow panel, honors reduced motion, and keeps manual c
     await page.screenshot({path:test.info().outputPath('mimetic-integrated.png')});
     await page.emulateMedia({reducedMotion:'reduce'});await page.setViewportSize({width:320,height:760});
     expect(await reader(page,`function(){const panel=this.querySelector('.definition');return panel.scrollWidth<=panel.clientWidth}`)).toBe(true);
-    expect(await reader(page,`function(){return this.querySelectorAll('.explore-panel svg').length}`)).toBeGreaterThan(0);
+    expect(await reader(page,`function(){return this.querySelectorAll('.explore-panel .mimetic-art').length}`)).toBeGreaterThan(0);
     await context.serviceWorkers()[0].evaluate(async()=>chrome.storage.local.set({readingOverrides:{'読んでいませんでした':'よんでいませんでした'}}));
     await open(page,'読んでいませんでした');
     expect(await reader(page,`function(){return this.querySelector('.explore-toggle')}`)).toBeNull();
@@ -255,3 +315,74 @@ test('browser preserves reading scroll and has no clipped or overlapping control
     expect(await reader(page,`function(){const header=this.querySelector('.header');return header.scrollWidth<=header.clientWidth}`)).toBe(true);
   } finally {await page.close();}
 });
+
+for(const [width,height] of [[280,500],[420,760],[720,850]] as const) {
+  test(`adjectives work inline and through the real offline worker at ${width}px`,async()=>{
+    const page=await context.newPage();const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
+    try {
+      await page.setViewportSize({width:1000,height});await page.goto(base);
+      await page.locator('main').evaluate(el=>{el.innerHTML='<p id="adjectives">部屋は静かではありませんでした。値段は高くなかったです。きれいな花。嫌いです。かっこよかった。</p>';});
+      await context.serviceWorkers()[0].evaluate(async width=>chrome.storage.local.set({readingView:{sites:{'127.0.0.1':true,'docs.google.com':true},spacing:2.8,fontSize:20,width}}),width);
+      await open(page,'静か');const before=await page.locator('main').innerHTML(),wordRequests=requests.slice();
+      expect(await reader(page,`function(){return this.querySelector('.explore-toggle').textContent}`)).toBe('Try word forms');
+      expect(await reader(page,plainResult)).toBe('静かではありませんでした');
+      expect(await reader(page,`function(){return this.querySelector('.definition-body').hidden}`)).toBe(false);
+      await reader(page,`function(){this.querySelector('[data-control="negative"]').click()}`);expect(await reader(page,plainResult)).toBe('静かでした');
+      await reader(page,`function(){this.querySelector('.verb-reset').click()}`);expect(await reader(page,plainResult)).toBe('静かではありませんでした');
+      expect(requests).toEqual(wordRequests);await browse(page);await context.setOffline(true);
+      await reader(page,`function(){const input=this.querySelector('.playground-verb-input input');input.value='高い';input.dispatchEvent(new Event('input'));this.querySelector('.playground-verb-input').requestSubmit()}`);
+      await expect.poll(()=>reader(page,`function(){return this.querySelector('.playground-confirmation').textContent}`)).toContain('い-adjective');
+      if(width===420)await page.screenshot({path:test.info().outputPath('word-forms-input-1.2.png')});
+      await reader(page,`function(){this.querySelector('.playground-confirmation button').click();this.querySelector('[data-control="past"]').click();this.querySelector('[data-control="negative"]').click()}`);
+      expect(await reader(page,plainResult)).toBe('高くなかった');
+      expect(await reader(page,`function(){return this.querySelector('.form-construction').textContent}`)).toContain('高い → 高くなかった');
+      expect(await reader(page,`function(){const scroll=this.querySelector('.playground-scroll');return scroll.scrollWidth<=scroll.clientWidth}`)).toBe(true);
+      await page.screenshot({path:test.info().outputPath(`adjective-${width}-1.2.png`)});
+      await reader(page,`function(){this.querySelector('.playground-back').click();const input=this.querySelector('.playground-verb-input input');input.value='きれい';input.dispatchEvent(new Event('input'));this.querySelector('.playground-verb-input').requestSubmit()}`);
+      await expect.poll(()=>reader(page,`function(){return this.querySelector('.playground-confirmation').textContent}`)).toContain('な-adjective');
+      await reader(page,`function(){this.querySelector('.playground-confirmation button').click();const select=this.querySelector('.verb-family');select.value='make';select.dispatchEvent(new Event('change'));this.querySelector('[data-control="polite"]').click()}`);
+      expect(await reader(page,plainResult)).toBe('きれいにします');
+      await reader(page,`function(){Array.from(this.querySelectorAll('[role="tab"]')).find(b=>b.textContent==='Mimetics').click();const search=this.querySelector('.playground-search');search.value='ぱくぱく';search.dispatchEvent(new Event('input'));this.querySelector('.playground-entry').click()}`);
+      expect(await reader(page,`function(){return this.querySelector('.mimetic-term').textContent}`)).toBe('ぱくぱく');
+      if(width===420)await page.screenshot({path:test.info().outputPath('mimetics-eating-1.2.png')});
+      expect(await page.locator('main').innerHTML()).toBe(before);expect(requests).toEqual(wordRequests);expect(errors).toEqual([]);
+    } finally {await context.setOffline(false);await page.close();}
+  });
+}
+
+test('overlapping adjective corrections suppress exploration and page edits dismiss it',async()=>{
+  const page=await context.newPage();
+  try {
+    await page.goto(base);await page.locator('main').evaluate(el=>{el.textContent='高かった。';});await open(page,'高かっ');
+    expect(await reader(page,plainResult)).toBe('高かった');
+    await page.locator('main').evaluate(el=>{el.textContent='新しい。';});await expect.poll(()=>reader(page,`function(){return this.querySelector('.definition').hidden}`)).toBe(true);
+    await context.serviceWorkers()[0].evaluate(async()=>chrome.storage.local.set({readingOverrides:{'高かった':'たかかった'}}));
+    await page.locator('main').evaluate(el=>{el.textContent='高かった。';});await open(page,'高かった');
+    expect(await reader(page,`function(){return this.querySelector('.explore-toggle')}`)).toBeNull();
+  } finally {await context.serviceWorkers()[0].evaluate(async()=>chrome.storage.local.set({readingOverrides:{}}));await page.close();}
+});
+
+for(const [command,lemma,reading] of [['受け取れ','受け取る','うけとれ'],['知れ','知る','しれ']]) {
+  test(`contextual ${command} initializes Direct command and uses the recovered lemma for definitions`,async()=>{
+    for(const ending of ['', '\n次へ進む。', '。次へ進む。', '！', '?']) {
+      const page=await context.newPage();
+      try {
+        const source='痛みを'+command+ending;
+        await page.route(base+'/command',route=>route.fulfill({contentType:'text/html;charset=utf-8',body:'<!doctype html><meta charset="utf-8"><style>body{font:24px/3 system-ui;margin:40px}main{white-space:pre-line}</style><main>'+source+'</main>'}));
+        const requestStart=requests.length;await page.goto(base+'/command');const before=await page.locator('main').innerHTML();await open(page,command);
+        expect(await reader(page,`function(){return this.querySelector('.explore-toggle').textContent}`)).toBe('Try word forms');
+        expect(await reader(page,`function(){return this.querySelector('.pronunciation').textContent}`)).toContain('辞書形: '+lemma);
+        expect(requests.slice(requestStart).map(url=>new URL(url).searchParams.get('page'))).toEqual([lemma,lemma]);
+        expect(await reader(page,`function(){const s=this.querySelector('.verb-family');return [s.value,s.selectedOptions[0].textContent]}`)).toEqual(['imperative','Direct command']);
+        expect(await reader(page,plainResult)).toBe(command);
+        expect(await reader(page,`function(){return this.querySelector('[data-surface="${command}"]').dataset.reading}`)).toBe(reading);
+        await reader(page,`function(){const s=this.querySelector('.verb-family');s.value='simple';s.dispatchEvent(new Event('change'))}`);
+        expect(await reader(page,plainResult)).toBe(lemma);
+        await reader(page,`function(){this.querySelector('.verb-reset').click()}`);
+        expect(await reader(page,plainResult)).toBe(command);
+        expect(await reader(page,`function(){return this.querySelector('.verb-family').value}`)).toBe('imperative');
+        expect(await page.locator('main').innerHTML()).toBe(before);
+      }finally{await page.close();}
+    }
+  });
+}

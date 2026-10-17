@@ -43,6 +43,207 @@
   ));
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
+  // node_modules/kamiya-codec/dist/kamiya.min.mjs
+  function N(r, e) {
+    if (e < 0 || e > 4) throw new Error("vowel must be between 0 and 4");
+    let n = k.get(r);
+    if (typeof n == "undefined") throw new Error("unknown character");
+    let a = A[n][e];
+    if (a.length === 0) throw new Error("vowel for kana does not exist");
+    return a;
+  }
+  function m(r, e) {
+    {
+      if (r === "\u3059\u308B") return H(r, e);
+      if (r === "\u304F\u308B" || r === "\u6765\u308B") return R(r, e);
+      if (r === "\u3060") return O(r, e);
+      if (r === "\u3067\u3059") return Z(r, e);
+      if (r.endsWith("\u304F\u3060\u3055\u308B")) {
+        if (e === "Dictionary") return [r];
+        if (e === "Conjunctive") return [r.slice(0, -2) + "\u3055\u3044"];
+        throw new Error("unknown conjugation for -kudasaru");
+      }
+      let i = j.get(r);
+      if (i && i.has(e)) return [i.get(e) || ""];
+    }
+    let n = r.slice(0, -1), a = r.slice(-1), t = C.get(e === "Imperative" ? "Conditional" : e);
+    if (typeof t == "undefined") throw new Error("Conjugation not yet implemented");
+    if (t < 5) return a === "\u3046" ? t === 0 ? [n + "\u308F"] : [n + N("\u3042", t)] : [n + N(a, t)];
+    let u = t - 5, o = U.get(r === "\u884C\u304F" || r === "\u3044\u304F" ? "\u3064" : a);
+    if (!o) throw new Error("Unknown verb ending. Is it in dictionary form?");
+    return [n + o[u]];
+  }
+  function y(r, e) {
+    if (r === "\u3059\u308B") return H(r, e);
+    if (r === "\u304F\u308B" || r === "\u6765\u308B") return R(r, e);
+    if (r === "\u3060") return O(r, e);
+    if (r === "\u3067\u3059") return Z(r, e);
+    let n = r.slice(0, -1);
+    switch (e) {
+      case "Negative":
+      case "Zu":
+      case "Nu":
+        return [n];
+      case "Conjunctive":
+        return [n];
+      case "Dictionary":
+        return [r];
+      case "Conditional":
+        return [n + "\u308C"];
+      case "Imperative":
+        return [n + "\u308D", n + "\u3088"];
+      case "Volitional":
+        return [n + "\u3088\u3046"];
+      case "Te":
+        return [n + "\u3066"];
+      case "Ta":
+        return [n + "\u305F"];
+      case "Tara":
+        return [n + "\u305F\u3089"];
+      case "Tari":
+        return [n + "\u305F\u308A"];
+      default:
+        throw new Error("Unhandled conjugation");
+    }
+  }
+  function R(r, e) {
+    let n = "";
+    switch (e) {
+      case "Negative":
+      case "Zu":
+      case "Nu":
+        n = "\u3053";
+        break;
+      case "Conjunctive":
+        n = "\u304D";
+        break;
+      case "Dictionary":
+        n = "\u304F\u308B";
+        break;
+      case "Conditional":
+        n = "\u304F\u308C";
+        break;
+      case "Imperative":
+        n = "\u3053\u3044";
+        break;
+      case "Volitional":
+        n = "\u3053\u3088\u3046";
+        break;
+      case "Te":
+        n = "\u304D\u3066";
+        break;
+      case "Ta":
+        n = "\u304D\u305F";
+        break;
+      case "Tara":
+        n = "\u304D\u305F\u3089";
+        break;
+      case "Tari":
+        n = "\u304D\u305F\u308A";
+        break;
+      default:
+        throw new Error("Unhandled conjugation");
+    }
+    let a = r.slice(0, -1);
+    if (a === "\u304F") return [n];
+    if (a === "\u6765") return ["\u6765" + n.slice(1)];
+    throw new Error("Expected input to be \u6765\u308B or \u304F\u308B");
+  }
+  function H(r, e) {
+    switch (e) {
+      case "Negative":
+        return ["\u3057"];
+      case "Conjunctive":
+        return ["\u3057"];
+      case "Dictionary":
+        return ["\u3059\u308B"];
+      case "Conditional":
+        return ["\u3059\u308C"];
+      case "Imperative":
+        return ["\u3057\u308D", "\u305B\u3088"];
+      case "Volitional":
+        return ["\u3057\u3088\u3046"];
+      case "Te":
+        return ["\u3057\u3066"];
+      case "Ta":
+        return ["\u3057\u305F"];
+      case "Tara":
+        return ["\u3057\u305F\u3089"];
+      case "Tari":
+        return ["\u3057\u305F\u308A"];
+      case "Zu":
+        return ["\u305B\u305A"];
+      case "Nu":
+        return ["\u305B\u306C"];
+      default:
+        throw new Error("Unhandled conjugation");
+    }
+  }
+  function O(r, e) {
+    switch (e) {
+      case "Negative":
+        return ["\u3067\u306A\u3044", "\u3067\u306F\u306A\u3044", "\u3058\u3083\u306A\u3044"];
+      case "Dictionary":
+        return ["\u3060"];
+      case "Conditional":
+        return ["\u306A\u3089"];
+      case "Te":
+        return ["\u3067"];
+      case "Ta":
+        return ["\u3060\u3063\u305F"];
+      case "Tara":
+        return ["\u3060\u3063\u305F\u3089"];
+      case "Tari":
+        return ["\u3060\u3063\u305F\u308A"];
+      default:
+        throw new Error("Unhandled conjugation");
+    }
+  }
+  function Z(r, e) {
+    switch (e) {
+      case "Negative":
+        return ["\u3067\u3042\u308A\u307E\u305B\u3093", "\u3067\u306F\u3042\u308A\u307E\u305B\u3093"];
+      case "Dictionary":
+        return ["\u3067\u3059"];
+      case "Te":
+        return ["\u3067\u3057\u3066"];
+      case "Ta":
+        return ["\u3067\u3057\u305F"];
+      case "Tara":
+        return ["\u3067\u3057\u305F\u3089"];
+      case "Tari":
+        return ["\u3067\u3057\u305F\u308A"];
+      default:
+        throw new Error("Unhandled conjugation");
+    }
+  }
+  var f, A, k, T, V, j, C, P, K, W, U;
+  var init_kamiya_min = __esm({
+    "node_modules/kamiya-codec/dist/kamiya.min.mjs"() {
+      f = (r) => r.split("");
+      A = [f("\u3042\u3044\u3046\u3048\u304A"), f("\u304B\u304D\u304F\u3051\u3053"), f("\u304C\u304E\u3050\u3052\u3054"), f("\u3055\u3057\u3059\u305B\u305D"), f("\u3056\u3058\u305A\u305C\u305E"), f("\u305F\u3061\u3064\u3066\u3068"), f("\u3060\u3062\u3065\u3067\u3069"), f("\u306A\u306B\u306C\u306D\u306E"), f("\u306F\u3072\u3075\u3078\u307B"), f("\u3070\u3073\u3076\u3079\u307C"), f("\u3071\u3074\u3077\u307A\u307D"), f("\u307E\u307F\u3080\u3081\u3082"), ["\u3084", "", "\u3086", "", "\u3088"], f("\u3089\u308A\u308B\u308C\u308D"), ["\u308F", "", "", "", "\u3092"], ["\u3093", "", "", "", ""]];
+      k = /* @__PURE__ */ new Map([]);
+      A.forEach((r, e) => {
+        r.forEach((n) => {
+          n.length > 0 && k.set(n, e);
+        });
+      });
+      T = ["Negative", "Conjunctive", "Dictionary", "Conditional", "Imperative", "Volitional", "Te", "Ta", "Tara", "Tari", "Zu", "Nu"];
+      V = [["\u3042\u308B", "Negative", ""], ["\u3054\u3056\u308B", "Conjunctive", "\u3054\u3056\u3044"], ["\u3044\u3089\u3063\u3057\u3083\u308B", "Conjunctive", "\u3044\u3089\u3063\u3057\u3083\u3044"], ["\u3044\u3089\u3063\u3057\u3083\u308B", "Conditional", "\u3044\u3089\u3063\u3057\u3083\u3044"], ["\u3044\u3089\u3063\u3057\u3083\u308B", "Imperative", "\u3044\u3089\u3063\u3057\u3083\u3044"]];
+      j = /* @__PURE__ */ new Map([]);
+      for (let [r, e, n] of V) {
+        let a = j.get(r);
+        a ? a.set(e, n) : j.set(r, /* @__PURE__ */ new Map([[e, n]]));
+      }
+      C = new Map(T.filter((r) => r !== "Imperative").map((r, e) => [r, e]));
+      C.set("Zu", (P = C.get("Negative")) != null ? P : -1);
+      C.set("Nu", (K = C.get("Negative")) != null ? K : -1);
+      W = [["\u304F", ["\u3044\u3066", "\u3044\u305F", "\u3044\u305F\u3089", "\u3044\u305F\u308A"]], ["\u3050", ["\u3044\u3067", "\u3044\u3060", "\u3044\u3060\u3089", "\u3044\u3060\u308A"]], ["\u3059", ["\u3057\u3066", "\u3057\u305F", "\u3057\u305F\u3089", "\u3057\u305F\u308A"]], ["\u306C", ["\u3093\u3067", "\u3093\u3060", "\u3093\u3060\u3089", "\u3093\u3060\u308A"]], ["\u3076", ["\u3093\u3067", "\u3093\u3060", "\u3093\u3060\u3089", "\u3093\u3060\u308A"]], ["\u3080", ["\u3093\u3067", "\u3093\u3060", "\u3093\u3060\u3089", "\u3093\u3060\u308A"]], ["\u3064", ["\u3063\u3066", "\u3063\u305F", "\u3063\u305F\u3089", "\u3063\u305F\u308A"]], ["\u308B", ["\u3063\u3066", "\u3063\u305F", "\u3063\u305F\u3089", "\u3063\u305F\u308A"]], ["\u3046", ["\u3063\u3066", "\u3063\u305F", "\u3063\u305F\u3089", "\u3063\u305F\u308A"]]];
+      U = /* @__PURE__ */ new Map([]);
+      for (let [r, e] of W) U.set(r, e);
+    }
+  });
+
   // src/shared.ts
   function align(surface, raw) {
     if (!kanji.test(surface) || !raw || raw === "*") return [];
@@ -53,9 +254,9 @@
     for (let i = 0; i < runs.length; i++) {
       const run = runs[i], value = run[0];
       if (!kanji.test(value)) {
-        const kana = hiragana(value);
-        if (!reading.startsWith(kana, cursor)) return [{ start: 0, end: surface.length, reading }];
-        cursor += kana.length;
+        const kana2 = hiragana(value);
+        if (!reading.startsWith(kana2, cursor)) return [{ start: 0, end: surface.length, reading }];
+        cursor += kana2.length;
       } else {
         const next = runs[i + 1];
         let end = reading.length;
@@ -105,6 +306,266 @@
           }
         }
       };
+    }
+  });
+
+  // src/verb-playground.ts
+  function validBase(base) {
+    if (!base.lemma || base.lemma.length > 40 || !japanese.test(base.lemma) || !kana.test(base.reading) || helperLemmas.has(base.lemma) || irregularLexemes.has(base.lemma)) return false;
+    if (base.prefix && (!japanese.test(base.prefix) || !base.prefixReading || !kana.test(base.prefixReading) || base.lemma !== "\u3059\u308B" || (base.prefix + base.lemma).length > 40)) return false;
+    if (base.verbClass === "\u4E00\u6BB5") return base.lemma.endsWith("\u308B") && base.reading.endsWith("\u308B");
+    if (base.verbClass === "\u30B5\u5909\u30FB\u30B9\u30EB") return base.lemma === "\u3059\u308B" && base.reading === "\u3059\u308B";
+    if (base.verbClass === "\u30AB\u5909\u30FB\u6765\u30EB" || base.verbClass === "\u30AB\u5909\u30FB\u30AF\u30EB") return ["\u6765\u308B", "\u304F\u308B"].includes(base.lemma) && base.reading === "\u304F\u308B";
+    return godan.has(base.verbClass) && /[うくぐすつぬぶむる]$/u.test(base.lemma);
+  }
+  function verbBaseText(base) {
+    return (base.prefix ?? "") + base.lemma;
+  }
+  function verbBaseReading(base) {
+    return (base.prefixReading ?? "") + base.reading;
+  }
+  function elementary(base, conj) {
+    if (base.verbClass === "\u4E94\u6BB5\u30FB\u30AB\u884C\u4FC3\u97F3\u4FBF" && (conj === "Te" || conj === "Ta")) {
+      const ending = conj === "Te" ? "\u3063\u3066" : "\u3063\u305F";
+      return { text: base.lemma.slice(0, -1) + ending, reading: base.reading.slice(0, -1) + ending };
+    }
+    if (base.reading === "\u3042\u308B" && ["\u3042\u308B", "\u6709\u308B", "\u5728\u308B"].includes(base.lemma) && conj === "Negative") return { text: "", reading: "" };
+    if (godan.has(base.verbClass)) {
+      const prefix = "\u4EEE";
+      const a2 = m(prefix + base.lemma, conj), b2 = m(prefix + base.reading, conj);
+      if (a2.length !== 1 || b2.length !== 1) throw new Error("Ambiguous godan form");
+      return { text: a2[0].slice(prefix.length), reading: b2[0].slice(prefix.length) };
+    }
+    const fn = base.verbClass === "\u4E00\u6BB5" ? y : m;
+    const a = fn(base.lemma, conj), b = fn(base.reading, conj);
+    if (conj === "Imperative" && a.length > 1 && b.length > 1) return { text: a[0], reading: b[0] };
+    if (a.length !== 1 || b.length !== 1) throw new Error("Ambiguous elementary form");
+    return { text: a[0], reading: b[0] };
+  }
+  function add(pair, suffix) {
+    return { text: pair.text + suffix, reading: pair.reading + suffix };
+  }
+  function derived(base, family, spoken) {
+    const make = (pair, verbClass = "\u4E00\u6BB5") => ({ lemma: pair.text, reading: pair.reading, verbClass });
+    const negative = () => elementary(base, "Negative");
+    if (family === "potential") {
+      if (isSuru(base)) return make({ text: "\u3067\u304D\u308B", reading: "\u3067\u304D\u308B" });
+      if (isKuru(base)) return make(add(negative(), "\u3089\u308C\u308B"));
+      return make(add(elementary(base, base.verbClass === "\u4E00\u6BB5" ? "Negative" : "Conditional"), base.verbClass === "\u4E00\u6BB5" ? "\u3089\u308C\u308B" : "\u308B"));
+    }
+    if (family === "passive") return make(isSuru(base) ? { text: "\u3055\u308C\u308B", reading: "\u3055\u308C\u308B" } : add(negative(), base.verbClass === "\u4E00\u6BB5" || isKuru(base) ? "\u3089\u308C\u308B" : "\u308C\u308B"));
+    if (family === "causative" || family === "causativePassive") {
+      const pair = isSuru(base) ? { text: "\u3055\u305B\u308B", reading: "\u3055\u305B\u308B" } : add(negative(), base.verbClass === "\u4E00\u6BB5" || isKuru(base) ? "\u3055\u305B\u308B" : "\u305B\u308B");
+      return make(family === "causativePassive" ? { text: pair.text.slice(0, -1) + "\u3089\u308C\u308B", reading: pair.reading.slice(0, -1) + "\u3089\u308C\u308B" } : pair);
+    }
+    const te = elementary(base, "Te");
+    if (family === "teIru") return make(add(te, "\u3044\u308B"));
+    if (family === "teMiru") return make(add(te, "\u307F\u308B"));
+    if (family === "teOku") return make(spoken ? { text: te.text.slice(0, -1) + (te.text.endsWith("\u3067") ? "\u3069\u304F" : "\u3068\u304F"), reading: te.reading.slice(0, -1) + (te.reading.endsWith("\u3067") ? "\u3069\u304F" : "\u3068\u304F") } : add(te, "\u304A\u304F"), "\u4E94\u6BB5\u30FB\u30AB\u884C\u30A4\u97F3\u4FBF");
+    if (family === "teShimau") return make(spoken ? { text: te.text.slice(0, -1) + (te.text.endsWith("\u3067") ? "\u3058\u3083\u3046" : "\u3061\u3083\u3046"), reading: te.reading.slice(0, -1) + (te.reading.endsWith("\u3067") ? "\u3058\u3083\u3046" : "\u3061\u3083\u3046") } : add(te, "\u3057\u307E\u3046"), "\u4E94\u6BB5\u30FB\u30EF\u884C\u4FC3\u97F3\u4FBF");
+    return base;
+  }
+  function finiteForm(base, state) {
+    if (state.polite) return add(elementary(base, "Conjunctive"), state.negative ? state.past ? "\u307E\u305B\u3093\u3067\u3057\u305F" : "\u307E\u305B\u3093" : state.past ? "\u307E\u3057\u305F" : "\u307E\u3059");
+    if (state.negative) return add(elementary(base, "Negative"), state.past ? "\u306A\u304B\u3063\u305F" : "\u306A\u3044");
+    return elementary(base, state.past ? "Ta" : "Dictionary");
+  }
+  function generate(base, state) {
+    const family = state.family;
+    if (family === "desire") return add(elementary(base, "Conjunctive"), (state.negative ? state.past ? "\u305F\u304F\u306A\u304B\u3063\u305F" : "\u305F\u304F\u306A\u3044" : state.past ? "\u305F\u304B\u3063\u305F" : "\u305F\u3044") + (state.polite ? "\u3067\u3059" : ""));
+    if (family === "te") return state.negative ? add(elementary(base, "Negative"), "\u306A\u304F\u3066") : elementary(base, "Te");
+    if (family === "without") return add(elementary(base, "Negative"), "\u306A\u3044\u3067");
+    if (family === "conditionalBa") return add(elementary(base, state.negative ? "Negative" : "Conditional"), state.negative ? "\u306A\u3051\u308C\u3070" : "\u3070");
+    if (family === "conditionalTara") return add(finiteForm(base, { ...state, past: true }), "\u3089");
+    if (family === "volitional") {
+      if (state.polite) return add(elementary(base, "Conjunctive"), "\u307E\u3057\u3087\u3046");
+      const stem = elementary(base, "Volitional");
+      return base.verbClass === "\u4E00\u6BB5" || isSuru(base) || isKuru(base) ? stem : add(stem, "\u3046");
+    }
+    if (family === "request") return state.negative ? add(elementary(base, "Negative"), "\u306A\u3044\u3067\u304F\u3060\u3055\u3044") : add(elementary(base, "Te"), "\u304F\u3060\u3055\u3044");
+    if (family === "imperative") return elementary(base, "Imperative");
+    if (family === "prohibition") return add(elementary(base, "Dictionary"), "\u306A");
+    const target = derived(base, family, state.spoken), pair = finiteForm(target, state);
+    if (family === "teIru" && state.spoken) {
+      const te = elementary(base, "Te");
+      return { text: te.text + pair.text.slice(te.text.length + 1), reading: te.reading + pair.reading.slice(te.reading.length + 1) };
+    }
+    return pair;
+  }
+  function stateId(state) {
+    return [state.family, +state.past, +state.negative, +state.polite, +state.spoken].join(":");
+  }
+  function formsFor(base) {
+    if (!validBase(base)) return [];
+    const restricted = base.restricted || lexicalRestrictions.has(base.lemma) || base.reading === "\u3042\u308B" && ["\u3042\u308B", "\u6709\u308B", "\u5728\u308B"].includes(base.lemma);
+    const out = [];
+    for (const family of verbFamilies) {
+      if (restricted && !restrictedFamilies.has(family.id)) continue;
+      for (const past of family.controls.includes("past") ? [false, true] : [false]) for (const negative of family.controls.includes("negative") ? [false, true] : [false]) for (const polite of family.controls.includes("polite") ? [false, true] : [false]) for (const spoken of family.controls.includes("spoken") ? [false, true] : [false]) {
+        const state = { family: family.id, past, negative, polite, spoken };
+        const pair = generate(base, state);
+        out.push({ ...state, id: stateId(state), text: (base.prefix ?? "") + pair.text, reading: (base.prefixReading ?? "") + pair.reading });
+      }
+    }
+    return out;
+  }
+  function sourceAliases(base, forms) {
+    const aliases = [];
+    for (const form of forms) {
+      if (form.family === "desire" && form.polite && form.negative) {
+        const pair = add(elementary(base, "Conjunctive"), form.past ? "\u305F\u304F\u3042\u308A\u307E\u305B\u3093\u3067\u3057\u305F" : "\u305F\u304F\u3042\u308A\u307E\u305B\u3093");
+        aliases.push({ ...form, id: form.id + ":alias", text: (base.prefix ?? "") + pair.text, reading: (base.prefixReading ?? "") + pair.reading });
+      }
+      if (form.family === "imperative" && (base.verbClass === "\u4E00\u6BB5" || isSuru(base))) {
+        const pair = isSuru(base) ? { text: "\u305B\u3088", reading: "\u305B\u3088" } : add(elementary(base, "Negative"), "\u3088");
+        aliases.push({ ...form, id: form.id + ":alias", text: (base.prefix ?? "") + pair.text, reading: (base.prefixReading ?? "") + pair.reading });
+      }
+    }
+    return aliases;
+  }
+  function model(base, forms, source, sourceReading, matches, start = 0, end = source.length) {
+    const first = matches[0];
+    const initial = { family: first.family, past: first.past, negative: first.negative, polite: first.polite, spoken: first.spoken };
+    return { start, end, source, sourceReading, lemma: verbBaseText(base), base, forms, initial, sourceMatches: matches, requiresChoice: new Set(matches.map((match) => match.family)).size > 1 };
+  }
+  function createVerbPlayground(base, source) {
+    const forms = formsFor(base), text = source?.text ?? verbBaseText(base), reading = source?.reading ?? verbBaseReading(base);
+    const matches = source ? [...forms, ...sourceAliases(base, forms)].filter((form) => form.text === text && form.reading === reading) : forms.filter((form) => form.family === "simple" && !form.past && !form.negative && !form.polite && !form.spoken);
+    if (!matches.length) throw new Error("Unsupported dictionary verb or source form");
+    return model(base, forms, text, reading, matches, source?.start, source?.end);
+  }
+  var finite, verbFamilies, godan, kana, japanese, helperLemmas, irregularLexemes, lexicalRestrictions, restrictedFamilies, isSuru, isKuru;
+  var init_verb_playground = __esm({
+    "src/verb-playground.ts"() {
+      "use strict";
+      init_kamiya_min();
+      init_shared();
+      finite = ["past", "negative", "polite"];
+      verbFamilies = [
+        { id: "simple", label: "Basic", group: "Everyday forms", description: "State an action or situation. Nonpast can describe the present, habits, or the future.", controls: finite },
+        { id: "te", label: "Connect: \uFF5E\u3066\uFF0F\uFF5E\u306A\u304F\u3066", group: "Everyday forms", description: "Connect an affirmative or negative statement to what follows, sometimes giving a reason. Negative \uFF5E\u306A\u304F\u3066 differs from \uFF5E\u306A\u3044\u3067.", controls: ["negative"] },
+        { id: "without", label: "Without doing: \uFF5E\u306A\u3044\u3067", group: "Everyday forms", description: "Describe not doing an action, or make a casual negative request. This differs from \uFF5E\u306A\u304F\u3066.", controls: [] },
+        { id: "desire", label: "Want to: \uFF5E\u305F\u3044", group: "Everyday forms", description: "Express a desire to do something. Who wants it and the surrounding context matter.", controls: finite },
+        { id: "potential", label: "Can: potential", group: "Ability and voice", description: "Express ability or possibility. Ichidan verbs and \u6765\u308B share this spelling with passive and some respectful uses.", controls: finite },
+        { id: "passive", label: "Passive", group: "Ability and voice", description: "Present someone or something as affected by an action. Participants and particles may need changes.", controls: finite },
+        { id: "causative", label: "Make or let: causative", group: "Ability and voice", description: "Express making or allowing someone to act; the sentence determines which meaning applies.", controls: finite },
+        { id: "causativePassive", label: "Be made to: causative-passive", group: "Ability and voice", description: "Express being made to act. This playground uses the full form, not the shortened causative-passive.", controls: finite },
+        { id: "conditionalBa", label: "If: \uFF5E\u3070", group: "Conditions and intentions", description: "Set a condition. This form has no independent past or polite switch here.", controls: ["negative"] },
+        { id: "conditionalTara", label: "If or when: \uFF5E\u305F\u3089", group: "Conditions and intentions", description: "Set a condition or say when something happens. Its \u305F does not by itself locate the condition in the past.", controls: ["negative", "polite"] },
+        { id: "volitional", label: "Intention or invitation", group: "Conditions and intentions", description: "Express an intention or invitation. The polite form ends in \uFF5E\u307E\u3057\u3087\u3046.", controls: ["polite"] },
+        { id: "request", label: "Please: \uFF5E\u3066\u304F\u3060\u3055\u3044", group: "Requests and commands", description: "Make an affirmative or negative request. Politeness also depends on context.", controls: ["negative"] },
+        { id: "imperative", label: "Direct command", group: "Requests and commands", description: "Give a direct, forceful command. This is not a polite request.", controls: [] },
+        { id: "prohibition", label: "Do not: \uFF5E\u308B\u306A", group: "Requests and commands", description: "Give a direct prohibition. This is stronger than a negative request.", controls: [] },
+        { id: "teIru", label: "Ongoing or resulting state: \uFF5E\u3066\u3044\u308B", group: "Everyday constructions", description: "Describe an ongoing action, repeated activity, or resulting state. The verb and context determine the meaning.", controls: [...finite, "spoken"] },
+        { id: "teMiru", label: "Try doing: \uFF5E\u3066\u307F\u308B", group: "Everyday constructions", description: "Try an action to see what happens. This differs from trying hard or attempting unsuccessfully.", controls: finite },
+        { id: "teOku", label: "Prepare or leave: \uFF5E\u3066\u304A\u304F", group: "Everyday constructions", description: "Do something in preparation, or leave a situation as it is.", controls: [...finite, "spoken"] },
+        { id: "teShimau", label: "Finish or end up: \uFF5E\u3066\u3057\u307E\u3046", group: "Everyday constructions", description: "Express completion or an unintended result, sometimes with regret. Regret is not automatic.", controls: [...finite, "spoken"] }
+      ];
+      godan = /* @__PURE__ */ new Set(["\u4E94\u6BB5\u30FB\u30AB\u884C\u30A4\u97F3\u4FBF", "\u4E94\u6BB5\u30FB\u30AB\u884C\u4FC3\u97F3\u4FBF", "\u4E94\u6BB5\u30FB\u30AC\u884C", "\u4E94\u6BB5\u30FB\u30B5\u884C", "\u4E94\u6BB5\u30FB\u30BF\u884C", "\u4E94\u6BB5\u30FB\u30CA\u884C", "\u4E94\u6BB5\u30FB\u30D0\u884C", "\u4E94\u6BB5\u30FB\u30DE\u884C", "\u4E94\u6BB5\u30FB\u30E9\u884C", "\u4E94\u6BB5\u30FB\u30EF\u884C\u4FC3\u97F3\u4FBF"]);
+      kana = /^[\p{Script=Hiragana}ー]+$/u;
+      japanese = /^[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々ー]+$/u;
+      helperLemmas = /* @__PURE__ */ new Set(["\u308C\u308B", "\u3089\u308C\u308B", "\u305B\u308B", "\u3055\u305B\u308B"]);
+      irregularLexemes = /* @__PURE__ */ new Set(["\u554F\u3046", "\u8ACB\u3046", "\u4E5E\u3046", "\u604B\u3046", "\u3086\u304F", "\u5F80\u304F", "\u901D\u304F", "\u306A\u3055\u308B", "\u70BA\u3055\u308B", "\u304F\u3060\u3055\u308B", "\u4E0B\u3055\u308B", "\u304A\u3063\u3057\u3083\u308B", "\u4EF0\u308B", "\u3044\u3089\u3063\u3057\u3083\u308B", "\u3054\u3056\u308B", "\u5FA1\u5EA7\u308B"]);
+      lexicalRestrictions = /* @__PURE__ */ new Set(["\u3067\u304D\u308B", "\u51FA\u6765\u308B"]);
+      restrictedFamilies = /* @__PURE__ */ new Set(["simple", "te", "without", "conditionalBa", "conditionalTara"]);
+      isSuru = (base) => base.verbClass === "\u30B5\u5909\u30FB\u30B9\u30EB";
+      isKuru = (base) => base.verbClass === "\u30AB\u5909\u30FB\u6765\u30EB" || base.verbClass === "\u30AB\u5909\u30FB\u30AF\u30EB";
+    }
+  });
+
+  // src/command-dictionary.ts
+  function dictionaryCommandAlternatives(tokenizer, surface, reading) {
+    if (!surface || surface.length > 40 || !/^[\p{Script=Hiragana}ー]+$/u.test(hiragana(reading))) return [];
+    let cache = caches.get(tokenizer);
+    if (!cache) {
+      cache = /* @__PURE__ */ new Map();
+      caches.set(tokenizer, cache);
+    }
+    const key = surface + "\0" + hiragana(reading), hit = cache.get(key);
+    if (hit) return hit;
+    const lattice = tokenizer.getLattice(surface);
+    const alternatives = [], seen = /* @__PURE__ */ new Set();
+    let probes = 0;
+    for (const nodes of lattice.nodes_end_at) for (const node of nodes ?? []) {
+      if (node.type !== "KNOWN" || node.start_pos !== 1 || node.surface_form !== surface) continue;
+      const features = tokenizer.token_info_dictionary.getFeatures(node.name).split(",");
+      if (features[1] !== "\u52D5\u8A5E" || features[2] !== "\u81EA\u7ACB" || !features[6]?.startsWith("\u547D\u4EE4") || hiragana(features[8] ?? "") !== hiragana(reading)) continue;
+      if (++probes > 8) return [];
+      const candidate = tokenizer.formatter.formatEntry(Number(node.name), 1, node.type, features);
+      const dictionary = tokenizer.tokenize(candidate.basic_form);
+      if (dictionary.length !== 1) continue;
+      const base = dictionary[0];
+      if (base.word_type !== "KNOWN" || base.pos !== "\u52D5\u8A5E" || base.pos_detail_1 !== "\u81EA\u7ACB" || base.conjugated_form !== "\u57FA\u672C\u5F62" || base.basic_form !== candidate.basic_form || base.surface_form !== candidate.basic_form || base.conjugated_type !== candidate.conjugated_type || !base.reading || base.reading === "*") continue;
+      try {
+        const model2 = createVerbPlayground({ lemma: base.basic_form, reading: hiragana(base.reading), verbClass: base.conjugated_type }, { text: surface, reading: hiragana(reading) });
+        if (model2.requiresChoice || model2.sourceMatches.some((form) => form.family !== "imperative")) continue;
+        const identity = base.basic_form + "\0" + base.conjugated_type + "\0" + hiragana(base.reading);
+        if (!seen.has(identity)) {
+          seen.add(identity);
+          alternatives.push(candidate);
+        }
+      } catch {
+      }
+    }
+    cache.set(key, alternatives);
+    if (cache.size > 256) cache.delete(cache.keys().next().value);
+    return alternatives;
+  }
+  function recoverContextualCommand(tokenizer, text, end, token) {
+    if (token.word_type !== "KNOWN" || token.pos !== "\u52D5\u8A5E" || token.pos_detail_1 !== "\u81EA\u7ACB" || token.conjugated_type !== "\u4E00\u6BB5" || !["\u9023\u7528\u5F62", "\u672A\u7136\u5F62"].includes(token.conjugated_form) || !token.basic_form.endsWith("\u308B") || token.surface_form !== token.basic_form.slice(0, -1)) return token;
+    if (!Number.isInteger(end) || end < token.surface_form.length || end > text.length || text.slice(end - token.surface_form.length, end) !== token.surface_form || !/^[^\S\r\n]*(?:$|[\r\n。．.!?！？])/u.test(text.slice(end))) return token;
+    const alternatives = dictionaryCommandAlternatives(tokenizer, token.surface_form, token.reading ?? "");
+    return alternatives.length === 1 ? { ...token, basic_form: alternatives[0].basic_form, conjugated_type: alternatives[0].conjugated_type, conjugated_form: alternatives[0].conjugated_form } : token;
+  }
+  var caches;
+  var init_command_dictionary = __esm({
+    "src/command-dictionary.ts"() {
+      "use strict";
+      init_verb_playground();
+      init_shared();
+      caches = /* @__PURE__ */ new WeakMap();
+    }
+  });
+
+  // src/adjective-dictionary.ts
+  function adjectiveDictionaryBases(tokenizer, input) {
+    if (!input || input.length > 40) return [];
+    let cache = caches2.get(tokenizer);
+    if (!cache) {
+      cache = /* @__PURE__ */ new Map();
+      caches2.set(tokenizer, cache);
+    }
+    const hit = cache.get(input);
+    if (hit) return hit;
+    const lattice = tokenizer.getLattice(input);
+    const result = [];
+    for (const nodes of lattice.nodes_end_at) for (const node of nodes ?? []) {
+      if (node.type !== "KNOWN" || node.start_pos !== 1 || node.surface_form !== input) continue;
+      const f2 = tokenizer.token_info_dictionary.getFeatures(node.name).split(",");
+      const adjective = f2[1] === "\u5F62\u5BB9\u8A5E" && f2[2] === "\u81EA\u7ACB";
+      if (adjective && f2[6] !== "\u57FA\u672C\u5F62" && f2[7] && f2[7] !== input && f2[7].length <= 40) {
+        const lexical = tokenizer.tokenize(f2[7]);
+        if (lexical.length === 1 && lexical[0].word_type === "KNOWN" && lexical[0].pos === "\u5F62\u5BB9\u8A5E" && lexical[0].pos_detail_1 === "\u81EA\u7ACB" && lexical[0].basic_form === f2[7] && lexical[0].reading && lexical[0].reading !== "*") {
+          const base2 = { lemma: f2[7], reading: hiragana(lexical[0].reading), kind: "i", ...lexical[0].conjugated_type === "\u4E0D\u5909\u5316\u578B" && f2[7].endsWith("\u3044\u3044") ? { goodCompound: true } : {} };
+          if (!result.some((x) => x.lemma === base2.lemma && x.kind === base2.kind && x.reading === base2.reading)) result.push(base2);
+        }
+      }
+      const i = adjective && f2[6] === "\u57FA\u672C\u5F62";
+      const na = f2[1] === "\u540D\u8A5E" && f2[2] === "\u5F62\u5BB9\u52D5\u8A5E\u8A9E\u5E79";
+      if (!i && !na || !f2[8] || f2[8] === "*") continue;
+      const base = { lemma: input, reading: hiragana(f2[8]), kind: i ? "i" : "na", ...i && f2[5] === "\u4E0D\u5909\u5316\u578B" && input.endsWith("\u3044\u3044") ? { goodCompound: true } : {} };
+      if (!result.some((x) => x.lemma === base.lemma && x.kind === base.kind && x.reading === base.reading)) result.push(base);
+    }
+    cache.set(input, result);
+    if (cache.size > 256) cache.delete(cache.keys().next().value);
+    return result;
+  }
+  var caches2;
+  var init_adjective_dictionary = __esm({
+    "src/adjective-dictionary.ts"() {
+      "use strict";
+      init_shared();
+      caches2 = /* @__PURE__ */ new WeakMap();
     }
   });
 
@@ -294,8 +755,8 @@
           if (vocabulary == null || vocabulary.length === 0 || head_char_class.is_always_invoke === 1) {
             key = head_char;
             if (head_char_class.is_grouping === 1 && 1 < surrogate_aware_tail.length) {
-              for (var k = 1; k < surrogate_aware_tail.length; k++) {
-                var next_char = surrogate_aware_tail.charAt(k);
+              for (var k2 = 1; k2 < surrogate_aware_tail.length; k2++) {
+                var next_char = surrogate_aware_tail.charAt(k2);
                 var next_char_class = this.unknown_dictionary.lookup(next_char);
                 if (head_char_class.class_name !== next_char_class.class_name) {
                   break;
@@ -304,8 +765,8 @@
               }
             }
             var unk_ids = this.unknown_dictionary.target_map[head_char_class.class_id];
-            for (var j = 0; j < unk_ids.length; j++) {
-              var unk_id = parseInt(unk_ids[j]);
+            for (var j2 = 0; j2 < unk_ids.length; j2++) {
+              var unk_id = parseInt(unk_ids[j2]);
               left_id = this.unknown_dictionary.dictionary.getShort(unk_id);
               right_id = this.unknown_dictionary.dictionary.getShort(unk_id + 2);
               word_cost = this.unknown_dictionary.dictionary.getShort(unk_id + 4);
@@ -332,22 +793,22 @@
         return this.backward(lattice);
       };
       ViterbiSearcher.prototype.forward = function(lattice) {
-        var i, j, k;
+        var i, j2, k2;
         for (i = 1; i <= lattice.eos_pos; i++) {
           var nodes = lattice.nodes_end_at[i];
           if (nodes == null) {
             continue;
           }
-          for (j = 0; j < nodes.length; j++) {
-            var node = nodes[j];
+          for (j2 = 0; j2 < nodes.length; j2++) {
+            var node = nodes[j2];
             var cost = Number.MAX_VALUE;
             var shortest_prev_node;
             var prev_nodes = lattice.nodes_end_at[node.start_pos - 1];
             if (prev_nodes == null) {
               continue;
             }
-            for (k = 0; k < prev_nodes.length; k++) {
-              var prev_node = prev_nodes[k];
+            for (k2 = 0; k2 < prev_nodes.length; k2++) {
+              var prev_node = prev_nodes[k2];
               var edge_cost;
               if (node.left_id == null || prev_node.right_id == null) {
                 console.log("Left or right is null");
@@ -480,8 +941,8 @@
         if (tokens.length > 0) {
           last_pos = tokens[tokens.length - 1].word_position;
         }
-        for (var j = 0; j < best_path.length; j++) {
-          var node = best_path[j];
+        for (var j2 = 0; j2 < best_path.length; j2++) {
+          var node = best_path[j2];
           var token, features, features_line;
           if (node.type === "KNOWN") {
             features_line = this.token_info_dictionary.getFeatures(node.name);
@@ -530,13 +991,13 @@
         ;
         var x = "undefined" !== typeof Uint8Array && "undefined" !== typeof Uint16Array && "undefined" !== typeof Uint32Array && "undefined" !== typeof DataView;
         new (x ? Uint8Array : Array)(256);
-        var y;
-        for (y = 0; 256 > y; ++y) for (var A = y, ba = 7, A = A >>> 1; A; A >>>= 1) --ba;
+        var y2;
+        for (y2 = 0; 256 > y2; ++y2) for (var A2 = y2, ba = 7, A2 = A2 >>> 1; A2; A2 >>>= 1) --ba;
         function B(e, b, d) {
-          var c, a = "number" === typeof b ? b : b = 0, f = "number" === typeof d ? d : e.length;
+          var c, a = "number" === typeof b ? b : b = 0, f2 = "number" === typeof d ? d : e.length;
           c = -1;
-          for (a = f & 7; a--; ++b) c = c >>> 8 ^ C[(c ^ e[b]) & 255];
-          for (a = f >> 3; a--; b += 8) c = c >>> 8 ^ C[(c ^ e[b]) & 255], c = c >>> 8 ^ C[(c ^ e[b + 1]) & 255], c = c >>> 8 ^ C[(c ^ e[b + 2]) & 255], c = c >>> 8 ^ C[(c ^ e[b + 3]) & 255], c = c >>> 8 ^ C[(c ^ e[b + 4]) & 255], c = c >>> 8 ^ C[(c ^ e[b + 5]) & 255], c = c >>> 8 ^ C[(c ^ e[b + 6]) & 255], c = c >>> 8 ^ C[(c ^ e[b + 7]) & 255];
+          for (a = f2 & 7; a--; ++b) c = c >>> 8 ^ C2[(c ^ e[b]) & 255];
+          for (a = f2 >> 3; a--; b += 8) c = c >>> 8 ^ C2[(c ^ e[b]) & 255], c = c >>> 8 ^ C2[(c ^ e[b + 1]) & 255], c = c >>> 8 ^ C2[(c ^ e[b + 2]) & 255], c = c >>> 8 ^ C2[(c ^ e[b + 3]) & 255], c = c >>> 8 ^ C2[(c ^ e[b + 4]) & 255], c = c >>> 8 ^ C2[(c ^ e[b + 5]) & 255], c = c >>> 8 ^ C2[(c ^ e[b + 6]) & 255], c = c >>> 8 ^ C2[(c ^ e[b + 7]) & 255];
           return (c ^ 4294967295) >>> 0;
         }
         var D = [
@@ -796,7 +1257,7 @@
           3272380065,
           1510334235,
           755167117
-        ], C = x ? new Uint32Array(D) : D;
+        ], C2 = x ? new Uint32Array(D) : D;
         function E() {
         }
         E.prototype.getName = function() {
@@ -809,44 +1270,44 @@
           return this.H;
         };
         function G(e) {
-          var b = e.length, d = 0, c = Number.POSITIVE_INFINITY, a, f, k, l, m, r, q, g, h, v;
+          var b = e.length, d = 0, c = Number.POSITIVE_INFINITY, a, f2, k2, l, m2, r, q, g, h, v;
           for (g = 0; g < b; ++g) e[g] > d && (d = e[g]), e[g] < c && (c = e[g]);
           a = 1 << d;
-          f = new (x ? Uint32Array : Array)(a);
-          k = 1;
+          f2 = new (x ? Uint32Array : Array)(a);
+          k2 = 1;
           l = 0;
-          for (m = 2; k <= d; ) {
-            for (g = 0; g < b; ++g) if (e[g] === k) {
+          for (m2 = 2; k2 <= d; ) {
+            for (g = 0; g < b; ++g) if (e[g] === k2) {
               r = 0;
               q = l;
-              for (h = 0; h < k; ++h) r = r << 1 | q & 1, q >>= 1;
-              v = k << 16 | g;
-              for (h = r; h < a; h += m) f[h] = v;
+              for (h = 0; h < k2; ++h) r = r << 1 | q & 1, q >>= 1;
+              v = k2 << 16 | g;
+              for (h = r; h < a; h += m2) f2[h] = v;
               ++l;
             }
-            ++k;
+            ++k2;
             l <<= 1;
-            m <<= 1;
+            m2 <<= 1;
           }
-          return [f, d, c];
+          return [f2, d, c];
         }
         ;
-        var J = [], K;
-        for (K = 0; 288 > K; K++) switch (true) {
-          case 143 >= K:
-            J.push([K + 48, 8]);
+        var J = [], K2;
+        for (K2 = 0; 288 > K2; K2++) switch (true) {
+          case 143 >= K2:
+            J.push([K2 + 48, 8]);
             break;
-          case 255 >= K:
-            J.push([K - 144 + 400, 9]);
+          case 255 >= K2:
+            J.push([K2 - 144 + 400, 9]);
             break;
-          case 279 >= K:
-            J.push([K - 256 + 0, 7]);
+          case 279 >= K2:
+            J.push([K2 - 256 + 0, 7]);
             break;
-          case 287 >= K:
-            J.push([K - 280 + 192, 8]);
+          case 287 >= K2:
+            J.push([K2 - 280 + 192, 8]);
             break;
           default:
-            n("invalid literal: " + K);
+            n("invalid literal: " + K2);
         }
         var ca = (function() {
           function e(a) {
@@ -932,7 +1393,7 @@
           this.w = false;
           if (b || !(b = {})) b.index && (this.c = b.index), b.bufferSize && (this.j = b.bufferSize), b.bufferType && (this.k = b.bufferType), b.resize && (this.w = b.resize);
           switch (this.k) {
-            case N:
+            case N2:
               this.a = 32768;
               this.b = new (x ? Uint8Array : Array)(32768 + this.j + 258);
               break;
@@ -947,27 +1408,27 @@
               n(Error("invalid inflate mode"));
           }
         }
-        var N = 0, M = 1;
+        var N2 = 0, M = 1;
         L.prototype.g = function() {
           for (; !this.o; ) {
-            var e = P(this, 3);
+            var e = P2(this, 3);
             e & 1 && (this.o = true);
             e >>>= 1;
             switch (e) {
               case 0:
-                var b = this.input, d = this.c, c = this.b, a = this.a, f = b.length, k = p, l = p, m = c.length, r = p;
+                var b = this.input, d = this.c, c = this.b, a = this.a, f2 = b.length, k2 = p, l = p, m2 = c.length, r = p;
                 this.d = this.f = 0;
-                d + 1 >= f && n(Error("invalid uncompressed block header: LEN"));
-                k = b[d++] | b[d++] << 8;
-                d + 1 >= f && n(Error("invalid uncompressed block header: NLEN"));
+                d + 1 >= f2 && n(Error("invalid uncompressed block header: LEN"));
+                k2 = b[d++] | b[d++] << 8;
+                d + 1 >= f2 && n(Error("invalid uncompressed block header: NLEN"));
                 l = b[d++] | b[d++] << 8;
-                k === ~l && n(Error("invalid uncompressed block header: length verify"));
-                d + k > b.length && n(Error("input buffer is broken"));
+                k2 === ~l && n(Error("invalid uncompressed block header: length verify"));
+                d + k2 > b.length && n(Error("input buffer is broken"));
                 switch (this.k) {
-                  case N:
-                    for (; a + k > c.length; ) {
-                      r = m - a;
-                      k -= r;
+                  case N2:
+                    for (; a + k2 > c.length; ) {
+                      r = m2 - a;
+                      k2 -= r;
                       if (x) c.set(b.subarray(d, d + r), a), a += r, d += r;
                       else for (; r--; ) c[a++] = b[d++];
                       this.a = a;
@@ -976,13 +1437,13 @@
                     }
                     break;
                   case M:
-                    for (; a + k > c.length; ) c = this.e({ t: 2 });
+                    for (; a + k2 > c.length; ) c = this.e({ t: 2 });
                     break;
                   default:
                     n(Error("invalid inflate mode"));
                 }
-                if (x) c.set(b.subarray(d, d + k), a), a += k, d += k;
-                else for (; k--; ) c[a++] = b[d++];
+                if (x) c.set(b.subarray(d, d + k2), a), a += k2, d += k2;
+                else for (; k2--; ) c[a++] = b[d++];
                 this.c = d;
                 this.a = a;
                 this.b = c;
@@ -991,7 +1452,7 @@
                 this.l(da, ea);
                 break;
               case 2:
-                for (var q = P(this, 5) + 257, g = P(this, 5) + 1, h = P(this, 4) + 4, v = new (x ? Uint8Array : Array)(Q.length), s = p, F = p, H = p, w = p, z = p, O = p, I = p, u = p, Z = p, u = 0; u < h; ++u) v[Q[u]] = P(this, 3);
+                for (var q = P2(this, 5) + 257, g = P2(this, 5) + 1, h = P2(this, 4) + 4, v = new (x ? Uint8Array : Array)(Q.length), s = p, F = p, H2 = p, w = p, z = p, O2 = p, I = p, u = p, Z2 = p, u = 0; u < h; ++u) v[Q[u]] = P2(this, 3);
                 if (!x) {
                   u = h;
                   for (h = v.length; u < h; ++u) v[Q[u]] = 0;
@@ -999,24 +1460,24 @@
                 s = G(v);
                 w = new (x ? Uint8Array : Array)(q + g);
                 u = 0;
-                for (Z = q + g; u < Z; ) switch (z = R(this, s), z) {
+                for (Z2 = q + g; u < Z2; ) switch (z = R2(this, s), z) {
                   case 16:
-                    for (I = 3 + P(this, 2); I--; ) w[u++] = O;
+                    for (I = 3 + P2(this, 2); I--; ) w[u++] = O2;
                     break;
                   case 17:
-                    for (I = 3 + P(this, 3); I--; ) w[u++] = 0;
-                    O = 0;
+                    for (I = 3 + P2(this, 3); I--; ) w[u++] = 0;
+                    O2 = 0;
                     break;
                   case 18:
-                    for (I = 11 + P(this, 7); I--; ) w[u++] = 0;
-                    O = 0;
+                    for (I = 11 + P2(this, 7); I--; ) w[u++] = 0;
+                    O2 = 0;
                     break;
                   default:
-                    O = w[u++] = z;
+                    O2 = w[u++] = z;
                 }
                 F = x ? G(w.subarray(0, q)) : G(w.slice(0, q));
-                H = x ? G(w.subarray(q)) : G(w.slice(q));
-                this.l(F, H);
+                H2 = x ? G(w.subarray(q)) : G(w.slice(q));
+                this.l(F, H2);
                 break;
               default:
                 n(Error("unknown BTYPE: " + e));
@@ -1024,7 +1485,7 @@
           }
           return this.q();
         };
-        var S = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15], Q = x ? new Uint16Array(S) : S, fa = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 258, 258], ga = x ? new Uint16Array(fa) : fa, ha = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 0, 0], T = x ? new Uint8Array(ha) : ha, ia = [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577], ja = x ? new Uint16Array(ia) : ia, ka = [
+        var S = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15], Q = x ? new Uint16Array(S) : S, fa = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 258, 258], ga = x ? new Uint16Array(fa) : fa, ha = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 0, 0], T2 = x ? new Uint8Array(ha) : ha, ia = [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577], ja = x ? new Uint16Array(ia) : ia, ka = [
           0,
           0,
           0,
@@ -1055,44 +1516,44 @@
           12,
           13,
           13
-        ], U = x ? new Uint8Array(ka) : ka, V = new (x ? Uint8Array : Array)(288), W, la;
-        W = 0;
-        for (la = V.length; W < la; ++W) V[W] = 143 >= W ? 8 : 255 >= W ? 9 : 279 >= W ? 7 : 8;
-        var da = G(V), X = new (x ? Uint8Array : Array)(30), Y, ma;
+        ], U2 = x ? new Uint8Array(ka) : ka, V2 = new (x ? Uint8Array : Array)(288), W2, la;
+        W2 = 0;
+        for (la = V2.length; W2 < la; ++W2) V2[W2] = 143 >= W2 ? 8 : 255 >= W2 ? 9 : 279 >= W2 ? 7 : 8;
+        var da = G(V2), X = new (x ? Uint8Array : Array)(30), Y, ma;
         Y = 0;
         for (ma = X.length; Y < ma; ++Y) X[Y] = 5;
         var ea = G(X);
-        function P(e, b) {
-          for (var d = e.f, c = e.d, a = e.input, f = e.c, k = a.length, l; c < b; ) f >= k && n(Error("input buffer is broken")), d |= a[f++] << c, c += 8;
+        function P2(e, b) {
+          for (var d = e.f, c = e.d, a = e.input, f2 = e.c, k2 = a.length, l; c < b; ) f2 >= k2 && n(Error("input buffer is broken")), d |= a[f2++] << c, c += 8;
           l = d & (1 << b) - 1;
           e.f = d >>> b;
           e.d = c - b;
-          e.c = f;
+          e.c = f2;
           return l;
         }
-        function R(e, b) {
-          for (var d = e.f, c = e.d, a = e.input, f = e.c, k = a.length, l = b[0], m = b[1], r, q; c < m && !(f >= k); ) d |= a[f++] << c, c += 8;
-          r = l[d & (1 << m) - 1];
+        function R2(e, b) {
+          for (var d = e.f, c = e.d, a = e.input, f2 = e.c, k2 = a.length, l = b[0], m2 = b[1], r, q; c < m2 && !(f2 >= k2); ) d |= a[f2++] << c, c += 8;
+          r = l[d & (1 << m2) - 1];
           q = r >>> 16;
           q > c && n(Error("invalid code length: " + q));
           e.f = d >> q;
           e.d = c - q;
-          e.c = f;
+          e.c = f2;
           return r & 65535;
         }
         L.prototype.l = function(e, b) {
           var d = this.b, c = this.a;
           this.r = e;
-          for (var a = d.length - 258, f, k, l, m; 256 !== (f = R(this, e)); ) if (256 > f) c >= a && (this.a = c, d = this.e(), c = this.a), d[c++] = f;
+          for (var a = d.length - 258, f2, k2, l, m2; 256 !== (f2 = R2(this, e)); ) if (256 > f2) c >= a && (this.a = c, d = this.e(), c = this.a), d[c++] = f2;
           else {
-            k = f - 257;
-            m = ga[k];
-            0 < T[k] && (m += P(this, T[k]));
-            f = R(this, b);
-            l = ja[f];
-            0 < U[f] && (l += P(this, U[f]));
+            k2 = f2 - 257;
+            m2 = ga[k2];
+            0 < T2[k2] && (m2 += P2(this, T2[k2]));
+            f2 = R2(this, b);
+            l = ja[f2];
+            0 < U2[f2] && (l += P2(this, U2[f2]));
             c >= a && (this.a = c, d = this.e(), c = this.a);
-            for (; m--; ) d[c] = d[c++ - l];
+            for (; m2--; ) d[c] = d[c++ - l];
           }
           for (; 8 <= this.d; ) this.d -= 8, this.c--;
           this.a = c;
@@ -1100,16 +1561,16 @@
         L.prototype.C = function(e, b) {
           var d = this.b, c = this.a;
           this.r = e;
-          for (var a = d.length, f, k, l, m; 256 !== (f = R(this, e)); ) if (256 > f) c >= a && (d = this.e(), a = d.length), d[c++] = f;
+          for (var a = d.length, f2, k2, l, m2; 256 !== (f2 = R2(this, e)); ) if (256 > f2) c >= a && (d = this.e(), a = d.length), d[c++] = f2;
           else {
-            k = f - 257;
-            m = ga[k];
-            0 < T[k] && (m += P(this, T[k]));
-            f = R(this, b);
-            l = ja[f];
-            0 < U[f] && (l += P(this, U[f]));
-            c + m > a && (d = this.e(), a = d.length);
-            for (; m--; ) d[c] = d[c++ - l];
+            k2 = f2 - 257;
+            m2 = ga[k2];
+            0 < T2[k2] && (m2 += P2(this, T2[k2]));
+            f2 = R2(this, b);
+            l = ja[f2];
+            0 < U2[f2] && (l += P2(this, U2[f2]));
+            c + m2 > a && (d = this.e(), a = d.length);
+            for (; m2--; ) d[c] = d[c++ - l];
           }
           for (; 8 <= this.d; ) this.d -= 8, this.c--;
           this.a = c;
@@ -1129,23 +1590,23 @@
           return a;
         };
         L.prototype.D = function(e) {
-          var b, d = this.input.length / this.c + 1 | 0, c, a, f, k = this.input, l = this.b;
+          var b, d = this.input.length / this.c + 1 | 0, c, a, f2, k2 = this.input, l = this.b;
           e && ("number" === typeof e.t && (d = e.t), "number" === typeof e.z && (d += e.z));
-          2 > d ? (c = (k.length - this.c) / this.r[2], f = 258 * (c / 2) | 0, a = f < l.length ? l.length + f : l.length << 1) : a = l.length * d;
+          2 > d ? (c = (k2.length - this.c) / this.r[2], f2 = 258 * (c / 2) | 0, a = f2 < l.length ? l.length + f2 : l.length << 1) : a = l.length * d;
           x ? (b = new Uint8Array(a), b.set(l)) : b = l;
           return this.b = b;
         };
         L.prototype.q = function() {
-          var e = 0, b = this.b, d = this.i, c, a = new (x ? Uint8Array : Array)(this.n + (this.a - 32768)), f, k, l, m;
+          var e = 0, b = this.b, d = this.i, c, a = new (x ? Uint8Array : Array)(this.n + (this.a - 32768)), f2, k2, l, m2;
           if (0 === d.length) return x ? this.b.subarray(32768, this.a) : this.b.slice(32768, this.a);
-          f = 0;
-          for (k = d.length; f < k; ++f) {
-            c = d[f];
+          f2 = 0;
+          for (k2 = d.length; f2 < k2; ++f2) {
+            c = d[f2];
             l = 0;
-            for (m = c.length; l < m; ++l) a[e++] = c[l];
+            for (m2 = c.length; l < m2; ++l) a[e++] = c[l];
           }
-          f = 32768;
-          for (k = this.a; f < k; ++f) a[e++] = b[f];
+          f2 = 32768;
+          for (k2 = this.a; f2 < k2; ++f2) a[e++] = b[f2];
           this.i = [];
           return this.buffer = a;
         };
@@ -1166,7 +1627,7 @@
         };
         $.prototype.g = function() {
           for (var e = this.input.length; this.c < e; ) {
-            var b = new E(), d = p, c = p, a = p, f = p, k = p, l = p, m = p, r = p, q = p, g = this.input, h = this.c;
+            var b = new E(), d = p, c = p, a = p, f2 = p, k2 = p, l = p, m2 = p, r = p, q = p, g = this.input, h = this.c;
             b.u = g[h++];
             b.v = g[h++];
             (31 !== b.u || 139 !== b.v) && n(Error("invalid file signature:" + b.u + "," + b.v));
@@ -1184,19 +1645,19 @@
             b.M = g[h++];
             0 < (b.h & 4) && (b.I = g[h++] | g[h++] << 8, h += b.I);
             if (0 < (b.h & 8)) {
-              m = [];
-              for (l = 0; 0 < (k = g[h++]); ) m[l++] = String.fromCharCode(k);
-              b.name = m.join("");
+              m2 = [];
+              for (l = 0; 0 < (k2 = g[h++]); ) m2[l++] = String.fromCharCode(k2);
+              b.name = m2.join("");
             }
             if (0 < (b.h & 16)) {
-              m = [];
-              for (l = 0; 0 < (k = g[h++]); ) m[l++] = String.fromCharCode(k);
-              b.J = m.join("");
+              m2 = [];
+              for (l = 0; 0 < (k2 = g[h++]); ) m2[l++] = String.fromCharCode(k2);
+              b.J = m2.join("");
             }
             0 < (b.h & 2) && (b.B = B(g, 0, h) & 65535, b.B !== (g[h++] | g[h++] << 8) && n(Error("invalid header crc16")));
             d = g[g.length - 4] | g[g.length - 3] << 8 | g[g.length - 2] << 16 | g[g.length - 1] << 24;
-            g.length - h - 4 - 4 < 512 * d && (f = d);
-            c = new L(g, { index: h, bufferSize: f });
+            g.length - h - 4 - 4 < 512 * d && (f2 = d);
+            c = new L(g, { index: h, bufferSize: f2 });
             b.data = a = c.g();
             h = c.c;
             b.K = q = (g[h++] | g[h++] << 8 | g[h++] << 16 | g[h++] << 24) >>> 0;
@@ -1207,12 +1668,12 @@
             this.c = h;
           }
           this.s = true;
-          var v = this.m, s, F, H = 0, w = 0, z;
+          var v = this.m, s, F, H2 = 0, w = 0, z;
           s = 0;
           for (F = v.length; s < F; ++s) w += v[s].data.length;
           if (x) {
             z = new Uint8Array(w);
-            for (s = 0; s < F; ++s) z.set(v[s].data, H), H += v[s].data.length;
+            for (s = 0; s < F; ++s) z.set(v[s].data, H2), H2 += v[s].data.length;
           } else {
             z = [];
             for (s = 0; s < F; ++s) z[s] = v[s].data;
@@ -2870,8 +3331,8 @@
           }
           callback = once(callback || noop);
           var _iteratee = wrapAsync(iteratee);
-          eachOf(coll, function(v, k, cb) {
-            _iteratee(accumulator, v, k, cb);
+          eachOf(coll, function(v, k2, cb) {
+            _iteratee(accumulator, v, k2, cb);
           }, function(err) {
             callback(err, accumulator);
           });
@@ -3303,10 +3764,10 @@
           if (sorted == null) {
             sorted = false;
           }
-          var buff_keys = keys.map(function(k) {
+          var buff_keys = keys.map(function(k2) {
             return {
-              k: stringToUtf8Bytes(k.k + TERM_CHAR),
-              v: k.v
+              k: stringToUtf8Bytes(k2.k + TERM_CHAR),
+              v: k2.v
             };
           });
           if (sorted) {
@@ -3553,7 +4014,7 @@
         };
         var stringToUtf8Bytes = function(str) {
           var bytes = new Uint8Array(new ArrayBuffer(str.length * 4));
-          var i = 0, j = 0;
+          var i = 0, j2 = 0;
           while (i < str.length) {
             var unicode_code;
             var utf16_code = str.charCodeAt(i++);
@@ -3569,23 +4030,23 @@
               unicode_code = utf16_code;
             }
             if (unicode_code < 128) {
-              bytes[j++] = unicode_code;
+              bytes[j2++] = unicode_code;
             } else if (unicode_code < 1 << 11) {
-              bytes[j++] = unicode_code >>> 6 | 192;
-              bytes[j++] = unicode_code & 63 | 128;
+              bytes[j2++] = unicode_code >>> 6 | 192;
+              bytes[j2++] = unicode_code & 63 | 128;
             } else if (unicode_code < 1 << 16) {
-              bytes[j++] = unicode_code >>> 12 | 224;
-              bytes[j++] = unicode_code >> 6 & 63 | 128;
-              bytes[j++] = unicode_code & 63 | 128;
+              bytes[j2++] = unicode_code >>> 12 | 224;
+              bytes[j2++] = unicode_code >> 6 & 63 | 128;
+              bytes[j2++] = unicode_code & 63 | 128;
             } else if (unicode_code < 1 << 21) {
-              bytes[j++] = unicode_code >>> 18 | 240;
-              bytes[j++] = unicode_code >> 12 & 63 | 128;
-              bytes[j++] = unicode_code >> 6 & 63 | 128;
-              bytes[j++] = unicode_code & 63 | 128;
+              bytes[j2++] = unicode_code >>> 18 | 240;
+              bytes[j2++] = unicode_code >> 12 & 63 | 128;
+              bytes[j2++] = unicode_code >> 6 & 63 | 128;
+              bytes[j2++] = unicode_code & 63 | 128;
             } else {
             }
           }
-          return bytes.subarray(0, j);
+          return bytes.subarray(0, j2);
         };
         var utf8BytesToString = function(bytes) {
           var str = "";
@@ -3645,7 +4106,7 @@
       "use strict";
       var stringToUtf8Bytes = function(str) {
         var bytes = new Uint8Array(str.length * 4);
-        var i = 0, j = 0;
+        var i = 0, j2 = 0;
         while (i < str.length) {
           var unicode_code;
           var utf16_code = str.charCodeAt(i++);
@@ -3661,23 +4122,23 @@
             unicode_code = utf16_code;
           }
           if (unicode_code < 128) {
-            bytes[j++] = unicode_code;
+            bytes[j2++] = unicode_code;
           } else if (unicode_code < 1 << 11) {
-            bytes[j++] = unicode_code >>> 6 | 192;
-            bytes[j++] = unicode_code & 63 | 128;
+            bytes[j2++] = unicode_code >>> 6 | 192;
+            bytes[j2++] = unicode_code & 63 | 128;
           } else if (unicode_code < 1 << 16) {
-            bytes[j++] = unicode_code >>> 12 | 224;
-            bytes[j++] = unicode_code >> 6 & 63 | 128;
-            bytes[j++] = unicode_code & 63 | 128;
+            bytes[j2++] = unicode_code >>> 12 | 224;
+            bytes[j2++] = unicode_code >> 6 & 63 | 128;
+            bytes[j2++] = unicode_code & 63 | 128;
           } else if (unicode_code < 1 << 21) {
-            bytes[j++] = unicode_code >>> 18 | 240;
-            bytes[j++] = unicode_code >> 12 & 63 | 128;
-            bytes[j++] = unicode_code >> 6 & 63 | 128;
-            bytes[j++] = unicode_code & 63 | 128;
+            bytes[j2++] = unicode_code >>> 18 | 240;
+            bytes[j2++] = unicode_code >> 12 & 63 | 128;
+            bytes[j2++] = unicode_code >> 6 & 63 | 128;
+            bytes[j2++] = unicode_code & 63 | 128;
           } else {
           }
         }
-        return bytes.subarray(0, j);
+        return bytes.subarray(0, j2);
       };
       var utf8BytesToString = function(bytes) {
         var str = "";
@@ -4126,9 +4587,9 @@
             var end = mapping.end || mapping.start;
             for (code_point = mapping.start; code_point <= end; code_point++) {
               this.character_category_map[code_point] = this.invoke_definition_map.lookup(mapping.default);
-              for (var j = 0; j < mapping.compatible.length; j++) {
+              for (var j2 = 0; j2 < mapping.compatible.length; j2++) {
                 var bitset = this.compatible_category_map[code_point];
-                var compatible_category = mapping.compatible[j];
+                var compatible_category = mapping.compatible[j2];
                 if (compatible_category == null) {
                   continue;
                 }
@@ -4623,7 +5084,7 @@
     const out = [];
     for (const line of text.matchAll(/[^\r\n]+/gu)) {
       const match = line[0].trim().match(/^([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々〆ー]+)(?:[^\S\r\n]*[=＝:：][^\S\r\n]*([^\r\n]+))?$/u);
-      if (!match || match[2] && (japanese.test(match[2]) || !new RegExp("\\p{Script=Latin}", "u").test(match[2]))) continue;
+      if (!match || match[2] && (japanese2.test(match[2]) || !new RegExp("\\p{Script=Latin}", "u").test(match[2]))) continue;
       const start = line.index + line[0].indexOf(match[1]);
       out.push({ start, end: start + match[1].length });
     }
@@ -4659,22 +5120,24 @@
       return commonNoun(tokenizer, token) ?? token;
     });
   }
-  var japanese;
+  var japanese2;
   var init_vocabulary = __esm({
     "src/vocabulary.ts"() {
       "use strict";
-      japanese = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々〆]/u;
+      japanese2 = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々〆]/u;
     }
   });
 
   // src/tokenizer.ts
   var require_tokenizer = __commonJS({
     "src/tokenizer.ts"() {
+      init_command_dictionary();
+      init_adjective_dictionary();
       init_preferences();
       var import_kuromoji = __toESM(require_kuromoji());
       init_shared();
       init_vocabulary();
-      var caches = /* @__PURE__ */ new Map();
+      var caches3 = /* @__PURE__ */ new Map();
       var ready = new Promise((resolve, reject) => {
         import_kuromoji.default.builder({ dicPath: new URL("dict/", self.location.href).href }).build((error, tokenizer) => error ? reject(error) : resolve(tokenizer));
       });
@@ -4705,15 +5168,15 @@
       async function run(data) {
         const { id, key, texts } = data;
         if (data.type === "worker-release") {
-          for (const name of caches.keys()) if (name.startsWith(`${data.tabId}:`)) caches.delete(name);
+          for (const name of caches3.keys()) if (name.startsWith(`${data.tabId}:`)) caches3.delete(name);
           return;
         }
         try {
           const tokenizer = await ready;
-          let cache = caches.get(key);
+          let cache = caches3.get(key);
           if (!cache) {
             cache = new ReadingCache();
-            caches.set(key, cache);
+            caches3.set(key, cache);
           }
           const results = [];
           const words = [];
@@ -4730,18 +5193,22 @@
                 if (start < 0) continue;
                 offset = start + token.surface_form.length;
                 if (/[\p{L}\p{N}]/u.test(token.surface_form)) {
-                  const lemma = token.basic_form && token.basic_form !== "*" ? token.basic_form : token.surface_form;
-                  const verb = token.pos === "\u52D5\u8A5E" && token.word_type === "KNOWN";
-                  const inflected = token.word_type === "KNOWN" && token.conjugated_type && token.conjugated_type !== "*";
+                  const metadata = recoverContextualCommand(tokenizer, text, offset, token);
+                  const lemma = metadata.basic_form && metadata.basic_form !== "*" ? metadata.basic_form : metadata.surface_form;
+                  const verb = metadata.pos === "\u52D5\u8A5E" && metadata.word_type === "KNOWN";
+                  const adjective = metadata.word_type === "KNOWN" && (metadata.pos === "\u5F62\u5BB9\u8A5E" || metadata.pos === "\u540D\u8A5E" && metadata.pos_detail_1 === "\u5F62\u5BB9\u52D5\u8A5E\u8A9E\u5E79");
+                  const adjectiveBases = metadata.word_type === "KNOWN" ? adjectiveDictionaryBases(tokenizer, adjective ? lemma : metadata.surface_form) : [];
+                  const inflected = metadata.word_type === "KNOWN" && metadata.conjugated_type && metadata.conjugated_type !== "*";
                   entries.push({
                     start,
                     end: offset,
                     lemma,
-                    reading: hiragana(token.reading ?? ""),
-                    pos: token.pos,
-                    posDetail: token.pos_detail_1,
-                    ...inflected ? { verbClass: token.conjugated_type, verbForm: token.conjugated_form } : {},
-                    ...verb ? { lemmaReading: lemmaReading(tokenizer, lemma) } : {}
+                    reading: hiragana(metadata.reading ?? ""),
+                    pos: metadata.pos,
+                    posDetail: metadata.pos_detail_1,
+                    ...inflected ? { verbClass: metadata.conjugated_type, verbForm: metadata.conjugated_form } : {},
+                    ...adjectiveBases.length ? { adjectiveBases } : {},
+                    ...verb || adjective ? { lemmaReading: lemmaReading(tokenizer, lemma) } : {}
                   });
                 }
               }

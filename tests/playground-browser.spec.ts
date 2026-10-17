@@ -1,6 +1,7 @@
 import {test,expect,chromium,type Browser,type Page} from '@playwright/test';
 import {build} from 'esbuild';
 import kuromoji from 'kuromoji';
+import {adjectiveDictionaryBases} from '../src/adjective-dictionary';
 import {hiragana,type Word} from '../src/shared';
 
 let browser:Browser,source:string,tokenizer:kuromoji.Tokenizer<kuromoji.IpadicFeatures>;
@@ -20,7 +21,8 @@ function analyze(text:string):Word[] {
     const lemma=token.basic_form && token.basic_form!=='*'?token.basic_form:token.surface_form;
     return [{start,end:offset,lemma,reading:hiragana(token.reading ?? ''),pos:token.pos,posDetail:token.pos_detail_1,
       ...(token.word_type==='KNOWN' && token.conjugated_type && token.conjugated_type!=='*'?{verbClass:token.conjugated_type,verbForm:token.conjugated_form}:{}),
-      ...(token.pos==='動詞' && token.word_type==='KNOWN'?{lemmaReading:hiragana(tokenizer.tokenize(lemma).map(part=>part.reading ?? '').join(''))}:{})}];
+      ...(token.word_type==='KNOWN'?{adjectiveBases:adjectiveDictionaryBases(tokenizer,token.pos==='形容詞'?lemma:token.surface_form)}:{}),
+      ...(['動詞','形容詞'].includes(token.pos) && token.word_type==='KNOWN'?{lemmaReading:hiragana(tokenizer.tokenize(lemma).map(part=>part.reading ?? '').join(''))}:{})}];
   });
 }
 async function setup(page:Page) {
@@ -38,25 +40,25 @@ async function plain(page:Page) {
   return page.locator('.verb-japanese').evaluate(el=>{const copy=el.cloneNode(true) as HTMLElement;copy.querySelectorAll('rt').forEach(rt=>rt.remove());return copy.textContent;});
 }
 async function checkVerb(page:Page,input:string) {
-  if(await page.getByRole('button',{name:'Change verb',exact:true}).isVisible())await page.getByRole('button',{name:'Change verb',exact:true}).click();
-  await page.getByLabel('Dictionary-form verb',{exact:true}).fill(input);await page.getByRole('button',{name:'Check verb locally',exact:true}).click();
+  if(await page.getByRole('button',{name:'Change word',exact:true}).isVisible())await page.getByRole('button',{name:'Change word',exact:true}).click();
+  await page.getByLabel('Dictionary-form word',{exact:true}).fill(input);await page.getByRole('button',{name:'Check word locally',exact:true}).click();
 }
 
 test('verbs open with free input only, while mimetic search, categories, keyboard and narrow layout work offline',async()=>{
   const page=await browser.newPage({viewport:{width:280,height:950},reducedMotion:'reduce'});const requests:string[]=[];page.on('request',request=>requests.push(request.url()));
   try {
     await page.context().setOffline(true);await setup(page);
-    await expect(page.getByLabel('Dictionary-form verb',{exact:true})).toBeFocused();await expect(page.locator('.playground-entry')).toHaveCount(0);
+    await expect(page.getByLabel('Dictionary-form word',{exact:true})).toBeFocused();await expect(page.locator('.playground-entry')).toHaveCount(0);
     await expect(page.getByLabel('Search mimetic expressions')).toBeHidden();await expect(page.locator('.playground-count')).toBeHidden();
     await checkVerb(page,'食べる');await page.locator('.playground-confirmation button').click();
     await expect.poll(()=>plain(page)).toBe('食べる');await expect(page.locator('.explore-source rt')).toHaveText('た');
-    await page.getByRole('button',{name:'Change verb',exact:true}).click();await expect(page.getByLabel('Dictionary-form verb',{exact:true})).toBeFocused();
-    await expect(page.getByLabel('Dictionary-form verb',{exact:true})).toHaveValue('食べる');await expect(page.locator('.playground-entry')).toHaveCount(0);
-    await page.getByRole('tab',{name:'Verbs',exact:true}).focus();await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Mimetics',exact:true})).toBeFocused();
-    await page.getByLabel('Search mimetic expressions').fill('');await expect(page.locator('.playground-count')).toHaveText('60 expressions');
+    await page.getByRole('button',{name:'Change word',exact:true}).click();await expect(page.getByLabel('Dictionary-form word',{exact:true})).toBeFocused();
+    await expect(page.getByLabel('Dictionary-form word',{exact:true})).toHaveValue('食べる');await expect(page.locator('.playground-entry')).toHaveCount(0);
+    await page.getByRole('tab',{name:'Word forms',exact:true}).focus();await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Mimetics',exact:true})).toBeFocused();
+    await page.getByLabel('Search mimetic expressions').fill('');await expect(page.locator('.playground-count')).toHaveText('90 expressions');
     await page.getByLabel('Mimetic category').selectOption('people');expect(await page.locator('.playground-entry').count()).toBeGreaterThan(0);
     await page.getByLabel('Mimetic category').selectOption('');await page.getByLabel('Search mimetic expressions').fill('ｻﾞｰｻﾞｰ');await expect(page.locator('.playground-entry')).toHaveCount(1);
-    await page.locator('.playground-entry').click();await expect(page.locator('.mimetic-term')).toHaveText('ざあざあ');await expect(page.getByRole('button',{name:'Replay scene',exact:true})).toBeHidden();
+    await page.locator('.playground-entry').click();await expect(page.locator('.mimetic-term')).toHaveText('ざあざあ');await expect(page.getByRole('button',{name:'Replay scene',exact:true})).toHaveCount(0);
     await page.getByRole('button',{name:'Back to examples',exact:true}).click();await page.getByLabel('Search mimetic expressions').fill('sleep');expect(await page.locator('.playground-entry').count()).toBeGreaterThan(0);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect(requests).toEqual([]);
     await page.locator('.playground-entry').first().click();
@@ -111,7 +113,7 @@ test('typed verbs require confirmation of reading and class, accept compounds an
     for(const value of ['食べた','学校へ行く','xyzzyる','食べる。','あ'.repeat(40)]) {
       await checkVerb(page,value);await expect(page.locator('.playground-feedback')).toContainText(/dictionary-form|recognized dictionary/u);await expect(page.locator('.playground-confirmation button')).toHaveCount(0);await expect(page.locator('.verb-playground')).toHaveCount(0);
     }
-    await expect(page.getByLabel('Dictionary-form verb',{exact:true})).toHaveAttribute('maxlength','40');
+    await expect(page.getByLabel('Dictionary-form word',{exact:true})).toHaveAttribute('maxlength','40');
   } finally {await page.close();}
 });
 
@@ -173,11 +175,11 @@ test('typing, tab changes and disposal cancel pending analysis and ignore late r
       const m=(window as any).playgroundModule;(window as any).pending=[];
       const app=m.renderPlaygroundBrowser({tokenize:(texts:string[],signal:AbortSignal)=>new Promise(resolve=>(window as any).pending.push({texts,signal,resolve}))});(window as any).app=app;document.body.append(app.element);
     });
-    await checkVerb(page,'食べる');await page.getByLabel('Dictionary-form verb',{exact:true}).fill('読む');expect(await page.evaluate(()=>(window as any).pending[0].signal.aborted)).toBe(true);
+    await checkVerb(page,'食べる');await page.getByLabel('Dictionary-form word',{exact:true}).fill('読む');expect(await page.evaluate(()=>(window as any).pending[0].signal.aborted)).toBe(true);
     await page.evaluate(words=>(window as any).pending[0].resolve([words]),analyze('食べる'));await expect(page.locator('.playground-confirmation button')).toHaveCount(0);
-    await page.getByRole('button',{name:'Check verb locally',exact:true}).click();await page.getByRole('tab',{name:'Mimetics',exact:true}).click();expect(await page.evaluate(()=>(window as any).pending[1].signal.aborted)).toBe(true);
+    await page.getByRole('button',{name:'Check word locally',exact:true}).click();await page.getByRole('tab',{name:'Mimetics',exact:true}).click();expect(await page.evaluate(()=>(window as any).pending[1].signal.aborted)).toBe(true);
     await page.evaluate(words=>(window as any).pending[1].resolve([words]),analyze('読む'));await expect(page.locator('.playground-confirmation button')).toHaveCount(0);
-    await page.getByRole('tab',{name:'Verbs',exact:true}).click();await checkVerb(page,'食べる');await page.evaluate(()=>(window as any).app.dispose());expect(await page.evaluate(()=>(window as any).pending[2].signal.aborted)).toBe(true);
+    await page.getByRole('tab',{name:'Word forms',exact:true}).click();await checkVerb(page,'食べる');await page.evaluate(()=>(window as any).app.dispose());expect(await page.evaluate(()=>(window as any).pending[2].signal.aborted)).toBe(true);
     await page.evaluate(words=>(window as any).pending[2].resolve([words]),analyze('食べる'));await expect(page.locator('.playground-confirmation button')).toHaveCount(0);
   } finally {await page.close();}
 });
@@ -236,5 +238,24 @@ test('opening Playgrounds during initial reading analysis preserves the workspac
     });
     expect(initial).toEqual({same:true,value:'食べる',focused:true});
     expect(await page.evaluate(()=>{const root=(window as any).readerRoot as ShadowRoot;root.querySelector<HTMLButtonElement>('.playgrounds-open')!.click();return {reading:root.querySelector('.content')!.textContent,visible:getComputedStyle(root.querySelector('.content')!).display};})).toEqual({reading:'日本語にほんご',visible:'block'});
+  } finally {await page.close();}
+});
+
+test('shared Word forms accepts adjectives, explains endings, and preserves control and focus behavior',async()=>{
+  const page=await browser.newPage({viewport:{width:280,height:500}});const requests:string[]=[];page.on('request',r=>requests.push(r.url()));
+  try {
+    await setup(page);await page.context().setOffline(true);
+    await expect(page.getByRole('tab')).toHaveCount(2);
+    for(const [word,kind] of [['高い','い-adjective'],['きれい','な-adjective'],['嫌い','な-adjective'],['かっこいい','い-adjective']]) {
+      await checkVerb(page,word);await expect(page.locator('.playground-confirmation')).toContainText(kind);await page.locator('.playground-confirmation button').first().click();
+      await expect(page.getByLabel('Adjective Playground',{exact:true})).toBeVisible();await expect.poll(()=>plain(page)).toBe(word);
+      await page.getByLabel('Past',{exact:true}).check();await expect.poll(()=>plain(page)).not.toBe(word);
+      await expect(page.locator('.form-construction')).toContainText('How this form is built:');await expect(page.locator('.verb-japanese mark')).not.toHaveCount(0);
+      await page.getByLabel('Adjective form',{exact:true}).selectOption('prenominal');await expect(page.locator('.verb-controls input')).toHaveCount(0);
+      await page.getByLabel('Adjective form',{exact:true}).selectOption('conditionalTara');await expect(page.locator('.verb-controls input')).toHaveCount(1);
+      await page.getByRole('button',{name:'Reset',exact:true}).click();await expect.poll(()=>plain(page)).toBe(word);
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    }
+    await page.keyboard.press('Escape');await expect(page.getByLabel('Dictionary-form word',{exact:true})).toBeFocused();await expect(page.getByLabel('Dictionary-form word',{exact:true})).toHaveValue('かっこいい');expect(requests).toEqual([]);
   } finally {await page.close();}
 });

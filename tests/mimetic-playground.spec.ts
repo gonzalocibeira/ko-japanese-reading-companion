@@ -15,13 +15,16 @@ const inventory=[
   'わくわく/どきどき','いらいら/むかむか','ほっと/すっきり','はらはら/おろおろ','うとうと/ぐっすり','くたくた/ぐったり',
   'ずきずき/ちくちく','ぺこぺこ/ぱんぱん','ふらふら/よろよろ','ぽかぽか/ひんやり','のろのろ/すたすた','ばたばた/てきぱき',
   'うろうろ/ぶらぶら','じっと/じろじろ','くすくす/げらげら','しくしく/わんわん','ふわふわ/もちもち','しっとり/じっとり',
-  'ねばねば/べたべた','つるつる/ぬるぬる','さくさく/かりかり','からから/かさかさ','がやがや/ざわざわ','とんとん/どんどん'
+  'ねばねば/べたべた','つるつる/ぬるぬる','さくさく/かりかり','からから/かさかさ','がやがや/ざわざわ','とんとん/どんどん',
+  'ぱくぱく/もぐもぐ','ぱりぱり/ぽりぽり','とろとろ/どろどろ','あっさり/こってり','ぷりぷり/ぷよぷよ','こりこり/しゃきしゃき',
+  'がたがた/がらがら','がんがん/かんかん','ひそひそ/ぶつぶつ','ぽたぽた/ぽつぽつ','ぺちゃくちゃ/ぺらぺら',
+  'こっそり/そっと','ぐずぐず/のんびり','きっちり/きちんと','すらすら/さっさと'
 ];
 
 test('only complete curated mimetics match, with the encountered variant selected',()=>{
-  expect(mimeticEntries).toHaveLength(30);
+  expect(mimeticEntries).toHaveLength(45);
   expect(mimeticEntries.map(entry=>entry.variants.map(variant=>variant.term).join('/'))).toEqual(inventory);
-  expect(new Set(mimeticEntries.map(entry=>entry.id)).size).toBe(30);
+  expect(new Set(mimeticEntries.map(entry=>entry.id)).size).toBe(45);
   expect(new Set(mimeticEntries.map(entry=>entry.category))).toEqual(new Set(['movement','nature','texture','people','feelings','body','sounds']));
   const words=new Set<string>();
   const aliases=new Set<string>();
@@ -45,7 +48,7 @@ test('only complete curated mimetics match, with the encountered variant selecte
     expect(url.protocol).toBe('https:');
     expect(['www2.ninjal.ac.jp','kotobank.jp']).toContain(url.hostname);
   }
-  expect(words.size).toBe(60);
+  expect(words.size).toBe(90);
   expect([...aliases].every(alias=>!words.has(alias))).toBe(true);
   for(const surface of ['', ' ころころ','ころころと','ころころ。','ころっ','ごろり','きらーきら','ざーーざーー','ざざ','ふわっと','ふわーふわー','雨がしとしと降る','<script>ころころ</script>'])expect(findMimetic(surface),surface).toBeUndefined();
   // Finding one variant cannot change the shared default or another result.
@@ -149,60 +152,77 @@ for(const entry of mimeticEntries) {
   });
 }
 
-test('replay starts a finite animation without changing the chosen expression',async()=>{
+test('scenes start looping immediately without a replay button and keep the final pose',async()=>{
   const page=await browser.newPage();
   try {
     await render(page,'ごろごろ');
-    expect(await page.locator('.mimetic-art').evaluate(el=>el.getAnimations({subtree:true}).length)).toBe(0);
-    await page.evaluate(()=>{(window as any).previousArt=document.querySelector('.mimetic-art');});
-    await page.getByRole('button',{name:'Replay scene',exact:true}).click();
-    expect(await page.evaluate(()=>(window as any).previousArt!==document.querySelector('.mimetic-art'))).toBe(true);
+    await expect(page.getByRole('button',{name:'Replay scene',exact:true})).toHaveCount(0);
     await expect(page.locator('.mimetic-term')).toHaveText('ごろごろ');
-    const timing=await page.locator('.mimetic-art').evaluate(el=>el.getAnimations({subtree:true}).map(animation=>animation.effect!.getTiming()));
-    expect(timing.length).toBeGreaterThan(0);
-    expect(timing.every(item=>item.iterations!==Infinity && Number(item.duration)*item.iterations<=3000)).toBe(true);
-    await page.locator('.mimetic-art').evaluate(el=>Promise.all(el.getAnimations({subtree:true}).map(animation=>animation.finished)));
-    expect(await page.locator('.mimetic-art').evaluate(el=>el.getAnimations({subtree:true}).length)).toBe(0);
+    const playback=await page.locator('.mimetic-art').evaluate(el=>{
+      const animation=el.getAnimations({subtree:true})[0];
+      if(!animation)return null;
+      const looping=animation.effect!.getTiming().iterations===Infinity;
+      animation.pause();animation.currentTime=7100;
+      const frames=el.querySelector('.mimetic-frames')!;
+      return {looping,iteration:animation.effect!.getComputedTiming().currentIteration,
+        offset:new DOMMatrix(getComputedStyle(frames).transform).m41/el.getBoundingClientRect().width};
+    });
+    expect(playback?.looping).toBe(true);
+    expect(playback?.iteration).toBe(2);
+    expect(playback?.offset).toBeCloseTo(-11,4);
   } finally {await page.close();}
 });
 
-test('all sixty scenes have distinct artwork and finite replay without automatic motion',async()=>{
+test('new artwork is the default and live legacy changes preserve the selected word and focus',async()=>{
+  const page=await browser.newPage();
+  try {
+    await render(page,'ごろごろ');
+    await expect(page.locator('.mimetic-art')).toHaveAttribute('data-style','woodblock');
+    await expect(page.locator('.mimetic-frames')).toHaveCSS('background-image',/rolling-1\.webp/);
+    const selected=page.getByRole('button',{name:'ごろごろ',exact:true});await selected.focus();
+    await page.evaluate(()=>(window as any).mimeticModule.setMimeticLegacyAnimations(true));
+    await expect(page.locator('svg.mimetic-art')).toHaveCount(1);
+    await expect(selected).toHaveAttribute('aria-pressed','true');await expect(selected).toBeFocused();
+    await expect(page.locator('.mimetic-term')).toHaveText('ごろごろ');
+    expect(await page.locator('.mimetic-art').evaluate(el=>el.getAnimations({subtree:true}).length)).toBeGreaterThan(0);
+    // Removal/malformed persisted values restore the new default.
+    await page.evaluate(()=>(window as any).mimeticModule.setMimeticLegacyAnimations(undefined));
+    await expect(page.locator('.mimetic-art')).toHaveAttribute('data-style','woodblock');
+    await expect(page.locator('.mimetic-frames')).toHaveCSS('background-image',/rolling-1\.webp/);
+    expect(await page.locator('.mimetic-art').evaluate(el=>el.getAnimations({subtree:true}).length)).toBeGreaterThan(0);
+  } finally {await page.close();}
+});
+
+test('all ninety scenes in both styles loop automatically and honor reduced motion',async()=>{
   const page=await browser.newPage();
   try {
     await render(page,'ころころ');
-    const scenes=await page.evaluate(()=>{
-      const module=(window as any).mimeticModule;
-      const results=[];
-      for(const entry of module.mimeticEntries)for(const [index,variant] of entry.variants.entries()) {
-        const root=module.renderMimeticPlayground({...entry,initialVariant:index});
-        document.body.replaceChildren(root);
-        const art=root.querySelector('.mimetic-art');
-        const initialAnimations=art.getAnimations({subtree:true}).length;
-        const markup=art.innerHTML;
-        (root.querySelector('.mimetic-replay') as HTMLButtonElement).click();
-        const replay=root.querySelector('.mimetic-art');
-        const timings=replay.getAnimations({subtree:true}).map((animation:Animation)=>animation.effect!.getTiming());
-        results.push({id:entry.id,term:variant.term,markup,initialAnimations,timings});
-      }
-      return results;
-    });
-    expect(scenes).toHaveLength(60);
-    expect(new Set(scenes.map(item=>item.markup)).size).toBe(60);
-    for(const item of scenes) {
-      expect(item.initialAnimations,item.term).toBe(0);
-      expect(item.timings.length,item.term).toBeGreaterThan(0);
-      expect(item.timings.every((timing:any)=>timing.iterations!==Infinity&&Number(timing.duration)*timing.iterations<3000),item.term).toBe(true);
+    for(const legacy of [false,true]) {
+      const scenes=await page.evaluate(legacy=>{
+        const module=(window as any).mimeticModule;module.setMimeticLegacyAnimations(legacy);
+        return module.mimeticEntries.flatMap((entry:any)=>entry.variants.map((variant:any,index:number)=>{
+          const root=module.renderMimeticPlayground({...entry,initialVariant:index});document.body.replaceChildren(root);
+          const art=root.querySelector('.mimetic-art');
+          const timings=art.getAnimations({subtree:true}).map((animation:Animation)=>animation.effect!.getTiming());
+          return {term:variant.term,markup:art.innerHTML,count:timings.length,
+            looping:timings.every((timing:any)=>timing.iterations===Infinity),replay:!!root.querySelector('.mimetic-replay')};
+        }));
+      },legacy);
+      expect(scenes).toHaveLength(90);expect(new Set(scenes.map(item=>item.markup)).size).toBe(90);
+      for(const item of scenes){expect(item.count,item.term).toBeGreaterThan(0);expect(item.looping,item.term).toBe(true);expect(item.replay).toBe(false);}
     }
     await page.emulateMedia({reducedMotion:'reduce'});
-    const animations=await page.evaluate(()=>{
+    const counts=await page.evaluate(()=>{
       const module=(window as any).mimeticModule;
-      return module.mimeticEntries.flatMap((entry:any)=>entry.variants.map((_:any,index:number)=>{
-        const root=module.renderMimeticPlayground({...entry,initialVariant:index});document.body.replaceChildren(root);
-        (root.querySelector('.mimetic-replay') as HTMLButtonElement).click();
-        return root.querySelector('.mimetic-art').getAnimations({subtree:true}).length;
-      }));
+      return [false,true].flatMap(legacy=>{
+        module.setMimeticLegacyAnimations(legacy);
+        return module.mimeticEntries.flatMap((entry:any)=>entry.variants.map((_:any,index:number)=>{
+          const root=module.renderMimeticPlayground({...entry,initialVariant:index});document.body.replaceChildren(root);
+          return root.querySelector('.mimetic-art').getAnimations({subtree:true}).length;
+        }));
+      });
     });
-    expect(animations.every((count:number)=>count===0)).toBe(true);
+    expect(counts).toHaveLength(180);expect(counts.every(count=>count===0)).toBe(true);
   } finally {await page.close();}
 });
 
@@ -210,7 +230,7 @@ test('reduced motion keeps scenes static while expression comparisons remain usa
   const page=await browser.newPage({reducedMotion:'reduce'});
   try {
     await render(page,'しとしと');
-    await expect(page.getByRole('button',{name:'Replay scene',exact:true})).toBeHidden();
+    await expect(page.getByRole('button',{name:'Replay scene',exact:true})).toHaveCount(0);
     await expect(page.locator('.mimetic-motion-note')).toBeVisible();
     await page.getByRole('button',{name:'ざあざあ',exact:true}).click();
     await expect(page.locator('.mimetic-term')).toHaveText('ざあざあ');
@@ -218,7 +238,7 @@ test('reduced motion keeps scenes static while expression comparisons remain usa
     expect(await page.locator('.mimetic-art').evaluate(el=>el.getAnimations({subtree:true}).length)).toBe(0);
     // Changing the preference while the card is open also takes effect.
     await page.emulateMedia({reducedMotion:'no-preference'});
-    await expect(page.getByRole('button',{name:'Replay scene',exact:true})).toBeVisible();
+    expect(await page.locator('.mimetic-art').evaluate(el=>el.getAnimations({subtree:true}).length)).toBeGreaterThan(0);
     await page.emulateMedia({reducedMotion:'reduce'});
     expect(await page.locator('.mimetic-art').evaluate(el=>el.getAnimations({subtree:true}).length)).toBe(0);
   } finally {await page.close();}

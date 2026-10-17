@@ -1,10 +1,12 @@
+import {buildAdjectivePlayground,adjectiveFamilies,adjectiveConstruction,type AdjectivePlayground} from './adjective-playground';
 import {align, type Word} from './shared';
-import {buildVerbPlayground, createVerbPlayground, potentialBaseQueries, resolvePotentialBase, isRaDroppedPotential, restrictVerbBase, verbFamilies, type VerbPlayground, type VerbBase} from './verb-playground';
+import {buildVerbPlayground, createVerbPlayground, potentialBaseQueries, resolvePotentialBase, isRaDroppedPotential, restrictVerbBase, verbFamilies, verbConstruction, type VerbPlayground, type VerbBase} from './verb-playground';
 import {findMimetic, matchMimeticAt, renderMimeticPlayground, mimeticStyles, type MimeticEntry} from './mimetic-playground';
 import {buildMeaningForks, renderMeaningForks, meaningForkStyles, type MeaningForks} from './meaning-forks';
 
 export interface WordExplorations {
   verb?: VerbPlayground;
+  adjective?: AdjectivePlayground;
   mimetic?: MimeticEntry;
   meaning?: MeaningForks;
 }
@@ -12,6 +14,7 @@ export interface WordExplorations {
 // Everything here runs against an already extracted snapshot. No network,
 // storage, DOM source mutation, or whole-document analysis is involved.
 export function wordExplorations(text:string, words:Word[], wordIndex:number, surface:string, overrides:Record<string,string>):WordExplorations {
+  const adjective=buildAdjectivePlayground(text,words,wordIndex);
   const verb=buildVerbPlayground(text,words,wordIndex);
   const meaning=buildMeaningForks(text,words,wordIndex);
   const corrected=(start:number,end:number)=>Object.keys(overrides).some(word=>{
@@ -23,6 +26,7 @@ export function wordExplorations(text:string, words:Word[], wordIndex:number, su
     return false;
   });
   return {
+    ...(adjective && !corrected(adjective.start,adjective.end)?{adjective}:{}),
     ...(verb && !corrected(verb.start,verb.end)?{verb}:{}),
     ...(meaning && !corrected(meaning.start,meaning.end)?{meaning}:{}),
     mimetic:matchMimeticAt(text,words,wordIndex)?.entry ?? findMimetic(surface)
@@ -89,16 +93,25 @@ export function annotated(text:string,reading:string,original?:string) {
 }
 
 export function renderVerbPlayground(model:VerbPlayground):HTMLElement {
-  const section=document.createElement('section');section.className='verb-playground';section.setAttribute('aria-label','Verb Playground');
-  const heading=document.createElement('h4');heading.textContent='Verb Playground';
+  return renderWordForms(model,verbFamilies,'Verb Playground','Verb form',state=>verbConstruction(model.base,state as VerbPlayground['initial']));
+}
+export function renderAdjectivePlayground(model:AdjectivePlayground):HTMLElement {
+  return renderWordForms(model,adjectiveFamilies,'Adjective Playground','Adjective form',state=>adjectiveConstruction(model.base,state as AdjectivePlayground['initial']));
+}
+type FormState={family:string;past:boolean;negative:boolean;polite:boolean;spoken:boolean};
+interface FormModel {source:string;sourceReading:string;initial:FormState;requiresChoice:boolean;forms:(FormState & {text:string;reading:string})[];sourceMatches:FormState[]}
+function renderWordForms(model:FormModel,familyList:readonly {id:string;label:string;group:string;description:string;controls:readonly ('past'|'negative'|'polite'|'spoken')[]}[],title:string,formLabel:string,construction:(state:FormState)=>string):HTMLElement {
+  const section=document.createElement('section');section.className='verb-playground';section.setAttribute('aria-label',title);if(title==='Adjective Playground')section.classList.add('adjective-playground');
+  const heading=document.createElement('h4');heading.textContent=title;
   const description=document.createElement('p');description.className='verb-instruction';description.textContent='Choose a form and adjust its ending.';
   const familyLabel=document.createElement('label');familyLabel.className='verb-family-label';familyLabel.append(document.createTextNode('Form '));
-  const select=document.createElement('select');select.className='verb-family';select.setAttribute('aria-label','Verb form');familyLabel.append(select);
+  const select=document.createElement('select');select.className='verb-family';select.setAttribute('aria-label',formLabel);familyLabel.append(select);
   const explanation=document.createElement('p');explanation.className='verb-explanation';
   const controls=document.createElement('div');controls.className='verb-controls';
+  const recipe=document.createElement('p');recipe.className='form-construction';
   const state={...model.initial};
   let pristine=true,chosen=!model.requiresChoice;
-  const families=verbFamilies.filter(family=>model.forms.some(form=>form.family===family.id));
+  const families=familyList.filter(family=>model.forms.some(form=>form.family===family.id));
   const groups=new Map<string,HTMLOptGroupElement>();
   for(const family of families) {
     let group=groups.get(family.group);
@@ -111,7 +124,7 @@ export function renderVerbPlayground(model:VerbPlayground):HTMLElement {
     const seen=new Set<string>();
     for(const match of model.sourceMatches) {
       if(seen.has(match.family))continue;seen.add(match.family);
-      const button=document.createElement('button');button.type='button';button.textContent=verbFamilies.find(family=>family.id===match.family)?.label ?? match.family;
+      const button=document.createElement('button');button.type='button';button.textContent=familyList.find(family=>family.id===match.family)?.label ?? match.family;
       button.addEventListener('click',()=>{Object.assign(state,match);chosen=true;pristine=true;paintControls();render();select.focus();});choices.append(button);
     }
   }
@@ -133,6 +146,7 @@ export function renderVerbPlayground(model:VerbPlayground):HTMLElement {
     result.replaceChildren(japanese,caption);
     familyLabel.hidden=controls.hidden=explanation.hidden=!chosen;choices.hidden=chosen;
     select.value=state.family;explanation.textContent=family?.description ?? '';
+    recipe.hidden=!chosen;recipe.textContent=chosen?'How this form is built: '+construction(state)+(pristine && variant?.text!==model.source?' The original spelling is preserved above; this rule shows the standard generated form.':''):'';
   };
   const paintControls=()=>{
     controls.replaceChildren();
@@ -157,7 +171,7 @@ export function renderVerbPlayground(model:VerbPlayground):HTMLElement {
   const summary=document.createElement('summary');summary.textContent='How to use this form';
   const note=document.createElement('p');note.textContent='Underlined characters differ from the original. Reset restores its exact spelling. These forms are demonstrations; the surrounding sentence and social context may need other changes.';
   help.append(summary,note);
-  section.append(heading,description,choices,familyLabel,controls,output,explanation,help);paintControls();render();return section;
+  section.append(heading,description,choices,familyLabel,controls,output,recipe,explanation,help);paintControls();render();return section;
 }
 
 export type PlaygroundTokenizer=(texts:string[],signal:AbortSignal)=>Promise<Word[][]>;
@@ -231,6 +245,7 @@ export function renderExplorations(models:WordExplorations,settings:{tokenize?:P
       return wrapper;
     }});
   }
+  if(models.adjective) {const model=models.adjective;options.push({label:'Adjective Playground',source:model.source,reading:model.sourceReading,render:()=>renderAdjectivePlayground(model)});}
   if(models.mimetic) {const model=models.mimetic;options.push({label:'Mimetic Playground',render:()=>renderMimeticPlayground(model)});}
   if(models.meaning) {const model=models.meaning;options.push({label:'Meaning Forks',source:model.source,reading:model.reading,render:()=>renderMeaningForks(model)});}
   const buttons:HTMLButtonElement[]=[];

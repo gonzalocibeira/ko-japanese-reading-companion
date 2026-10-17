@@ -1,7 +1,8 @@
+import {dictionaryAdjectiveCandidates,createAdjectivePlayground} from './adjective-playground';
 import {hiragana} from './shared';
 import {createVerbPlayground,dictionaryVerbCandidates,type VerbBase} from './verb-playground';
 import {mimeticEntries,normalizeMimetic,renderMimeticPlayground,type MimeticCategory} from './mimetic-playground';
-import {annotated,renderVerbPlayground,verifiedVerbInterpretations,type PlaygroundTokenizer,type VerbInterpretation} from './exploration';
+import {annotated,renderAdjectivePlayground,renderVerbPlayground,verifiedVerbInterpretations,type PlaygroundTokenizer,type VerbInterpretation} from './exploration';
 
 export interface PlaygroundBrowserOptions {tokenize:PlaygroundTokenizer}
 export interface PlaygroundBrowser {element:HTMLElement;dispose():void;focus():void}
@@ -62,7 +63,7 @@ export function renderPlaygroundBrowser(options:PlaygroundBrowserOptions):Playgr
   let catalogScroll=0,returnFocus:HTMLElement|undefined;
   const cancel=()=>{request++;controller?.abort();controller=undefined;form.removeAttribute('aria-busy');submit.disabled=false;};
   const dispose=()=>{if(disposed)return;disposed=true;cancel();};
-  const verbIntro='Enter a dictionary-form verb here, or open a word’s playground in Reading view. Everything works offline.';
+  const verbIntro='Enter a dictionary-form verb or adjective here, or open a word’s playground in Reading view. Everything works offline.';
   const intro=element('p','playground-intro',verbIntro);
   const tabs=element('div','playground-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','Playground type');
   const filters=element('div','playground-filters');
@@ -71,8 +72,8 @@ export function renderPlaygroundBrowser(options:PlaygroundBrowserOptions):Playgr
   const all=element('option','','All categories');all.value='';category.append(all);
   for(const [value,label] of categories) {const option=element('option','',label);option.value=value;category.append(option);}categoryLabel.append(category);filters.hidden=true;filters.append(searchLabel,categoryLabel);
   const form=element('form','playground-verb-input');form.noValidate=true;
-  const inputLabel=element('label','','Dictionary-form verb');const input=element('input','');input.type='text';input.maxLength=40;input.autocomplete='off';input.spellcheck=false;input.placeholder='食べる or 勉強する';inputLabel.append(input);
-  const submit=element('button','','Check verb locally');submit.type='submit';
+  const inputLabel=element('label','','Dictionary-form word');const input=element('input','');input.type='text';input.maxLength=40;input.autocomplete='off';input.spellcheck=false;input.placeholder='食べる, 高い, or 静か';inputLabel.append(input);
+  const submit=element('button','','Check word locally');submit.type='submit';
   const feedback=element('p','playground-feedback');feedback.setAttribute('role','status');feedback.setAttribute('aria-live','polite');
   const confirmation=element('div','playground-confirmation');
   form.append(inputLabel,submit,feedback,confirmation);
@@ -92,7 +93,7 @@ export function renderPlaygroundBrowser(options:PlaygroundBrowserOptions):Playgr
   root.addEventListener('keydown',event=>{if(event.key==='Escape' && catalog.hidden){event.preventDefault();event.stopPropagation();backToExamples();}});
   const showSelection=(panel:HTMLElement,origin?:HTMLElement)=>{
     if(!catalog.hidden)catalogScroll=scroller.scrollTop;
-    back.textContent=tab==='verbs'?'← Change verb':'← Examples';back.setAttribute('aria-label',tab==='verbs'?'Change verb':'Back to examples');
+    back.textContent=tab==='verbs'?'← Change word':'← Examples';back.setAttribute('aria-label',tab==='verbs'?'Change word':'Back to examples');
     returnFocus=origin;selection.replaceChildren(panel);catalog.hidden=true;detailNav.hidden=false;scroller.scrollTop=0;
     Array.from(panel.querySelectorAll<HTMLElement>('select,button')).find(node=>node.getClientRects().length)?.focus({preventScroll:true});
   };
@@ -113,13 +114,14 @@ export function renderPlaygroundBrowser(options:PlaygroundBrowserOptions):Playgr
     cancel();selection.replaceChildren();confirmation.replaceChildren();feedback.textContent='';
     if(disposed)return;
     if(!value || Array.from(value).length>40 || !/^[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々ー]+$/u.test(value)) {
-      feedback.textContent='Enter one dictionary-form verb, such as 食べる or 勉強する (up to 40 characters).';return;
+      feedback.textContent='Enter one dictionary-form verb or adjective, such as 食べる, 高い, or 静か (up to 40 characters).';return;
     }
     controller=new AbortController();const current=controller,id=request;form.setAttribute('aria-busy','true');submit.disabled=true;feedback.textContent='Checking the bundled dictionary…';
     try {
-      const candidates=dictionaryVerbCandidates(value,(await options.tokenize([value],current.signal))[0] ?? []);
+      const words=(await options.tokenize([value],current.signal))[0] ?? [];
+      const candidates=dictionaryVerbCandidates(value,words),adjectives=dictionaryAdjectiveCandidates(value,words);
       if(disposed || current.signal.aborted || id!==request)return;
-      if(!candidates.length) {feedback.textContent='Use a recognized dictionary-form verb, such as 食べる, 読む, or 勉強する. Sentences and conjugated forms cannot be entered here.';return;}
+      if(!candidates.length && !adjectives.length) {feedback.textContent='Use a recognized dictionary-form verb or adjective, such as 食べる, 高い, or 静か (without な). Sentences and conjugated forms cannot be entered here.';return;}
       const choices:VerbInterpretation[]=[];
       // Each probe is bounded by the engine and the separate tokenizer purpose.
       for(const candidate of candidates) {
@@ -132,9 +134,14 @@ export function renderPlaygroundBrowser(options:PlaygroundBrowserOptions):Playgr
         }
       }
       feedback.textContent=!choices.length?'That derived construction is outside the supported forms. Try its original dictionary verb.':choices.length>1?'Choose the dictionary entry or interpretation you intend.':'Confirm the dictionary form, reading, and class to begin.';confirm(choices);
+      for(const base of adjectives) {
+        const button=element('button','',`Use ${base.lemma} · ${base.reading} · ${base.kind==='i'?'い-adjective':'な-adjective'}`);button.type='button';
+        button.addEventListener('click',()=>{if(disposed)return;cancel();feedback.textContent='';const model=createAdjectivePlayground(base),panel=element('div','explore-panel');const original=element('div','playground-original');original.append(element('p','explore-source-label','Original word'),annotated(model.source,model.sourceReading));panel.append(original,renderAdjectivePlayground(model));showSelection(panel,button);});confirmation.append(button);
+      }
+      if(adjectives.length)feedback.textContent='Confirm the dictionary form, reading, and class to begin.';
     } catch {
       if(disposed || current.signal.aborted || id!==request)return;
-      feedback.textContent='The local dictionary could not finish. Try again, or click a verb in Reading view to explore it.';
+      feedback.textContent='The local dictionary could not finish. Try again, or click a word in Reading view to explore it.';
     } finally {
       if(!disposed && !current.signal.aborted && id===request) {form.removeAttribute('aria-busy');submit.disabled=false;controller=undefined;}
     }
@@ -166,7 +173,7 @@ export function renderPlaygroundBrowser(options:PlaygroundBrowserOptions):Playgr
     for(const [key,button] of tabButtons) {button.setAttribute('aria-selected',String(key===next));button.tabIndex=key===next?0:-1;}
     renderResults();
   };
-  for(const [id,label] of [['verbs','Verbs'],['mimetics','Mimetics']] as const) {
+  for(const [id,label] of [['verbs','Word forms'],['mimetics','Mimetics']] as const) {
     const button=element('button','',label);button.type='button';button.setAttribute('role','tab');button.setAttribute('aria-selected',String(id===tab));button.tabIndex=id===tab?0:-1;
     button.id=`${panelId}-${id}`;button.setAttribute('aria-controls',panelId);
     button.addEventListener('click',()=>changeTab(id));

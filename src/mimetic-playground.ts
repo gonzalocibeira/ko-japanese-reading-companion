@@ -54,7 +54,35 @@ function svgNode<K extends keyof SVGElementTagNameMap>(tag:K,attrs:Record<string
   for(const [name,value] of Object.entries(attrs))node.setAttribute(name,String(value));
   node.append(...children);return node;
 }
-function scene(entry:MimeticEntry,index:0|1,play:boolean) {
+let showLegacyAnimations=false;
+const scenes=new Set<WeakRef<HTMLElement>>();
+// For actions with a distinct outcome, the still should show that outcome.
+const posterFrames:Partial<Record<MimeticScene,readonly [number,number]>>={
+  relief:[9,8],stomach:[5,10],smile:[8,8],crispness:[8,8],thinCrunch:[8,8],freshCrunch:[8,8],neatness:[10,10]
+};
+/** Update open cards without resetting their word selection or keyboard focus. */
+export function setMimeticLegacyAnimations(value:unknown) {
+  const next=value===true;
+  if(next===showLegacyAnimations)return;
+  showLegacyAnimations=next;
+  for(const ref of scenes) {
+    const root=ref.deref();
+    if(root)root.dispatchEvent(new Event('mimetic-style-change'));else scenes.delete(ref);
+  }
+}
+function scene(entry:MimeticEntry,index:0|1) {
+  if(showLegacyAnimations)return legacyScene(entry,index);
+  const art=document.createElement('div');art.className='mimetic-art mimetic-print';
+  art.setAttribute('aria-hidden','true');art.dataset.scene=entry.id;art.dataset.variant=String(index);
+  art.dataset.playing='true';art.dataset.style='woodblock';
+  const frames=document.createElement('span');frames.className='mimetic-frames';
+  const path=`art/mimetics/${entry.id}-${index}.webp`;
+  const url=typeof chrome!=='undefined' && chrome.runtime?.getURL?chrome.runtime.getURL(path):path;
+  frames.style.backgroundImage=`url("${url}")`;
+  frames.style.transform=`translateX(-${(posterFrames[entry.id]?.[index]??5)*100/12}%)`;
+  art.append(frames);return art;
+}
+function legacyScene(entry:MimeticEntry,index:0|1) {
   const svg=svgNode('svg',{viewBox:'0 0 240 124','aria-hidden':'true',focusable:'false',class:'mimetic-art'});
   const stroke={fill:'none',stroke:'currentColor','stroke-width':2,'stroke-linecap':'round','stroke-linejoin':'round'};
   const line=(d:string,attrs:Record<string,string|number>={})=>svgNode('path',{...stroke,d,...attrs});
@@ -86,7 +114,7 @@ function scene(entry:MimeticEntry,index:0|1,play:boolean) {
     line(`M0-14 ${big?18:9}-24M3 0H${big?26:13}M0 14 ${big?18:9} 24`,{'stroke-width':big?3:1.5,stroke:'var(--accent)'})
   ]);
   const checklist=(x:number,y:number)=>at('',x,y,[box(0,0,37,46,{fill:'var(--paper)'}),line('M6 11 9 14 14 7M6 25 9 28 14 21M18 12H30M18 26H30M6 38H30',{stroke:'var(--accent)'})]);
-  svg.dataset.scene=entry.id;svg.dataset.variant=String(index);svg.dataset.playing=String(play);
+  svg.dataset.scene=entry.id;svg.dataset.variant=String(index);svg.dataset.playing='true';
   const renderers:Record<MimeticScene,()=>void>={rolling:()=>{
     svg.append(line('M12 104H228'),line('M30 70H60m-8-6 8 6-8 6',{class:'mimetic-trail'}));
     const object=index===0?[circle(0,0,12,{fill:'var(--accent)'}),line('M-7-7 7 7M7-7-7 7',{stroke:'var(--paper)'})]:[
@@ -243,6 +271,56 @@ function scene(entry:MimeticEntry,index:0|1,play:boolean) {
   },knocking:()=>{
     svg.append(box(122,14,62,101,{fill:'var(--paper)'}),box(131,23,43,32),circle(173,76,3,{fill:'var(--accent)'}),motion('mimetic-knock',[line('M40 64H74V52Q74 46 80 46H100Q106 46 106 53V60H113V75Q113 87 101 87H80V81H40Z',{fill:'var(--surface)'}),line('M82 54V65M91 53V65M100 54V65')]),soundMarks(193,68,index===1));
     if(index===1)svg.append(line('M112 37 117 43M111 95 117 90',{stroke:'var(--accent)','stroke-width':3}));
+  },eating:()=>{
+    svg.append(face(88,58,34,'happy'),line('M47 108H199'));
+    if(index===0)svg.append(motion('mimetic-knock',[line('M149 85 168 43Q172 35 178 43L199 85Z',{fill:'var(--paper)'}),box(164,69,20,18,{fill:'var(--accent)'})]),line('M81 68Q89 57 100 68Q89 85 81 68Z',{fill:'var(--accent)'}));
+    else svg.append(motion('mimetic-pulse',[circle(65,69,8,{fill:'var(--sand)'}),circle(111,69,8,{fill:'var(--sand)'})]),box(152,49,42,34,{fill:'var(--sand)'}),line('M159 45Q173 24 188 45M159 59H187M159 70H180'));
+  },thinCrunch:()=>{
+    svg.append(line('M40 105H202'));
+    if(index===0)svg.append(motion('mimetic-crack',[line('M55 28 110 20 101 91 48 98Z',{fill:'var(--accent)'}),line('M122 21 178 31 189 97 130 90Z',{fill:'var(--accent)'}),line('M63 40 96 33M60 55 94 48M137 38 167 45M139 57 171 63',{stroke:'var(--paper)'})]),soundMarks(195,53));
+    else {for(let n=0;n<4;n++)svg.append(motion('mimetic-bob',[circle(65+n*35,70+(n%2)*9,13,{fill:'var(--surface)'}),circle(65+n*35,70+(n%2)*9,6,{stroke:'var(--accent)'})]));svg.append(soundMarks(201,51));}
+  },viscosity:()=>{
+    svg.append(line('M51 82Q120 125 190 82Z',{fill:'var(--surface)'}),line('M48 81H193'));
+    if(index===0)svg.append(line('M106 26H204M106 26Q87 27 83 40H117Q119 30 106 26Z',{fill:'var(--sand)'}),motion('mimetic-stretch',[line('M89 41Q87 62 103 78M110 41Q115 62 118 78',{stroke:'var(--accent)','stroke-width':5})]));
+    else svg.append(line('M154 19 113 42M93 37Q72 60 112 64Q135 55 113 42Z',{fill:'var(--surface)'}),motion('mimetic-drop',[line('M100 64Q89 83 102 87Q119 90 110 65Z',{fill:'var(--accent)'})]),line('M65 87Q100 72 134 88T179 87',{stroke:'var(--accent)','stroke-width':4}));
+  },flavor:()=>{
+    svg.append(line('M43 62Q51 111 120 111Q186 111 198 62Z',{fill:'var(--surface)'}),svgNode('ellipse',{...stroke,cx:120,cy:62,rx:77,ry:18,fill:index===0?'var(--paper)':'var(--sand)'}));
+    if(index===0)svg.append(circle(92,61,4,{fill:'var(--accent)'}),line('M130 60h15M114 67h8',{stroke:'var(--accent)'}),motion('mimetic-rise',[line('M105 38Q95 28 107 17M133 37Q126 27 137 13')]));
+    else {for(let n=0;n<9;n++)svg.append(circle(67+n*12,60+(n%3-1)*5,3+n%3,{fill:'var(--accent)'}));svg.append(motion('mimetic-rise',[line('M80 35Q62 22 79 9M120 34Q104 21 119 7M161 36Q143 22 157 9',{'stroke-width':3})]));}
+  },elasticFood:()=>{
+    svg.append(svgNode('ellipse',{...stroke,cx:120,cy:106,rx:79,ry:9}));
+    if(index===0)svg.append(motion('mimetic-stretch',[line('M164 69Q154 28 116 34Q71 38 71 73Q73 104 111 99Q136 96 133 78Q126 67 112 79Q100 86 99 71Q101 53 120 56Q139 57 146 78Z',{fill:'var(--sand)'}),line('M80 53 100 64M95 39 107 57M117 35 120 56M139 42 131 59M151 53 139 68',{stroke:'var(--accent)'}),line('M164 69 185 56 179 82Z',{fill:'var(--accent)'})]));
+    else svg.append(motion('mimetic-sway',[line('M67 100Q69 38 120 36Q174 38 176 100Q120 113 67 100Z',{fill:'var(--sand)'}),svgNode('ellipse',{...stroke,cx:120,cy:41,rx:21,ry:7,fill:'var(--accent)'}),line('M83 87Q87 60 97 57',{stroke:'var(--paper)','stroke-width':4})]));
+  },freshCrunch:()=>{
+    if(index===0)svg.append(box(60,28,122,19),line('M72 28V41M89 28V41M110 28V41M134 28V41M156 28V41'),motion('mimetic-press',[line('M70 76 88 59 107 69 103 89 81 95ZM124 69 145 57 163 75 152 95 130 91Z',{fill:'var(--sand)'})]),soundMarks(198,75));
+    else svg.append(motion('mimetic-crack',[line('M111 106Q31 76 61 35Q77 15 98 36Q113 17 131 32Q162 13 177 43Q206 71 111 106Z',{fill:'var(--surface)'}),line('M111 106 118 40M114 83 79 52M116 66 154 43M111 94 160 69',{stroke:'var(--accent)'})]),soundMarks(207,56));
+  },rattling:()=>{
+    if(index===0)svg.append(box(60,13,118,101),motion('mimetic-restless',[box(69,23,100,82,{fill:'var(--paper)'}),line('M119 23V105M69 64H169')]),line('M36 40 49 47M185 80 201 87',{stroke:'var(--accent)'}));
+    else {svg.append(box(57,12,130,102,{fill:'var(--paper)'}));const ridges=[];for(let n=0;n<7;n++)ridges.push(line(`M62 ${22+n*10}H182`));svg.append(motion('mimetic-lift',ridges),soundMarks(201,57,true));}
+  },metalSounds:()=>{
+    if(index===0)svg.append(box(54,87,116,15),motion('mimetic-nod',[line('M109 67 137 20 151 29 123 75Z',{fill:'var(--sand)'}),line('M101 48 144 72 135 88 92 64Z',{fill:'var(--surface)'})]),soundMarks(190,76,true));
+    else svg.append(line('M90 113V25H146M142 17V29'),motion('mimetic-sway',[line('M123 64Q126 29 143 29Q159 29 164 64ZM117 65H170',{fill:'var(--sand)'}),circle(143,71,4,{fill:'var(--accent)'})]),line('M43 95H191',{stroke:'var(--accent)','stroke-width':7}),soundMarks(190,46));
+  },quietVoices:()=>{
+    if(index===0)svg.append(person(70,41,'neutral'),person(164,41,'neutral'),motion('mimetic-bob',[bubble(91,7,43)]),line('M94 55h4m4 0h4m4 0h4',{stroke:'var(--accent)'}));
+    else svg.append(person(75,38,'angry'),box(144,70,48,39),line('M151 80H186M156 90H180'),motion('mimetic-pulse',[bubble(94,14,34),line('M102 25h3m5 0h3',{stroke:'var(--accent)'})]));
+  },smallDrops:()=>{
+    if(index===0)svg.append(line('M47 24H126V51H100V39H47Z',{fill:'var(--surface)'}),line('M38 94Q120 130 202 94M38 94H202'),drop(113,62,4),drop(113,81,4));
+    else {svg.append(line('M52 72Q120 10 188 72Q167 61 143 72Q120 61 98 72Q73 61 52 72ZM120 70V108Q120 119 109 111',{fill:'var(--surface)'}),drop(78,24,3),drop(152,18,3),motion('mimetic-pulse',[line('M69 50l-6-7M169 50l7-8',{stroke:'var(--accent)'})]));}
+  },conversation:()=>{
+    if(index===0)svg.append(person(66,48,'happy'),person(170,48,'happy'),motion('mimetic-bob',[bubble(24,5,32),bubble(81,10,32),bubble(156,4,48)]));
+    else svg.append(person(62,43,'happy'),circle(177,72,31),svgNode('ellipse',{...stroke,cx:177,cy:72,rx:13,ry:31}),line('M146 72H208M153 54H201M153 90H201'),motion('mimetic-slide',[bubble(92,12,40)]));
+  },discretion:()=>{
+    if(index===0)svg.append(person(72,35,'neutral'),box(130,12,54,101,{fill:'var(--paper)'}),motion('mimetic-slide',[box(81,79,31,26,{fill:'var(--sand)'}),line('M96 79V105M81 87H112M96 79Q77 59 86 57Q99 55 96 79Q112 56 115 63Q119 76 96 79',{stroke:'var(--accent)'})]));
+    else svg.append(line('M135 98Q123 79 143 74Q159 61 177 78Q197 89 179 101Z',{fill:'var(--surface)'}),line('M146 83l4 3m16-3 4 3M176 79 180 67 185 84'),motion('mimetic-press',[line('M50 46H111L130 77H72Z',{fill:'var(--sand)'}),line('M56 49 76 27 105 45',{fill:'var(--surface)'})]));
+  },unhurried:()=>{
+    if(index===0)svg.append(person(54,39,'worried'),bag(77,78),clock(41,19),motion('mimetic-slide',[box(126,40,82,54),box(135,49,21,16,{fill:'var(--paper)'}),box(166,49,21,16,{fill:'var(--paper)'}),circle(142,98,8),circle(193,98,8)]));
+    else svg.append(motion('mimetic-breathe',[person(92,36,'happy',true)]),box(73,84,50,12),line('M176 107V57M176 82Q142 85 149 66Q172 60 176 82ZM176 72Q199 70 198 48Q174 48 176 72Z',{fill:'var(--surface)'}),box(163,101,27,14),line('M40 88H62L59 105H43Z'));
+  },neatness:()=>{
+    if(index===0){svg.append(box(48,72,147,40));for(let n=0;n<6;n++)svg.append(motion('mimetic-lift',[box(53+n*23,31+(n%2)*9,22,76-(n%2)*9,{fill:n%2?'var(--sand)':'var(--surface)'}),line(`M${60+n*23} 53V91`,{stroke:'var(--accent)'})]));}
+    else {svg.append(box(47,17,147,94,{fill:'var(--paper)'}));for(let n=0;n<3;n++)for(let k=0;k<2;k++)svg.append(motion('mimetic-bob',[line(`M${61+n*44} ${36+k*40}q-6 12 2 17h16q9-6 0-17Z`,{fill:'var(--surface)'})]));}
+  },smoothWork:()=>{
+    if(index===0)svg.append(line('M63 20H168L181 108H48Z',{fill:'var(--paper)'}),line('M70 47H148M67 65H142M65 85H156',{stroke:'var(--accent)'}),motion('mimetic-slide',[line('M91 75 137 21 143 27 100 82Z',{fill:'var(--sand)'})]));
+    else svg.append(line('M37 99H203M52 99V116M186 99V116'),motion('mimetic-slide',[svgNode('ellipse',{...stroke,cx:111,cy:78,rx:35,ry:8}),svgNode('ellipse',{...stroke,cx:111,cy:69,rx:35,ry:8}),svgNode('ellipse',{...stroke,cx:111,cy:60,rx:35,ry:8}),line('M57 72 80 80M150 80 173 71',{stroke:'var(--accent)','stroke-width':4})]));
   }};
   renderers[entry.id]();
   return svg;
@@ -269,17 +347,16 @@ export function renderMimeticPlayground(entry:MimeticEntry):HTMLElement {
   const figure=element('figure','mimetic-figure');
   const stage=element('div','mimetic-stage');
   const caption=element('figcaption','mimetic-caption');figure.append(stage,caption);
-  const replay=element('button','mimetic-replay','Replay scene');replay.type='button';
   const motionNote=element('p','mimetic-motion-note','Reduced motion: the illustration stays still.');
   const uses=element('p','mimetic-uses');
   const reference=element('a','mimetic-reference');reference.target='_blank';reference.rel='noopener noreferrer';
   let selected=entry.initialVariant;
   const buttons=entry.variants.map((variant,index)=>{
     const button=element('button','mimetic-choice',variant.term);button.type='button';button.lang='ja';
-    button.addEventListener('click',()=>update(index as 0|1,true));
+    button.addEventListener('click',()=>update(index as 0|1));
     controls.append(button);return button;
   });
-  function update(index:0|1,play:boolean) {
+  function update(index:0|1) {
     selected=index;const variant=entry.variants[index];
     for(const [i,button] of buttons.entries())button.setAttribute('aria-pressed',String(i===index));
     term.textContent=variant.term;gloss.textContent=variant.gloss;
@@ -291,12 +368,15 @@ export function renderMimeticPlayground(entry:MimeticEntry):HTMLElement {
     if(url?.protocol==='https:' && ['www2.ninjal.ac.jp','kotobank.jp'].includes(url.hostname)) {
       reference.href=url.href;reference.textContent=`${variant.reference.label} (opens a new tab)`;reference.hidden=false;
     } else {reference.removeAttribute('href');reference.hidden=true;}
-    stage.replaceChildren(scene(entry,index,play));
+    stage.replaceChildren(scene(entry,index));
   }
-  replay.addEventListener('click',()=>stage.replaceChildren(scene(entry,selected,true)));
+  root.addEventListener('mimetic-style-change',()=>stage.replaceChildren(scene(entry,selected)));
+  // Cards are transient; weak references allow closed panels to be collected.
+  for(const ref of scenes)if(!ref.deref())scenes.delete(ref);
+  scenes.add(new WeakRef(root));
   const more=element('details','mimetic-more');more.append(element('summary','','Other uses & reference'),element('p','','These are related expressions, each shown in one context.'),uses,reference);
-  root.append(heading,context,controls,detail,figure,replay,motionNote,examples,more);
-  update(selected,false);return root;
+  root.append(heading,context,controls,detail,figure,motionNote,examples,more);
+  update(selected);return root;
 }
 
 export const mimeticStyles=`
@@ -304,7 +384,7 @@ export const mimeticStyles=`
 .mimetic-playground .mimetic-heading{margin:0 0 8px;font:800 11px/1.4 var(--mono,monospace);text-transform:uppercase}
 .mimetic-playground .mimetic-context,.mimetic-playground .mimetic-uses{margin:8px 0;color:var(--muted,var(--ink));font-size:11px}
 .mimetic-controls{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.mimetic-controls .mimetic-choice{flex:1;min-width:0;white-space:nowrap;font-size:16px}
-.mimetic-playground .mimetic-choice,.mimetic-playground .mimetic-replay{margin:0;padding:7px 9px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font:700 12px/1.4 var(--body,system-ui)}
+.mimetic-playground .mimetic-choice{margin:0;padding:7px 9px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font:700 12px/1.4 var(--body,system-ui)}
 .mimetic-playground .mimetic-choice[aria-pressed=true]{background:var(--accent);color:var(--paper)}
 .mimetic-playground button:focus-visible,.mimetic-playground a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .mimetic-playground .mimetic-term{margin:8px 0 2px;font-size:21px;font-weight:700}
@@ -313,42 +393,46 @@ export const mimeticStyles=`
 .mimetic-playground .mimetic-translation{margin:2px 0 8px;color:var(--muted,var(--ink))}
 .mimetic-figure{margin:12px 0 8px}.mimetic-stage{overflow:hidden;background:var(--paper);border:1px solid var(--line)}
 .mimetic-art{display:block;width:100%;height:auto;max-height:180px;color:var(--ink)}.mimetic-trail{opacity:.55}
+.mimetic-print{position:relative;aspect-ratio:2/1;overflow:hidden;background:#f3e7ce;max-height:none;contain:paint}
+.mimetic-frames{display:block;width:1200%;height:100%;background-size:100% 100%;background-repeat:no-repeat;image-rendering:pixelated;transform:translateX(-41.6666667%)}
+.mimetic-print[data-playing=true] .mimetic-frames{animation:mimetic-print-frames 2.4s steps(11,end) infinite}
+@keyframes mimetic-print-frames{0%{transform:translateX(0)}91.6666667%,100%{transform:translateX(-91.6666667%)}}
 .mimetic-playground .mimetic-caption{padding:5px 0;font-size:11px;overflow-wrap:anywhere}
 .mimetic-playground .mimetic-reference{display:inline-block;margin:4px 0;font-size:10px;color:var(--accent);overflow-wrap:anywhere;text-underline-offset:3px}
 .mimetic-more{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font-size:11px;color:var(--muted)}.mimetic-more summary{cursor:pointer;font-weight:600}.mimetic-motion-note{display:none}.mimetic-art .mimetic-spin{transform-origin:120px 65px}.mimetic-art .mimetic-orbit{transform-origin:120px 65px}.mimetic-art .mimetic-expression{transform-origin:120px 65px}.mimetic-art .mimetic-spark,.mimetic-art .mimetic-wheel{transform-box:fill-box;transform-origin:center}
-.mimetic-art[data-playing=true] .mimetic-roll{animation:mimetic-roll 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-wheel{animation:mimetic-wheel 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-spin{animation:mimetic-spin 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-orbit{animation:mimetic-spin 2.4s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-spark{animation:mimetic-spark 1.8s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-glare{animation:mimetic-glare 1.8s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-rainfall{animation:mimetic-rainfall .65s ease-in-out 3}
-.mimetic-art[data-playing=true] .mimetic-touch{animation:mimetic-touch 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-expression{animation:mimetic-expression 1.8s ease-in-out 1}
+.mimetic-art[data-playing=true] .mimetic-roll{animation:mimetic-roll 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-wheel{animation:mimetic-wheel 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-spin{animation:mimetic-spin 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-orbit{animation:mimetic-spin 2.4s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-spark{animation:mimetic-spark 1.8s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-glare{animation:mimetic-glare 1.8s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-rainfall{animation:mimetic-rainfall .65s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-touch{animation:mimetic-touch 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-expression{animation:mimetic-expression 1.8s ease-in-out infinite}
 .mimetic-art .mimetic-pulse,.mimetic-art .mimetic-breathe,.mimetic-art .mimetic-tilt,.mimetic-art .mimetic-nod,.mimetic-art .mimetic-sway,.mimetic-art .mimetic-stretch{transform-box:fill-box;transform-origin:center}
-.mimetic-art[data-playing=true] .mimetic-pulse{animation:mimetic-pulse 1.8s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-bob{animation:mimetic-bob 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-restless{animation:mimetic-restless 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-breathe{animation:mimetic-breathe 2.2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-clear{animation:mimetic-clear 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-tilt{animation:mimetic-tilt 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-nod{animation:mimetic-nod 2.2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-sag{animation:mimetic-sag 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-sway{animation:mimetic-sway 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-stagger{animation:mimetic-stagger 2.3s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-rise{animation:mimetic-rise 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-slow-walk{animation:mimetic-slow-walk 2.4s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-walk{animation:mimetic-walk 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-sort{animation:mimetic-sort 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-gaze{animation:mimetic-gaze 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-laugh{animation:mimetic-laugh .7s ease-in-out 3}
-.mimetic-art[data-playing=true] .mimetic-drop{animation:mimetic-drop .7s ease-in-out 3}
-.mimetic-art[data-playing=true] .mimetic-press{animation:mimetic-press 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-stretch{animation:mimetic-stretch 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-lift{animation:mimetic-lift 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-slide{animation:mimetic-slide 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-crack{animation:mimetic-crack 2s ease-in-out 1}
-.mimetic-art[data-playing=true] .mimetic-knock{animation:mimetic-knock .6s ease-in-out 3}
+.mimetic-art[data-playing=true] .mimetic-pulse{animation:mimetic-pulse 1.8s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-bob{animation:mimetic-bob 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-restless{animation:mimetic-restless 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-breathe{animation:mimetic-breathe 2.2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-clear{animation:mimetic-clear 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-tilt{animation:mimetic-tilt 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-nod{animation:mimetic-nod 2.2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-sag{animation:mimetic-sag 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-sway{animation:mimetic-sway 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-stagger{animation:mimetic-stagger 2.3s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-rise{animation:mimetic-rise 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-slow-walk{animation:mimetic-slow-walk 2.4s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-walk{animation:mimetic-walk 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-sort{animation:mimetic-sort 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-gaze{animation:mimetic-gaze 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-laugh{animation:mimetic-laugh .7s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-drop{animation:mimetic-drop .7s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-press{animation:mimetic-press 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-stretch{animation:mimetic-stretch 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-lift{animation:mimetic-lift 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-slide{animation:mimetic-slide 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-crack{animation:mimetic-crack 2s ease-in-out infinite}
+.mimetic-art[data-playing=true] .mimetic-knock{animation:mimetic-knock .6s ease-in-out infinite}
 @keyframes mimetic-roll{0%,100%{translate:0 0}50%{translate:80px 0}}
 @keyframes mimetic-wheel{0%,100%{rotate:0deg}50%{rotate:150deg}}
 @keyframes mimetic-spin{0%{rotate:0deg}100%{rotate:720deg}}
@@ -380,5 +464,5 @@ export const mimeticStyles=`
 @keyframes mimetic-slide{0%,100%{translate:0 0}50%{translate:30px 0}}
 @keyframes mimetic-crack{0%,100%{translate:0 0}50%{translate:0 -3px}}
 @keyframes mimetic-knock{0%,100%{translate:0 0}50%{translate:7px 0}}
-@media(prefers-reduced-motion:reduce){.mimetic-art[data-playing=true] *{animation:none!important}.mimetic-playground .mimetic-replay{display:none}.mimetic-playground .mimetic-motion-note{display:block;margin:6px 0;font-size:11px;color:var(--muted,var(--ink))}}
+@media(prefers-reduced-motion:reduce){.mimetic-art[data-playing=true] *{animation:none!important}.mimetic-playground .mimetic-motion-note{display:block;margin:6px 0;font-size:11px;color:var(--muted,var(--ink))}}
 `;

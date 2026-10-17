@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kō — Mimetics art review</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#e7dcc5;color:#243344;font:15px/1.6 system-ui,sans-serif}main{max-width:1400px;padding:32px 24px;margin:auto}h1{font:38px Georgia,serif;margin:8px 0}.eyebrow{font:12px monospace;letter-spacing:2px;color:#984b38;text-transform:uppercase}.intro{max-width:750px}input{font:inherit;padding:12px;border:1px solid #243344;background:#f5ead1;width:100%;margin:16px 0 24px}#grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:24px}.card{min-width:0;background:#f5ead1;border:1px solid #243344;padding:18px;box-shadow:3px 4px 0 #24334420}h2{font:22px Georgia,serif;margin:0 0 12px}.controls{display:flex;gap:8px}.controls button{flex:1;font-size:20px}button{padding:8px 12px;border:1px solid #243344;background:#f5ead1;color:#243344;font:inherit;cursor:pointer}button[aria-pressed=true]{background:#243344;color:#f5ead1}button:focus-visible,input:focus-visible{outline:3px solid #984b38;outline-offset:3px}.stage{aspect-ratio:2/1;overflow:hidden;background:#f3e7ce;margin:16px -8px}.frames{display:block;width:1200%;height:100%;background-size:100% 100%;image-rendering:pixelated;transform:translateX(-41.6666667%)}.stage[data-playing=true] .frames{animation:frames 2.4s steps(11,end) infinite}@keyframes frames{0%{transform:translateX(0)}91.6666667%,100%{transform:translateX(-91.6666667%)}}.gloss{font-weight:600;min-height:48px}.caption{font-size:12px;color:#535a5b}.example{font-size:16px}.translation{font-size:12px;color:#535a5b}.count{font:12px monospace;color:#984b38}.still-note{display:none}@media(prefers-reduced-motion:reduce){.stage[data-playing=true] .frames{animation:none}.still-note{display:block;font-size:12px}}
+</style>
+<main><p class="eyebrow">Kō · 90 expressions · 45 comparisons</p><h1>Meaning in motion.</h1><p class="intro">Ukiyo-e colors and paper texture meet low-poly pixel dioramas. Compare the expressions as each scene loops to show its action or sensation. All artwork is bundled locally.</p><label for="search">Find an expression or meaning</label><input id="search" type="search" placeholder="Japanese or English"><p class="count" role="status"></p><div id="grid"></div></main>
+<script src="gallery-data.js"></script>
+<script>
+const grid=document.querySelector('#grid'),posters={relief:[9,8],stomach:[5,10],smile:[8,8],crispness:[8,8],thinCrunch:[8,8],freshCrunch:[8,8],neatness:[10,10]};
+function node(tag,cls,text){const el=document.createElement(tag);el.className=cls;if(text!==undefined)el.textContent=text;return el}
+for(const entry of window.mimeticGallery){
+  const card=node('section','card');card.dataset.search=JSON.stringify(entry).toLowerCase();
+  const title=node('h2','',entry.sceneUse),controls=node('div','controls'),gloss=node('p','gloss'),stage=node('div','stage'),caption=node('p','caption'),example=node('p','example'),translation=node('p','translation'),note=node('p','still-note','Reduced motion: the illustration stays still.');example.lang='ja';
+  let selected=0;const buttons=entry.variants.map((variant,index)=>{const button=node('button','',variant.term);button.lang='ja';button.addEventListener('click',()=>show(index,true));controls.append(button);return button});
+  function draw(play){stage.dataset.playing=String(play);const frames=node('span','frames');frames.style.backgroundImage=`url('../../public/art/mimetics/${entry.id}-${selected}.webp')`;frames.style.transform=`translateX(-${(posters[entry.id]?.[selected]??5)*100/12}%)`;stage.replaceChildren(frames)}
+  function show(index,play){selected=index;const variant=entry.variants[index];buttons.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));gloss.textContent=variant.gloss;caption.textContent=variant.sceneDescription;example.textContent=variant.example;translation.textContent=variant.translation;draw(play)}
+  card.append(title,controls,gloss,stage,caption,note,example,translation);grid.append(card);show(0,true)
+}
+document.querySelector('#search').addEventListener('input',event=>{const q=event.target.value.trim().toLowerCase();let count=0;for(const card of grid.children){card.hidden=!card.dataset.search.includes(q);if(!card.hidden)count++}document.querySelector('.count').textContent=`${count} comparisons`});document.querySelector('#search').dispatchEvent(new Event('input'));
+</script>
+</html>

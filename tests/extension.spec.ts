@@ -195,6 +195,53 @@ test('popup shows page status, persists switches, and loads packaged branding',a
   await popup.close();await page.close();
 });
 
+test('popup opens standalone playgrounds offline without readings or a supported webpage',async()=>{
+  const worker=context.serviceWorkers()[0];
+  await settings({enabled:false,readingView:{sites:{},spacing:2.8,fontSize:20,width:420}});
+  const protectedPage=await context.newPage();await protectedPage.goto('about:blank');
+  const popup=await context.newPage();let playground:Page|undefined;
+  const errors:string[]=[];
+  try {
+    await protectedPage.bringToFront();await popup.setViewportSize({width:380,height:580});
+    await popup.goto(`chrome-extension://${extension}/popup.html`);
+    const link=popup.getByRole('link',{name:'Open Playgrounds',exact:true});await expect(link).toBeInViewport();
+    const footer=popup.getByRole('link',{name:'About Kō',exact:true});await footer.scrollIntoViewIfNeeded();await expect(footer).toBeInViewport();
+    await context.setOffline(true);
+    [playground]=await Promise.all([popup.waitForEvent('popup'),link.click()]);playground.on('pageerror',error=>errors.push(error.message));
+    await playground.waitForLoadState();expect(playground.url()).toBe(`chrome-extension://${extension}/playgrounds.html`);
+    await popup.close();
+    await expect(playground.getByRole('heading',{name:'Playgrounds',exact:true})).toBeVisible();
+    await playground.getByRole('tab',{name:'Mimetics',exact:true}).click();
+    await expect(playground.locator('.playground-entry')).toHaveCount(90);
+    await playground.getByLabel('Search mimetic expressions').fill('もぐもぐ');await playground.locator('.playground-entry').click();
+    await expect(playground.locator('.mimetic-term')).toHaveText('もぐもぐ');
+    await expect(playground.locator('.mimetic-art')).toHaveAttribute('data-style','woodblock');
+    await playground.screenshot({path:test.info().outputPath('standalone-mimetics.png')});
+    expect(await playground.locator('.mimetic-art').evaluate(el=>el.getAnimations({subtree:true}).every(animation=>animation.effect!.getTiming().iterations===Infinity))).toBe(true);
+    await worker.evaluate(()=>chrome.storage.local.set({showLegacyAnimations:true}));
+    await expect(playground.locator('svg.mimetic-art')).toHaveCount(1);
+    await worker.evaluate(()=>chrome.storage.local.set({showLegacyAnimations:false}));
+    await expect(playground.locator('.mimetic-art')).toHaveAttribute('data-style','woodblock');
+    await playground.getByRole('tab',{name:'Word forms',exact:true}).click();
+    await playground.getByLabel('Dictionary-form word',{exact:true}).fill('食べる');await playground.getByRole('button',{name:'Check word locally',exact:true}).click();
+    await expect(playground.locator('.playground-confirmation button')).toHaveCount(1);await playground.locator('.playground-confirmation button').click();
+    await expect(playground.locator('.verb-playground')).toBeVisible();await playground.getByLabel('Verb form').selectOption('potential');
+    expect(await playground.locator('.verb-japanese').evaluate(el=>{const copy=el.cloneNode(true) as HTMLElement;copy.querySelectorAll('rt').forEach(rt=>rt.remove());return copy.textContent;})).toBe('食べられる');
+    await playground.getByRole('button',{name:'Change word',exact:true}).click();
+    await playground.getByLabel('Dictionary-form word',{exact:true}).fill('高い');await playground.getByRole('button',{name:'Check word locally',exact:true}).click();
+    await expect(playground.locator('.playground-confirmation button')).toHaveCount(1);await playground.locator('.playground-confirmation button').click();
+    await expect(playground.locator('.adjective-playground')).toBeVisible();
+    await playground.setViewportSize({width:320,height:700});
+    expect(await playground.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    await playground.screenshot({path:test.info().outputPath('standalone-mobile.png')});
+    expect((await worker.evaluate(()=>chrome.storage.local.get('readingView'))).readingView.sites).toEqual({});
+    expect(errors).toEqual([]);
+  } finally {
+    await context.setOffline(false);await playground?.close();if(!popup.isClosed())await popup.close();await protectedPage.close();
+    await worker.evaluate(()=>chrome.storage.local.remove('showLegacyAnimations'));await settings({enabled:true});
+  }
+});
+
 test('toolbar follows tab preferences and navigation, stays active without kanji, and recovers Docs availability',async()=>{
   await settings({enabled:true,excluded:[],readingView:{sites:{},spacing:2.8,fontSize:20,width:420}});
   const worker=context.serviceWorkers()[0],page=await context.newPage();

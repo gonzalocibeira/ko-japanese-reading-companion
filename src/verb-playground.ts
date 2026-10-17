@@ -286,3 +286,20 @@ export function resolvePotentialBase(source:VerbBase,query:string,words:Word[]):
     if(potential?.text===source.lemma && potential.reading===source.reading)return candidate;
   }
 }
+
+/** Class-aware construction steps; highlighting remains relative to the source. */
+export function verbConstruction(base:VerbBase,state:VerbState):string {
+  const full=verbBaseText(base),result=(base.prefix ?? '')+generate(base,state).text;
+  const steps:Record<VerbFamilyId,string>={simple:'Conjugate the dictionary verb.',potential:'Godan: change the final u-row to the e-row and add る. Ichidan: replace る with られる. する becomes できる; 来る becomes 来られる.',passive:'Godan: use the a-row stem (う → わ) + れる. Ichidan: replace る with られる. する → される; 来る → 来られる.',causative:'Godan: use the a-row stem (う → わ) + せる. Ichidan: replace る with させる. する → させる; 来る → 来させる.',causativePassive:'Build the full causative, then replace its final る with られる.',desire:'Add たい to the ます stem, then use い-adjective endings for tense and negation; add です for politeness.',te:'Use the class-specific て／で form; for negative use the negative stem + なくて.',without:'Use the negative stem + ないで.',conditionalBa:'Godan: e-row + ば. Ichidan: replace る with れば. Negative: negative stem + なければ.',conditionalTara:'Build the past form (plain or polite, affirmative or negative), then add ら.',volitional:'Godan: o-row + う. Ichidan: replace る with よう. する → しよう; 来る → 来よう. Polite: ます stem + ましょう.',request:'Use the て／で form + ください; negative: negative stem + ないでください.',imperative:'Godan: final e-row. Ichidan: replace る with ろ. する → しろ; 来る → 来い.',prohibition:'Add な to the dictionary form.',teIru:'Use the て／で form + いる; conjugate いる. Spoken shortening drops its initial い.',teMiru:'Use the て／で form + みる; conjugate みる as ichidan.',teOku:'Use the て／で form + おく; conjugate おく as godan. Spoken ておく／でおく becomes とく／どく.',teShimau:'Use the て／で form + しまう; conjugate しまう as godan. Spoken てしまう／でしまう becomes ちゃう／じゃう.'};
+  let rule=steps[state.family];
+  if(['simple','potential','passive','causative','causativePassive','teIru','teMiru','teOku','teShimau'].includes(state.family)) {
+    const target=derived(base,state.family,state.spoken);
+    if(state.polite)rule+=' Use its ます stem + '+(state.negative?(state.past?'ませんでした':'ません'):(state.past?'ました':'ます'))+'.';
+    else if(state.negative)rule+=' Use its negative stem + '+(state.past?'なかった':'ない')+'.';
+    else if(state.past)rule+=' Use its class-specific た／だ past form.';
+    else rule+=' Keep the resulting dictionary form.';
+    if(target!==base)rule+=' Resulting base: '+(base.prefix ?? '')+target.lemma+'.';
+    if(base.reading==='ある' && state.negative)rule+=' ある has the irregular negative ない.';
+  }
+  return `${full} → ${result}. ${rule}`;
+}

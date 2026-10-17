@@ -1,7 +1,9 @@
 import {appearanceForSite,validOverrides,readingViewPreferences,panelEnabled,updateReadingView,saveCorrection,removeCorrection,importCorrections,pauseSite,updateSiteAppearance,correctionBackupLimit,correctionMatches} from './preferences';
 import {uiTheme} from './ui-theme';
 import type {PageStatus} from './action-state';
+import {setupUpdateBanner} from './update-banner';
 const theme=document.createElement('style');theme.textContent=uiTheme;document.head.append(theme);
+void setupUpdateBanner();
 async function main() {
   const [tab] = await chrome.tabs.query({active:true, currentWindow:true});
   let hostname='';

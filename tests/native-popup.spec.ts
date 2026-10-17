@@ -13,9 +13,11 @@ test('native toolbar popup opens at full height and wheel-scrolls to footer link
   });
   try {
     const worker=context.serviceWorkers()[0] ?? await context.waitForEvent('serviceworker');
+    await context.pages()[0].bringToFront();
     await worker.evaluate(async()=>{
       await chrome.storage.local.set({enabled:false});
-      await chrome.action.openPopup();
+      const [window]=await chrome.windows.getAll({windowTypes:['normal']});
+      await chrome.action.openPopup({windowId:window.id});
     });
     // Action popups are separate targets, not normal Playwright context pages.
     const browser=await context.browser()!.newBrowserCDPSession();
@@ -38,6 +40,11 @@ test('native toolbar popup opens at full height and wheel-scrolls to footer link
     });
     const evaluate=async(expression:string)=>(await send('Runtime.evaluate',{expression,returnByValue:true})).result.value;
     await expect.poll(()=>evaluate('innerHeight')).toBe(580);
+    await expect.poll(()=>evaluate('!document.querySelector("#update-banner").hidden')).toBe(true);
+    const announcement=await send('Page.captureScreenshot');
+    await writeFile(test.info().outputPath('native-popup-update.png'),Buffer.from(announcement.data,'base64'));
+    await evaluate('document.querySelector("#dismiss-update").click()');
+    await expect.poll(()=>evaluate('document.querySelector("#update-banner").hidden')).toBe(true);
     const footerVisible=`Array.from(document.querySelectorAll('footer a')).every(a=>{const r=a.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;})`;
     await expect.poll(()=>evaluate(footerVisible)).toBe(true);
     expect(await evaluate('document.body.scrollHeight <= document.body.clientHeight')).toBe(true);

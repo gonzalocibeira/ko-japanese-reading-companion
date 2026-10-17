@@ -1,0 +1,362 @@
+{
+  "rolling-0": [
+    3,
+    4
+  ],
+  "rolling-1": [
+    3,
+    4
+  ],
+  "rotation-0": [
+    3,
+    4
+  ],
+  "rotation-1": [
+    4,
+    3
+  ],
+  "light-0": [
+    3,
+    4
+  ],
+  "light-1": [
+    3,
+    4
+  ],
+  "rain-0": [
+    3,
+    4
+  ],
+  "rain-1": [
+    3,
+    4
+  ],
+  "texture-0": [
+    3,
+    4
+  ],
+  "texture-1": [
+    3,
+    4
+  ],
+  "smile-0": [
+    3,
+    4
+  ],
+  "smile-1": [
+    3,
+    4
+  ],
+  "anticipation-0": [
+    3,
+    4
+  ],
+  "anticipation-1": [
+    3,
+    4
+  ],
+  "irritation-0": [
+    3,
+    4
+  ],
+  "irritation-1": [
+    3,
+    4
+  ],
+  "relief-0": [
+    4,
+    3
+  ],
+  "relief-1": [
+    3,
+    4
+  ],
+  "worry-0": [
+    3,
+    4
+  ],
+  "worry-1": [
+    3,
+    4
+  ],
+  "sleep-0": [
+    3,
+    4
+  ],
+  "sleep-1": [
+    3,
+    4
+  ],
+  "exhaustion-0": [
+    3,
+    4
+  ],
+  "exhaustion-1": [
+    3,
+    4
+  ],
+  "pain-0": [
+    3,
+    4
+  ],
+  "pain-1": [
+    3,
+    4
+  ],
+  "stomach-0": [
+    3,
+    4
+  ],
+  "stomach-1": [
+    3,
+    4
+  ],
+  "balance-0": [
+    3,
+    4
+  ],
+  "balance-1": [
+    4,
+    3
+  ],
+  "temperature-0": [
+    3,
+    4
+  ],
+  "temperature-1": [
+    4,
+    3
+  ],
+  "walking-0": [
+    3,
+    4
+  ],
+  "busy-1": [
+    3,
+    4
+  ],
+  "walking-1": [
+    3,
+    4
+  ],
+  "busy-0": [
+    3,
+    4
+  ],
+  "wandering-0": [
+    3,
+    4
+  ],
+  "wandering-1": [
+    3,
+    4
+  ],
+  "looking-0": [
+    3,
+    4
+  ],
+  "looking-1": [
+    4,
+    3
+  ],
+  "laughter-0": [
+    3,
+    4
+  ],
+  "laughter-1": [
+    3,
+    4
+  ],
+  "crying-0": [
+    4,
+    3
+  ],
+  "crying-1": [
+    3,
+    4
+  ],
+  "softness-0": [
+    3,
+    4
+  ],
+  "softness-1": [
+    3,
+    4
+  ],
+  "moisture-0": [
+    3,
+    4
+  ],
+  "moisture-1": [
+    3,
+    4
+  ],
+  "stickiness-0": [
+    4,
+    3
+  ],
+  "stickiness-1": [
+    3,
+    4
+  ],
+  "slipperiness-0": [
+    3,
+    4
+  ],
+  "slipperiness-1": [
+    3,
+    4
+  ],
+  "crispness-0": [
+    3,
+    4
+  ],
+  "crispness-1": [
+    3,
+    4
+  ],
+  "dryness-0": [
+    3,
+    4
+  ],
+  "dryness-1": [
+    3,
+    4
+  ],
+  "crowd-0": [
+    3,
+    4
+  ],
+  "crowd-1": [
+    3,
+    4
+  ],
+  "knocking-0": [
+    3,
+    4
+  ],
+  "knocking-1": [
+    3,
+    4
+  ],
+  "eating-0": [
+    3,
+    4
+  ],
+  "eating-1": [
+    3,
+    4
+  ],
+  "thinCrunch-0": [
+    3,
+    4
+  ],
+  "thinCrunch-1": [
+    3,
+    4
+  ],
+  "viscosity-0": [
+    3,
+    4
+  ],
+  "viscosity-1": [
+    4,
+    3
+  ],
+  "flavor-0": [
+    3,
+    4
+  ],
+  "flavor-1": [
+    3,
+    4
+  ],
+  "elasticFood-0": [
+    3,
+    4
+  ],
+  "elasticFood-1": [
+    3,
+    4
+  ],
+  "freshCrunch-0": [
+    3,
+    4
+  ],
+  "freshCrunch-1": [
+    3,
+    4
+  ],
+  "rattling-0": [
+    3,
+    4
+  ],
+  "metalSounds-0": [
+    3,
+    4
+  ],
+  "rattling-1": [
+    4,
+    3
+  ],
+  "metalSounds-1": [
+    3,
+    4
+  ],
+  "quietVoices-0": [
+    3,
+    4
+  ],
+  "quietVoices-1": [
+    3,
+    4
+  ],
+  "smallDrops-0": [
+    3,
+    4
+  ],
+  "smallDrops-1": [
+    3,
+    4
+  ],
+  "conversation-0": [
+    3,
+    4
+  ],
+  "conversation-1": [
+    3,
+    4
+  ],
+  "discretion-0": [
+    3,
+    4
+  ],
+  "discretion-1": [
+    3,
+    4
+  ],
+  "unhurried-0": [
+    3,
+    4
+  ],
+  "unhurried-1": [
+    3,
+    4
+  ],
+  "neatness-0": [
+    3,
+    4
+  ],
+  "neatness-1": [
+    3,
+    4
+  ],
+  "smoothWork-0": [
+    3,
+    4
+  ],
+  "smoothWork-1": [
+    3,
+    4
+  ]
+}

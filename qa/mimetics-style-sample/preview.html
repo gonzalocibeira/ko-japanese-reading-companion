@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mimetics style sample — しとしと</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#e7dcc5;color:#243344;font:16px/1.6 system-ui,sans-serif}main{max-width:680px;padding:36px 24px;margin:auto}header{border-bottom:3px double #243344;padding-bottom:16px}.eyebrow{font:12px monospace;letter-spacing:2px;text-transform:uppercase;color:#984b38}h1{font:36px Georgia,serif;margin:12px 0}p{margin:12px 0}.card{background:#f5ead1;border:1px solid #243344;padding:20px;margin-top:24px;box-shadow:4px 4px 0 #24334426}.term{font-size:28px;margin:0}.scene{aspect-ratio:2/1;background-image:url(shitoshito-sprites.png);background-size:300% 400%;image-rendering:pixelated;margin:16px -8px}.caption{font-size:13px;color:#4d5660}button{background:#243344;color:#f5ead1;border:0;padding:12px 18px;font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #984b38;outline-offset:3px}.note{font-size:13px;color:#4d5660}
+</style>
+<main>
+<header><p class="eyebrow">Kō · Mimetics · Art direction sample</p><h1>Quiet rain, printed in pixels.</h1><p>PS1-inspired miniature geometry, indigo and vermilion, and the warmth of a woodblock print.</p></header>
+<section class="card" aria-label="Gentle rain animation sample">
+<h2 class="term" lang="ja">しとしと</h2><p>Rain falling quietly and gently.</p>
+<div class="scene" role="img" aria-label="Gentle rain falls on a miniature Japanese shop; small ripples spread across puddles."></div>
+<p lang="ja">庭の花にしとしとと雨が降り続いている。</p><p class="caption">Gentle rain keeps falling on the garden flowers.</p>
+<button type="button" id="replay">Replay sample</button>
+</section>
+<p class="note">One generated twelve-frame animation. This preview plays for 2.4 seconds; reduced motion keeps it still. Awaiting style approval before app integration or further generation.</p>
+</main>
+<script>
+const scene=document.querySelector('.scene'),motion=matchMedia('(prefers-reduced-motion: reduce)');let timer;
+function stop(){clearInterval(timer);scene.style.backgroundPosition='0% 0%'}
+function play(){stop();if(motion.matches)return;let frame=0;timer=setInterval(()=>{frame++;if(frame>=12){clearInterval(timer);return}scene.style.backgroundPosition=`${frame%3*50}% ${Math.floor(frame/3)*100/3}%`},200)}
+document.querySelector('#replay').addEventListener('click',play);motion.addEventListener('change',stop);const preload=new Image();preload.onload=play;preload.src='shitoshito-sprites.png';
+</script>
+</html>

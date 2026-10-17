@@ -131,14 +131,54 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     }
   });
 
+  // src/update-banner.ts
+  async function setupUpdateBanner() {
+    const banner = document.querySelector("#update-banner");
+    if (!banner) return;
+    const version = chrome.runtime.getManifest().version;
+    const key = `dismissedUpdate:${version}`;
+    const close = banner.querySelector("#dismiss-update");
+    const error = banner.querySelector("#update-error");
+    const sync = (changes, area) => {
+      if (area === "local" && changes[key]) banner.hidden = changes[key].newValue === true;
+    };
+    chrome.storage.onChanged.addListener(sync);
+    close.addEventListener("click", async () => {
+      close.disabled = true;
+      error.hidden = true;
+      try {
+        await chrome.storage.local.set({ [key]: true });
+        banner.hidden = true;
+        document.querySelector("#enabled")?.focus();
+      } catch {
+        error.textContent = "Could not save dismissal. Try again.";
+        error.hidden = false;
+      } finally {
+        close.disabled = false;
+      }
+    });
+    try {
+      const state = await chrome.storage.local.get(key);
+      banner.hidden = state[key] === true;
+    } catch {
+    }
+  }
+  var init_update_banner = __esm({
+    "src/update-banner.ts"() {
+      "use strict";
+    }
+  });
+
   // src/popup.ts
   var require_popup = __commonJS({
     "src/popup.ts"() {
       init_preferences();
       init_ui_theme();
+      init_update_banner();
       var theme = document.createElement("style");
       theme.textContent = uiTheme;
       document.head.append(theme);
+      void setupUpdateBanner();
       async function main() {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
         let hostname = "";

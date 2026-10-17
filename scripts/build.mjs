@@ -5,12 +5,14 @@ import {prepareReleaseNotes} from './release-notes.mjs';
 const {version}=JSON.parse(await readFile('public/manifest.json','utf8'));
 const releaseNotes=prepareReleaseNotes(await readFile('docs/release-notes.md','utf8'),version);
 const aboutTemplate=await readFile('public/about.html','utf8');
+const popupTemplate=await readFile('public/popup.html','utf8');
+if(popupTemplate.split('<!-- KO_UPDATE_BANNER -->').length!==2)throw new Error('Popup must contain one update-banner placeholder');
 if(aboutTemplate.split('<!-- KO_RELEASE_NOTES -->').length!==2)throw new Error('About page must contain one release-notes placeholder');
 await rm('dist',{recursive:true,force:true});
 await mkdir('dist',{recursive:true});
 // Embed the shared logo in the panel without exposing extension resources to pages.
 const panelLogo=await readFile('public/icons/logo.svg','utf8');
-await build({entryPoints:['src/background.ts','src/content.ts','src/docs-bridge.ts','src/offscreen.ts','src/tokenizer.ts','src/popup.ts','src/about.ts'],outdir:'dist',bundle:true,platform:'browser',target:'chrome116',format:'iife',sourcemap:true,alias:{path:'./src/path-shim.ts'},define:{__KO_LOGO_SVG__:JSON.stringify(panelLogo)},plugins:[{
+await build({entryPoints:['src/background.ts','src/content.ts','src/docs-bridge.ts','src/offscreen.ts','src/tokenizer.ts','src/popup.ts','src/about.ts','src/playgrounds.ts'],outdir:'dist',bundle:true,platform:'browser',target:'chrome116',format:'iife',sourcemap:true,alias:{path:'./src/path-shim.ts'},define:{__KO_LOGO_SVG__:JSON.stringify(panelLogo)},plugins:[{
   name:'csp-safe-async-global',setup(build) {
     // async 2 embeds a legacy lodash global-object fallback. Chrome 116 has
     // globalThis; remove string compilation without modifying node_modules.
@@ -23,6 +25,7 @@ await build({entryPoints:['src/background.ts','src/content.ts','src/docs-bridge.
   }
 }]});
 await cp('public','dist',{recursive:true});
+await writeFile('dist/popup.html',popupTemplate.replace('<!-- KO_UPDATE_BANNER -->',releaseNotes.banner));
 await writeFile('dist/about.html',aboutTemplate.replace('<!-- KO_RELEASE_NOTES -->',releaseNotes.about));
 await writeFile('dist/release-notes.html',releaseNotes.history);
 // The bundled policy and public repository policy use one source.

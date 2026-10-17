@@ -1,3 +1,4 @@
+import {dictionaryCommandAlternatives,recoverContextualCommand} from '../src/command-dictionary';
 import {test,expect} from '@playwright/test';
 import kuromoji from 'kuromoji';
 import {buildVerbPlayground,createVerbPlayground,dictionaryVerbCandidates,potentialBaseQueries,resolvePotentialBase,isRaDroppedPotential,restrictVerbBase,verbBaseText,verbFamilies,type VerbBase,type VerbFamilyId,type VerbPlayground,type VerbState} from '../src/verb-playground';
@@ -9,9 +10,10 @@ let tokenizer:kuromoji.Tokenizer<kuromoji.IpadicFeatures>;
 test.beforeAll(async()=>{
   tokenizer=await new Promise((resolve,reject)=>kuromoji.builder({dicPath:'node_modules/kuromoji/dict/'}).build((error,value)=>error?reject(error):resolve(value)));
 });
-function analyze(text:string):Word[] {
+function analyze(text:string,recover=true):Word[] {
   let offset=0;
-  return tokenizer.tokenize(text).flatMap(token=>{
+  return tokenizer.tokenize(text).flatMap(original=>{
+    const token=recover?recoverContextualCommand(tokenizer,text,text.indexOf(original.surface_form,offset)+original.surface_form.length,original):original;
     const start=text.indexOf(token.surface_form,offset);offset=start+token.surface_form.length;
     if(!/[\p{L}\p{N}]/u.test(token.surface_form))return [];
     const lemma=token.basic_form && token.basic_form!=='*'?token.basic_form:token.surface_form;
@@ -259,4 +261,34 @@ test('lexical kana homographs retain their forms without unsupported potential i
     expect(dictionaryVerbCandidates(input,analyze(input)),input).toEqual([]);
     expect(explore(input),input).toBeUndefined();
   }
+});
+
+
+test('contextual commands recover dictionary bases and initialize the existing imperative family',()=>{
+  for(const [command,lemma,reading] of [['受け取れ','受け取る','うけとれ'],['知れ','知る','しれ']])for(const ending of ['', '\n次へ進む。','。次へ進む。','！','?','\r\n次へ進む。']) {
+    const text='痛みを'+command+ending,words=analyze(text),index=words.findIndex(w=>text.slice(w.start,w.end)===command),model=buildVerbPlayground(text,words,index)!;
+    expect(words[index],text).toMatchObject({lemma,reading,verbClass:'五段・ラ行',verbForm:'命令ｅ',lemmaReading:reading.slice(0,-1)+'る'});
+    expect(model?.initial.family,text).toBe('imperative');expect(model.source).toBe(command);expect(model.sourceReading).toBe(reading);
+    expect(form(model,'simple').text).toBe(lemma);expect(form(model,'imperative').text).toBe(command);expect(model.requiresChoice).toBe(false);
+  }
+});
+test('contextual command recovery retains continuations, clause boundaries, and unsupported stems',()=>{
+  for(const text of ['受け取れない','受け取れます','受け取れば','受け取れ、次へ進む','受け取れ,次へ進む','受け取れよ','受け取れと','受け取れね','食べ','食べ。']) {
+    const raw=tokenizer.tokenize(text),words=analyze(text);
+    expect(words[0].lemma,text).toBe(raw[0].basic_form);expect(words[0].verbClass,text).toBe(raw[0].conjugated_type);expect(words[0].verbForm,text).toBe(raw[0].conjugated_form);
+    expect(buildVerbPlayground(text,words,0)?.initial.family,text).toBe(buildVerbPlayground(text,analyze(text,false),0)?.initial.family);
+  }
+  expect(explore('食べ')).toBeUndefined();
+});
+
+
+test('command dictionary recovery requires exact spelling and reading and leaves source tokens intact',()=>{
+  const text='痛みを受け取れ',original=tokenizer.tokenize(text).at(-1)!,saved={...original};
+  expect(dictionaryCommandAlternatives(tokenizer,'受け取れ','ウケトレ')).toHaveLength(1);
+  expect(dictionaryCommandAlternatives(tokenizer,'受け取れ','ちがう')).toEqual([]);
+  expect(dictionaryCommandAlternatives(tokenizer,'あ'.repeat(41),'あ')).toEqual([]);
+  expect(dictionaryCommandAlternatives(tokenizer,'食べ','タベ')).toEqual([]);
+  expect(dictionaryCommandAlternatives(tokenizer,'受け取れ','*')).toEqual([]);
+  const recovered=recoverContextualCommand(tokenizer,text,text.length,original);
+  expect(original).toEqual(saved);expect(recovered.surface_form).toBe(original.surface_form);expect(recovered.reading).toBe(original.reading);expect(recovered.pronunciation).toBe(original.pronunciation);expect(recovered.word_position).toBe(original.word_position);
 });

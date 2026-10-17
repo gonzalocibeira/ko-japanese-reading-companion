@@ -1,7 +1,9 @@
 export interface Reading { start: number; end: number; reading: string }
+export interface AdjectiveBase {lemma:string;reading:string;kind:'i'|'na';goodCompound?:boolean}
 export interface Word {
   start:number; end:number; lemma:string; reading:string;
   /** Dictionary morphology is optional so older reading-only responses stay valid. */
+  adjectiveBases?:AdjectiveBase[];
   pos?:string; posDetail?:string; verbClass?:string; verbForm?:string; lemmaReading?:string;
 }
 export const hiragana = (text: string) => text.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));

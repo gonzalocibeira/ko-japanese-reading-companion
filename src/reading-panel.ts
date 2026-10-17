@@ -261,8 +261,8 @@ ${playgroundBrowserStyles}
     const context=this.wordContexts.get(button);
     if(context) {
       const models=wordExplorations(context.text,context.words,context.index,surface,this.overrides);
-      if(models.verb || models.mimetic || models.meaning) {
-        const explore=document.createElement('button');explore.type='button';explore.className='explore-toggle';explore.textContent=models.verb && !models.mimetic && !models.meaning?'Try verb forms':'Open playgrounds';explore.setAttribute('aria-expanded','false');
+      if(models.verb || models.adjective || models.mimetic || models.meaning) {
+        const explore=document.createElement('button');explore.type='button';explore.className='explore-toggle';explore.textContent=(models.verb || models.adjective)?'Try word forms':'Open playgrounds';explore.setAttribute('aria-expanded','false');
         const panel=renderExplorations(models,{tokenize:(texts,signal)=>this.tokenizePlayground(texts,signal)});this.exploration=panel;
         explore.addEventListener('click',()=>{panel.hidden=!panel.hidden;explore.setAttribute('aria-expanded',String(!panel.hidden));this.definition.classList.toggle('exploring',!panel.hidden);this.definition.scrollTop=0;});
         this.definition.append(explore,panel);
