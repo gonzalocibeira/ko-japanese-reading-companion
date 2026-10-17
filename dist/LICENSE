@@ -1,21 +1,75 @@
-MIT License
+Kō No-Resale License 1.0
 
 Copyright (c) 2026 Gonzalo Cibeira
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. Scope and owner
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The copyright holder and licensor is Gonzalo Cibeira (the "Owner").
+"Software" means the original Kō code, documentation, and assets supplied
+with this license, including copies, modifications, translations, ports,
+and rebranded versions of that material. Third-party material is excluded
+and remains subject to its own licenses and notices.
+
+2. Permission
+
+Subject to this license, the Owner grants you a worldwide, non-exclusive,
+royalty-free license to use, copy, inspect, modify, and distribute the
+Software in source or executable form. Personal, educational, nonprofit,
+and internal business use are permitted. You may use the Software in your
+paid work without paying the Owner.
+
+3. No resale or paid distribution
+
+Without separate written permission from the Owner, you may not sell,
+license for a fee, rent, lease, or otherwise charge for copies of, access
+to, or use of the Software, whether unchanged, modified, translated,
+ported, or rebranded. This restriction also applies when the Software is
+included in a paid bundle, product, subscription, or service. You may not
+make a payment or purchase a condition of receiving or using the Software.
+
+You may distribute the Software free of charge. You may charge for
+independent services such as support, training, or custom development,
+provided that payment is not required to obtain or use the Software and
+does not disguise a charge for the Software itself.
+
+The Owner reserves the right to sell or otherwise commercially license
+the Software. The restrictions in this section do not limit the Owner's
+exercise of rights the Owner holds independently of this license.
+
+4. Notices and modifications
+
+Every distributed copy or substantial portion of the Software must include
+this license and the applicable copyright notices. Modified distributions
+must identify that they were modified and must not imply endorsement by
+the Owner. Recipients receive permission for the covered material directly
+from the Owner under this license. You may not offer that material under
+terms that remove or contradict this license's restrictions. No trademark
+rights are granted by this license.
+
+5. Earlier releases and third-party rights
+
+This license applies only to material distributed under it. It does not
+revoke, replace, or restrict permissions already granted for copies
+previously distributed under the MIT License, including earlier copies of
+1.2.0 RC1. Material independently obtained under those earlier permissions
+remains governed by them. Third-party licenses and notices must be
+preserved, and nothing in this license restricts rights granted directly
+by third-party licensors for their material.
+
+6. Termination
+
+Your permissions under this license terminate automatically if you violate
+its terms. They are reinstated if you remedy the violation within 30 days
+after becoming aware of it, unless the Owner has previously reinstated
+your permissions following an earlier violation. Termination does not
+terminate the permissions of recipients who remain in compliance.
+
+7. Disclaimer
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE, TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW.

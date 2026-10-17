@@ -2,6 +2,12 @@
 
 Release candidate: **v1.2.0-rc.1**, 18 October 2026. The extension manifest and npm package versions are **1.2.0**. The repository’s default branch is **master**. GitHub prerelease publication and Chrome Web Store submission are separate; this RC does not submit or update the store.
 
+## License revision · 18 October 2026
+
+The republished RC1 uses the Kō No-Resale License 1.0 for original project code, documentation, and assets. Free use (including at work), modification, and free sharing are permitted. Paid distribution, paid access, and inclusion in paid products require Gonzalo Cibeira's written permission, including for modified or rebranded copies. Third-party terms are unchanged. Earlier MIT-distributed copies, including the initial RC1 publication, retain their permissions.
+
+This documentation/license revision passed build, typecheck, both existing release-announcement browser tests, and package parity/checksum verification. Executable JavaScript is unchanged from the preceding RC1 build; the 186-test and three-regression results below describe the prior runtime verification rather than a full-suite rerun for this license revision. The updated About, privacy, and release-history pages also passed all 12 offline viewport checks.
+
 ## Included changes
 
 - Shared Word forms input for dictionary-form verbs and い／な adjectives, inline adjective exploration, exact-original Reset, applicable controls, furigana, and How this form is built explanations.
@@ -37,8 +43,8 @@ Both ZIPs use the same runtime allowlist: the manual ZIP keeps `dist/`, and the 
 
 Both ZIPs contain the same **143 runtime files**, including **90 animation strips**, and match the final built distribution byte-for-byte. Run `python3 qa/release-1.2/verify-packages.py` from the repository root to recheck contents, exclusions, parity, and checksums.
 
-- `ko-japanese-reading-companion-1.2.0.zip`: 31,614,883 bytes; SHA-256 `7f98ecb9b1b14339f7d7b248b3b0604b92cab8b0bba5fbc296a563b189916bee`.
-- `ko-japanese-reading-companion-1.2.0-chrome-web-store.zip`: 31,613,403 bytes; SHA-256 `090193a449769ae39cf690ed6d1e0025933c6349cea7633575d8189949299ad6`.
+- `ko-japanese-reading-companion-1.2.0.zip`: 31,616,514 bytes; SHA-256 `551d0a5f3f4b9e8433781a30935c5243e3880cefbe8e30420694b583f3732eb1`.
+- `ko-japanese-reading-companion-1.2.0-chrome-web-store.zip`: 31,615,034 bytes; SHA-256 `0cfc4e9f066723cbc8bf8f5aadd12bcb45b7b5621d961e3d1909221ac93e6fa3`.
 
 The same hashes are saved in `SHA256SUMS` and `qa/release-1.2/packages.json`. RC1 is published as a GitHub prerelease; Chrome Web Store submission remains separate.
 
