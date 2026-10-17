@@ -57,6 +57,7 @@ export class ReadingPanel {
 :host(.playground-active){top:12px!important}
 .reader{height:100%;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);border:2px solid var(--line);overflow:hidden;font:13px/1.5 var(--body)}.reader.high{background:#fff;color:#101010}.header{display:grid;grid-template-columns:minmax(0,1fr) auto 28px;align-items:center;gap:6px 8px;padding:12px;flex:none;border-bottom:4px solid var(--line);background:var(--surface)}.header>div{min-width:0}.header .heading{grid-column:1;grid-row:1}.panel-close{grid-column:3;grid-row:1;justify-self:end;margin:0;width:28px;height:28px;padding:0;font-size:18px}.reader-hint{grid-column:1/-1;grid-row:2;margin:0}.playgrounds-open{grid-column:2;grid-row:1;display:inline-flex;align-items:center;gap:4px;margin:0;min-height:28px;padding:4px 6px;font-size:10px;background:var(--accent);color:var(--paper);white-space:nowrap}.playgrounds-open:hover{background:var(--ink)}.playgrounds-open svg{display:block;flex:none;width:14px;height:14px}.reader.playground-mode .reader-hint,.reader.playground-mode>.content,.reader.playground-mode>.status{display:none}.reader.playground-mode .heading{grid-column:1/3}.reader.playground-mode .playgrounds-open svg{display:none}.reader.playground-mode .playgrounds-open{grid-column:1/-1;grid-row:2;justify-self:start;min-height:0;padding:4px 0;border:0;background:transparent;color:var(--accent)}.heading{display:flex;align-items:center;gap:8px}.brand-mark{display:block;flex:none;width:24px;height:24px}.brand-mark svg{display:block;width:100%;height:100%}h2{font:900 16px/1.2 var(--mono);text-transform:uppercase;letter-spacing:-.5px;margin:0}small{display:block;color:var(--muted);font-size:11px;margin-top:6px}button{margin-left:auto;flex:none;background:var(--paper);border:2px solid var(--line);color:inherit;cursor:pointer;padding:7px 9px;font:700 11px/1.4 var(--mono)}button:hover{background:var(--surface)}.content:focus-visible{outline:3px solid var(--accent);outline-offset:-5px}.content{padding:20px 22px 28px;overflow:auto;overscroll-behavior:contain;flex:1;min-height:0;font:var(--reader-font,20px) var(--body);user-select:text}.line{margin:0;line-height:var(--reader-spacing,2.8);white-space:pre-wrap;overflow-wrap:anywhere}ruby{ruby-position:over;ruby-align:center}rt{font:var(--reader-ruby,.5em)/1 var(--body)}.empty{font:13px/1.6 var(--body);color:var(--muted)}.status{margin:0;padding:12px 16px;border-top:2px solid var(--line);background:var(--surface);color:var(--muted);font:10px/1.6 var(--mono)}@media print{:host{display:none!important}}
 .word{display:inline;margin:0;padding:0;border:0;background:transparent;font:inherit;line-height:inherit;color:inherit;white-space:inherit;user-select:text}.word:hover,.word[aria-pressed=true]{background:var(--surface);color:var(--accent);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}.word:focus-visible{outline-offset:2px}.definition{flex:none;max-height:44%;overflow:auto;padding:16px;border-top:4px solid var(--line);background:var(--surface)}.high .definition{background:var(--paper)}.definition header{display:flex;align-items:center;gap:8px}.definition h3{font-size:20px;margin:0;overflow-wrap:anywhere}.definition h4{margin:14px 0 6px;font:800 11px/1.4 var(--mono);text-transform:uppercase}.definition p{margin:6px 0;overflow-wrap:anywhere}.definition ol{margin:6px 0;padding-left:20px}.definition a{color:var(--accent);text-underline-offset:3px}.definition .source{font-size:10px;color:var(--muted)}.definition .pronunciation{font-size:12px;color:var(--muted)}.definition .feedback{font-size:12px;color:var(--muted)}
+.pronunciation-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 12px}.pronunciation-row .pronunciation{min-width:0;flex:1 1 auto}.definition .correction-toggle{margin:0;padding:3px 7px;border:1px solid var(--muted);background:transparent;color:var(--muted);font:500 11px/1.4 var(--body)}.definition .correction-toggle:hover,.definition .correction-toggle[aria-expanded=true]{border-color:var(--ink);background:var(--paper);color:var(--ink)}
 .resize{position:absolute;left:-6px;top:16px;bottom:16px;width:12px;cursor:ew-resize;touch-action:none}.resize:after{content:"";position:absolute;left:5px;top:0;bottom:0;width:3px;background:var(--line)}.resize:hover:after,.resize:focus-visible:after{background:var(--accent)}.resize:focus-visible{outline:3px solid var(--accent);outline-offset:0}.correction-form{margin-top:12px;padding-top:12px;border-top:2px solid var(--line)}.correction-form label{display:block;font-size:11px;font-weight:700;margin:8px 0}.correction-form input{display:block;width:100%;font:14px var(--body);color:var(--ink);background:var(--paper);padding:8px;border:2px solid var(--line);margin-top:6px}.correction-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.correction-actions button{margin:0;font-size:11px}.feedback[data-error=true]{color:var(--ink);font-weight:700;border-left:3px solid var(--line);padding-left:8px}.feedback[data-error=true]:before{content:"! "}
 .definition.exploring{max-height:70%}.definition.browsing{flex:1;min-height:0;max-height:none;padding:0;border-top:0;overflow:hidden;background:var(--paper)}.definition>header{position:sticky;top:-16px;z-index:1;padding:8px 0;background:var(--surface)}
 ${explorationStyles}
@@ -217,8 +218,8 @@ ${playgroundBrowserStyles}
     this.playground=renderPlaygroundBrowser({tokenize:(texts,signal)=>this.tokenizePlayground(texts,signal)});
     this.definition.append(this.playground.element);this.playground.focus();
   }
-  private correctionControls(surface:string,reading:string) {
-    const toggle=document.createElement('button');toggle.type='button';toggle.textContent='Correct reading';toggle.style.margin='8px 0 0';
+  private correctionControls(surface:string,reading:string,row:HTMLElement) {
+    const toggle=document.createElement('button');toggle.type='button';toggle.className='correction-toggle';toggle.textContent='Correct reading';
     const form=document.createElement('form');form.className='correction-form';form.hidden=true;
     const wordLabel=document.createElement('label');wordLabel.textContent='Word or name';
     const word=document.createElement('input');word.value=surface;word.maxLength=80;word.required=true;word.autocomplete='off';wordLabel.append(word);
@@ -246,7 +247,7 @@ ${playgroundBrowserStyles}
       catch {report('Could not restore the reading. Try again.',true);}
       finally {restore.disabled=false;}
     };
-    actions.append(save,restore,cancel);form.append(wordLabel,readingLabel,actions,feedback);this.definition.append(toggle,form);
+    actions.append(save,restore,cancel);form.append(wordLabel,readingLabel,actions,feedback);row.append(toggle);this.definition.append(form);
   }
   private define(button:HTMLButtonElement) {
     this.dismissDefinition();const version=this.lookupVersion;
@@ -257,7 +258,8 @@ ${playgroundBrowserStyles}
     const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','Close word details');close.addEventListener('click',()=>this.dismissDefinition(true));
     header.append(title,close);this.definition.append(header);
     const pronunciation=document.createElement('p');pronunciation.className='pronunciation';pronunciation.lang='ja';
-    pronunciation.textContent=[button.dataset.reading,word!==surface?`辞書形: ${word}`:''].filter(Boolean).join(' · ');this.definition.append(pronunciation);
+    pronunciation.textContent=[button.dataset.reading,word!==surface?`辞書形: ${word}`:''].filter(Boolean).join(' · ');
+    const pronunciationRow=document.createElement('div');pronunciationRow.className='pronunciation-row';pronunciationRow.append(pronunciation);this.definition.append(pronunciationRow);
     const context=this.wordContexts.get(button);
     if(context) {
       const models=wordExplorations(context.text,context.words,context.index,surface,this.overrides);
@@ -268,7 +270,7 @@ ${playgroundBrowserStyles}
         this.definition.append(explore,panel);
       }
     }
-    if(/[\p{Script=Han}々]/u.test(surface))this.correctionControls(surface,button.dataset.reading ?? '');
+    if(/[\p{Script=Han}々]/u.test(surface))this.correctionControls(surface,button.dataset.reading ?? '',pronunciationRow);
     const body=document.createElement('div');body.className='definition-body';this.definition.append(body);
     void this.lookupDefinitions(word,body,version);
   }

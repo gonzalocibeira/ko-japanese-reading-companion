@@ -8,6 +8,7 @@ Release candidate: **v1.2.0-rc.1**, 18 October 2026. The extension manifest and 
 - Bounded dictionary-backed command recovery for 受け取れ and 知れ at supported text, line, and sentence-ending boundaries. Ambiguous forms and unsupported continuations retain their original analysis.
 - 90 mimetic expressions in 45 comparisons, including 30 new expressions. All 90 have original examples, translations, usage notes, references, and bundled twelve-frame ukiyo-e-inspired pixel animations. Scenes loop automatically with a held final pose. Reduced motion displays a representative still; About’s Show legacy animations preference restores looping line animations and updates open cards.
 - Standalone Playgrounds tab from the popup, also available with automatic readings paused or on protected pages, using the same offline workspace as the reading panel.
+- Compact outlined Correct reading action beside the pronunciation, using the available horizontal space in word details.
 - Compact per-version update announcement, persistent local dismissal, retry after save failure, visible About changelog with offline history, and a dedicated GitHub feature-suggestion link.
 
 No dependencies, permissions, host access, CSP origins, accounts, runtime services, or learning history are added. Only the bundled `art/mimetics/*.webp` strips are added as web-accessible resources for HTTP/HTTPS reading panels; settings, scripts, dictionaries, and user data are not exposed by that rule. The new persisted values are the legacy-animation preference and one dismissal boolean per version. Existing settings and correction backups remain compatible. Dictionary-reading, adjective-alternative, and command-alternative metadata use bounded in-memory caches. The privacy policy, effective 18 October 2026, describes the saved preferences, banner dismissals, and public GitHub suggestions.
@@ -20,7 +21,7 @@ No dependencies, permissions, host access, CSP origins, accounts, runtime servic
 - Full logs: `qa/release-1.2/rc1-full-suite.log` and `qa/release-1.2/rc1-prior-regressions.log`.
 - Offline About, privacy, and full-history pages pass all **12 checks** at 1280, 700, 390, and 320 px, with no overflow, remote requests, or page errors. Evidence: `qa/release-1.2/rc1-docs.json`. About and the current mimetic preview were visually inspected.
 - All 44 local Markdown/HTML references in README and top-level docs resolve; `git diff --check` passes.
-- Tested executable hashes are retained in `qa/release-1.2/rc1-tested-runtime.json` and match every executable in the final package build.
+- Original full-suite executable hashes are retained in `qa/release-1.2/rc1-tested-runtime.json`. The subsequent word-details layout update passed build, typecheck, and the existing offline correction/restoration test; its packaged executable hashes are retained in `qa/release-1.2/rc1-layout-runtime.json`.
 
 Coverage includes real-dictionary adjective classes and generated-form round trips, lexical good-compound stems, inflected source spans, correction overlaps, imperative recovery, offline operation, cancellation, source/layout preservation, definitions, concurrent settings, keyboard/focus handling, 280–720 px panels, short viewports, all 90 local animation strips, both animation styles, reduced motion, and the native toolbar popup. Release-announcement checks cover earlier-version dismissal isolation, persistence across browser restart, synchronized menus, failure/retry behavior, and offline changelog navigation. Controlled webpage and Google Docs fixtures exercise compatibility; live Google Docs editing was not exercised for this RC.
 
@@ -36,8 +37,8 @@ Both ZIPs use the same runtime allowlist: the manual ZIP keeps `dist/`, and the 
 
 Both ZIPs contain the same **143 runtime files**, including **90 animation strips**, and match the final built distribution byte-for-byte. Run `python3 qa/release-1.2/verify-packages.py` from the repository root to recheck contents, exclusions, parity, and checksums.
 
-- `ko-japanese-reading-companion-1.2.0.zip`: 31,614,645 bytes; SHA-256 `63b440b97749dcfd8c909536718b1f48f85496ea86e79616143272d182bdf23c`.
-- `ko-japanese-reading-companion-1.2.0-chrome-web-store.zip`: 31,613,165 bytes; SHA-256 `20a2e2b371015949e9893be05b98285216009f240db2e2220079d71eb578e958`.
+- `ko-japanese-reading-companion-1.2.0.zip`: 31,614,883 bytes; SHA-256 `7f98ecb9b1b14339f7d7b248b3b0604b92cab8b0bba5fbc296a563b189916bee`.
+- `ko-japanese-reading-companion-1.2.0-chrome-web-store.zip`: 31,613,403 bytes; SHA-256 `090193a449769ae39cf690ed6d1e0025933c6349cea7633575d8189949299ad6`.
 
 The same hashes are saved in `SHA256SUMS` and `qa/release-1.2/packages.json`. RC1 is published as a GitHub prerelease; Chrome Web Store submission remains separate.
 
