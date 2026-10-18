@@ -16,6 +16,7 @@ for name in re.findall(r"'([^']+)'", allowlist):
         if entry.is_file():
             expected[entry.relative_to(root / 'dist').as_posix()] = entry.read_bytes()
 assert sum(name.startswith('art/mimetics/') and name.endswith('.webp') for name in expected) == 90
+assert not any(name.startswith('art/ko-kun/') for name in expected), 'Unreleased Kō-kun animations must not ship in 1.2'
 assert json.loads(expected['manifest.json']) == json.loads((root / 'public/manifest.json').read_text())
 checksums = dict(line.split()[::-1] for line in (root / 'SHA256SUMS').read_text().splitlines())
 report = []

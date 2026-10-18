@@ -1,12 +1,20 @@
-# Chrome Web Store release audit
+# Chrome Web Store audit and release records
 
-For the current **1.2.0 RC1** GitHub prerelease, see the [1.2 release audit](release-1.2-audit.md). Store submission remains separate. The 1.1.0 record below is historical.
+## 1.2.0 · planned release 28 October 2026
 
-## 1.2 RC store preparation
+The full 1.2.0 release is prepared from RC1. See the [1.2 release audit](release-1.2-audit.md) for current checks and publication status. GitHub publication and Chrome Web Store review/publication remain separate.
 
-Use `ko-japanese-reading-companion-1.2.0-chrome-web-store.zip` from the [RC1 prerelease](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.2.0-rc.1), with manifest.json at its root, only when preparing a separately authorized store submission. Confirm the RC testing outcome before promoting it. The manifest version remains 1.2.0, with unchanged permissions, host access, CSP, and network origins.
+Upload `ko-japanese-reading-companion-1.2.0-chrome-web-store.zip`, with `manifest.json` at its root. Keep publication deferred until **28 October 2026**; uploading or passing review is not permission to launch early. The manifest version remains 1.2.0, with unchanged permissions, host access, CSP, and network origins.
 
-Align the listing and dashboard with Word forms for verbs/adjectives, 90 mimetic expressions in 45 comparisons, looping bundled artwork with reduced-motion stills, the local legacy-animation preference, the dismissible update banner, and About’s changelog and GitHub suggestion link. The [privacy policy](privacy-policy.md), effective 18 October 2026, includes local announcement-dismissal storage and public GitHub suggestions. RC1 publication does not update the Chrome Web Store.
+The package includes Word forms for verbs/adjectives, 90 mimetic expressions in 45 comparisons, bundled looping mimetic artwork with reduced-motion stills, the legacy-animation preference, update announcements, and About’s changelog and GitHub suggestion link. **Kō-kun character animations are excluded** and remain future work. The [privacy policy](privacy-policy.md), effective 18 October 2026, covers local announcement dismissals and public GitHub suggestions.
+
+### Reviewer notes for 1.2.0
+
+No account is required. Open Playgrounds from the popup, enter a dictionary-form verb or い／な adjective, confirm the local reading/class, and explore applicable forms and explanations. Compare mimetics offline; About → Show legacy animations changes the illustration style. With reduced motion, scenes remain still. In a Japanese webpage or Google Docs reading panel, activate a word to see its pronunciation, correction action, forms, and optional online Wiktionary definitions. Readings and playgrounds work offline. Existing data-use disclosures and permission explanations remain applicable.
+
+### Upload status
+
+Version **1.2.0** was uploaded and submitted for review on **18 October 2026**, revision `00003`. The dashboard confirms **Pending review**; **1.1.0** remains published. Automatic publication after approval is off. The pending-review console currently exposes no date picker, so **28 October 2026 is the planned date, not a confirmed console schedule**. The user cancelled the Codex follow-up; no follow-up automation remains. The submitted listing now describes adjective forms, 90 mimetics, and the Kō No-Resale License.
 
 ## 1.1.0 GitHub release · 17 October 2026
 

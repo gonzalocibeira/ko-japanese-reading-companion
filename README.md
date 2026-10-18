@@ -5,7 +5,7 @@
 <h1 align="center">Kō — Japanese Reading Companion</h1>
 <p align="center"><strong>Japanese reading companion.</strong></p>
 <p align="center">Automatic Japanese readings for webpages and Google Docs.<br>Furigana runs on your device. Optional word definitions use Wiktionary online.</p>
-<p align="center"><strong>1.2.0 RC1</strong> · 18 October 2026 · <a href="https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.2.0-rc.1">GitHub prerelease</a></p>
+<p align="center"><strong>1.2.0</strong> · 28 October 2026 · <a href="https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.2.0">GitHub release</a></p>
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok">Install from the Chrome Web Store</a> ·
   <a href="#see-it-in-action">See it in action</a> ·
@@ -25,7 +25,7 @@
 
 ## Release notes
 
-### 1.2.0 RC1 · 18 October 2026
+### 1.2.0 · 28 October 2026
 
 - **Word forms:** one input for verbs and い／な adjectives, with dictionary-backed class and reading confirmation.
 - **Adjective Playground:** predicates, forms before nouns, adverbial and linking forms, conditions, and become/make constructions, with applicable tense, negative, and polite controls.
@@ -35,11 +35,11 @@
 - **90 mimetic expressions in 45 illustrated comparisons**, with original examples, usage notes, references, and new ukiyo-e-inspired pixel animations. Scenes loop automatically; reduced motion shows a still pose. About → **Show legacy animations** restores the original line style.
 - **Release announcements:** a compact banner summarizes each version, links to the About changelog, and stays dismissed on this device after closing it. About also opens GitHub to **Suggest a feature or improvement**.
 
-This is a release candidate for testing. The extension manifest version is `1.2.0`; the GitHub prerelease tag is `v1.2.0-rc.1`. Chrome Web Store availability and submission are managed separately.
+This is a release candidate for testing. The extension manifest version is `1.2.0`; the GitHub release tag is `v1.2.0`. Chrome Web Store availability and submission are managed separately.
 
-Verification: build and typecheck pass, all **186 tests** and **3 prior release-audit regressions** pass. See the [1.2 audit](docs/release-1.2-audit.md) for scope and limits.
+RC1 verification: all **186 tests** and **3 prior release-audit regressions** passed. Final release preparation checks are recorded in the audit. See the [1.2 audit](docs/release-1.2-audit.md) for scope and limits.
 
-Download [1.2.0 RC1](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.2.0-rc.1), or load the rebuilt [`dist/`](dist/) folder. The release includes a manual-install ZIP, a store-layout ZIP, and SHA256SUMS. See the [1.2 audit](docs/release-1.2-audit.md) for current verification and [full release notes](docs/release-notes.md) for supported behavior and updating.
+Download [1.2.0](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.2.0), or load the rebuilt [`dist/`](dist/) folder. The release includes a manual-install ZIP, a store-layout ZIP, and SHA256SUMS. See the [1.2 audit](docs/release-1.2-audit.md) for current verification and [full release notes](docs/release-notes.md) for supported behavior and updating.
 
 **About Kō → What’s new · Changelog** displays the current notes and links to the full offline history. The GitHub release body, bundled About page, and history use the same [changelog](docs/release-notes.md). Close the menu’s update announcement to hide that version on this device; a later version gets a new announcement. **Suggest a feature or improvement** opens a new GitHub issue.
 
@@ -63,7 +63,7 @@ Read the [full release notes](docs/release-notes.md) for details and update inst
 
 **[Install Kō from the Chrome Web Store](https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok).** Click **Add to Chrome**, confirm the installation, then reload your open tabs to start reading. Store installations receive updates automatically.
 
-For **1.2.0 RC1**, use the manual prerelease download below. The stable store version may differ; GitHub prereleases do not update store installations.
+Version **1.2.0** is scheduled for **28 October 2026**. Downloads below become available at launch; the store version may differ until review and publication complete.
 
 **Tip:** Pin **Kō — Japanese Reading Companion** from Chrome's puzzle-piece **Extensions** menu. Look for the warm-paper **考** (think) on a vermilion seal.
 
@@ -71,7 +71,7 @@ For **1.2.0 RC1**, use the manual prerelease download below. The stable store ve
 
 You can also load the ready-to-use extension from [`dist/`](dist/). No Node.js, npm, or build step needed.
 
-1. **Download the [1.2.0 RC1 extension ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.2.0-rc.1/ko-japanese-reading-companion-1.2.0.zip).** It contains the ready-to-load `dist` folder. You can also download the full source from [the repository](https://github.com/gonzalocibeira/ko-japanese-reading-companion) using **Code → Download ZIP**. Release assets include [SHA-256 checksums](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.2.0-rc.1/SHA256SUMS).
+1. **Download the [1.2.0 extension ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.2.0/ko-japanese-reading-companion-1.2.0.zip).** It contains the ready-to-load `dist` folder. You can also download the full source from [the repository](https://github.com/gonzalocibeira/ko-japanese-reading-companion) using **Code → Download ZIP**. Release assets include [SHA-256 checksums](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.2.0/SHA256SUMS).
 2. **Extract and keep the folder.** Put it somewhere permanent, such as `Documents/Ko`.
 3. **Open Chrome's extensions page.** Enter `chrome://extensions` in the address bar and turn on **Developer mode**.
 4. **Load the extension.** Click **Load unpacked** and select the extracted folder containing `manifest.json`. For a repository/source download, this is the **`dist` folder**. A `chrome-web-store.zip` package has `manifest.json` directly in its extracted root.
@@ -276,7 +276,7 @@ See [technical notes](docs/technical-notes.md) for the architecture, exact budge
 
 ## License
 
-This updated 1.2.0 RC1 distribution uses the [Kō No-Resale License 1.0](LICENSE) for original project code, documentation, and assets. You may use Kō freely, including at work, inspect and modify its source, and share copies for free. Selling Kō, charging for access, or including it in a paid product requires written permission from Gonzalo Cibeira. This applies to modified and rebranded copies too. Independent paid support, training, and custom development are permitted under the license's conditions.
+The 1.2.0 distribution uses the [Kō No-Resale License 1.0](LICENSE) for original project code, documentation, and assets. You may use Kō freely, including at work, inspect and modify its source, and share copies for free. Selling Kō, charging for access, or including it in a paid product requires written permission from Gonzalo Cibeira. This applies to modified and rebranded copies too. Independent paid support, training, and custom development are permitted under the license's conditions.
 
 Kō is source available under these terms. Earlier copies distributed under MIT, including the initially published RC1, retain their MIT permissions; this change does not revoke them. Check the `LICENSE` supplied with your copy.
 

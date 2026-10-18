@@ -1,0 +1,72 @@
+{
+  "widths": [
+    1280,
+    700,
+    390,
+    320
+  ],
+  "pages": [
+    {
+      "path": "about.html",
+      "width": 1280,
+      "pass": true
+    },
+    {
+      "path": "privacy.html",
+      "width": 1280,
+      "pass": true
+    },
+    {
+      "path": "release-notes.html",
+      "width": 1280,
+      "pass": true
+    },
+    {
+      "path": "about.html",
+      "width": 700,
+      "pass": true
+    },
+    {
+      "path": "privacy.html",
+      "width": 700,
+      "pass": true
+    },
+    {
+      "path": "release-notes.html",
+      "width": 700,
+      "pass": true
+    },
+    {
+      "path": "about.html",
+      "width": 390,
+      "pass": true
+    },
+    {
+      "path": "privacy.html",
+      "width": 390,
+      "pass": true
+    },
+    {
+      "path": "release-notes.html",
+      "width": 390,
+      "pass": true
+    },
+    {
+      "path": "about.html",
+      "width": 320,
+      "pass": true
+    },
+    {
+      "path": "privacy.html",
+      "width": 320,
+      "pass": true
+    },
+    {
+      "path": "release-notes.html",
+      "width": 320,
+      "pass": true
+    }
+  ],
+  "remoteRequests": [],
+  "errors": []
+}

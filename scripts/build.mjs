@@ -24,7 +24,8 @@ await build({entryPoints:['src/background.ts','src/content.ts','src/docs-bridge.
     });
   }
 }]});
-await cp('public','dist',{recursive:true});
+// Kō-kun is artwork for a future release, not part of the 1.2 runtime.
+await cp('public','dist',{recursive:true,filter:source=>!/^public\/art\/ko-kun(?:\/|$)/.test(source)});
 await writeFile('dist/popup.html',popupTemplate.replace('<!-- KO_UPDATE_BANNER -->',releaseNotes.banner));
 await writeFile('dist/about.html',aboutTemplate.replace('<!-- KO_RELEASE_NOTES -->',releaseNotes.about));
 await writeFile('dist/release-notes.html',releaseNotes.history);

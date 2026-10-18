@@ -14,3 +14,6 @@ dist/docs/screenshots/store-submission-1.1.0.png
 
 # Local imagegen source sheets; the compact animation strips ship in public/art/mimetics/.
 /qa/mimetics-generation/sheets/
+
+# Release dashboard evidence includes account details.
+/qa/release-1.2/store-submission-1.2.0.png
