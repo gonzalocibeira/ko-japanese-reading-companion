@@ -1,0 +1,3602 @@
+{
+  "version": 1,
+  "stage": "pilot-review",
+  "character": "proposal-a-bare-neck",
+  "characterApproved": true,
+  "pilotApproved": false,
+  "generator": "Built-in image_gen tool",
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "clips": [
+    {
+      "id": "attentive-idle-loop",
+      "routine": "attentive-idle",
+      "phase": "loop",
+      "from": "standing",
+      "to": "standing",
+      "loop": true,
+      "file": "attentive-idle-loop.webp",
+      "preview": "attentive-idle-loop-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "durationMs": 2400,
+      "loopRange": [
+        0,
+        11
+      ],
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [],
+      "intendedTravelSpeedPxPerSecondAt256": 0,
+      "source": "sheets/attentive-idle-loop.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 0.8,
+        "offset": [
+          0,
+          -4
+        ],
+        "uniformAcrossFrames": true,
+        "sourceCanvasSize": null,
+        "rowPaddingY": null,
+        "componentExtraction": false
+      },
+      "visibleFrameBounds": [
+        [
+          33,
+          29,
+          225,
+          216
+        ],
+        [
+          34,
+          29,
+          226,
+          216
+        ],
+        [
+          35,
+          29,
+          226,
+          216
+        ],
+        [
+          34,
+          29,
+          225,
+          217
+        ],
+        [
+          33,
+          29,
+          227,
+          217
+        ],
+        [
+          33,
+          29,
+          225,
+          216
+        ],
+        [
+          34,
+          29,
+          227,
+          216
+        ],
+        [
+          33,
+          31,
+          227,
+          216
+        ],
+        [
+          35,
+          29,
+          226,
+          216
+        ],
+        [
+          35,
+          29,
+          226,
+          217
+        ],
+        [
+          33,
+          29,
+          226,
+          216
+        ],
+        [
+          33,
+          29,
+          225,
+          216
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "sourceFrameRectangles": [
+        [
+          0,
+          0,
+          362,
+          362
+        ],
+        [
+          362,
+          0,
+          724,
+          362
+        ],
+        [
+          724,
+          0,
+          1086,
+          362
+        ],
+        [
+          0,
+          362,
+          362,
+          724
+        ],
+        [
+          362,
+          362,
+          724,
+          724
+        ],
+        [
+          724,
+          362,
+          1086,
+          724
+        ],
+        [
+          0,
+          724,
+          362,
+          1086
+        ],
+        [
+          362,
+          724,
+          724,
+          1086
+        ],
+        [
+          724,
+          724,
+          1086,
+          1086
+        ],
+        [
+          0,
+          1086,
+          362,
+          1448
+        ],
+        [
+          362,
+          1086,
+          724,
+          1448
+        ],
+        [
+          724,
+          1086,
+          1086,
+          1448
+        ]
+      ],
+      "frameSourceOverrides": {},
+      "propPresence": "none"
+    },
+    {
+      "id": "walk-start",
+      "routine": "walk",
+      "phase": "start",
+      "from": "standing",
+      "to": "walking",
+      "loop": false,
+      "file": "walk-start.webp",
+      "preview": "walk-start-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 1200,
+      "loopRange": null,
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [],
+      "intendedTravelSpeedPxPerSecondAt256": 40,
+      "source": "sheets/walk-start.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 1.1,
+        "offset": [
+          -3,
+          -12
+        ],
+        "uniformAcrossFrames": true,
+        "sourceCanvasSize": [
+          450,
+          450
+        ],
+        "rowPaddingY": [
+          0,
+          8,
+          11,
+          20
+        ],
+        "componentExtraction": true
+      },
+      "visibleFrameBounds": [
+        [
+          26,
+          30,
+          222,
+          221
+        ],
+        [
+          19,
+          31,
+          223,
+          219
+        ],
+        [
+          17,
+          30,
+          221,
+          219
+        ],
+        [
+          25,
+          26,
+          228,
+          217
+        ],
+        [
+          20,
+          24,
+          223,
+          221
+        ],
+        [
+          18,
+          25,
+          225,
+          219
+        ],
+        [
+          26,
+          26,
+          232,
+          216
+        ],
+        [
+          21,
+          29,
+          228,
+          219
+        ],
+        [
+          20,
+          29,
+          225,
+          219
+        ],
+        [
+          25,
+          29,
+          230,
+          219
+        ],
+        [
+          25,
+          29,
+          230,
+          214
+        ],
+        [
+          21,
+          28,
+          226,
+          219
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "sourceFrameRectangles": [
+        [
+          20,
+          41,
+          338,
+          351
+        ],
+        [
+          371,
+          43,
+          702,
+          348
+        ],
+        [
+          730,
+          41,
+          1062,
+          348
+        ],
+        [
+          19,
+          389,
+          348,
+          699
+        ],
+        [
+          373,
+          385,
+          702,
+          706
+        ],
+        [
+          731,
+          387,
+          1068,
+          702
+        ],
+        [
+          20,
+          748,
+          354,
+          1057
+        ],
+        [
+          374,
+          752,
+          710,
+          1062
+        ],
+        [
+          735,
+          752,
+          1068,
+          1061
+        ],
+        [
+          18,
+          1105,
+          352,
+          1414
+        ],
+        [
+          381,
+          1105,
+          714,
+          1407
+        ],
+        [
+          736,
+          1104,
+          1069,
+          1415
+        ]
+      ],
+      "frameSourceOverrides": {},
+      "propPresence": "none"
+    },
+    {
+      "id": "walk-loop",
+      "routine": "walk",
+      "phase": "loop",
+      "from": "walking",
+      "to": "walking",
+      "loop": true,
+      "file": "walk-loop.webp",
+      "preview": "walk-loop-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 1200,
+      "loopRange": [
+        0,
+        11
+      ],
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [],
+      "intendedTravelSpeedPxPerSecondAt256": 40,
+      "source": "sheets/walk-loop.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 1.1,
+        "offset": [
+          -3,
+          -12
+        ],
+        "uniformAcrossFrames": true,
+        "sourceCanvasSize": [
+          450,
+          450
+        ],
+        "rowPaddingY": [
+          2,
+          13,
+          14,
+          30
+        ],
+        "componentExtraction": true
+      },
+      "visibleFrameBounds": [
+        [
+          28,
+          35,
+          227,
+          218
+        ],
+        [
+          22,
+          35,
+          219,
+          219
+        ],
+        [
+          18,
+          35,
+          223,
+          219
+        ],
+        [
+          28,
+          33,
+          234,
+          218
+        ],
+        [
+          22,
+          33,
+          231,
+          219
+        ],
+        [
+          20,
+          33,
+          226,
+          219
+        ],
+        [
+          27,
+          33,
+          237,
+          218
+        ],
+        [
+          23,
+          33,
+          225,
+          219
+        ],
+        [
+          20,
+          34,
+          224,
+          219
+        ],
+        [
+          27,
+          31,
+          231,
+          219
+        ],
+        [
+          24,
+          34,
+          231,
+          219
+        ],
+        [
+          21,
+          32,
+          225,
+          219
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "contactPhases": {
+        "nearFrontAndFarRear": [
+          0,
+          1,
+          2
+        ],
+        "farFrontAndNearRear": [
+          6,
+          7,
+          8
+        ]
+      },
+      "contactStatus": "choreography target; verify visually before runtime use",
+      "sourceFrameRectangles": [
+        [
+          23,
+          47,
+          346,
+          345
+        ],
+        [
+          375,
+          47,
+          696,
+          346
+        ],
+        [
+          732,
+          46,
+          1065,
+          346
+        ],
+        [
+          23,
+          395,
+          358,
+          695
+        ],
+        [
+          376,
+          395,
+          715,
+          698
+        ],
+        [
+          735,
+          395,
+          1069,
+          697
+        ],
+        [
+          22,
+          755,
+          363,
+          1056
+        ],
+        [
+          378,
+          756,
+          705,
+          1058
+        ],
+        [
+          734,
+          757,
+          1066,
+          1058
+        ],
+        [
+          21,
+          1099,
+          354,
+          1405
+        ],
+        [
+          379,
+          1103,
+          715,
+          1404
+        ],
+        [
+          736,
+          1100,
+          1068,
+          1405
+        ]
+      ],
+      "frameSourceOverrides": {},
+      "propPresence": "none"
+    },
+    {
+      "id": "walk-stop",
+      "routine": "walk",
+      "phase": "stop",
+      "from": "walking",
+      "to": "standing",
+      "loop": false,
+      "file": "walk-stop.webp",
+      "preview": "walk-stop-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 1200,
+      "loopRange": null,
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [],
+      "intendedTravelSpeedPxPerSecondAt256": 40,
+      "source": "sheets/walk-stop.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 1.1,
+        "offset": [
+          -3,
+          -12
+        ],
+        "uniformAcrossFrames": true,
+        "sourceCanvasSize": [
+          450,
+          450
+        ],
+        "rowPaddingY": [
+          3,
+          5,
+          7,
+          8
+        ],
+        "componentExtraction": true
+      },
+      "visibleFrameBounds": [
+        [
+          25,
+          36,
+          213,
+          221
+        ],
+        [
+          25,
+          35,
+          214,
+          217
+        ],
+        [
+          25,
+          38,
+          222,
+          219
+        ],
+        [
+          27,
+          37,
+          224,
+          219
+        ],
+        [
+          26,
+          36,
+          220,
+          219
+        ],
+        [
+          27,
+          37,
+          221,
+          219
+        ],
+        [
+          27,
+          38,
+          218,
+          219
+        ],
+        [
+          24,
+          36,
+          220,
+          218
+        ],
+        [
+          25,
+          35,
+          220,
+          219
+        ],
+        [
+          26,
+          35,
+          220,
+          219
+        ],
+        [
+          25,
+          38,
+          220,
+          219
+        ],
+        [
+          25,
+          38,
+          220,
+          219
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "sourceFrameRectangles": [
+        [
+          19,
+          47,
+          324,
+          349
+        ],
+        [
+          381,
+          46,
+          688,
+          342
+        ],
+        [
+          742,
+          51,
+          1062,
+          345
+        ],
+        [
+          21,
+          409,
+          342,
+          705
+        ],
+        [
+          382,
+          408,
+          698,
+          705
+        ],
+        [
+          744,
+          409,
+          1061,
+          705
+        ],
+        [
+          22,
+          771,
+          333,
+          1065
+        ],
+        [
+          379,
+          767,
+          697,
+          1064
+        ],
+        [
+          742,
+          765,
+          1059,
+          1065
+        ],
+        [
+          20,
+          1127,
+          335,
+          1427
+        ],
+        [
+          381,
+          1131,
+          697,
+          1426
+        ],
+        [
+          742,
+          1131,
+          1059,
+          1426
+        ]
+      ],
+      "frameSourceOverrides": {},
+      "propPresence": "none"
+    },
+    {
+      "id": "read-entry",
+      "routine": "read",
+      "phase": "entry",
+      "from": "seated",
+      "to": "reading",
+      "loop": false,
+      "file": "read-entry.webp",
+      "preview": "read-entry-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 1200,
+      "loopRange": null,
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [
+        "scroll"
+      ],
+      "intendedTravelSpeedPxPerSecondAt256": 0,
+      "source": "sheets/read-entry.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 1,
+        "offset": [
+          0,
+          -3
+        ],
+        "uniformAcrossFrames": false,
+        "sourceCanvasSize": [
+          450,
+          450
+        ],
+        "rowPaddingY": [
+          -11,
+          -10,
+          1,
+          24
+        ],
+        "componentExtraction": true,
+        "note": "Base source uses one uniform transform; explicit frame overrides reuse complete corrected poses and the shared generated endpoint."
+      },
+      "visibleFrameBounds": [
+        [
+          39,
+          29,
+          209,
+          218
+        ],
+        [
+          36,
+          33,
+          210,
+          218
+        ],
+        [
+          42,
+          30,
+          221,
+          218
+        ],
+        [
+          41,
+          27,
+          232,
+          213
+        ],
+        [
+          35,
+          40,
+          224,
+          219
+        ],
+        [
+          32,
+          41,
+          217,
+          218
+        ],
+        [
+          36,
+          46,
+          226,
+          213
+        ],
+        [
+          33,
+          52,
+          228,
+          218
+        ],
+        [
+          27,
+          66,
+          221,
+          219
+        ],
+        [
+          35,
+          51,
+          230,
+          218
+        ],
+        [
+          34,
+          45,
+          233,
+          218
+        ],
+        [
+          33,
+          15,
+          227,
+          214
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "sourceFrameRectangles": [
+        [
+          21,
+          21,
+          326,
+          359
+        ],
+        [
+          379,
+          28,
+          691,
+          359
+        ],
+        [
+          751,
+          22,
+          1071,
+          359
+        ],
+        [
+          25,
+          377,
+          366,
+          711
+        ],
+        [
+          377,
+          401,
+          714,
+          722
+        ],
+        [
+          734,
+          403,
+          1064,
+          720
+        ],
+        [
+          17,
+          763,
+          357,
+          1062
+        ],
+        [
+          373,
+          773,
+          722,
+          1071
+        ],
+        [
+          725,
+          798,
+          1071,
+          1073
+        ],
+        [
+          19,
+          1127,
+          358,
+          1410
+        ],
+        [
+          373,
+          1121,
+          718,
+          1409
+        ],
+        [
+          736,
+          1121,
+          1073,
+          1410
+        ]
+      ],
+      "frameSourceOverrides": {
+        "9": {
+          "source": "sheets/read-entry-v2.png",
+          "index": 9,
+          "paddingY": 6,
+          "reason": "Corrected chin lift; this source pose is complete."
+        },
+        "10": {
+          "source": "sheets/read-entry-v2.png",
+          "index": 10,
+          "paddingY": 4,
+          "reason": "Corrected chin lift; this source pose is complete."
+        },
+        "11": {
+          "file": "pilot/frames/read-loop/00.png",
+          "reason": "Reuse the actual generated reading-loop connection pose; exact matching endpoint."
+        }
+      },
+      "propPresence": "changes during clip; props are included in the painted frames"
+    },
+    {
+      "id": "read-loop",
+      "routine": "read",
+      "phase": "loop",
+      "from": "reading",
+      "to": "reading",
+      "loop": true,
+      "file": "read-loop.webp",
+      "preview": "read-loop-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "durationMs": 2400,
+      "loopRange": [
+        0,
+        11
+      ],
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [
+        "scroll"
+      ],
+      "intendedTravelSpeedPxPerSecondAt256": 0,
+      "source": "sheets/read-loop-v2.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 1,
+        "offset": [
+          0,
+          -18
+        ],
+        "uniformAcrossFrames": true,
+        "sourceCanvasSize": [
+          400,
+          400
+        ],
+        "rowPaddingY": [
+          0,
+          34,
+          28,
+          38
+        ],
+        "componentExtraction": false
+      },
+      "visibleFrameBounds": [
+        [
+          33,
+          15,
+          227,
+          214
+        ],
+        [
+          32,
+          15,
+          227,
+          214
+        ],
+        [
+          35,
+          15,
+          227,
+          214
+        ],
+        [
+          33,
+          18,
+          227,
+          219
+        ],
+        [
+          33,
+          15,
+          227,
+          219
+        ],
+        [
+          33,
+          17,
+          227,
+          219
+        ],
+        [
+          33,
+          4,
+          227,
+          218
+        ],
+        [
+          33,
+          8,
+          227,
+          218
+        ],
+        [
+          33,
+          18,
+          227,
+          218
+        ],
+        [
+          33,
+          17,
+          227,
+          219
+        ],
+        [
+          33,
+          18,
+          227,
+          219
+        ],
+        [
+          33,
+          18,
+          227,
+          219
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "sourceFrameRectangles": [
+        [
+          0,
+          0,
+          362,
+          386
+        ],
+        [
+          362,
+          0,
+          724,
+          386
+        ],
+        [
+          724,
+          0,
+          1086,
+          386
+        ],
+        [
+          0,
+          386,
+          362,
+          737
+        ],
+        [
+          362,
+          386,
+          724,
+          737
+        ],
+        [
+          724,
+          386,
+          1086,
+          737
+        ],
+        [
+          0,
+          737,
+          362,
+          1096
+        ],
+        [
+          362,
+          737,
+          724,
+          1096
+        ],
+        [
+          724,
+          737,
+          1086,
+          1096
+        ],
+        [
+          0,
+          1096,
+          362,
+          1448
+        ],
+        [
+          362,
+          1096,
+          724,
+          1448
+        ],
+        [
+          724,
+          1096,
+          1086,
+          1448
+        ]
+      ],
+      "frameSourceOverrides": {},
+      "propPresence": "throughout"
+    },
+    {
+      "id": "read-exit",
+      "routine": "read",
+      "phase": "exit",
+      "from": "reading",
+      "to": "seated",
+      "loop": false,
+      "file": "read-exit.webp",
+      "preview": "read-exit-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 1200,
+      "loopRange": null,
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [
+        "scroll"
+      ],
+      "intendedTravelSpeedPxPerSecondAt256": 0,
+      "source": "sheets/read-exit.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 1.04,
+        "offset": [
+          -1,
+          -7
+        ],
+        "uniformAcrossFrames": true,
+        "sourceCanvasSize": [
+          450,
+          450
+        ],
+        "rowPaddingY": [
+          -17,
+          -4,
+          4,
+          23
+        ],
+        "componentExtraction": true
+      },
+      "visibleFrameBounds": [
+        [
+          29,
+          30,
+          234,
+          218
+        ],
+        [
+          35,
+          25,
+          235,
+          219
+        ],
+        [
+          35,
+          19,
+          227,
+          217
+        ],
+        [
+          29,
+          19,
+          236,
+          224
+        ],
+        [
+          35,
+          29,
+          238,
+          216
+        ],
+        [
+          32,
+          38,
+          223,
+          218
+        ],
+        [
+          31,
+          19,
+          231,
+          219
+        ],
+        [
+          35,
+          18,
+          219,
+          218
+        ],
+        [
+          28,
+          32,
+          218,
+          218
+        ],
+        [
+          35,
+          29,
+          233,
+          217
+        ],
+        [
+          37,
+          32,
+          226,
+          219
+        ],
+        [
+          33,
+          28,
+          219,
+          218
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "sourceFrameRectangles": [
+        [
+          12,
+          41,
+          365,
+          365
+        ],
+        [
+          384,
+          32,
+          729,
+          366
+        ],
+        [
+          746,
+          23,
+          1078,
+          365
+        ],
+        [
+          12,
+          371,
+          369,
+          724
+        ],
+        [
+          384,
+          388,
+          734,
+          711
+        ],
+        [
+          742,
+          404,
+          1070,
+          714
+        ],
+        [
+          16,
+          726,
+          360,
+          1069
+        ],
+        [
+          385,
+          723,
+          701,
+          1068
+        ],
+        [
+          734,
+          748,
+          1062,
+          1068
+        ],
+        [
+          22,
+          1086,
+          363,
+          1410
+        ],
+        [
+          388,
+          1091,
+          713,
+          1412
+        ],
+        [
+          743,
+          1083,
+          1064,
+          1411
+        ]
+      ],
+      "frameSourceOverrides": {},
+      "propPresence": "changes during clip; props are included in the painted frames"
+    },
+    {
+      "id": "straw-hat-adventurer-entry",
+      "routine": "straw-hat-adventurer",
+      "phase": "entry",
+      "from": "standing",
+      "to": "adventurer",
+      "loop": false,
+      "file": "straw-hat-adventurer-entry.webp",
+      "preview": "straw-hat-adventurer-entry-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 1200,
+      "loopRange": null,
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [
+        "red-banded-straw-hat",
+        "red-vest"
+      ],
+      "intendedTravelSpeedPxPerSecondAt256": 0,
+      "source": "sheets/straw-hat-adventurer-entry.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 1,
+        "offset": [
+          0,
+          -3
+        ],
+        "uniformAcrossFrames": true,
+        "sourceCanvasSize": [
+          450,
+          450
+        ],
+        "rowPaddingY": [
+          -21,
+          -15,
+          0,
+          17
+        ],
+        "componentExtraction": true
+      },
+      "visibleFrameBounds": [
+        [
+          34,
+          30,
+          215,
+          219
+        ],
+        [
+          32,
+          29,
+          213,
+          218
+        ],
+        [
+          32,
+          32,
+          215,
+          218
+        ],
+        [
+          35,
+          27,
+          221,
+          218
+        ],
+        [
+          32,
+          25,
+          215,
+          218
+        ],
+        [
+          32,
+          23,
+          218,
+          218
+        ],
+        [
+          35,
+          31,
+          218,
+          218
+        ],
+        [
+          34,
+          37,
+          230,
+          218
+        ],
+        [
+          35,
+          32,
+          218,
+          218
+        ],
+        [
+          35,
+          26,
+          223,
+          218
+        ],
+        [
+          35,
+          28,
+          225,
+          218
+        ],
+        [
+          35,
+          29,
+          222,
+          218
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "sourceFrameRectangles": [
+        [
+          13,
+          32,
+          337,
+          371
+        ],
+        [
+          372,
+          31,
+          695,
+          368
+        ],
+        [
+          734,
+          35,
+          1061,
+          369
+        ],
+        [
+          15,
+          382,
+          348,
+          724
+        ],
+        [
+          371,
+          379,
+          699,
+          725
+        ],
+        [
+          734,
+          376,
+          1066,
+          725
+        ],
+        [
+          14,
+          736,
+          342,
+          1072
+        ],
+        [
+          375,
+          747,
+          726,
+          1071
+        ],
+        [
+          738,
+          739,
+          1066,
+          1072
+        ],
+        [
+          14,
+          1073,
+          351,
+          1417
+        ],
+        [
+          376,
+          1076,
+          717,
+          1417
+        ],
+        [
+          739,
+          1079,
+          1074,
+          1417
+        ]
+      ],
+      "frameSourceOverrides": {},
+      "propPresence": "changes during clip; props are included in the painted frames"
+    },
+    {
+      "id": "straw-hat-adventurer-loop",
+      "routine": "straw-hat-adventurer",
+      "phase": "loop",
+      "from": "adventurer",
+      "to": "adventurer",
+      "loop": true,
+      "file": "straw-hat-adventurer-loop.webp",
+      "preview": "straw-hat-adventurer-loop-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 1200,
+      "loopRange": [
+        0,
+        11
+      ],
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [
+        "red-banded-straw-hat",
+        "red-vest"
+      ],
+      "intendedTravelSpeedPxPerSecondAt256": 0,
+      "source": "sheets/straw-hat-adventurer-loop.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 1,
+        "offset": [
+          0,
+          -3
+        ],
+        "uniformAcrossFrames": true,
+        "sourceCanvasSize": [
+          450,
+          450
+        ],
+        "rowPaddingY": [
+          -5,
+          11,
+          22,
+          36
+        ],
+        "componentExtraction": true
+      },
+      "visibleFrameBounds": [
+        [
+          35,
+          38,
+          220,
+          218
+        ],
+        [
+          28,
+          36,
+          210,
+          218
+        ],
+        [
+          23,
+          37,
+          216,
+          218
+        ],
+        [
+          35,
+          36,
+          225,
+          217
+        ],
+        [
+          31,
+          37,
+          223,
+          218
+        ],
+        [
+          28,
+          35,
+          215,
+          219
+        ],
+        [
+          34,
+          40,
+          240,
+          218
+        ],
+        [
+          35,
+          40,
+          243,
+          218
+        ],
+        [
+          34,
+          40,
+          221,
+          218
+        ],
+        [
+          35,
+          36,
+          216,
+          218
+        ],
+        [
+          32,
+          38,
+          215,
+          218
+        ],
+        [
+          30,
+          36,
+          213,
+          218
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "sourceFrameRectangles": [
+        [
+          14,
+          30,
+          345,
+          352
+        ],
+        [
+          364,
+          26,
+          691,
+          353
+        ],
+        [
+          718,
+          29,
+          1063,
+          353
+        ],
+        [
+          14,
+          372,
+          354,
+          697
+        ],
+        [
+          369,
+          375,
+          713,
+          698
+        ],
+        [
+          726,
+          370,
+          1061,
+          700
+        ],
+        [
+          12,
+          731,
+          381,
+          1050
+        ],
+        [
+          376,
+          731,
+          749,
+          1050
+        ],
+        [
+          737,
+          730,
+          1072,
+          1050
+        ],
+        [
+          14,
+          1071,
+          338,
+          1398
+        ],
+        [
+          371,
+          1075,
+          699,
+          1398
+        ],
+        [
+          729,
+          1071,
+          1058,
+          1398
+        ]
+      ],
+      "frameSourceOverrides": {},
+      "propPresence": "throughout"
+    },
+    {
+      "id": "straw-hat-adventurer-exit",
+      "routine": "straw-hat-adventurer",
+      "phase": "exit",
+      "from": "adventurer",
+      "to": "standing",
+      "loop": false,
+      "file": "straw-hat-adventurer-exit.webp",
+      "preview": "straw-hat-adventurer-exit-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 1200,
+      "loopRange": null,
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [
+        "red-banded-straw-hat",
+        "red-vest"
+      ],
+      "intendedTravelSpeedPxPerSecondAt256": 0,
+      "source": "sheets/straw-hat-adventurer-exit.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 1,
+        "offset": [
+          0,
+          -3
+        ],
+        "uniformAcrossFrames": true,
+        "sourceCanvasSize": [
+          450,
+          450
+        ],
+        "rowPaddingY": [
+          -15,
+          -1,
+          7,
+          23
+        ],
+        "componentExtraction": true
+      },
+      "visibleFrameBounds": [
+        [
+          30,
+          33,
+          220,
+          218
+        ],
+        [
+          34,
+          37,
+          228,
+          218
+        ],
+        [
+          25,
+          41,
+          219,
+          218
+        ],
+        [
+          36,
+          34,
+          228,
+          218
+        ],
+        [
+          34,
+          40,
+          216,
+          219
+        ],
+        [
+          24,
+          45,
+          212,
+          218
+        ],
+        [
+          38,
+          39,
+          220,
+          215
+        ],
+        [
+          36,
+          31,
+          216,
+          218
+        ],
+        [
+          36,
+          43,
+          221,
+          219
+        ],
+        [
+          34,
+          34,
+          233,
+          217
+        ],
+        [
+          37,
+          35,
+          221,
+          218
+        ],
+        [
+          29,
+          33,
+          216,
+          219
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "sourceFrameRectangles": [
+        [
+          5,
+          32,
+          345,
+          363
+        ],
+        [
+          374,
+          39,
+          722,
+          362
+        ],
+        [
+          721,
+          46,
+          1068,
+          363
+        ],
+        [
+          17,
+          381,
+          359,
+          710
+        ],
+        [
+          374,
+          391,
+          700,
+          713
+        ],
+        [
+          719,
+          400,
+          1055,
+          711
+        ],
+        [
+          19,
+          744,
+          346,
+          1059
+        ],
+        [
+          378,
+          729,
+          701,
+          1065
+        ],
+        [
+          740,
+          749,
+          1071,
+          1066
+        ],
+        [
+          13,
+          1081,
+          369,
+          1409
+        ],
+        [
+          380,
+          1083,
+          709,
+          1411
+        ],
+        [
+          728,
+          1080,
+          1063,
+          1413
+        ]
+      ],
+      "frameSourceOverrides": {},
+      "propPresence": "changes during clip; props are included in the painted frames"
+    },
+    {
+      "id": "sit-down",
+      "routine": "transition",
+      "phase": "action",
+      "from": "standing",
+      "to": "seated",
+      "loop": false,
+      "file": "sit-down.webp",
+      "preview": "sit-down-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 1200,
+      "loopRange": null,
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [],
+      "intendedTravelSpeedPxPerSecondAt256": 0,
+      "source": "sheets/sit-down.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 1,
+        "offset": [
+          0,
+          -3
+        ],
+        "uniformAcrossFrames": true,
+        "sourceCanvasSize": [
+          450,
+          450
+        ],
+        "rowPaddingY": [
+          -12,
+          -21,
+          -21,
+          -2
+        ],
+        "componentExtraction": true
+      },
+      "visibleFrameBounds": [
+        [
+          34,
+          29,
+          216,
+          218
+        ],
+        [
+          34,
+          34,
+          217,
+          218
+        ],
+        [
+          32,
+          40,
+          217,
+          218
+        ],
+        [
+          36,
+          36,
+          226,
+          217
+        ],
+        [
+          36,
+          35,
+          222,
+          218
+        ],
+        [
+          34,
+          31,
+          218,
+          219
+        ],
+        [
+          39,
+          29,
+          221,
+          218
+        ],
+        [
+          39,
+          29,
+          217,
+          218
+        ],
+        [
+          38,
+          32,
+          218,
+          218
+        ],
+        [
+          40,
+          31,
+          218,
+          218
+        ],
+        [
+          41,
+          32,
+          217,
+          218
+        ],
+        [
+          42,
+          32,
+          217,
+          218
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "sourceFrameRectangles": [
+        [
+          13,
+          21,
+          339,
+          360
+        ],
+        [
+          375,
+          30,
+          703,
+          360
+        ],
+        [
+          733,
+          41,
+          1064,
+          360
+        ],
+        [
+          16,
+          405,
+          356,
+          729
+        ],
+        [
+          378,
+          402,
+          712,
+          731
+        ],
+        [
+          737,
+          396,
+          1066,
+          732
+        ],
+        [
+          22,
+          754,
+          348,
+          1093
+        ],
+        [
+          383,
+          755,
+          703,
+          1093
+        ],
+        [
+          743,
+          759,
+          1066,
+          1093
+        ],
+        [
+          24,
+          1101,
+          342,
+          1435
+        ],
+        [
+          387,
+          1102,
+          702,
+          1436
+        ],
+        [
+          751,
+          1102,
+          1064,
+          1436
+        ]
+      ],
+      "frameSourceOverrides": {},
+      "propPresence": "none"
+    },
+    {
+      "id": "stand-up",
+      "routine": "transition",
+      "phase": "action",
+      "from": "seated",
+      "to": "standing",
+      "loop": false,
+      "file": "stand-up.webp",
+      "preview": "stand-up-preview.webp",
+      "frameCount": 12,
+      "frameRectangles": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          256,
+          0,
+          256,
+          256
+        ],
+        [
+          512,
+          0,
+          256,
+          256
+        ],
+        [
+          768,
+          0,
+          256,
+          256
+        ],
+        [
+          1024,
+          0,
+          256,
+          256
+        ],
+        [
+          1280,
+          0,
+          256,
+          256
+        ],
+        [
+          1536,
+          0,
+          256,
+          256
+        ],
+        [
+          1792,
+          0,
+          256,
+          256
+        ],
+        [
+          2048,
+          0,
+          256,
+          256
+        ],
+        [
+          2304,
+          0,
+          256,
+          256
+        ],
+        [
+          2560,
+          0,
+          256,
+          256
+        ],
+        [
+          2816,
+          0,
+          256,
+          256
+        ]
+      ],
+      "frameDurationsMs": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "durationMs": 1200,
+      "loopRange": null,
+      "bodyAnchor": [
+        160,
+        174
+      ],
+      "groundBaseline": 218,
+      "anchorStatus": "nominal; visual pilot review required",
+      "facing": "right",
+      "mirrorSupported": true,
+      "props": [],
+      "intendedTravelSpeedPxPerSecondAt256": 0,
+      "source": "sheets/stand-up.png",
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "sourceGrid": [
+        3,
+        4
+      ],
+      "exportTransform": {
+        "scale": 1.07,
+        "offset": [
+          -2,
+          -9
+        ],
+        "uniformAcrossFrames": true,
+        "sourceCanvasSize": [
+          450,
+          450
+        ],
+        "rowPaddingY": [
+          -28,
+          -22,
+          -14,
+          17
+        ],
+        "componentExtraction": true
+      },
+      "visibleFrameBounds": [
+        [
+          36,
+          23,
+          209,
+          218
+        ],
+        [
+          28,
+          33,
+          216,
+          219
+        ],
+        [
+          28,
+          33,
+          217,
+          219
+        ],
+        [
+          36,
+          39,
+          233,
+          216
+        ],
+        [
+          36,
+          42,
+          234,
+          219
+        ],
+        [
+          29,
+          37,
+          230,
+          219
+        ],
+        [
+          36,
+          33,
+          234,
+          219
+        ],
+        [
+          30,
+          30,
+          225,
+          218
+        ],
+        [
+          27,
+          29,
+          224,
+          220
+        ],
+        [
+          39,
+          29,
+          236,
+          218
+        ],
+        [
+          34,
+          29,
+          233,
+          219
+        ],
+        [
+          27,
+          29,
+          225,
+          219
+        ]
+      ],
+      "reviewStatus": "awaiting-user-pilot-review",
+      "sourceFrameRectangles": [
+        [
+          30,
+          49,
+          321,
+          375
+        ],
+        [
+          379,
+          65,
+          694,
+          376
+        ],
+        [
+          741,
+          64,
+          1057,
+          376
+        ],
+        [
+          30,
+          431,
+          359,
+          728
+        ],
+        [
+          393,
+          436,
+          724,
+          732
+        ],
+        [
+          743,
+          428,
+          1078,
+          732
+        ],
+        [
+          31,
+          775,
+          362,
+          1086
+        ],
+        [
+          383,
+          770,
+          708,
+          1085
+        ],
+        [
+          740,
+          769,
+          1069,
+          1088
+        ],
+        [
+          35,
+          1099,
+          365,
+          1416
+        ],
+        [
+          389,
+          1099,
+          721,
+          1418
+        ],
+        [
+          740,
+          1099,
+          1071,
+          1417
+        ]
+      ],
+      "frameSourceOverrides": {},
+      "propPresence": "none"
+    }
+  ],
+  "sequences": [
+    {
+      "id": "walking",
+      "clips": [
+        "attentive-idle-loop",
+        "walk-start",
+        "walk-loop",
+        "walk-loop",
+        "walk-stop",
+        "attentive-idle-loop"
+      ],
+      "preview": "sequence-walking.webp",
+      "durationMs": 9600,
+      "reviewStatus": "awaiting-visual-connection-review"
+    },
+    {
+      "id": "reading",
+      "clips": [
+        "read-entry",
+        "read-loop",
+        "read-loop",
+        "read-exit"
+      ],
+      "preview": "sequence-reading.webp",
+      "durationMs": 7200,
+      "reviewStatus": "awaiting-visual-connection-review"
+    },
+    {
+      "id": "adventurer",
+      "clips": [
+        "straw-hat-adventurer-entry",
+        "straw-hat-adventurer-loop",
+        "straw-hat-adventurer-loop",
+        "straw-hat-adventurer-exit"
+      ],
+      "preview": "sequence-adventurer.webp",
+      "durationMs": 4800,
+      "reviewStatus": "awaiting-visual-connection-review"
+    },
+    {
+      "id": "scholar-stroll",
+      "clips": [
+        "attentive-idle-loop",
+        "walk-start",
+        "walk-loop",
+        "walk-stop",
+        "sit-down",
+        "read-entry",
+        "read-loop",
+        "read-exit",
+        "stand-up",
+        "attentive-idle-loop"
+      ],
+      "preview": "sequence-scholar-stroll.webp",
+      "durationMs": 15600,
+      "reviewStatus": "awaiting-visual-connection-review"
+    }
+  ],
+  "staticFallback": "static-fallback.png",
+  "fallbackSource": "frames/attentive-idle-loop/00.png"
+}

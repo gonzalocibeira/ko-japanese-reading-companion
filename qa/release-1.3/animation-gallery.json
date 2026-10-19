@@ -1,0 +1,13 @@
+{
+  "fiveClickTrigger": "passed",
+  "keyboardTrigger": "passed",
+  "offline": "passed",
+  "galleryTiles": 30,
+  "clipsPlayed": 56,
+  "frameSamples": 628,
+  "noControls": "passed",
+  "reducedMotion": "passed",
+  "mobileOverflow": "none",
+  "pageErrors": [],
+  "screenshot": "qa/release-1.3/animation-gallery.png"
+}

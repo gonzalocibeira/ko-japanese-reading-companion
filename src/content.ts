@@ -5,6 +5,10 @@ import {AdaptivePacer} from './pacing';
 import { CollisionIndex } from './geometry';
 import type { Reading } from './shared';
 import type {PageStatus,ToolbarAvailability} from './action-state';
+import {Mascot} from './mascot';
+import {mascotPreferences} from './mascot-preferences';
+import {updateMascotPosition} from './preferences';
+import {webTarget,type MascotTextTarget} from './mascot-target';
 const hostname = location.hostname || (location.ancestorOrigins[0] ? new URL(location.ancestorOrigins[0]).hostname : '');
 const docs = location.hostname === 'docs.google.com' && location.pathname.startsWith('/document/');
 if (docs) {
@@ -32,6 +36,7 @@ function invalidateContext() {
   revision++;window.clearTimeout(timer);activeRequest=undefined;
   mutationObserver?.disconnect();pageObserver.disconnect();
   clear();host.remove();reader?.loading(false,'');
+  mascot?.destroy();mascot=undefined;
   message='Extension updated or reloaded. Reload this page to restore readings.';
   statusState='unavailable';toolbarAvailability='unavailable';
 }
@@ -64,10 +69,40 @@ let viewSettings=readingViewPreferences(undefined);
 const topFrame=window===window.top;
 const readingModeEnabled=()=>topFrame && panelEnabled(viewSettings,hostname);
 let reader:ReadingPanel|undefined;
+let mascot:Mascot|undefined;
+let mascotSettings=mascotPreferences(undefined);
+function syncMascot() {
+  if(!topFrame || contextInvalidated)return;
+  if(!mascotSettings.enabled) {mascot?.destroy();mascot=undefined;return;}
+  mascot ??= new Mascot({send:sendToExtension,savePosition:position=>updateMascotPosition(hostname,position),overrides:()=>overrides,target:mascotTarget,obstacle:()=>reader?.bounds()});
+  mascot.update(mascotSettings,excluded.includes(hostname),hostname);
+}
+function mascotTarget(x:number,y:number):MascotTextTarget|undefined {
+  if(!docs)return webTarget(x,y);
+  // Docs overlays intercept DOM hit-testing. Resolve only visible exposed glyphs.
+  const editor=document.querySelector('.kix-appview-editor')?.getBoundingClientRect();
+  if(editor && (x<editor.left || x>editor.right || y<editor.top || y>editor.bottom))return;
+  const page=[...visiblePages].find(element=>{const box=element.getBoundingClientRect();return x>=box.left && x<=box.right && y>=box.top && y<=box.bottom;});
+  const root=page ?? document.querySelector('.kix-appview-editor') ?? document;
+  let inspected=0;
+  for(const element of root.querySelectorAll('svg rect[aria-label]')) {
+    if(++inspected>4096)break;
+    const box=element.getBoundingClientRect();
+    if(x<box.left || x>box.right || y<box.top || y>box.bottom)continue;
+    const source=docsSource(element,editor);if(!source || source.text.length>1000)continue;
+    for(let offset=0;offset<source.text.length;offset++) {
+      const rect=source.rect(offset,offset+1);
+      if(rect && x>=rect.left && x<=rect.right && y>=rect.top && y<=rect.bottom)return {text:source.text,offset,rects:(start,end)=>{const rect=source.rect(start,end);return rect?[rect]:[];}};
+    }
+  }
+}
 function ensureReader() {
   if(reader || !readingModeEnabled())return;
   reader=new ReadingPanel(()=>{void updateReadingView({},{hostname,enabled:false}).catch(()=>reader?.unavailable('Could not close the reading view. Try again.'));},width=>updateReadingView({width}));
   reader.setOverrides(overrides);reader.appearance(viewSettings,readingAppearance);
+  reader.mascotHooks={hover:(word,contains)=>mascot?.readerHover(word,contains),leave:()=>mascot?.readerLeave(),selection:text=>{
+    if(text && text.length<=80 && !/\s/u.test(text))mascot?.readerSelection({text,offset:0,selection:true});
+  }};
 }
 let activeRequest:string|undefined;
 const pacer=new AdaptivePacer();
@@ -102,6 +137,7 @@ function clear() { layer.replaceChildren(); }
 function schedule(delay = 150, activity?:'scroll'|'edit') {
   if(!extensionAvailable())return;
   ensureReader();
+  syncMascot();
   revision++; clear(); window.clearTimeout(timer);
   if(activeRequest) {void sendToExtension({type:'cancel-tokenize',requestId:activeRequest}).catch(()=>{});activeRequest=undefined;}
   if(contextInvalidated)return;
@@ -197,7 +233,7 @@ function* visibleTextSources(node:Text):Generator<Source|undefined> {
   }
 }
 const measure = document.createElement('canvas').getContext('2d')!;
-function docsSource(element: Element): Source | undefined {
+function docsSource(element: Element,clip=editorClip): Source | undefined {
   const text = element.getAttribute('aria-label') ?? '';
   if (!text || text.length > 2000) return;
   const box = element.getBoundingClientRect(); if (!visible(box)) return;
@@ -216,7 +252,6 @@ function docsSource(element: Element): Source | undefined {
   const size = Number(font.match(/([\d.]+)px/)?.[1]); if (!size) return;
   const localHeight = element instanceof SVGRectElement ? element.height.baseVal.value : box.height;
   const scaleY = localHeight > 0 ? box.height / localHeight : 1;
-  const clip = editorClip;
   // Ignore tile copies outside their own SVG viewport, including hidden tile overlap.
   const svg = element.closest('svg')?.getBoundingClientRect();
   if (clip && (box.bottom <= clip.top || box.top >= clip.bottom || box.right <= clip.left || box.left >= clip.right)) return;
@@ -248,7 +283,7 @@ function* sources(root: Element,panelMode=false): Generator<Source | undefined> 
     let descend = true;
     let source: Source | undefined;
     if (node instanceof Element) {
-      if (node === host || reader?.ownsNode(node) || node.matches('script,style,noscript,ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) descend = false;
+      if (node === host || mascot?.ownsNode(node) || reader?.ownsNode(node) || node.matches('script,style,noscript,ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) descend = false;
       else if (node !== root) {
         const r = node.getBoundingClientRect();
         const style = getComputedStyle(node);
@@ -456,6 +491,7 @@ async function scan() {
     else message=`Active — ${layer.childElementCount} visible readings${docs ? (activePage ? ' on the active page' : ' in the editor viewport') : ''}.${skippedSpace ? ` Tight spacing: ${skippedSpace} omitted.` : ''}${unknown ? ` Unknown words: ${unknown}. Add a local correction in the menu.` : ''}${attempted>=500 ? ' View limit reached; scroll to reveal more.' : ''}`;
     if(readingMode && (!docs || prepared?.length)) {
       reader?.display(readingRuns,!docs?'web':activePage?String([...pages].indexOf(activePage)):'pageless',viewSettings,readingAppearance,(docs?editorClip?.top:12) ?? 100,panelLimited || attempted>=500);
+      syncMascot();
       message=`Reading view — ${count} readings in ${!docs?'the visible webpage text':activePage?'the active page’s visible text':'the editor viewport'}.${unknown?` Unknown words: ${unknown}. Add a local correction in the menu.`:''}${panelLimited || attempted>=500?' View limit reached; scroll to reveal more.':''}`;
     }
     async function process(batch: Source[]) {
@@ -527,23 +563,26 @@ async function scan() {
 }
 chrome.runtime.onMessage.addListener((request, _sender, respond) => { if (request?.type === 'status') respond({message,state:statusState,toolbarAvailability} satisfies PageStatus); });
 chrome.storage.onChanged.addListener((changes, area) => {
+  if(area==='local' && changes.mascot) {mascotSettings=mascotPreferences(changes.mascot.newValue);syncMascot();}
   if(area==='local' && changes.showLegacyAnimations)setMimeticLegacyAnimations(changes.showLegacyAnimations.newValue);
   if(area!=='local' || !['enabled','excluded','siteAppearance','readingOverrides','docsReadingView','readingView'].some(key=>key in changes))return;
   const wasReading=readingModeEnabled();
   if(changes.enabled)enabled=changes.enabled.newValue!==false;
   if(changes.excluded)excluded=Array.isArray(changes.excluded.newValue)?changes.excluded.newValue:[];
+  if(changes.excluded)syncMascot();
   if(changes.siteAppearance)readingAppearance=appearanceForSite(changes.siteAppearance.newValue,hostname);
-  if(changes.readingOverrides) {overrides=validOverrides(changes.readingOverrides.newValue);reader?.setOverrides(overrides);}
+  if(changes.readingOverrides) {overrides=validOverrides(changes.readingOverrides.newValue);reader?.setOverrides(overrides);mascot?.invalidateLookup();}
   if(changes.docsReadingView)legacyView=changes.docsReadingView.newValue;
   if(changes.readingView)rawView=changes.readingView.newValue;
   viewSettings=readingViewPreferences(rawView,legacyView);
   if(wasReading===readingModeEnabled() && !changes.enabled && !changes.excluded && !changes.readingOverrides && (readingModeEnabled() || !changes.siteAppearance)) {
-    reader?.appearance(viewSettings,readingAppearance);return;
+    reader?.appearance(viewSettings,readingAppearance);syncMascot();return;
   }
   schedule(0);
 });
 async function start() {
-  const state = await chrome.storage.local.get({enabled:true, excluded:[],siteAppearance:{},readingOverrides:{},docsReadingView:{},readingView:null,showLegacyAnimations:false}); enabled = state.enabled !== false; excluded = Array.isArray(state.excluded) ? state.excluded : [];
+  const state = await chrome.storage.local.get({enabled:true, excluded:[],siteAppearance:{},readingOverrides:{},docsReadingView:{},readingView:null,showLegacyAnimations:false,mascot:null}); enabled = state.enabled !== false; excluded = Array.isArray(state.excluded) ? state.excluded : [];
+  mascotSettings=mascotPreferences(state.mascot);syncMascot();
   setMimeticLegacyAnimations(state.showLegacyAnimations);
   readingAppearance=appearanceForSite(state.siteAppearance,hostname);overrides=validOverrides(state.readingOverrides);legacyView=state.docsReadingView;rawView=state.readingView;viewSettings=readingViewPreferences(rawView,legacyView);reader?.setOverrides(overrides);reader?.appearance(viewSettings,readingAppearance);
   if (docs) { registerPages(document); watchDocsInputs(document); }
@@ -551,7 +590,8 @@ async function start() {
   const observer = new MutationObserver(records => {
     let relevant = false;
     for (const record of records) {
-      if (record.target === host || host.contains(record.target) || reader?.ownsNode(record.target)) continue;
+      if (record.target === host || host.contains(record.target) || mascot?.ownsNode(record.target) || reader?.ownsNode(record.target)) continue;
+      if(record.type==='childList' && [...record.addedNodes,...record.removedNodes].every(node=>node instanceof Element && node.localName==='ko-mascot'))continue;
       const element = record.target instanceof Element ? record.target : record.target.parentElement;
       if (docs && element?.closest('.kix-cursor,.kix-selection-overlay,.kix-selection-overlay-content')) continue;
       if (docs && record.type !== 'childList' && element?.closest('.kix-page') && element.closest('.kix-page') !== activePage) continue;
@@ -562,8 +602,8 @@ async function start() {
   });
   mutationObserver = observer;
   observer.observe(document.body, observerOptions);
-  document.addEventListener('scroll', event => {if(!reader?.owns(event))schedule(100,'scroll');}, {capture:true, passive:true});
-  document.addEventListener('load', event => {if(!reader?.owns(event))schedule();}, true);
+  document.addEventListener('scroll', event => {if(!mascot?.owns(event) && !reader?.owns(event))schedule(100,'scroll');}, {capture:true, passive:true});
+  document.addEventListener('load', event => {if(!mascot?.owns(event) && !reader?.owns(event))schedule();}, true);
   window.addEventListener('resize', () => schedule(100));
   window.visualViewport?.addEventListener('resize', () => schedule(100));
   document.addEventListener('visibilitychange', () => schedule(0));

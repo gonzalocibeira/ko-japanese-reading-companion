@@ -5,7 +5,7 @@
 <h1 align="center">Kō — Japanese Reading Companion</h1>
 <p align="center"><strong>Japanese reading companion.</strong></p>
 <p align="center">Automatic Japanese readings for webpages and Google Docs.<br>Furigana runs on your device. Optional word definitions use Wiktionary online.</p>
-<p align="center"><strong>1.2.0</strong> · 28 October 2026 · <a href="https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.2.0">GitHub release</a></p>
+<p align="center"><strong>1.3.0 development build</strong> · Local build; not published</p>
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok">Install from the Chrome Web Store</a> ·
   <a href="#see-it-in-action">See it in action</a> ·
@@ -25,6 +25,22 @@
 
 ## Release notes
 
+### 1.3.0 · Development build (WIP)
+
+**Kōくん** is an optional browser companion. Enable him in the extension popup; he starts off. He blinks and breathes while idle, takes regular walks around his drop area, and waits at least three active minutes and three walking trips before he can sleep. Awake pauses last about 12–24 seconds; sleeping stays still. Special routines retain a 5–10 minute cooldown. **Click him to wake him for one minute**: he greets you and becomes more active, with 8–16 second rests between actions. Clicking again refreshes that minute; dragging does not wake him. Enter or Space also wakes him when focused. The minute expires even while his tab is in the background, and a routine already underway finishes its normal exit.
+
+His PS1-inspired design uses chunky cream polygons, vermilion markings, pixel textures, four limbs, and three tails. All 24 routines have been rebuilt as 56 transparent clips. [Preview the animation library](qa/ko-kun-animation/ps1-review.html).
+
+**A small easter egg:** click the version number on About Kō five times to open a compact animation gallery. All 24 routines and six transitions play automatically across 30 tiles, with no controls. It works offline and respects reduced motion. Enter or Space on the focused version number also counts.
+
+He walks gently around his drop area and occasionally takes off, floats, and lands back at his ground height. Physical specials have small movements matched to their poses; quiet activities stay planted. Activities run for at most two loop iterations. Drag him to move him; the visible drop location becomes his new ground position and is remembered per site. Use arrow keys when focused for keyboard repositioning. He has no permanent window or controls.
+
+Hover over a Japanese word for 600 ms to open his speech bubble, or choose **Highlight** in his settings. Hover bubbles close when you leave the word. The content-sized pixel dialogue follows him while his animation keeps running. A word reading immediately starts his open-scroll animation, taking priority over roaming and other activities. Readings work offline, including on exposed Google Docs text and in Reading view. Definitions start off; optionally enable English or Japanese Wiktionary definitions. Only the lookup word is sent to that edition. His switch works with automatic page furigana off; **Pause on this site** hides him. Sizes and a still-character option are in the popup, and system reduced motion is respected.
+
+Use Reading view when Google Docs does not expose enough editor text. Mascot lookups do not cover embedded frames, browser-protected pages, browser PDF viewers, or arbitrary image/canvas text. No needs, feeding, sound, or progression are included.
+
+The primary branch, `master`, contains this work in progress. Load [`dist/`](dist/) or a locally generated 1.3.0 ZIP, then reload the extension and existing tabs. The numeric manifest version is `1.3.0`, with the display version `1.3.0 WIP`. There is no v1.3 release, tag, store submission, or launch date. See the [v1.3 verification notes](docs/release-1.3-audit.md) and [full changelog](docs/release-notes.md).
+
 ### 1.2.0 · 28 October 2026
 
 - **Word forms:** one input for verbs and い／な adjectives, with dictionary-backed class and reading confirmation.
@@ -35,7 +51,7 @@
 - **90 mimetic expressions in 45 illustrated comparisons**, with original examples, usage notes, references, and new ukiyo-e-inspired pixel animations. Scenes loop automatically; reduced motion shows a still pose. About → **Show legacy animations** restores the original line style.
 - **Release announcements:** a compact banner summarizes each version, links to the About changelog, and stays dismissed on this device after closing it. About also opens GitHub to **Suggest a feature or improvement**.
 
-This is a release candidate for testing. The extension manifest version is `1.2.0`; the GitHub release tag is `v1.2.0`. Chrome Web Store availability and submission are managed separately.
+Version 1.2.0 was published on GitHub on 18 October 2026 under `v1.2.0`; its announced launch date is 28 October. Chrome Web Store review and publication are managed separately. These download links contain the 1.2 runtime; the primary branch and its bundled `dist/` now contain 1.3 WIP.
 
 RC1 verification: all **186 tests** and **3 prior release-audit regressions** passed. Final release preparation checks are recorded in the audit. See the [1.2 audit](docs/release-1.2-audit.md) for scope and limits.
 
@@ -63,7 +79,7 @@ Read the [full release notes](docs/release-notes.md) for details and update inst
 
 **[Install Kō from the Chrome Web Store](https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok).** Click **Add to Chrome**, confirm the installation, then reload your open tabs to start reading. Store installations receive updates automatically.
 
-Version **1.2.0** is scheduled for **28 October 2026**. Downloads below become available at launch; the store version may differ until review and publication complete.
+The working tree contains **1.3.0 development**. Build locally for Kōくん. The historical 1.2 download links below are separate from this unpublished build; store availability depends on review and publication.
 
 **Tip:** Pin **Kō — Japanese Reading Companion** from Chrome's puzzle-piece **Extensions** menu. Look for the warm-paper **考** (think) on a vermilion seal.
 
@@ -176,7 +192,7 @@ Open **About Kō** from the popup or Chrome’s extension options for the projec
 
 **Furigana readings run on your device.** The extension uses bundled Kuromoji/IPADIC reading dictionaries and sends no text to an external service to generate furigana.
 
-**Word definitions use Wiktionary online.** Clicking a word in the reading panel, or activating it with Enter or Space, automatically sends that word's dictionary form to the English and Japanese Wiktionary services. Wiktionary receives the lookup word and normal connection information, including your IP address. The extension does not send the surrounding sentence or full document. Lookups require an internet connection; cached definitions stay in extension memory. Furigana and all exploration tools run locally, and experiments are not saved.
+**Word definitions use Wiktionary online.** Kōくん definitions are off by default; when enabled, hovering or highlighting sends the dictionary form to only the selected language. Clicking a word in the reading panel, or activating it with Enter or Space, automatically sends that word's dictionary form to the English and Japanese Wiktionary services. Wiktionary receives the lookup word and normal connection information, including your IP address. The extension does not send the surrounding sentence or full document. Lookups require an internet connection; cached definitions stay in extension memory. Furigana and all exploration tools run locally, and experiments are not saved.
 
 The extension has no analytics or account requirement. It saves your settings, reading corrections, animation-style choice, and per-version update-announcement dismissals to local storage.
 
@@ -283,3 +299,5 @@ Kō is source available under these terms. Earlier copies distributed under MIT,
 ### Third-party notices
 
 Bundled dependency licenses are included in [`dist/licenses/`](dist/licenses/), including Kuromoji (Apache 2.0), IPADIC's notice, async, doublearray, zlibjs, lodash, and kamiya-codec (Unlicense). These dependencies retain their own licenses; the Kō No-Resale License does not replace them.
+
+DotGothic16, the bundled Japanese pixel font for Kōくん dialogue, is by The DotGothic16 Project Authors and is distributed under its [SIL Open Font License](public/art/fonts/OFL.txt). It remains separate from Kō’s project license. Source: [Google Fonts](https://github.com/google/fonts/tree/main/ofl/dotgothic16).

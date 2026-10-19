@@ -28,13 +28,13 @@ test('release announcement stays dismissed across reopen and browser restart, wi
   const banner=popup.locator('#update-banner');
   await expect(banner).toBeVisible();
   await expect(banner).toContainText(`What’s new in Kō ${version}`);
-  await expect(banner).toContainText('Explore adjective forms offline');
+  await expect(banner).toContainText('Meet Kōくん');
   // Following the changelog doesn't count as dismissing it.
   const opened=context.waitForEvent('page');
   await popup.getByRole('link',{name:'Read the changelog',exact:true}).click();
   const about=await opened;
   await expect(about.locator('#current-release-notes .release-body')).toBeVisible();
-  await expect(about.locator('#current-release-notes')).toContainText('Adjective Playground');
+  await expect(about.locator('#current-release-notes')).toContainText('Kōくん');
   const feature=about.getByRole('link',{name:'Suggest a feature or improvement'});
   const url=new URL((await feature.getAttribute('href'))!);
   expect(url.origin+url.pathname).toBe('https://github.com/gonzalocibeira/ko-japanese-reading-companion/issues/new');

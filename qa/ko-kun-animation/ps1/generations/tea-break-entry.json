@@ -1,0 +1,281 @@
+{
+  "id": "tea-break-entry",
+  "source": "ps1/sheets/tea-break-entry.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/tea-break-entry.txt",
+  "sourceSha256": "4d0d082769b2efbf856f424f9f81b4587edd85f1481580cd48052fc3379c2cd1",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/tea-break-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "layout": {
+    "scale": 1.1
+  },
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "sourceRects": [
+    [
+      78,
+      11,
+      383,
+      276
+    ],
+    [
+      523,
+      8,
+      847,
+      283
+    ],
+    [
+      1011,
+      17,
+      1357,
+      282
+    ],
+    [
+      72,
+      291,
+      463,
+      561
+    ],
+    [
+      542,
+      294,
+      926,
+      564
+    ],
+    [
+      1018,
+      291,
+      1321,
+      554
+    ],
+    [
+      72,
+      563,
+      421,
+      820
+    ],
+    [
+      541,
+      566,
+      859,
+      816
+    ],
+    [
+      1013,
+      558,
+      1356,
+      818
+    ],
+    [
+      72,
+      826,
+      404,
+      1077
+    ],
+    [
+      546,
+      820,
+      877,
+      1073
+    ],
+    [
+      1031,
+      824,
+      1351,
+      1078
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      81,
+      14,
+      380,
+      273
+    ],
+    [
+      526,
+      11,
+      844,
+      280
+    ],
+    [
+      1014,
+      20,
+      1354,
+      279
+    ],
+    [
+      75,
+      294,
+      460,
+      558
+    ],
+    [
+      545,
+      297,
+      923,
+      561
+    ],
+    [
+      1021,
+      294,
+      1318,
+      551
+    ],
+    [
+      75,
+      566,
+      418,
+      817
+    ],
+    [
+      544,
+      569,
+      856,
+      813
+    ],
+    [
+      1016,
+      561,
+      1353,
+      815
+    ],
+    [
+      75,
+      829,
+      401,
+      1074
+    ],
+    [
+      549,
+      823,
+      874,
+      1070
+    ],
+    [
+      1034,
+      827,
+      1348,
+      1075
+    ]
+  ],
+  "exportBounds": [
+    [
+      53,
+      93,
+      193,
+      215
+    ],
+    [
+      41,
+      92,
+      191,
+      218
+    ],
+    [
+      48,
+      96,
+      207,
+      218
+    ],
+    [
+      50,
+      94,
+      231,
+      218
+    ],
+    [
+      50,
+      95,
+      228,
+      219
+    ],
+    [
+      51,
+      94,
+      191,
+      215
+    ],
+    [
+      50,
+      101,
+      211,
+      219
+    ],
+    [
+      50,
+      102,
+      196,
+      217
+    ],
+    [
+      49,
+      98,
+      207,
+      218
+    ],
+    [
+      50,
+      103,
+      203,
+      218
+    ],
+    [
+      52,
+      100,
+      205,
+      216
+    ],
+    [
+      57,
+      102,
+      205,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    -20,
+    -28,
+    -13,
+    -1
+  ],
+  "canvasSize": 600,
+  "exportScale": 1.1,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 35,
+  "frames": "ps1/source-frames/tea-break-entry",
+  "auditBoard": "ps1/audit/tea-break-entry.png",
+  "columnOffsets": [
+    0,
+    13,
+    22
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

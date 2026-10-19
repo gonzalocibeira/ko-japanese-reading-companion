@@ -1,0 +1,285 @@
+{
+  "id": "fishing-entry",
+  "source": "ps1/sheets/fishing-entry.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/fishing-entry.txt",
+  "sourceSha256": "d44cb8bb0a7da86edcf33ce52fe1e21145b432e6784c670f7f3b177fdde01f90",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/fishing-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "layout": {
+    "scale": 1.3,
+    "offset": [
+      -12,
+      -3
+    ]
+  },
+  "technicalError": "(6, 'export clipped', (45, 62, 256, 190))",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceRects": [
+    [
+      131,
+      6,
+      396,
+      250
+    ],
+    [
+      597,
+      10,
+      868,
+      247
+    ],
+    [
+      1077,
+      8,
+      1375,
+      247
+    ],
+    [
+      128,
+      263,
+      408,
+      504
+    ],
+    [
+      600,
+      263,
+      914,
+      504
+    ],
+    [
+      1069,
+      266,
+      1401,
+      504
+    ],
+    [
+      106,
+      527,
+      494,
+      761
+    ],
+    [
+      592,
+      503,
+      955,
+      761
+    ],
+    [
+      1068,
+      526,
+      1450,
+      761
+    ],
+    [
+      106,
+      775,
+      473,
+      1013
+    ],
+    [
+      586,
+      776,
+      967,
+      1011
+    ],
+    [
+      1072,
+      777,
+      1425,
+      1013
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      134,
+      9,
+      393,
+      247
+    ],
+    [
+      600,
+      13,
+      865,
+      244
+    ],
+    [
+      1080,
+      11,
+      1372,
+      244
+    ],
+    [
+      131,
+      266,
+      405,
+      501
+    ],
+    [
+      603,
+      266,
+      911,
+      501
+    ],
+    [
+      1072,
+      269,
+      1398,
+      501
+    ],
+    [
+      109,
+      530,
+      491,
+      758
+    ],
+    [
+      595,
+      506,
+      952,
+      758
+    ],
+    [
+      1071,
+      529,
+      1447,
+      758
+    ],
+    [
+      109,
+      778,
+      470,
+      1010
+    ],
+    [
+      589,
+      779,
+      964,
+      1008
+    ],
+    [
+      1075,
+      780,
+      1422,
+      1010
+    ]
+  ],
+  "exportBounds": [
+    [
+      52,
+      95,
+      187,
+      220
+    ],
+    [
+      45,
+      97,
+      184,
+      218
+    ],
+    [
+      48,
+      96,
+      200,
+      218
+    ],
+    [
+      50,
+      95,
+      194,
+      218
+    ],
+    [
+      47,
+      95,
+      208,
+      218
+    ],
+    [
+      43,
+      97,
+      214,
+      218
+    ],
+    [
+      39,
+      99,
+      239,
+      218
+    ],
+    [
+      43,
+      86,
+      230,
+      218
+    ],
+    [
+      43,
+      98,
+      240,
+      218
+    ],
+    [
+      39,
+      97,
+      228,
+      218
+    ],
+    [
+      40,
+      97,
+      236,
+      217
+    ],
+    [
+      45,
+      98,
+      226,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    0,
+    -1,
+    -2,
+    2
+  ],
+  "columnOffsets": [
+    0,
+    34,
+    70
+  ],
+  "canvasSize": 636,
+  "exportScale": 1.3,
+  "exportOffset": [
+    -12,
+    -3
+  ],
+  "placementDy": 33,
+  "frames": "ps1/source-frames/fishing-entry",
+  "auditBoard": "ps1/audit/fishing-entry.png",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

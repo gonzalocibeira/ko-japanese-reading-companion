@@ -1,0 +1,119 @@
+{
+  "version": "1.3.0",
+  "status": "work-in-progress",
+  "date": "2026-10-19",
+  "published": false,
+  "typecheck": "pass",
+  "build": "pass",
+  "regression": {
+    "command": "npx playwright test tests/mascot-motion.spec.ts tests/mascot-playback.spec.ts tests/mascot.spec.ts tests/mascot-dictionary.spec.ts",
+    "passed": 37,
+    "failed": 0,
+    "stage": "PS1 artwork, immediate reading priority, animated awake idle and delayed sleep"
+  },
+  "offlineDocs": {
+    "passed": 12,
+    "widths": [
+      1280,
+      700,
+      390,
+      320
+    ]
+  },
+  "mascotArtwork": {
+    "style": "Approved PS1 low-poly design",
+    "routines": 24,
+    "clips": 56,
+    "frames": 672,
+    "generatedSourceSheets": 40,
+    "sourcePosesVisuallyReviewed": 480,
+    "reverseClips": 16,
+    "exactBrowserFrameComparisons": 1344,
+    "acceptedInventoryFiles": 58,
+    "exactEndpointChecks": 76,
+    "exactPhaseJoinChecks": 26,
+    "loopSeamOutliers": [],
+    "gallery": "qa/ko-kun-animation/ps1-review.html",
+    "prompts": "qa/ko-kun-animation/ps1/prompts/",
+    "generator": "built-in image_gen",
+    "repeatExportFrameComparisons": 672,
+    "excludedSourcePoses": 5,
+    "eligibleSourcePoses": 475
+  },
+  "popupLayout": {
+    "width": 380,
+    "height": 580,
+    "collapsedFit": "pass",
+    "expandedScrolling": "pass"
+  },
+  "hoverMotionDialogueRevision": {
+    "hoverDismissal": "pass",
+    "sameWordAcrossInlineNodes": "pass",
+    "nearbyRoaming": "pass",
+    "activityLoopIterationsMax": 2,
+    "responsivePixelDialogue": "pass",
+    "narrowViewportWrapping": "pass",
+    "bundledJapanesePixelFont": "pass",
+    "readingAnimationContinuesWithBubble": "pass"
+  },
+  "earlierFeatureRegression": {
+    "command": "npx playwright test --grep-invert 'native toolbar popup'",
+    "passed": 209,
+    "failed": 0,
+    "nativeToolbarCheck": "blocked: macOS leaves the Brave test window unfocused; action.openPopup rejects inactive windows",
+    "stage": "Before PS1 artwork replacement"
+  },
+  "packages": "205 runtime files per layout, including offline gallery; local development ZIPs only. See packages.json and SHA256SUMS.",
+  "idleReadingRevision": {
+    "awakeStandingAndSeatedIdle": "authored blink and breathing loops",
+    "sleepingPose": "still, 250 ms timer",
+    "wordReading": "immediate read-loop frame zero, one cycle then normal exit; preempts all 24 routines",
+    "dismissal": "normal exit after reading cycle",
+    "reducedMotion": "still character with word bubble",
+    "ambientIdleMs": [
+      12000,
+      24000
+    ],
+    "idleDurationRounding": "complete 2400 ms cycle",
+    "sleepMinimumActiveMs": 180000,
+    "sleepMinimumWalkingTrips": 3,
+    "sleepChancePerEligibleRest": 0.12,
+    "ordinaryWalkChanceAfterInitialTrips": 0.65,
+    "walkTravelLimitAt128": 80,
+    "clickWakeMs": 60000,
+    "newArtPoses": 0,
+    "screenshot": "qa/release-1.3/word-reading-reaction.png",
+    "readingAnimationDoesNotPause": "pass",
+    "airborneReading": "immediate scroll with 1200 ms settling; ground and saved home preserved",
+    "readLoopPreload": "retained within six-strip cache"
+  },
+  "displayVersion": "1.3.0 WIP",
+  "primaryBranch": "master",
+  "releaseTagCreated": false,
+  "storeSubmitted": false,
+  "consolidatedRegression": {
+    "command": "npx playwright test --reporter=line",
+    "passed": 225,
+    "failed": 0,
+    "skipped": 0,
+    "nativeToolbarPopup": "pass",
+    "stage": "Final 1.3 WIP runtime including PS1 companion and gallery packaging"
+  },
+  "animationGallery": {
+    "fiveClickTrigger": "passed",
+    "keyboardTrigger": "passed",
+    "offline": "passed",
+    "galleryTiles": 30,
+    "clipsPlayed": 56,
+    "frameSamples": 628,
+    "noControls": "passed",
+    "reducedMotion": "passed",
+    "mobileOverflow": "none",
+    "pageErrors": [],
+    "screenshot": "qa/release-1.3/animation-gallery.png"
+  },
+  "documentationLinks": {
+    "checked": 52,
+    "missing": 0
+  }
+}

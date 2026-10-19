@@ -1,0 +1,286 @@
+{
+  "id": "ninja-entry",
+  "source": "ps1/sheets/ninja-entry.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/ninja-entry.txt",
+  "sourceSha256": "27fdc163ff5e3b1356fc66752f00f35ec27e64a9117b69002d0fb0eed96972df",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/ninja-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "sourceRects": [
+    [
+      125,
+      11,
+      438,
+      288
+    ],
+    [
+      578,
+      55,
+      897,
+      288
+    ],
+    [
+      1047,
+      59,
+      1385,
+      297
+    ],
+    [
+      103,
+      337,
+      440,
+      567
+    ],
+    [
+      573,
+      289,
+      890,
+      568
+    ],
+    [
+      1034,
+      300,
+      1303,
+      578
+    ],
+    [
+      95,
+      572,
+      376,
+      852
+    ],
+    [
+      561,
+      563,
+      852,
+      852
+    ],
+    [
+      1032,
+      631,
+      1345,
+      850
+    ],
+    [
+      95,
+      854,
+      428,
+      1075
+    ],
+    [
+      558,
+      859,
+      878,
+      1075
+    ],
+    [
+      1017,
+      859,
+      1351,
+      1073
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      128,
+      14,
+      435,
+      285
+    ],
+    [
+      581,
+      58,
+      894,
+      285
+    ],
+    [
+      1050,
+      62,
+      1382,
+      294
+    ],
+    [
+      106,
+      340,
+      437,
+      564
+    ],
+    [
+      576,
+      292,
+      887,
+      565
+    ],
+    [
+      1037,
+      303,
+      1300,
+      575
+    ],
+    [
+      98,
+      575,
+      373,
+      849
+    ],
+    [
+      564,
+      566,
+      849,
+      849
+    ],
+    [
+      1035,
+      634,
+      1342,
+      847
+    ],
+    [
+      98,
+      857,
+      425,
+      1072
+    ],
+    [
+      561,
+      862,
+      875,
+      1072
+    ],
+    [
+      1020,
+      862,
+      1348,
+      1070
+    ]
+  ],
+  "exportBounds": [
+    [
+      48,
+      62,
+      225,
+      218
+    ],
+    [
+      39,
+      87,
+      220,
+      218
+    ],
+    [
+      41,
+      89,
+      232,
+      223
+    ],
+    [
+      36,
+      88,
+      226,
+      217
+    ],
+    [
+      36,
+      60,
+      216,
+      218
+    ],
+    [
+      33,
+      67,
+      185,
+      224
+    ],
+    [
+      31,
+      60,
+      189,
+      218
+    ],
+    [
+      29,
+      55,
+      194,
+      218
+    ],
+    [
+      32,
+      94,
+      209,
+      217
+    ],
+    [
+      31,
+      94,
+      219,
+      218
+    ],
+    [
+      28,
+      97,
+      209,
+      218
+    ],
+    [
+      23,
+      97,
+      212,
+      217
+    ]
+  ],
+  "rowOffsets": [
+    -26,
+    -35,
+    -47,
+    1
+  ],
+  "canvasSize": 600,
+  "exportScale": 1.35,
+  "exportOffset": [
+    -15,
+    -3
+  ],
+  "placementDy": 22,
+  "frames": "ps1/source-frames/ninja-entry",
+  "auditBoard": "ps1/audit/ninja-entry.png",
+  "layout": {
+    "scale": 1.35,
+    "offset": [
+      -15,
+      -3
+    ]
+  },
+  "technicalError": "(11, 'export clipped', (0, 69, 207, 202))",
+  "columnOffsets": [
+    0,
+    15,
+    31
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

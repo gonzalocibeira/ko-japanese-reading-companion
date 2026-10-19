@@ -1,0 +1,9 @@
+{
+  "family": "DotGothic16",
+  "source": "https://github.com/google/fonts/tree/main/ofl/dotgothic16",
+  "license": "SIL Open Font License 1.1",
+  "files": {
+    "DotGothic16-Regular.ttf": "3ad9af88726d42b40f7f365f0dcac785af73cf20ea6f1d5b44e57cc21150b8f1",
+    "OFL.txt": "b6630c61ea078cacd7fabe37d14ffe557a0b45b06683374a9aa9e24262993e33"
+  }
+}

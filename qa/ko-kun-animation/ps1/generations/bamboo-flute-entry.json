@@ -1,0 +1,281 @@
+{
+  "id": "bamboo-flute-entry",
+  "source": "ps1/sheets/bamboo-flute-entry.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/bamboo-flute-entry.txt",
+  "sourceSha256": "ffa58fb3a55f0f073afe7b97e50c00835e43b91044da62d8c78421beb8686a62",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/bamboo-flute-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "layout": {
+    "scale": 1.35
+  },
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "sourceRects": [
+    [
+      92,
+      13,
+      382,
+      282
+    ],
+    [
+      561,
+      17,
+      852,
+      282
+    ],
+    [
+      1027,
+      14,
+      1334,
+      281
+    ],
+    [
+      87,
+      295,
+      450,
+      546
+    ],
+    [
+      546,
+      300,
+      869,
+      556
+    ],
+    [
+      1022,
+      286,
+      1341,
+      550
+    ],
+    [
+      81,
+      550,
+      402,
+      815
+    ],
+    [
+      550,
+      556,
+      884,
+      816
+    ],
+    [
+      1016,
+      550,
+      1345,
+      815
+    ],
+    [
+      82,
+      812,
+      409,
+      1075
+    ],
+    [
+      554,
+      814,
+      884,
+      1078
+    ],
+    [
+      1025,
+      814,
+      1345,
+      1075
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      95,
+      16,
+      379,
+      279
+    ],
+    [
+      564,
+      20,
+      849,
+      279
+    ],
+    [
+      1030,
+      17,
+      1331,
+      278
+    ],
+    [
+      90,
+      298,
+      447,
+      543
+    ],
+    [
+      549,
+      303,
+      866,
+      553
+    ],
+    [
+      1025,
+      289,
+      1338,
+      547
+    ],
+    [
+      84,
+      553,
+      399,
+      812
+    ],
+    [
+      553,
+      559,
+      881,
+      813
+    ],
+    [
+      1019,
+      553,
+      1342,
+      812
+    ],
+    [
+      85,
+      815,
+      406,
+      1072
+    ],
+    [
+      557,
+      817,
+      881,
+      1075
+    ],
+    [
+      1028,
+      817,
+      1342,
+      1072
+    ]
+  ],
+  "exportBounds": [
+    [
+      44,
+      66,
+      208,
+      218
+    ],
+    [
+      44,
+      69,
+      209,
+      218
+    ],
+    [
+      41,
+      67,
+      215,
+      217
+    ],
+    [
+      41,
+      74,
+      247,
+      216
+    ],
+    [
+      36,
+      77,
+      219,
+      221
+    ],
+    [
+      38,
+      69,
+      219,
+      218
+    ],
+    [
+      37,
+      69,
+      219,
+      218
+    ],
+    [
+      38,
+      72,
+      227,
+      219
+    ],
+    [
+      35,
+      69,
+      221,
+      218
+    ],
+    [
+      38,
+      70,
+      223,
+      218
+    ],
+    [
+      40,
+      71,
+      227,
+      220
+    ],
+    [
+      40,
+      71,
+      221,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    -20,
+    -17,
+    -10,
+    1
+  ],
+  "canvasSize": 600,
+  "exportScale": 1.35,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 22,
+  "frames": "ps1/source-frames/bamboo-flute-entry",
+  "auditBoard": "ps1/audit/bamboo-flute-entry.png",
+  "columnOffsets": [
+    0,
+    15,
+    26
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

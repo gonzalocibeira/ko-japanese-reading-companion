@@ -1,0 +1,33 @@
+{
+  "characterApproved": true,
+  "approvedDesign": "../design/proposal-a.png",
+  "permanentAccessories": [],
+  "sheet": "character-reference.png",
+  "views": [
+    {
+      "name": "Front",
+      "file": "front.png"
+    },
+    {
+      "name": "Standing three-quarter",
+      "file": "standing-three-quarter-complete.png"
+    },
+    {
+      "name": "Right profile",
+      "file": "standing-profile-v2.png"
+    },
+    {
+      "name": "Seated three-quarter",
+      "file": "seated-three-quarter-complete.png"
+    },
+    {
+      "name": "Thoughtful",
+      "file": "thoughtful-complete.png"
+    },
+    {
+      "name": "Meditating",
+      "file": "meditating-complete.png"
+    }
+  ],
+  "excluded": "Initial front view on source-reference-v1.png has four tails; use the separately regenerated front.png. Complete crops isolate original sprites without repainting."
+}

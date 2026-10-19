@@ -1,0 +1,279 @@
+{
+  "id": "read-loop",
+  "source": "ps1/sheets/read-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/read-loop.txt",
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      15,
+      19,
+      361,
+      354
+    ],
+    [
+      373,
+      39,
+      715,
+      355
+    ],
+    [
+      732,
+      56,
+      1071,
+      355
+    ],
+    [
+      16,
+      395,
+      361,
+      713
+    ],
+    [
+      373,
+      396,
+      711,
+      713
+    ],
+    [
+      730,
+      385,
+      1064,
+      713
+    ],
+    [
+      11,
+      730,
+      354,
+      1067
+    ],
+    [
+      375,
+      739,
+      719,
+      1066
+    ],
+    [
+      733,
+      762,
+      1072,
+      1067
+    ],
+    [
+      9,
+      1119,
+      360,
+      1428
+    ],
+    [
+      374,
+      1118,
+      719,
+      1428
+    ],
+    [
+      732,
+      1089,
+      1072,
+      1429
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      18,
+      22,
+      358,
+      351
+    ],
+    [
+      376,
+      42,
+      712,
+      352
+    ],
+    [
+      735,
+      59,
+      1068,
+      352
+    ],
+    [
+      19,
+      398,
+      358,
+      710
+    ],
+    [
+      376,
+      399,
+      708,
+      710
+    ],
+    [
+      733,
+      388,
+      1061,
+      710
+    ],
+    [
+      14,
+      733,
+      351,
+      1064
+    ],
+    [
+      378,
+      742,
+      716,
+      1063
+    ],
+    [
+      736,
+      765,
+      1069,
+      1064
+    ],
+    [
+      12,
+      1122,
+      357,
+      1425
+    ],
+    [
+      377,
+      1121,
+      716,
+      1425
+    ],
+    [
+      735,
+      1092,
+      1069,
+      1426
+    ]
+  ],
+  "exportBounds": [
+    [
+      49,
+      59,
+      214,
+      218
+    ],
+    [
+      47,
+      68,
+      210,
+      218
+    ],
+    [
+      46,
+      77,
+      207,
+      218
+    ],
+    [
+      50,
+      67,
+      214,
+      218
+    ],
+    [
+      47,
+      68,
+      208,
+      218
+    ],
+    [
+      45,
+      62,
+      204,
+      218
+    ],
+    [
+      47,
+      58,
+      210,
+      218
+    ],
+    [
+      48,
+      62,
+      212,
+      218
+    ],
+    [
+      46,
+      74,
+      207,
+      218
+    ],
+    [
+      46,
+      72,
+      213,
+      218
+    ],
+    [
+      48,
+      71,
+      212,
+      218
+    ],
+    [
+      46,
+      57,
+      207,
+      219
+    ]
+  ],
+  "rowOffsets": [
+    -7,
+    -3,
+    5,
+    6
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.85,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 14,
+  "frames": "ps1/source-frames/read-loop",
+  "auditBoard": "ps1/audit/read-loop.png",
+  "layout": {
+    "scale": 0.85
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "sourceSha256": "24e7f318065478b7bf09fb31bfc7c03657e518e84c95c144fc34cde9ad5d95bf",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms.",
+  "references": [
+    "ps1/references/approved-design.png"
+  ]
+}

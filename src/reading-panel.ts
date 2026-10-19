@@ -6,6 +6,7 @@ import {saveCorrection,removeCorrection,type Appearance,type ReadingViewPreferen
 import {definitionText,dictionaryURL,type DictionaryReply,type DictionaryPage,type DefinitionLanguage} from './definitions';
 import {wordExplorations,renderExplorations,disposeExplorations,explorationStyles} from './exploration';
 import {renderPlaygroundBrowser,playgroundBrowserStyles} from './playground-browser';
+import {selectionText} from './mascot-target';
 export interface ReadingRun {text:string;top:number;left:number;right:number;readings:Reading[];words?:Word[]}
 export function readingLines(runs:ReadingRun[]) {
   const rows:ReadingRun[][]=[];
@@ -28,6 +29,7 @@ export function readingLines(runs:ReadingRun[]) {
 }
 type DefinitionResult=Record<DefinitionLanguage,{page:DictionaryPage;definitions:string[]}>;
 export class ReadingPanel {
+  mascotHooks?:{hover:(word:{surface:string;lemma:string;reading:string},contains:(x:number,y:number)=>boolean)=>void;leave:()=>void;selection:(text:string)=>void};
   private host=document.createElement('ko-reading-view');
   private root=this.host.attachShadow({mode:'closed'});
   private content:HTMLElement;
@@ -80,6 +82,19 @@ ${playgroundBrowserStyles}
       event.preventDefault();this.setWidth(width);void this.persistWidth();
     });
     this.content=this.root.querySelector('.content')!;this.status=this.root.querySelector('.status')!;
+    this.content.addEventListener('pointerover',event=>{
+      const button=(event.target as Element).closest<HTMLButtonElement>('.word');
+      if(button && !(event.relatedTarget instanceof Node && button.contains(event.relatedTarget)))this.mascotHooks?.hover({surface:button.dataset.surface!,lemma:button.dataset.word!,reading:button.dataset.reading!},(x,y)=>button.isConnected && [...button.getClientRects()].some(r=>x>=r.left && x<=r.right && y>=r.top && y<=r.bottom));
+    });
+    this.content.addEventListener('pointerout',event=>{
+      const button=(event.target as Element).closest('.word');
+      if(button && !(event.relatedTarget instanceof Node && button.contains(event.relatedTarget)))this.mascotHooks?.leave();
+    });
+    document.addEventListener('selectionchange',()=>{
+      if(!this.mascotHooks || !this.host.isConnected)return;
+      const selection=(this.root as ShadowRoot & {getSelection?:()=>Selection|null}).getSelection?.();
+      if(selection && !selection.isCollapsed && selection.anchorNode && this.content.contains(selection.anchorNode) && selection.focusNode && this.content.contains(selection.focusNode))this.mascotHooks.selection(selectionText(selection));
+    });
     this.definition=this.root.querySelector('.definition')!;
     this.root.querySelector('[aria-label="Close reading view"]')!.addEventListener('click',close);
     this.playgroundLauncher=this.root.querySelector('.playgrounds-open')!;
@@ -111,6 +126,7 @@ ${playgroundBrowserStyles}
   }
   ownsNode(node:Node) {return node===this.host || this.host.contains(node);}
   owns(event:Event) {return event.composedPath().includes(this.host);}
+  bounds() {return this.host.isConnected?this.host.getBoundingClientRect():undefined;}
   loading(show:boolean,text:string,keepContent=false) {
     // Leave the readable snapshot and open definition in place while debouncing.
     if(show && keepContent && this.rendered!==undefined)return;

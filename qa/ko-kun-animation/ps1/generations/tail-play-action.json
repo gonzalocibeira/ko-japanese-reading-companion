@@ -1,0 +1,294 @@
+{
+  "id": "tail-play-action",
+  "source": "ps1/sheets/tail-play-action.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/tail-play-action.txt",
+  "sourceSha256": "482951dc8f2569f0c1ca5e6a566f54fd1c1569926ff15834d8acc7085c315ecf",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "layout": {
+    "scale": 1.2
+  },
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "sourceRects": [
+    [
+      102,
+      5,
+      398,
+      265
+    ],
+    [
+      560,
+      8,
+      856,
+      265
+    ],
+    [
+      1023,
+      7,
+      1317,
+      265
+    ],
+    [
+      105,
+      280,
+      413,
+      537
+    ],
+    [
+      542,
+      283,
+      863,
+      538
+    ],
+    [
+      1013,
+      276,
+      1317,
+      536
+    ],
+    [
+      104,
+      548,
+      413,
+      809
+    ],
+    [
+      556,
+      543,
+      864,
+      808
+    ],
+    [
+      1019,
+      541,
+      1344,
+      808
+    ],
+    [
+      106,
+      814,
+      428,
+      1076
+    ],
+    [
+      549,
+      815,
+      873,
+      1074
+    ],
+    [
+      1028,
+      810,
+      1335,
+      1075
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      105,
+      8,
+      395,
+      262
+    ],
+    [
+      563,
+      11,
+      853,
+      262
+    ],
+    [
+      1026,
+      10,
+      1314,
+      262
+    ],
+    [
+      108,
+      283,
+      410,
+      534
+    ],
+    [
+      545,
+      286,
+      860,
+      535
+    ],
+    [
+      1016,
+      279,
+      1314,
+      533
+    ],
+    [
+      107,
+      551,
+      410,
+      806
+    ],
+    [
+      559,
+      546,
+      861,
+      805
+    ],
+    [
+      1022,
+      544,
+      1341,
+      805
+    ],
+    [
+      109,
+      817,
+      425,
+      1073
+    ],
+    [
+      552,
+      818,
+      870,
+      1071
+    ],
+    [
+      1031,
+      813,
+      1332,
+      1072
+    ]
+  ],
+  "exportBounds": [
+    [
+      58,
+      89,
+      206,
+      218
+    ],
+    [
+      63,
+      90,
+      211,
+      218
+    ],
+    [
+      60,
+      89,
+      207,
+      218
+    ],
+    [
+      59,
+      90,
+      214,
+      218
+    ],
+    [
+      54,
+      92,
+      215,
+      219
+    ],
+    [
+      55,
+      88,
+      207,
+      218
+    ],
+    [
+      59,
+      88,
+      214,
+      219
+    ],
+    [
+      61,
+      86,
+      216,
+      218
+    ],
+    [
+      58,
+      85,
+      221,
+      218
+    ],
+    [
+      60,
+      88,
+      222,
+      219
+    ],
+    [
+      57,
+      88,
+      220,
+      218
+    ],
+    [
+      63,
+      86,
+      217,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    -3,
+    -4,
+    -3,
+    1
+  ],
+  "columnOffsets": [
+    0,
+    35,
+    49
+  ],
+  "canvasSize": 600,
+  "exportScale": 1.2,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 31,
+  "frames": "ps1/source-frames/tail-play-action",
+  "auditBoard": "ps1/audit/tail-play-action.png",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "acceptedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual review of all twelve composited source poses.",
+  "reviewNotes": "Four grounded legs throughout; exactly three existing tails stay behind the body; no added cheek or chest tail."
+}

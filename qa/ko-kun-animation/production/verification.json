@@ -1,0 +1,460 @@
+{
+  "routineCount": 24,
+  "clipCount": 56,
+  "exportedFrameCount": 672,
+  "anatomyReview": "direct visual inspection of every generated source pose; reversed clips inherit the same poses",
+  "browserInspection": "blocked: browser tools reject file:// URLs; no browser inspection claimed",
+  "sourcesReviewed": 35,
+  "reusedClipsReviewed": 7,
+  "reversedClips": 14,
+  "technicalChecks": [
+    {
+      "id": "attentive-idle-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "walk-start",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "walk-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "walk-stop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "trot-start",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "trot-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "trot-stop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "hover-idle-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "floating-travel-start",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "floating-travel-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "floating-travel-stop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "seated-watch-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "think-action",
+      "frames": 12,
+      "distinctFrames": 7,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "read-entry",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "read-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "read-exit",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "write-entry",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "write-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "write-exit",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "insight-action",
+      "frames": 12,
+      "distinctFrames": 11,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "groom-action",
+      "frames": 12,
+      "distinctFrames": 11,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "stretch-action",
+      "frames": 12,
+      "distinctFrames": 11,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "tail-play-action",
+      "frames": 12,
+      "distinctFrames": 11,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "greeting-action",
+      "frames": 12,
+      "distinctFrames": 11,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "sleep-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "meditate-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "samurai-entry",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "samurai-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "samurai-exit",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "ninja-entry",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "ninja-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "ninja-exit",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "spirit-magic-entry",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "spirit-magic-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "spirit-magic-exit",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "straw-hat-adventurer-entry",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "straw-hat-adventurer-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "straw-hat-adventurer-exit",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "fishing-entry",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "fishing-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "fishing-exit",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "bamboo-flute-entry",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "bamboo-flute-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "bamboo-flute-exit",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "tea-break-entry",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "tea-break-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "tea-break-exit",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "fan-dance-entry",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "fan-dance-loop",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "fan-dance-exit",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "sit-down",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "stand-up",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "curl-up",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "wake-and-sit",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "take-off",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "land",
+      "frames": 12,
+      "distinctFrames": 12,
+      "alphaCornersClear": true,
+      "unclippedExport": true,
+      "losslessStripRoundTrip": true
+    }
+  ]
+}

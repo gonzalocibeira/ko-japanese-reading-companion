@@ -1,0 +1,9 @@
+{
+  "status": "pass",
+  "frameComparisons": 672,
+  "sourceDirectory": "ps1/source-frames",
+  "deliveredDirectory": "ps1/frames",
+  "poseOrderingAppliedOnce": true,
+  "registrationAppliedOnce": true,
+  "assetInventorySha256": "d5b5b6bf2cb7ecb194799d6e32567d482c0df47434e6b6eee97799b1a6ea97f2"
+}

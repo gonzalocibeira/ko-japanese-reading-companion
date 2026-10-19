@@ -1,0 +1,279 @@
+{
+  "id": "tail-play-action",
+  "source": "ps1/sheets/tail-play-action.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/tail-play-action.txt",
+  "sourceSha256": "0059a5ec30e1f4ab69c4d610cea6d88a55380e0086fb727b6167a0acb87752e0",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "layout": {
+    "scale": 0.95
+  },
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      15,
+      39,
+      324,
+      346
+    ],
+    [
+      369,
+      45,
+      683,
+      346
+    ],
+    [
+      734,
+      61,
+      1048,
+      346
+    ],
+    [
+      9,
+      390,
+      339,
+      707
+    ],
+    [
+      369,
+      399,
+      718,
+      707
+    ],
+    [
+      738,
+      411,
+      1058,
+      707
+    ],
+    [
+      9,
+      756,
+      340,
+      1053
+    ],
+    [
+      369,
+      744,
+      698,
+      1053
+    ],
+    [
+      734,
+      748,
+      1052,
+      1053
+    ],
+    [
+      19,
+      1089,
+      340,
+      1405
+    ],
+    [
+      377,
+      1100,
+      706,
+      1405
+    ],
+    [
+      735,
+      1101,
+      1052,
+      1405
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      18,
+      42,
+      321,
+      343
+    ],
+    [
+      372,
+      48,
+      680,
+      343
+    ],
+    [
+      737,
+      64,
+      1045,
+      343
+    ],
+    [
+      12,
+      393,
+      336,
+      704
+    ],
+    [
+      372,
+      402,
+      715,
+      704
+    ],
+    [
+      741,
+      414,
+      1055,
+      704
+    ],
+    [
+      12,
+      759,
+      337,
+      1050
+    ],
+    [
+      372,
+      747,
+      695,
+      1050
+    ],
+    [
+      737,
+      751,
+      1049,
+      1050
+    ],
+    [
+      22,
+      1092,
+      337,
+      1402
+    ],
+    [
+      380,
+      1103,
+      703,
+      1402
+    ],
+    [
+      738,
+      1104,
+      1049,
+      1402
+    ]
+  ],
+  "exportBounds": [
+    [
+      39,
+      56,
+      203,
+      218
+    ],
+    [
+      35,
+      59,
+      201,
+      218
+    ],
+    [
+      37,
+      67,
+      203,
+      218
+    ],
+    [
+      36,
+      50,
+      211,
+      218
+    ],
+    [
+      35,
+      55,
+      220,
+      218
+    ],
+    [
+      39,
+      61,
+      209,
+      218
+    ],
+    [
+      36,
+      61,
+      212,
+      218
+    ],
+    [
+      35,
+      54,
+      210,
+      218
+    ],
+    [
+      37,
+      57,
+      205,
+      218
+    ],
+    [
+      42,
+      51,
+      212,
+      218
+    ],
+    [
+      39,
+      57,
+      214,
+      218
+    ],
+    [
+      37,
+      57,
+      205,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    2,
+    3,
+    19,
+    29
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.95,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 5,
+  "frames": "ps1/source-frames/tail-play-action",
+  "auditBoard": "ps1/audit/tail-play-action.png",
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Corrected source: all four paws remain grounded; muzzle follows one of the existing three tail tips."
+}

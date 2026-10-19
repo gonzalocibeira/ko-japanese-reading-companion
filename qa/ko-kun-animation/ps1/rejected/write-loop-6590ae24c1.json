@@ -1,0 +1,13 @@
+{
+  "id": "write-loop",
+  "source": "ps1/sheets/write-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/write-loop.txt",
+  "sourceSha256": "6590ae24c13ed2ff0b58c81d45a05524252827a5884d016c255de43f20834b32",
+  "references": [
+    "ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pending",
+  "technicalStatus": "failed",
+  "technicalError": "('source actor clipped', [19, 905, 421, 1199])"
+}

@@ -1,0 +1,277 @@
+{
+  "id": "samurai-loop",
+  "version": 2,
+  "generator": "Built-in image_gen tool",
+  "source": "production/sheets/samurai-loop-v2.png",
+  "prompt": "production/prompts/samurai-loop-v2.txt",
+  "anatomyReview": "pass",
+  "status": "generated",
+  "supersededSource": "production/sheets/samurai-loop-v1.png",
+  "rejectionReason": "Sword crossed sprite and outer canvas boundaries.",
+  "originalRetained": "Exact generated PNG copied to source path before metadata patch was repaired.",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      52,
+      79,
+      342,
+      353
+    ],
+    [
+      392,
+      87,
+      723,
+      353
+    ],
+    [
+      732,
+      92,
+      1071,
+      358
+    ],
+    [
+      41,
+      434,
+      395,
+      700
+    ],
+    [
+      396,
+      425,
+      739,
+      700
+    ],
+    [
+      742,
+      434,
+      1044,
+      700
+    ],
+    [
+      50,
+      773,
+      337,
+      1047
+    ],
+    [
+      398,
+      800,
+      685,
+      1050
+    ],
+    [
+      748,
+      813,
+      1053,
+      1052
+    ],
+    [
+      51,
+      1114,
+      341,
+      1386
+    ],
+    [
+      404,
+      1111,
+      690,
+      1386
+    ],
+    [
+      755,
+      1113,
+      1051,
+      1387
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      55,
+      82,
+      339,
+      350
+    ],
+    [
+      395,
+      90,
+      720,
+      350
+    ],
+    [
+      735,
+      95,
+      1068,
+      355
+    ],
+    [
+      44,
+      437,
+      392,
+      697
+    ],
+    [
+      399,
+      428,
+      736,
+      697
+    ],
+    [
+      745,
+      437,
+      1041,
+      697
+    ],
+    [
+      53,
+      776,
+      334,
+      1044
+    ],
+    [
+      401,
+      803,
+      682,
+      1047
+    ],
+    [
+      751,
+      816,
+      1050,
+      1049
+    ],
+    [
+      54,
+      1117,
+      338,
+      1383
+    ],
+    [
+      407,
+      1114,
+      687,
+      1383
+    ],
+    [
+      758,
+      1116,
+      1048,
+      1384
+    ]
+  ],
+  "exportBounds": [
+    [
+      39,
+      51,
+      217,
+      219
+    ],
+    [
+      26,
+      56,
+      229,
+      219
+    ],
+    [
+      11,
+      59,
+      220,
+      222
+    ],
+    [
+      32,
+      56,
+      250,
+      219
+    ],
+    [
+      28,
+      50,
+      239,
+      219
+    ],
+    [
+      18,
+      56,
+      203,
+      219
+    ],
+    [
+      38,
+      49,
+      214,
+      217
+    ],
+    [
+      30,
+      66,
+      205,
+      219
+    ],
+    [
+      21,
+      74,
+      209,
+      220
+    ],
+    [
+      38,
+      52,
+      216,
+      219
+    ],
+    [
+      33,
+      50,
+      208,
+      219
+    ],
+    [
+      26,
+      51,
+      208,
+      219
+    ]
+  ],
+  "rowOffsets": [
+    -5,
+    10,
+    22,
+    48
+  ],
+  "canvasSize": 450,
+  "exportScale": 1.1,
+  "exportOffset": [
+    -10,
+    -12
+  ],
+  "frames": "production/frames/samurai-loop",
+  "auditBoard": "production/audit/samurai-loop.png",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "reviewMethod": "Direct visual inspection of all twelve extracted poses",
+  "layout": {
+    "scale": 1.1,
+    "offset": [
+      -10,
+      -12
+    ]
+  },
+  "technicalStatus": "pass"
+}

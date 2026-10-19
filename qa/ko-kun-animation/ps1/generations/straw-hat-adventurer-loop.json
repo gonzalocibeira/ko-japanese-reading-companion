@@ -1,0 +1,299 @@
+{
+  "id": "straw-hat-adventurer-loop",
+  "source": "ps1/sheets/straw-hat-adventurer-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/straw-hat-adventurer-loop.txt",
+  "sourceSha256": "74e68b748026667681402f437eaa7ad67c6b2e1b69f6e7235c01a66f9910ae69",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/sheets/straw-hat-adventurer-loop.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "layout": {
+    "scale": 1.4,
+    "offset": [
+      0,
+      -3
+    ]
+  },
+  "poseOrder": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "poseOrderReason": "Place the neutral anticipation pose before the partially extended forearm, then punch and retract before raising the paw to the hat.",
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "sourceRects": [
+    [
+      95,
+      4,
+      388,
+      284
+    ],
+    [
+      543,
+      7,
+      838,
+      284
+    ],
+    [
+      1017,
+      8,
+      1313,
+      284
+    ],
+    [
+      93,
+      286,
+      388,
+      561
+    ],
+    [
+      550,
+      287,
+      848,
+      561
+    ],
+    [
+      1009,
+      288,
+      1300,
+      560
+    ],
+    [
+      91,
+      561,
+      437,
+      830
+    ],
+    [
+      550,
+      560,
+      849,
+      830
+    ],
+    [
+      1014,
+      560,
+      1308,
+      829
+    ],
+    [
+      103,
+      828,
+      383,
+      1080
+    ],
+    [
+      560,
+      828,
+      848,
+      1080
+    ],
+    [
+      1020,
+      828,
+      1297,
+      1080
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      98,
+      7,
+      385,
+      281
+    ],
+    [
+      546,
+      10,
+      835,
+      281
+    ],
+    [
+      1020,
+      11,
+      1310,
+      281
+    ],
+    [
+      96,
+      289,
+      385,
+      558
+    ],
+    [
+      553,
+      290,
+      845,
+      558
+    ],
+    [
+      1012,
+      291,
+      1297,
+      557
+    ],
+    [
+      94,
+      564,
+      434,
+      827
+    ],
+    [
+      553,
+      563,
+      846,
+      827
+    ],
+    [
+      1017,
+      563,
+      1305,
+      826
+    ],
+    [
+      106,
+      831,
+      380,
+      1077
+    ],
+    [
+      563,
+      831,
+      845,
+      1077
+    ],
+    [
+      1023,
+      831,
+      1294,
+      1077
+    ]
+  ],
+  "exportBounds": [
+    [
+      43,
+      55,
+      214,
+      218
+    ],
+    [
+      38,
+      57,
+      210,
+      218
+    ],
+    [
+      43,
+      57,
+      216,
+      218
+    ],
+    [
+      42,
+      58,
+      214,
+      218
+    ],
+    [
+      42,
+      58,
+      216,
+      218
+    ],
+    [
+      38,
+      59,
+      208,
+      218
+    ],
+    [
+      41,
+      62,
+      243,
+      218
+    ],
+    [
+      42,
+      61,
+      217,
+      218
+    ],
+    [
+      41,
+      61,
+      213,
+      218
+    ],
+    [
+      47,
+      72,
+      211,
+      218
+    ],
+    [
+      48,
+      72,
+      216,
+      218
+    ],
+    [
+      44,
+      72,
+      206,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    -22,
+    -28,
+    -25,
+    -4
+  ],
+  "columnOffsets": [
+    0,
+    27,
+    44
+  ],
+  "canvasSize": 600,
+  "exportScale": 1.4,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 20,
+  "frames": "ps1/source-frames/straw-hat-adventurer-loop",
+  "auditBoard": "ps1/audit/straw-hat-adventurer-loop.png",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Corrected recovery returns the same forepaw toward the brim; pose-order adjustment makes anticipation precede punch."
+}

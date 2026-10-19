@@ -1,0 +1,279 @@
+{
+  "id": "walk-loop",
+  "source": "ps1/sheets/walk-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/walk-loop.txt",
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1330,
+    1182
+  ],
+  "sourceRects": [
+    [
+      45,
+      13,
+      415,
+      293
+    ],
+    [
+      474,
+      10,
+      837,
+      293
+    ],
+    [
+      904,
+      18,
+      1273,
+      293
+    ],
+    [
+      39,
+      304,
+      425,
+      590
+    ],
+    [
+      467,
+      305,
+      850,
+      590
+    ],
+    [
+      900,
+      307,
+      1277,
+      585
+    ],
+    [
+      47,
+      611,
+      445,
+      878
+    ],
+    [
+      476,
+      604,
+      857,
+      876
+    ],
+    [
+      907,
+      604,
+      1282,
+      875
+    ],
+    [
+      45,
+      893,
+      430,
+      1167
+    ],
+    [
+      477,
+      893,
+      852,
+      1167
+    ],
+    [
+      908,
+      885,
+      1276,
+      1164
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      48,
+      16,
+      412,
+      290
+    ],
+    [
+      477,
+      13,
+      834,
+      290
+    ],
+    [
+      907,
+      21,
+      1270,
+      290
+    ],
+    [
+      42,
+      307,
+      422,
+      587
+    ],
+    [
+      470,
+      308,
+      847,
+      587
+    ],
+    [
+      903,
+      310,
+      1274,
+      582
+    ],
+    [
+      50,
+      614,
+      442,
+      875
+    ],
+    [
+      479,
+      607,
+      854,
+      873
+    ],
+    [
+      910,
+      607,
+      1279,
+      872
+    ],
+    [
+      48,
+      896,
+      427,
+      1164
+    ],
+    [
+      480,
+      896,
+      849,
+      1164
+    ],
+    [
+      911,
+      888,
+      1273,
+      1161
+    ]
+  ],
+  "exportBounds": [
+    [
+      31,
+      66,
+      234,
+      218
+    ],
+    [
+      30,
+      64,
+      229,
+      218
+    ],
+    [
+      30,
+      69,
+      232,
+      218
+    ],
+    [
+      27,
+      62,
+      239,
+      218
+    ],
+    [
+      26,
+      62,
+      236,
+      218
+    ],
+    [
+      27,
+      64,
+      234,
+      215
+    ],
+    [
+      32,
+      74,
+      250,
+      220
+    ],
+    [
+      31,
+      70,
+      240,
+      218
+    ],
+    [
+      31,
+      70,
+      237,
+      218
+    ],
+    [
+      31,
+      69,
+      242,
+      218
+    ],
+    [
+      32,
+      69,
+      238,
+      218
+    ],
+    [
+      32,
+      64,
+      234,
+      216
+    ]
+  ],
+  "rowOffsets": [
+    -8,
+    -10,
+    0,
+    4
+  ],
+  "canvasSize": 551,
+  "exportScale": 1.2,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "frames": "ps1/source-frames/walk-loop",
+  "auditBoard": "ps1/audit/walk-loop.png",
+  "layout": {
+    "scale": 1.2
+  },
+  "placementDy": 19,
+  "columnOffsets": [
+    0,
+    13,
+    26
+  ],
+  "sourceSha256": "2e3472c8947cdbe242a3b600e447372ec2164d9949be6d486a51d3a42ed7b1ae",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms.",
+  "references": [
+    "ps1/references/approved-design.png"
+  ]
+}

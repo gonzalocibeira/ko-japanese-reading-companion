@@ -1,0 +1,142 @@
+{
+  "read-loop": {
+    "anatomyReview": "pass",
+    "reviewedFrames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "limbCountMaximum": 4,
+    "tailCount": 3,
+    "method": "Direct inspection of twelve exported poses"
+  },
+  "attentive-idle-loop": {
+    "anatomyReview": "pass",
+    "reviewedFrames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "limbCountMaximum": 4,
+    "tailCount": 3,
+    "method": "Direct inspection of twelve exported poses"
+  },
+  "walk-start": {
+    "anatomyReview": "pass",
+    "reviewedFrames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "limbCountMaximum": 4,
+    "tailCount": 3,
+    "method": "Direct visual inspection of all twelve exported poses"
+  },
+  "walk-loop": {
+    "anatomyReview": "pass",
+    "reviewedFrames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "limbCountMaximum": 4,
+    "tailCount": 3,
+    "method": "Direct visual inspection of all twelve exported poses"
+  },
+  "walk-stop": {
+    "anatomyReview": "pass",
+    "reviewedFrames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "limbCountMaximum": 4,
+    "tailCount": 3,
+    "method": "Direct visual inspection of all twelve exported poses"
+  },
+  "sit-down": {
+    "anatomyReview": "pass",
+    "reviewedFrames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "limbCountMaximum": 4,
+    "tailCount": 3,
+    "method": "Direct visual inspection of all twelve exported poses"
+  },
+  "stand-up": {
+    "anatomyReview": "pass",
+    "reviewedFrames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "limbCountMaximum": 4,
+    "tailCount": 3,
+    "method": "Direct visual inspection of all twelve exported poses"
+  }
+}

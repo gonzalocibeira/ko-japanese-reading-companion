@@ -1,5 +1,5 @@
 import type {DictionaryPage,DictionaryReply,DefinitionLanguage} from './definitions';
-const pending=new Map<string,Promise<DictionaryReply>>();
+const pending=new Map<string,Promise<Partial<DictionaryReply>>>();
 async function page(language:DefinitionLanguage,word:string):Promise<DictionaryPage> {
   try {
     const url=new URL(`https://${language}.wiktionary.org/w/api.php`);
@@ -27,11 +27,13 @@ chrome.runtime.onMessage.addListener((message,sender,respond)=>{
   if(sender.tab?.id===undefined || sender.frameId!==0 || !url || !['http:','https:'].includes(url.protocol) || typeof message.word!=='string' || !/^[\p{L}\p{M}\p{N}々〆ー・\s'-]{1,80}$/u.test(message.word) || !message.word.trim()) {
     respond({error:'Invalid dictionary request'});return;
   }
-  const word=message.word.trim();let job=pending.get(word);
+  if(message.language!==undefined && message.language!=='en' && message.language!=='ja') {respond({error:'Invalid dictionary language'});return;}
+  const word=message.word.trim(),languages:DefinitionLanguage[]=message.language?[message.language]:['en','ja'];
+  const key=JSON.stringify([word,languages]);let job=pending.get(key);
   if(!job) {
     if(pending.size>=8) {respond({error:'Dictionary is busy. Try again.'});return;}
-    job=Promise.all([page('en',word),page('ja',word)]).then(([en,ja])=>({en,ja})).finally(()=>pending.delete(word));
-    pending.set(word,job);
+    job=Promise.all(languages.map(async language=>[language,await page(language,word)] as const)).then(entries=>Object.fromEntries(entries)).finally(()=>pending.delete(key));
+    pending.set(key,job);
   }
   void job.then(respond);return true;
 });

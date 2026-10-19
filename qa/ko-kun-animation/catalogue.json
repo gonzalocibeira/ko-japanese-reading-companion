@@ -1,0 +1,283 @@
+{
+  "version": 1,
+  "release": "1.3",
+  "stage": "complete",
+  "characterApproved": true,
+  "approvedProposal": "a",
+  "permanentAccessories": [],
+  "pilotApproved": false,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "framesPerClip": 12,
+  "defaultFrameDurationMs": 100,
+  "quietFrameDurationMs": 200,
+  "routines": [
+    {
+      "id": "attentive-idle",
+      "name": "Attentive idle",
+      "kind": "loop",
+      "pose": "standing",
+      "action": "Breathe, blink, gently move individual tails."
+    },
+    {
+      "id": "walk",
+      "name": "Walk",
+      "kind": "travel",
+      "pose": "standing",
+      "action": "Measured fox gait with flowing tails; in-place cycle."
+    },
+    {
+      "id": "trot",
+      "name": "Trot",
+      "kind": "travel",
+      "pose": "standing",
+      "action": "Light, curious quick steps; in-place cycle."
+    },
+    {
+      "id": "hover-idle",
+      "name": "Hover idle",
+      "kind": "loop",
+      "pose": "hovering",
+      "action": "Suspended paws, slow bob, floating tails."
+    },
+    {
+      "id": "floating-travel",
+      "name": "Floating travel",
+      "kind": "travel",
+      "pose": "hovering",
+      "action": "Lean into gentle drifting travel; in-place cycle."
+    },
+    {
+      "id": "seated-watch",
+      "name": "Seated watch",
+      "kind": "loop",
+      "pose": "seated",
+      "action": "Observe calmly, turn ears, blink."
+    },
+    {
+      "id": "think",
+      "name": "Think",
+      "kind": "one-shot",
+      "pose": "seated",
+      "action": "Hold thoughtful head tilts and bring one existing forepaw to the chin."
+    },
+    {
+      "id": "read",
+      "name": "Read",
+      "kind": "activity",
+      "pose": "seated",
+      "action": "Unroll a scroll, study it, then roll it closed and stow it.",
+      "props": [
+        "scroll"
+      ]
+    },
+    {
+      "id": "write",
+      "name": "Write",
+      "kind": "activity",
+      "pose": "seated",
+      "action": "Unroll a small scroll, make abstract brush strokes, tidy everything away.",
+      "props": [
+        "scroll",
+        "brush"
+      ]
+    },
+    {
+      "id": "insight",
+      "name": "Insight",
+      "kind": "one-shot",
+      "pose": "seated",
+      "action": "Ears lift and one small ink-like spark appears, then disappears."
+    },
+    {
+      "id": "groom",
+      "name": "Groom",
+      "kind": "one-shot",
+      "pose": "seated",
+      "action": "Lick a paw and smooth one ear."
+    },
+    {
+      "id": "stretch",
+      "name": "Stretch",
+      "kind": "one-shot",
+      "pose": "standing",
+      "action": "Extend forelegs, arch back, spread tails and settle."
+    },
+    {
+      "id": "tail-play",
+      "name": "Tail play",
+      "kind": "one-shot",
+      "pose": "seated",
+      "action": "Notice and gently bat at one of his own tails."
+    },
+    {
+      "id": "greeting",
+      "name": "Greeting",
+      "kind": "one-shot",
+      "pose": "standing",
+      "action": "Small head bow and friendly paw lift."
+    },
+    {
+      "id": "sleep",
+      "name": "Sleep",
+      "kind": "loop",
+      "pose": "curled",
+      "action": "Curled sleeping posture, soft breathing, three tails visible."
+    },
+    {
+      "id": "meditate",
+      "name": "Meditate",
+      "kind": "loop",
+      "pose": "seated",
+      "action": "Close eyes and coordinate slow calm tail movements."
+    },
+    {
+      "id": "samurai",
+      "name": "Samurai practice",
+      "kind": "activity",
+      "pose": "standing",
+      "action": "Wear a simple headband, draw a real steel katana, perform a controlled cut, return to guard, sheathe and bow.",
+      "props": [
+        "headband",
+        "steel-katana",
+        "scabbard"
+      ],
+      "constraints": "Real steel blade with restrained highlight, guard and wrapped grip. Consistent sword length and shape."
+    },
+    {
+      "id": "ninja",
+      "name": "Ninja sneak",
+      "kind": "activity",
+      "pose": "standing",
+      "action": "Tie indigo headband, crouch, tiptoe in place, glance around, relax and remove headband.",
+      "props": [
+        "indigo-headband"
+      ]
+    },
+    {
+      "id": "spirit-magic",
+      "name": "Spirit magic",
+      "kind": "activity",
+      "pose": "seated",
+      "action": "Shape a vermilion-and-indigo wisp into a tiny fox, then dissolve it.",
+      "props": [
+        "bounded-spirit-wisp"
+      ]
+    },
+    {
+      "id": "straw-hat-adventurer",
+      "name": "Straw-hat adventurer",
+      "kind": "activity",
+      "pose": "standing",
+      "action": "Don red-banded straw hat and open red vest; grin, tip hat and perform a playful elastic paw punch; remove costume.",
+      "props": [
+        "red-banded-straw-hat",
+        "red-vest"
+      ],
+      "constraints": "Luffy reference through costume and action, preserving fox identity and exactly three tails. Elastic punch stays in frame."
+    },
+    {
+      "id": "fishing",
+      "name": "Fishing daydream",
+      "kind": "activity",
+      "pose": "seated",
+      "action": "Cast tiny rod, wait, pull up an autumn leaf, inspect with mild surprise, pack away.",
+      "props": [
+        "fishing-rod",
+        "line",
+        "autumn-leaf"
+      ]
+    },
+    {
+      "id": "bamboo-flute",
+      "name": "Bamboo flute",
+      "kind": "activity",
+      "pose": "seated",
+      "action": "Raise small flute, play with swaying ears and tails, lower and stow it.",
+      "props": [
+        "bamboo-flute"
+      ]
+    },
+    {
+      "id": "tea-break",
+      "name": "Tea break",
+      "kind": "activity",
+      "pose": "seated",
+      "action": "Unwrap tiny cup and flask, pour, sip thoughtfully, pack away.",
+      "props": [
+        "cup",
+        "flask",
+        "cloth"
+      ]
+    },
+    {
+      "id": "fan-dance",
+      "name": "Fan dance",
+      "kind": "activity",
+      "pose": "standing",
+      "action": "Open vermilion folding fan, perform restrained two-step flourish, bow and close fan.",
+      "props": [
+        "vermilion-folding-fan"
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "sit-down",
+      "from": "standing",
+      "to": "seated"
+    },
+    {
+      "id": "stand-up",
+      "from": "seated",
+      "to": "standing"
+    },
+    {
+      "id": "curl-up",
+      "from": "seated",
+      "to": "curled"
+    },
+    {
+      "id": "wake-and-sit",
+      "from": "curled",
+      "to": "seated"
+    },
+    {
+      "id": "take-off",
+      "from": "standing",
+      "to": "hovering"
+    },
+    {
+      "id": "land",
+      "from": "hovering",
+      "to": "standing"
+    }
+  ],
+  "clipExpansion": {
+    "loop": [
+      "loop"
+    ],
+    "one-shot": [
+      "action"
+    ],
+    "travel": [
+      "start",
+      "loop",
+      "stop"
+    ],
+    "activity": [
+      "entry",
+      "loop",
+      "exit"
+    ]
+  },
+  "excludedRoutines": [
+    "paper-plane",
+    "broom-riding"
+  ],
+  "fullProductionAuthorized": true,
+  "authorization": "Fix and implement all the animation",
+  "pilotGate": "replaced by explicit user instruction to finish all assets",
+  "agentVisualReview": "pass: four limbs total and three tails in all accepted source poses",
+  "browserInspection": "blocked by local file protocol policy; direct frame-board inspection completed"
+}

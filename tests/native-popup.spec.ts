@@ -17,7 +17,13 @@ test('native toolbar popup opens at full height and wheel-scrolls to footer link
     await worker.evaluate(async()=>{
       await chrome.storage.local.set({enabled:false});
       const [window]=await chrome.windows.getAll({windowTypes:['normal']});
-      await chrome.action.openPopup({windowId:window.id});
+      await chrome.windows.update(window.id!,{focused:true});
+    });
+    await expect.poll(()=>worker.evaluate(async()=>{
+      const [window]=await chrome.windows.getAll({windowTypes:['normal']});return window.focused;
+    })).toBe(true);
+    await worker.evaluate(async()=>{
+      const [window]=await chrome.windows.getAll({windowTypes:['normal']});await chrome.action.openPopup({windowId:window.id});
     });
     // Action popups are separate targets, not normal Playwright context pages.
     const browser=await context.browser()!.newBrowserCDPSession();

@@ -1,0 +1,281 @@
+{
+  "id": "trot-start",
+  "source": "ps1/sheets/trot-start.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/trot-start.txt",
+  "sourceSha256": "22e8a7caf5cc8b75f80ce5f0f568210038f2ddd1aa55168c056a940d90ef1dd6",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/trot-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1330,
+    1182
+  ],
+  "sourceRects": [
+    [
+      51,
+      20,
+      378,
+      299
+    ],
+    [
+      495,
+      18,
+      825,
+      295
+    ],
+    [
+      937,
+      17,
+      1287,
+      298
+    ],
+    [
+      44,
+      319,
+      401,
+      600
+    ],
+    [
+      483,
+      321,
+      849,
+      597
+    ],
+    [
+      932,
+      321,
+      1290,
+      597
+    ],
+    [
+      44,
+      618,
+      437,
+      892
+    ],
+    [
+      492,
+      613,
+      882,
+      873
+    ],
+    [
+      941,
+      610,
+      1302,
+      889
+    ],
+    [
+      49,
+      901,
+      418,
+      1168
+    ],
+    [
+      501,
+      901,
+      870,
+      1170
+    ],
+    [
+      944,
+      906,
+      1297,
+      1170
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      54,
+      23,
+      375,
+      296
+    ],
+    [
+      498,
+      21,
+      822,
+      292
+    ],
+    [
+      940,
+      20,
+      1284,
+      295
+    ],
+    [
+      47,
+      322,
+      398,
+      597
+    ],
+    [
+      486,
+      324,
+      846,
+      594
+    ],
+    [
+      935,
+      324,
+      1287,
+      594
+    ],
+    [
+      47,
+      621,
+      434,
+      889
+    ],
+    [
+      495,
+      616,
+      879,
+      870
+    ],
+    [
+      944,
+      613,
+      1299,
+      886
+    ],
+    [
+      52,
+      904,
+      415,
+      1165
+    ],
+    [
+      504,
+      904,
+      867,
+      1167
+    ],
+    [
+      947,
+      909,
+      1294,
+      1167
+    ]
+  ],
+  "exportBounds": [
+    [
+      39,
+      74,
+      210,
+      219
+    ],
+    [
+      39,
+      73,
+      212,
+      217
+    ],
+    [
+      38,
+      72,
+      222,
+      219
+    ],
+    [
+      35,
+      73,
+      222,
+      220
+    ],
+    [
+      33,
+      74,
+      225,
+      218
+    ],
+    [
+      35,
+      74,
+      223,
+      218
+    ],
+    [
+      35,
+      77,
+      241,
+      220
+    ],
+    [
+      38,
+      75,
+      242,
+      210
+    ],
+    [
+      40,
+      73,
+      230,
+      219
+    ],
+    [
+      38,
+      78,
+      231,
+      217
+    ],
+    [
+      42,
+      78,
+      236,
+      218
+    ],
+    [
+      42,
+      81,
+      227,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    -13,
+    -17,
+    -13,
+    1
+  ],
+  "canvasSize": 551,
+  "exportScale": 1.15,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 22,
+  "frames": "ps1/source-frames/trot-start",
+  "auditBoard": "ps1/audit/trot-start.png",
+  "layout": {
+    "scale": 1.15
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

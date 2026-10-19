@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "routines": 24,
+  "clips": 56,
+  "pngFrames": 672,
+  "strips": 56,
+  "losslessFrameComparisons": 672,
+  "transparentAnimatedPreviews": 27,
+  "decodedPreviewFrames": 1188,
+  "exactPhaseJoinChecks": 26,
+  "reverseClipsChecked": 14,
+  "sourceAnatomyReviews": 35,
+  "reusedAnatomyReviews": 7,
+  "galleryJavaScriptSyntax": "pass",
+  "galleryLocalLinks": "pass",
+  "browserInspection": "blocked by local-file browser policy; frames inspected directly",
+  "featureCodeChanged": false
+}

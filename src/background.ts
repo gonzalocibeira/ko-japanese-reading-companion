@@ -9,7 +9,7 @@ async function ensureOffscreen() {
   if (!creating) creating = chrome.offscreen.createDocument({url: 'offscreen.html', reasons: [chrome.offscreen.Reason.WORKERS], justification: 'Run the bundled offline Japanese tokenizer in a worker.'}).finally(() => { creating = undefined; });
   await creating;
 }
-type TokenizePurpose = 'readings' | 'playground';
+type TokenizePurpose = 'readings' | 'playground' | 'mascot';
 interface Job { overrides:Record<string,string>; texts:string[]; includeWords:boolean; requestId:string; owner:string; purpose:TokenizePurpose; jobId:string; cancelled:boolean; dispatched:boolean; respond:(result:unknown)=>void }
 interface Queue { jobs:Job[]; running:boolean; closed:boolean; active?:Job }
 const queues = new Map<number, Queue>();
@@ -40,7 +40,7 @@ async function drain(tabId: number, queue: Queue) {
 }
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
   if (!['tokenize','cancel-tokenize'].includes(message?.type) || sender.tab?.id === undefined) return;
-  if(message.purpose!==undefined && message.purpose!=='readings' && message.purpose!=='playground') {respond({error:'Invalid analysis purpose'});return;}
+  if(message.purpose!==undefined && !['readings','playground','mascot'].includes(message.purpose)) {respond({error:'Invalid analysis purpose'});return;}
   const purpose:TokenizePurpose=message.purpose ?? 'readings';
   const tabId=sender.tab.id,owner=sender.documentId ?? `frame:${sender.frameId ?? 0}`;
   let queue=queues.get(tabId);
@@ -54,6 +54,7 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
   }
   if (typeof message.requestId!=='string' || !Array.isArray(message.texts) || message.texts.length>2000 || message.texts.some((s: unknown) => typeof s !== 'string') || message.texts.join('').length > 2000) { respond({error:'Invalid batch'}); return; }
   if(purpose==='playground' && (!message.texts.length || message.texts.length>4 || message.texts.some((text:string)=>!text.length || text.length>40))) {respond({error:'Playground analysis accepts up to four verbs of 40 characters each'});return;}
+  if(purpose==='mascot' && (sender.frameId!==0 || message.texts.length!==1 || !message.texts[0].length || message.texts[0].length>1000)) {respond({error:'Invalid mascot analysis'});return;}
   if (!queue) { queue={jobs:[],running:false,closed:false}; queues.set(tabId,queue); }
   // Replacing a playground query must not cancel the same document's readings.
   for(const job of queue.jobs) if(job.owner===owner && job.purpose===purpose)cancel(job);

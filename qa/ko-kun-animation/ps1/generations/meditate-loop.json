@@ -1,0 +1,279 @@
+{
+  "id": "meditate-loop",
+  "source": "ps1/sheets/meditate-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/meditate-loop.txt",
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      21,
+      39,
+      351,
+      344
+    ],
+    [
+      381,
+      36,
+      701,
+      344
+    ],
+    [
+      740,
+      40,
+      1061,
+      344
+    ],
+    [
+      51,
+      381,
+      388,
+      692
+    ],
+    [
+      393,
+      377,
+      732,
+      691
+    ],
+    [
+      734,
+      378,
+      1068,
+      692
+    ],
+    [
+      36,
+      730,
+      366,
+      1036
+    ],
+    [
+      384,
+      729,
+      718,
+      1041
+    ],
+    [
+      729,
+      730,
+      1062,
+      1040
+    ],
+    [
+      18,
+      1074,
+      352,
+      1383
+    ],
+    [
+      377,
+      1075,
+      718,
+      1383
+    ],
+    [
+      726,
+      1073,
+      1063,
+      1382
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      24,
+      42,
+      348,
+      341
+    ],
+    [
+      384,
+      39,
+      698,
+      341
+    ],
+    [
+      743,
+      43,
+      1058,
+      341
+    ],
+    [
+      54,
+      384,
+      385,
+      689
+    ],
+    [
+      396,
+      380,
+      729,
+      688
+    ],
+    [
+      737,
+      381,
+      1065,
+      689
+    ],
+    [
+      39,
+      733,
+      363,
+      1033
+    ],
+    [
+      387,
+      732,
+      715,
+      1038
+    ],
+    [
+      732,
+      733,
+      1059,
+      1037
+    ],
+    [
+      21,
+      1077,
+      349,
+      1380
+    ],
+    [
+      380,
+      1078,
+      715,
+      1380
+    ],
+    [
+      729,
+      1076,
+      1060,
+      1379
+    ]
+  ],
+  "exportBounds": [
+    [
+      55,
+      78,
+      206,
+      218
+    ],
+    [
+      58,
+      77,
+      204,
+      218
+    ],
+    [
+      63,
+      79,
+      209,
+      218
+    ],
+    [
+      69,
+      75,
+      223,
+      218
+    ],
+    [
+      63,
+      73,
+      219,
+      217
+    ],
+    [
+      59,
+      74,
+      212,
+      218
+    ],
+    [
+      62,
+      76,
+      213,
+      216
+    ],
+    [
+      59,
+      75,
+      212,
+      218
+    ],
+    [
+      57,
+      76,
+      210,
+      218
+    ],
+    [
+      54,
+      77,
+      206,
+      218
+    ],
+    [
+      56,
+      77,
+      212,
+      218
+    ],
+    [
+      56,
+      76,
+      210,
+      217
+    ]
+  ],
+  "rowOffsets": [
+    4,
+    18,
+    32,
+    51
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.82,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 16,
+  "frames": "ps1/source-frames/meditate-loop",
+  "auditBoard": "ps1/audit/meditate-loop.png",
+  "layout": {
+    "scale": 0.82
+  },
+  "columnOffsets": [
+    0,
+    8,
+    21
+  ],
+  "sourceSha256": "f7bc0e2f176b27b95544ba4e7c44a18317393f60135f6442db11eb61c62988bb",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms.",
+  "references": [
+    "ps1/references/approved-design.png"
+  ]
+}

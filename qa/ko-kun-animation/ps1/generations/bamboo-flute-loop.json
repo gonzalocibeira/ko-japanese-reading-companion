@@ -1,0 +1,283 @@
+{
+  "id": "bamboo-flute-loop",
+  "source": "ps1/sheets/bamboo-flute-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/bamboo-flute-loop.txt",
+  "sourceSha256": "cfc24c4c637a161ed4a49e82c1567dae3b9335b9877ab025ea2cd6c6ab8a2be9",
+  "references": [
+    "ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      19,
+      40,
+      364,
+      337
+    ],
+    [
+      385,
+      47,
+      726,
+      338
+    ],
+    [
+      738,
+      55,
+      1081,
+      337
+    ],
+    [
+      16,
+      372,
+      375,
+      683
+    ],
+    [
+      380,
+      386,
+      729,
+      682
+    ],
+    [
+      737,
+      379,
+      1082,
+      682
+    ],
+    [
+      18,
+      734,
+      374,
+      1035
+    ],
+    [
+      385,
+      752,
+      729,
+      1035
+    ],
+    [
+      745,
+      747,
+      1080,
+      1035
+    ],
+    [
+      21,
+      1104,
+      380,
+      1380
+    ],
+    [
+      378,
+      1082,
+      727,
+      1373
+    ],
+    [
+      734,
+      1073,
+      1083,
+      1373
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      22,
+      43,
+      361,
+      334
+    ],
+    [
+      388,
+      50,
+      723,
+      335
+    ],
+    [
+      741,
+      58,
+      1078,
+      334
+    ],
+    [
+      19,
+      375,
+      372,
+      680
+    ],
+    [
+      383,
+      389,
+      726,
+      679
+    ],
+    [
+      740,
+      382,
+      1079,
+      679
+    ],
+    [
+      21,
+      737,
+      371,
+      1032
+    ],
+    [
+      388,
+      755,
+      726,
+      1032
+    ],
+    [
+      748,
+      750,
+      1077,
+      1032
+    ],
+    [
+      24,
+      1107,
+      377,
+      1377
+    ],
+    [
+      381,
+      1085,
+      724,
+      1370
+    ],
+    [
+      737,
+      1076,
+      1080,
+      1370
+    ]
+  ],
+  "exportBounds": [
+    [
+      47,
+      69,
+      220,
+      218
+    ],
+    [
+      49,
+      73,
+      220,
+      218
+    ],
+    [
+      44,
+      77,
+      216,
+      218
+    ],
+    [
+      45,
+      62,
+      226,
+      218
+    ],
+    [
+      46,
+      70,
+      222,
+      218
+    ],
+    [
+      44,
+      66,
+      217,
+      218
+    ],
+    [
+      46,
+      67,
+      225,
+      218
+    ],
+    [
+      49,
+      77,
+      222,
+      218
+    ],
+    [
+      48,
+      74,
+      216,
+      218
+    ],
+    [
+      48,
+      83,
+      228,
+      221
+    ],
+    [
+      45,
+      72,
+      221,
+      218
+    ],
+    [
+      42,
+      68,
+      217,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    11,
+    28,
+    37,
+    61
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.9,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 9,
+  "frames": "ps1/source-frames/bamboo-flute-loop",
+  "auditBoard": "ps1/audit/bamboo-flute-loop.png",
+  "layout": {
+    "scale": 0.9,
+    "offset": [
+      0,
+      -3
+    ]
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

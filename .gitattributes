@@ -1,0 +1,3 @@
+# Preserve the upstream font license's original whitespace and line endings.
+public/art/fonts/OFL.txt -whitespace
+dist/art/fonts/OFL.txt -whitespace

@@ -1,0 +1,283 @@
+{
+  "id": "samurai-loop",
+  "source": "ps1/sheets/samurai-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/samurai-loop.txt",
+  "sourceSha256": "bd4128b3132a73a7dab47831df2b10ee88527fdaa2795db093e04578058bfa1c",
+  "references": [
+    "ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceRects": [
+    [
+      126,
+      8,
+      485,
+      260
+    ],
+    [
+      606,
+      17,
+      842,
+      262
+    ],
+    [
+      1118,
+      1,
+      1376,
+      262
+    ],
+    [
+      92,
+      279,
+      426,
+      512
+    ],
+    [
+      605,
+      280,
+      970,
+      509
+    ],
+    [
+      1104,
+      266,
+      1497,
+      520
+    ],
+    [
+      109,
+      517,
+      463,
+      765
+    ],
+    [
+      613,
+      512,
+      856,
+      766
+    ],
+    [
+      1136,
+      519,
+      1419,
+      765
+    ],
+    [
+      104,
+      763,
+      355,
+      1016
+    ],
+    [
+      603,
+      765,
+      853,
+      1016
+    ],
+    [
+      1117,
+      768,
+      1484,
+      1016
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      129,
+      11,
+      482,
+      257
+    ],
+    [
+      609,
+      20,
+      839,
+      259
+    ],
+    [
+      1121,
+      4,
+      1373,
+      259
+    ],
+    [
+      95,
+      282,
+      423,
+      509
+    ],
+    [
+      608,
+      283,
+      967,
+      506
+    ],
+    [
+      1107,
+      269,
+      1494,
+      517
+    ],
+    [
+      112,
+      520,
+      460,
+      762
+    ],
+    [
+      616,
+      515,
+      853,
+      763
+    ],
+    [
+      1139,
+      522,
+      1416,
+      762
+    ],
+    [
+      107,
+      766,
+      352,
+      1013
+    ],
+    [
+      606,
+      768,
+      850,
+      1013
+    ],
+    [
+      1120,
+      771,
+      1481,
+      1013
+    ]
+  ],
+  "exportBounds": [
+    [
+      39,
+      68,
+      252,
+      217
+    ],
+    [
+      20,
+      74,
+      159,
+      218
+    ],
+    [
+      20,
+      64,
+      172,
+      218
+    ],
+    [
+      19,
+      81,
+      216,
+      218
+    ],
+    [
+      19,
+      82,
+      236,
+      216
+    ],
+    [
+      12,
+      74,
+      245,
+      223
+    ],
+    [
+      29,
+      72,
+      239,
+      218
+    ],
+    [
+      24,
+      69,
+      167,
+      219
+    ],
+    [
+      31,
+      73,
+      198,
+      218
+    ],
+    [
+      27,
+      69,
+      174,
+      218
+    ],
+    [
+      18,
+      70,
+      166,
+      218
+    ],
+    [
+      19,
+      72,
+      237,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    -15,
+    -9,
+    -6,
+    -1
+  ],
+  "canvasSize": 636,
+  "exportScale": 1.5,
+  "exportOffset": [
+    -12,
+    -3
+  ],
+  "placementDy": 23,
+  "frames": "ps1/source-frames/samurai-loop",
+  "auditBoard": "ps1/audit/samurai-loop.png",
+  "layout": {
+    "scale": 1.5,
+    "offset": [
+      -12,
+      -3
+    ]
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

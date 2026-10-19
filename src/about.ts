@@ -3,7 +3,15 @@ import {uiTheme} from './ui-theme';
 const theme=document.createElement('style');
 theme.textContent=uiTheme;
 document.head.append(theme);
-document.querySelector('#version')!.textContent=`Version ${chrome.runtime.getManifest().version}`;
+const version=document.querySelector<HTMLButtonElement>('#version')!;
+version.textContent=`Version ${chrome.runtime.getManifest().version}`;
+let versionClicks=0;
+version.addEventListener('click',()=>{
+  if(++versionClicks===5) {
+    versionClicks=0;
+    location.href=chrome.runtime.getURL('animations.html');
+  }
+});
 
 const legacy=document.querySelector<HTMLInputElement>('#show-legacy-animations')!;
 const status=document.querySelector<HTMLElement>('#animation-status')!;

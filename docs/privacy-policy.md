@@ -1,6 +1,6 @@
 # Kō — Japanese Reading Companion: Privacy Policy
 
-Effective date: 18 October 2026. Developer: Gonzalo Cibeira.
+Effective date: 19 October 2026. Developer: Gonzalo Cibeira.
 
 Kō adds Japanese readings to webpages and Google Docs, with an optional reading panel, local exploration tools, and online word definitions. It has no account system, advertising, analytics, telemetry, or developer-operated data server.
 
@@ -16,7 +16,9 @@ The Google Docs bridge sets Google's canvas annotation flag using the extension'
 
 Clicking a word in the reading panel, or activating it with Enter or Space, automatically requests its definitions by sending the selected word's dictionary form to both English Wiktionary (en.wiktionary.org) and Japanese Wiktionary (ja.wiktionary.org), operated by the Wikimedia Foundation. A selected word may itself contain personal information, such as a name. Only that lookup term is sent by Kō; the surrounding text and page URL are not sent. Requests use HTTPS, omit credentials and cookies, omit the referrer, and do not follow redirects. Wikimedia receives the term and normal connection information, including your IP address. Its handling of this information is governed by the [Wikimedia Foundation Privacy Policy](https://foundation.wikimedia.org/wiki/Policy:Privacy_policy).
 
-Furigana and exploration do not require these requests. Definitions are requested only when you activate a reading-panel word or retry a failed lookup; cached results may avoid another request. Opening the Playgrounds browser and using exploration controls makes no definition requests. Following a Wiktionary source link, an exploration reference link, or another external link opens that website in a new tab, where its own privacy practices and your browser settings apply.
+Kōくん is off by default, and its definitions are separately off by default. When both are enabled, hovering over a Japanese word for 600 ms or highlighting a word (depending on the chosen trigger) requests its dictionary form from only the selected English or Japanese Wiktionary edition. These requests follow the same transport and privacy rules above.
+
+Furigana and exploration do not require these requests. Definitions are requested when you activate a reading-panel word, use Kōくん with online definitions enabled, or retry a failed lookup; cached results may avoid another request. Opening the Playgrounds browser and using exploration controls makes no definition requests. Following a Wiktionary source link, an exploration reference link, or another external link opens that website in a new tab, where its own privacy practices and your browser settings apply.
 
 ## Local exploration
 
@@ -24,9 +26,9 @@ Word forms (verbs and adjectives), Mimetic Playground, and Meaning Forks use the
 
 ## Storage, retention, and deletion
 
-Settings, site preferences, the legacy-animation choice, per-version update-announcement dismissals, and up to 200 word/reading corrections are saved in chrome.storage.local on this device. Kō does not sync them through chrome.storage.sync or upload them. Corrections can include names or other personal text you choose to save.
+Settings, up to 200 saved Kōくん positions by hostname, site preferences, the legacy-animation choice, per-version update-announcement dismissals, and up to 200 word/reading corrections are saved in chrome.storage.local on this device. Kō does not sync them through chrome.storage.sync or upload them. Corrections can include names or other personal text you choose to save.
 
-Extracted text, typed words, tokenizer reading caches, and definition caches remain in memory, subject to cache limits and component lifetimes. Panel definitions are cached for up to 100 terms. Tab-specific reading and playground-analysis caches are released when their tab closes or the tokenizer/offscreen context ends; entries can also be evicted earlier. A shared cache of dictionary-form readings and a separate cache of adjective dictionary alternatives each hold at most 256 words until eviction or the tokenizer context ends. A contextual-command alternative cache holds at most 256 spelling/reading pairs in memory. Kō does not persist full page text, typed queries, or definitions to disk through its storage API.
+Extracted text, typed words, tokenizer reading caches, and definition caches remain in memory, subject to cache limits and component lifetimes. Panel definitions are cached for up to 100 terms. Kōくん keeps at most 100 local text analyses and 100 definitions in memory per companion; these are not saved as history. Tab-specific reading, mascot, and playground-analysis caches are released when their tab closes or the tokenizer/offscreen context ends; entries can also be evicted earlier. A shared cache of dictionary-form readings and a separate cache of adjective dictionary alternatives each hold at most 256 words until eviction or the tokenizer context ends. A contextual-command alternative cache holds at most 256 spelling/reading pairs in memory. Kō does not persist full page text, typed queries, or definitions to disk through its storage API.
 
 You can remove corrections in the extension popup and change site preferences there. Uninstalling the extension removes its extension-local saved data. Exporting corrections creates a JSON file at your request; Kō does not upload it. You control that file and any copies or backups, which must be deleted separately. Import reads the correction file you select and stores validated corrections locally.
 
@@ -36,7 +38,7 @@ HTTP/HTTPS site access allows automatic readings without clicking the extension 
 
 ## Use and sharing commitments
 
-Kō uses user data only to provide its Japanese reading features. The developer does not receive, sell, rent, or use it for advertising, credit decisions, profiling, or unrelated purposes, and does not allow humans to read it through the extension. The only third-party data requests made by Kō are the word-definition lookups you explicitly request, as described above. Kō's use of user data complies with the Chrome Web Store User Data Policy, including its Limited Use requirements.
+Kō uses user data only to provide its Japanese reading features. The developer does not receive, sell, rent, or use it for advertising, credit decisions, profiling, or unrelated purposes, and does not allow humans to read it through the extension. The only third-party data requests made by Kō are the word-definition lookups triggered by reading-panel activation or by Kōくん when you enable its online definitions, as described above. Kō's use of user data complies with the Chrome Web Store User Data Policy, including its Limited Use requirements.
 
 ## Changes and contact
 

@@ -1,0 +1,279 @@
+{
+  "id": "seated-watch-loop",
+  "source": "ps1/sheets/seated-watch-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/seated-watch-loop.txt",
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      11,
+      25,
+      328,
+      346
+    ],
+    [
+      367,
+      26,
+      694,
+      346
+    ],
+    [
+      732,
+      22,
+      1052,
+      346
+    ],
+    [
+      13,
+      386,
+      340,
+      709
+    ],
+    [
+      373,
+      385,
+      702,
+      708
+    ],
+    [
+      730,
+      386,
+      1069,
+      708
+    ],
+    [
+      12,
+      754,
+      338,
+      1068
+    ],
+    [
+      371,
+      753,
+      705,
+      1068
+    ],
+    [
+      731,
+      749,
+      1064,
+      1069
+    ],
+    [
+      11,
+      1106,
+      349,
+      1424
+    ],
+    [
+      374,
+      1103,
+      702,
+      1428
+    ],
+    [
+      733,
+      1112,
+      1061,
+      1428
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      14,
+      28,
+      325,
+      343
+    ],
+    [
+      370,
+      29,
+      691,
+      343
+    ],
+    [
+      735,
+      25,
+      1049,
+      343
+    ],
+    [
+      16,
+      389,
+      337,
+      706
+    ],
+    [
+      376,
+      388,
+      699,
+      705
+    ],
+    [
+      733,
+      389,
+      1066,
+      705
+    ],
+    [
+      15,
+      757,
+      335,
+      1065
+    ],
+    [
+      374,
+      756,
+      702,
+      1065
+    ],
+    [
+      734,
+      752,
+      1061,
+      1066
+    ],
+    [
+      14,
+      1109,
+      346,
+      1421
+    ],
+    [
+      377,
+      1106,
+      699,
+      1425
+    ],
+    [
+      736,
+      1115,
+      1058,
+      1425
+    ]
+  ],
+  "exportBounds": [
+    [
+      50,
+      71,
+      195,
+      218
+    ],
+    [
+      47,
+      71,
+      197,
+      218
+    ],
+    [
+      49,
+      69,
+      195,
+      218
+    ],
+    [
+      51,
+      70,
+      201,
+      218
+    ],
+    [
+      50,
+      70,
+      200,
+      218
+    ],
+    [
+      48,
+      70,
+      203,
+      218
+    ],
+    [
+      51,
+      74,
+      200,
+      218
+    ],
+    [
+      49,
+      73,
+      202,
+      218
+    ],
+    [
+      48,
+      71,
+      200,
+      218
+    ],
+    [
+      50,
+      70,
+      205,
+      216
+    ],
+    [
+      51,
+      69,
+      201,
+      218
+    ],
+    [
+      49,
+      73,
+      199,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    2,
+    2,
+    4,
+    6
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.82,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "frames": "ps1/source-frames/seated-watch-loop",
+  "auditBoard": "ps1/audit/seated-watch-loop.png",
+  "layout": {
+    "scale": 0.82
+  },
+  "placementDy": 16,
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "sourceSha256": "0dfb8db22259743d4c103dc41584d6d4abc93ed5d08015438292e92647dbfccc",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms.",
+  "references": [
+    "ps1/references/approved-design.png"
+  ]
+}

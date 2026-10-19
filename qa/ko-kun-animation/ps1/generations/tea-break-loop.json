@@ -1,0 +1,283 @@
+{
+  "id": "tea-break-loop",
+  "source": "ps1/sheets/tea-break-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/tea-break-loop.txt",
+  "sourceSha256": "57aafc917f7c104fce7ff88740723c424727c87da8a995bded46dd1940fdab05",
+  "references": [
+    "ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "sourceRects": [
+    [
+      73,
+      2,
+      390,
+      268
+    ],
+    [
+      544,
+      2,
+      861,
+      268
+    ],
+    [
+      1017,
+      2,
+      1340,
+      268
+    ],
+    [
+      66,
+      278,
+      450,
+      542
+    ],
+    [
+      541,
+      271,
+      924,
+      541
+    ],
+    [
+      1031,
+      271,
+      1410,
+      542
+    ],
+    [
+      66,
+      537,
+      459,
+      807
+    ],
+    [
+      545,
+      549,
+      938,
+      809
+    ],
+    [
+      1030,
+      550,
+      1409,
+      805
+    ],
+    [
+      67,
+      806,
+      450,
+      1075
+    ],
+    [
+      542,
+      807,
+      871,
+      1073
+    ],
+    [
+      1027,
+      802,
+      1364,
+      1072
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      76,
+      5,
+      387,
+      265
+    ],
+    [
+      547,
+      5,
+      858,
+      265
+    ],
+    [
+      1020,
+      5,
+      1337,
+      265
+    ],
+    [
+      69,
+      281,
+      447,
+      539
+    ],
+    [
+      544,
+      274,
+      921,
+      538
+    ],
+    [
+      1034,
+      274,
+      1407,
+      539
+    ],
+    [
+      69,
+      540,
+      456,
+      804
+    ],
+    [
+      548,
+      552,
+      935,
+      806
+    ],
+    [
+      1033,
+      553,
+      1406,
+      802
+    ],
+    [
+      70,
+      809,
+      447,
+      1072
+    ],
+    [
+      545,
+      810,
+      868,
+      1070
+    ],
+    [
+      1030,
+      805,
+      1361,
+      1069
+    ]
+  ],
+  "exportBounds": [
+    [
+      33,
+      68,
+      212,
+      218
+    ],
+    [
+      26,
+      68,
+      205,
+      218
+    ],
+    [
+      20,
+      68,
+      203,
+      218
+    ],
+    [
+      29,
+      69,
+      247,
+      218
+    ],
+    [
+      24,
+      65,
+      242,
+      217
+    ],
+    [
+      28,
+      65,
+      243,
+      218
+    ],
+    [
+      29,
+      66,
+      252,
+      218
+    ],
+    [
+      27,
+      73,
+      250,
+      219
+    ],
+    [
+      28,
+      73,
+      243,
+      217
+    ],
+    [
+      29,
+      67,
+      247,
+      219
+    ],
+    [
+      25,
+      68,
+      211,
+      218
+    ],
+    [
+      26,
+      65,
+      217,
+      217
+    ]
+  ],
+  "rowOffsets": [
+    -6,
+    -9,
+    -2,
+    3
+  ],
+  "canvasSize": 600,
+  "exportScale": 1.35,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 22,
+  "frames": "ps1/source-frames/tea-break-loop",
+  "auditBoard": "ps1/audit/tea-break-loop.png",
+  "layout": {
+    "scale": 1.35,
+    "offset": [
+      0,
+      -3
+    ]
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

@@ -1,0 +1,168 @@
+{
+  "generator": "Built-in image_gen tool",
+  "characterApproved": true,
+  "approvedProposal": "a",
+  "pilotApproved": false,
+  "records": [
+    {
+      "id": "attentive-idle-loop",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/attentive-idle-loop.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-2f531ddc-3b9e-46db-945d-154059c8d561.png",
+      "savedSource": "sheets/attentive-idle-loop.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "walk-loop",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/walk-loop.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-fc034727-da8c-4c08-877e-75cd0e79194f.png",
+      "savedSource": "sheets/walk-loop.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "read-loop",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/read-loop.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-8f854331-e9fb-493a-ab5d-1033546e1232.png",
+      "savedSource": "sheets/read-loop.png",
+      "sourceStatus": "superseded-crowded-grid",
+      "animationApproved": false
+    },
+    {
+      "id": "read-loop-v2",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/read-loop-v2.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-9c79c4e7-7811-49a0-acc0-4f4bd264f6cc.png",
+      "savedSource": "sheets/read-loop-v2.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "straw-hat-adventurer-loop",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/straw-hat-adventurer-loop.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-500363de-f7d4-45ee-989c-6a294e08929b.png",
+      "savedSource": "sheets/straw-hat-adventurer-loop.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "walk-start",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/walk-start.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-96fa26b0-3c6e-4966-9fa0-fa7eabb1a5a0.png",
+      "savedSource": "sheets/walk-start.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "walk-stop",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/walk-stop.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-fdf94b2c-0453-4774-a5da-265efce43278.png",
+      "savedSource": "sheets/walk-stop.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "read-entry",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/read-entry.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-e8696fe1-1cc6-4b70-bcdf-f03e8b30e36c.png",
+      "savedSource": "sheets/read-entry.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "read-exit",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/read-exit.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-03e4da2b-e4d3-472a-88b2-d6c43274581f.png",
+      "savedSource": "sheets/read-exit.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "straw-hat-adventurer-entry",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/straw-hat-adventurer-entry.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-6fefa269-990f-4ded-8d9e-3075c80e34fc.png",
+      "savedSource": "sheets/straw-hat-adventurer-entry.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "straw-hat-adventurer-exit",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/straw-hat-adventurer-exit.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-57b4ef95-b5d0-4299-8548-a51f7b9c5fdf.png",
+      "savedSource": "sheets/straw-hat-adventurer-exit.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "sit-down",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/sit-down.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-3c92ba53-e413-4eae-b910-fc08278926b0.png",
+      "savedSource": "sheets/sit-down.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "stand-up",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/stand-up.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-47821851-ee0e-400e-a6f9-59ae8f55e280.png",
+      "savedSource": "sheets/stand-up.png",
+      "sourceStatus": "packaged-for-pilot-review",
+      "animationApproved": false
+    },
+    {
+      "id": "front",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/front.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-30b0ec79-2de6-49c3-8104-9819e17576ed.png",
+      "savedSource": "references/front.png",
+      "sourceStatus": "derived-character-reference"
+    },
+    {
+      "id": "standing-profile-v2",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/standing-profile-v2.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-7443141e-d2a7-42c8-a98f-39da22c1e837.png",
+      "savedSource": "references/standing-profile-v2.png",
+      "sourceStatus": "derived-character-reference"
+    },
+    {
+      "id": "character-reference-v1",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/character-reference-v1.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-8f0ee159-524b-40fd-9ec8-eeb606585dc7.png",
+      "savedSource": "references/source-reference-v1.png",
+      "sourceStatus": "partially-used-front-view-rejected-and-regenerated"
+    },
+    {
+      "id": "read-entry-v2",
+      "generator": "Built-in image_gen tool",
+      "prompt": "prompts/read-entry-v2.txt",
+      "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-6d91cdab-d11b-4c33-960c-7754d63d0bee.png",
+      "savedSource": "sheets/read-entry-v2.png",
+      "sourceStatus": "partially-used-endpoint-correction",
+      "usedPoseIndices": [
+        9,
+        10
+      ],
+      "clippedPoseIndicesExcluded": [
+        2,
+        5,
+        8,
+        11
+      ],
+      "animationApproved": false
+    }
+  ]
+}

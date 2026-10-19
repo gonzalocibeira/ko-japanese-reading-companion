@@ -1,0 +1,278 @@
+{
+  "id": "take-off",
+  "source": "ps1/sheets/take-off.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/take-off.txt",
+  "sourceSha256": "3e0e66cda9a136596d27f008470ed2d6c2f6900b5cd6684d6d3f445514208edb",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/hover-idle-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      28,
+      48,
+      333,
+      332
+    ],
+    [
+      384,
+      64,
+      689,
+      332
+    ],
+    [
+      745,
+      84,
+      1054,
+      332
+    ],
+    [
+      30,
+      401,
+      338,
+      698
+    ],
+    [
+      393,
+      406,
+      695,
+      698
+    ],
+    [
+      754,
+      394,
+      1060,
+      673
+    ],
+    [
+      29,
+      754,
+      341,
+      1044
+    ],
+    [
+      389,
+      759,
+      697,
+      1019
+    ],
+    [
+      754,
+      761,
+      1061,
+      1019
+    ],
+    [
+      32,
+      1119,
+      342,
+      1381
+    ],
+    [
+      389,
+      1119,
+      698,
+      1381
+    ],
+    [
+      753,
+      1109,
+      1058,
+      1381
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      31,
+      51,
+      330,
+      329
+    ],
+    [
+      387,
+      67,
+      686,
+      329
+    ],
+    [
+      748,
+      87,
+      1051,
+      329
+    ],
+    [
+      33,
+      404,
+      335,
+      695
+    ],
+    [
+      396,
+      409,
+      692,
+      695
+    ],
+    [
+      757,
+      397,
+      1057,
+      670
+    ],
+    [
+      32,
+      757,
+      338,
+      1041
+    ],
+    [
+      392,
+      762,
+      694,
+      1016
+    ],
+    [
+      757,
+      764,
+      1058,
+      1016
+    ],
+    [
+      35,
+      1122,
+      339,
+      1378
+    ],
+    [
+      392,
+      1122,
+      695,
+      1378
+    ],
+    [
+      756,
+      1112,
+      1055,
+      1378
+    ]
+  ],
+  "exportBounds": [
+    [
+      43,
+      41,
+      213,
+      199
+    ],
+    [
+      39,
+      50,
+      209,
+      199
+    ],
+    [
+      39,
+      62,
+      211,
+      199
+    ],
+    [
+      44,
+      36,
+      216,
+      201
+    ],
+    [
+      44,
+      39,
+      213,
+      201
+    ],
+    [
+      44,
+      32,
+      214,
+      187
+    ],
+    [
+      43,
+      31,
+      217,
+      192
+    ],
+    [
+      43,
+      34,
+      214,
+      178
+    ],
+    [
+      44,
+      35,
+      215,
+      178
+    ],
+    [
+      45,
+      33,
+      218,
+      178
+    ],
+    [
+      42,
+      33,
+      214,
+      178
+    ],
+    [
+      43,
+      27,
+      213,
+      178
+    ]
+  ],
+  "rowOffsets": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "canvasSize": 450,
+  "exportScale": 1,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": -10,
+  "frames": "ps1/source-frames/take-off",
+  "auditBoard": "ps1/audit/take-off.png",
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

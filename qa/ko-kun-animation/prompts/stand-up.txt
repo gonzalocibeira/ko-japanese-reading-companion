@@ -1,0 +1,14 @@
+Use case: stylized-concept.
+Asset type: transparent sprite sheet for a browser virtual pet, NOT a scene illustration.
+Identity: approved bare-neck Kōくん, a quietly knowledgeable small kitsune spirit. Preserve ivory fur, muted vermilion inner ears and paired brow markings, charcoal paws, deep indigo almond eyes, short elegant muzzle, exactly THREE separate fluffy tails with vermilion flame-shaped fur tips. No collar, pendant or halo.
+Style: existing early-PlayStation faceted miniature forms and pixel-stepped contours, broad ukiyo-e woodblock ink planes, restrained texture only inside painted shapes. Keep shapes simple and readable at 96–128 pixels.
+Sheet: EXACTLY TWELVE sequential frames, strict THREE columns by FOUR rows, row-major reading order. Target canvas 1536 × 2048, twelve 512 × 512 square cells. No labels, text, gutters, grid lines or borders. Each whole fox and any props fit entirely inside its OWN cell with at least 10 percent transparent padding. Never let ears, tails or props cross into neighboring cells.
+Camera and anchors: fixed right-facing three-quarter orthographic view in EVERY frame, same scale, camera, lighting, markings and proportions. Fox body center around 62 percent cell width. Grounded paws contact an invisible baseline at 85 percent cell height. Exactly three tails fan LEFT behind rump. Head toward RIGHT with a gentle viewer-facing angle. Do not translate the character across the canvas. Animate actual sequential poses, not twelve duplicates.
+Transparency: genuine alpha-transparent background and gaps between limbs and tails. No background color, painted checkerboard, paper rectangle, floor, pedestal, ground shadow, aura or environment. Opaque fur retains its printed texture. No motion trails that look like extra tails.
+Continuity: no changing anatomy, head proportions, coat pattern or tail count; preserve each tail through the entire motion. No extra limbs. No zoom, frame-to-frame camera changes, cropping, disappearing props, lettering or watermark.
+Reference roles: approved proposal defines character identity; extracted standing or seated reference defines the pose/view; any additional endpoint reference defines the required matching connection pose.
+
+FRAME SPACING: generous transparent gutters; each whole fox occupies only the central 65 percent of its cell. Nothing crosses a cell edge.
+References: image 1 approved identity; image 2 exact standing endpoint; image 3 exact seated endpoint. Match endpoint anatomy and paw positions.
+Clip: stand-up
+Choreography: Begin exact seated neutral with front paws planted. Frames 2-4 lean slightly forward, 5-8 extend hind legs and lift rump, 9-12 settle into exact four-pawed standing neutral. Three tails lift and settle without changing count. No props.

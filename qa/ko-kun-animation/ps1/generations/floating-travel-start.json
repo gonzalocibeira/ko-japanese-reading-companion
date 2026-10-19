@@ -1,0 +1,278 @@
+{
+  "id": "floating-travel-start",
+  "source": "ps1/sheets/floating-travel-start.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/floating-travel-start.txt",
+  "sourceSha256": "329c37cb33447d4bf6d25b6a3b0794acbb4b9481805f6a0a0a6d715004014fca",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/hover-idle-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/floating-travel-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      10,
+      65,
+      322,
+      342
+    ],
+    [
+      378,
+      71,
+      694,
+      338
+    ],
+    [
+      737,
+      70,
+      1058,
+      342
+    ],
+    [
+      11,
+      423,
+      342,
+      690
+    ],
+    [
+      373,
+      434,
+      721,
+      697
+    ],
+    [
+      737,
+      437,
+      1079,
+      675
+    ],
+    [
+      6,
+      782,
+      359,
+      1029
+    ],
+    [
+      374,
+      795,
+      729,
+      1031
+    ],
+    [
+      737,
+      806,
+      1086,
+      1043
+    ],
+    [
+      10,
+      1139,
+      367,
+      1391
+    ],
+    [
+      373,
+      1130,
+      719,
+      1391
+    ],
+    [
+      728,
+      1148,
+      1085,
+      1371
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      13,
+      68,
+      319,
+      339
+    ],
+    [
+      381,
+      74,
+      691,
+      335
+    ],
+    [
+      740,
+      73,
+      1055,
+      339
+    ],
+    [
+      14,
+      426,
+      339,
+      687
+    ],
+    [
+      376,
+      437,
+      718,
+      694
+    ],
+    [
+      740,
+      440,
+      1076,
+      672
+    ],
+    [
+      9,
+      785,
+      356,
+      1026
+    ],
+    [
+      377,
+      798,
+      726,
+      1028
+    ],
+    [
+      740,
+      809,
+      1084,
+      1040
+    ],
+    [
+      13,
+      1142,
+      364,
+      1388
+    ],
+    [
+      376,
+      1133,
+      716,
+      1388
+    ],
+    [
+      731,
+      1151,
+      1082,
+      1368
+    ]
+  ],
+  "exportBounds": [
+    [
+      32,
+      51,
+      207,
+      205
+    ],
+    [
+      36,
+      54,
+      212,
+      203
+    ],
+    [
+      35,
+      54,
+      213,
+      205
+    ],
+    [
+      33,
+      48,
+      218,
+      197
+    ],
+    [
+      33,
+      55,
+      228,
+      201
+    ],
+    [
+      34,
+      56,
+      225,
+      188
+    ],
+    [
+      30,
+      47,
+      228,
+      184
+    ],
+    [
+      34,
+      54,
+      232,
+      185
+    ],
+    [
+      34,
+      60,
+      230,
+      192
+    ],
+    [
+      32,
+      44,
+      232,
+      184
+    ],
+    [
+      33,
+      39,
+      226,
+      184
+    ],
+    [
+      29,
+      49,
+      228,
+      172
+    ]
+  ],
+  "rowOffsets": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "canvasSize": 450,
+  "exportScale": 1,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": -10,
+  "frames": "ps1/source-frames/floating-travel-start",
+  "auditBoard": "ps1/audit/floating-travel-start.png",
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

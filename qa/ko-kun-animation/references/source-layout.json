@@ -1,0 +1,39 @@
+{
+  "source": "source-reference-v1.png",
+  "rectangles": {
+    "standing-three-quarter": [
+      0,
+      0,
+      576,
+      512
+    ],
+    "standing-profile": [
+      576,
+      0,
+      1084,
+      512
+    ],
+    "seated-three-quarter": [
+      1084,
+      0,
+      1536,
+      512
+    ],
+    "thoughtful": [
+      566,
+      512,
+      1040,
+      1024
+    ],
+    "meditating": [
+      1040,
+      512,
+      1536,
+      1024
+    ]
+  },
+  "rejectedViews": {
+    "front": "four tails; regenerate separately"
+  },
+  "note": "Generated views crossed requested equal-cell grid. Manual bounds preserve complete characters."
+}

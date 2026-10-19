@@ -1,0 +1,285 @@
+{
+  "id": "spirit-magic-loop",
+  "source": "ps1/sheets/spirit-magic-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/spirit-magic-loop.txt",
+  "sourceSha256": "30c4442daf513724542c2fd086c7850fbb2f24802dc085401d6c98ba2b9bdb9f",
+  "references": [
+    "ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "technicalError": "(2, 'export clipped', (0, 47, 175, 199))",
+  "layout": {
+    "scale": 1.3,
+    "columnOffsets": [
+      0,
+      30,
+      55
+    ]
+  },
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "sourceRects": [
+    [
+      70,
+      2,
+      357,
+      261
+    ],
+    [
+      521,
+      2,
+      822,
+      261
+    ],
+    [
+      984,
+      2,
+      1289,
+      262
+    ],
+    [
+      70,
+      273,
+      411,
+      534
+    ],
+    [
+      521,
+      271,
+      889,
+      532
+    ],
+    [
+      974,
+      272,
+      1342,
+      535
+    ],
+    [
+      70,
+      545,
+      453,
+      804
+    ],
+    [
+      523,
+      544,
+      915,
+      804
+    ],
+    [
+      982,
+      545,
+      1376,
+      806
+    ],
+    [
+      69,
+      811,
+      396,
+      1075
+    ],
+    [
+      524,
+      811,
+      842,
+      1074
+    ],
+    [
+      978,
+      814,
+      1282,
+      1076
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      73,
+      5,
+      354,
+      258
+    ],
+    [
+      524,
+      5,
+      819,
+      258
+    ],
+    [
+      987,
+      5,
+      1286,
+      259
+    ],
+    [
+      73,
+      276,
+      408,
+      531
+    ],
+    [
+      524,
+      274,
+      886,
+      529
+    ],
+    [
+      977,
+      275,
+      1339,
+      532
+    ],
+    [
+      73,
+      548,
+      450,
+      801
+    ],
+    [
+      526,
+      547,
+      912,
+      801
+    ],
+    [
+      985,
+      548,
+      1373,
+      803
+    ],
+    [
+      72,
+      814,
+      393,
+      1072
+    ],
+    [
+      527,
+      814,
+      839,
+      1071
+    ],
+    [
+      981,
+      817,
+      1279,
+      1073
+    ]
+  ],
+  "exportBounds": [
+    [
+      34,
+      77,
+      190,
+      218
+    ],
+    [
+      33,
+      77,
+      197,
+      218
+    ],
+    [
+      36,
+      77,
+      202,
+      218
+    ],
+    [
+      34,
+      76,
+      220,
+      218
+    ],
+    [
+      33,
+      75,
+      234,
+      217
+    ],
+    [
+      30,
+      76,
+      231,
+      218
+    ],
+    [
+      34,
+      77,
+      243,
+      218
+    ],
+    [
+      34,
+      77,
+      248,
+      218
+    ],
+    [
+      35,
+      77,
+      250,
+      219
+    ],
+    [
+      34,
+      75,
+      212,
+      218
+    ],
+    [
+      35,
+      75,
+      208,
+      217
+    ],
+    [
+      33,
+      76,
+      198,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    1,
+    -1,
+    1,
+    1
+  ],
+  "canvasSize": 600,
+  "exportScale": 1.3,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 25,
+  "frames": "ps1/source-frames/spirit-magic-loop",
+  "auditBoard": "ps1/audit/spirit-magic-loop.png",
+  "columnOffsets": [
+    0,
+    30,
+    55
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

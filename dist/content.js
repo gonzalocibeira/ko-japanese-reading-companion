@@ -130,6 +130,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   function updateReadingView(patch, site) {
     return mutatePreferences({ kind: "reading-view", patch, site });
   }
+  function updateMascotPosition(hostname, position) {
+    return mutatePreferences({ kind: "mascot-position", hostname, position });
+  }
   function saveCorrection(word, reading, previousWord) {
     return mutatePreferences({ kind: "save-correction", word, reading, previousWord });
   }
@@ -153,7 +156,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   function definitionText(html, language) {
     const template = document.createElement("template");
     template.innerHTML = html;
-    let japanese3 = false, partOfSpeech = false;
+    let japanese4 = false, partOfSpeech = false;
     const out = [];
     const clean = (element4) => {
       const copy = element4.cloneNode(true);
@@ -163,11 +166,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     for (const element4 of template.content.querySelectorAll("h2,h3,h4,h5,h6,ol")) {
       if (element4.closest("table,dl,.toc")) continue;
       if (element4.tagName === "H2") {
-        japanese3 = /^(Japanese|日本語)(?:\s|$)/u.test(clean(element4));
+        japanese4 = /^(Japanese|日本語)(?:\s|$)/u.test(clean(element4));
         partOfSpeech = false;
         continue;
       }
-      if (!japanese3) continue;
+      if (!japanese4) continue;
       if (element4.tagName !== "OL") {
         const heading = clean(element4);
         if (!/^語義(?:\s|$)/u.test(heading)) partOfSpeech = /^(Noun|Proper noun|Verb|Adjective|Adverb|Pronoun|Particle|Conjunction|Interjection|Prefix|Suffix|Counter|Numeral|Determiner|Phrase|Proverb|Idiom|Affix|名詞|固有名詞|動詞|形容詞|形容動詞|副詞|代名詞|助詞|接続詞|感動詞|接頭辞|接尾辞|助数詞|数詞|連体詞|成句|熟語|ことわざ|熟字訓|語素)(?:\s|[:：0-9０-９]|$)/u.test(heading);
@@ -1821,8 +1824,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const render2 = () => {
       const family = families.find((family2) => family2.id === state.family);
       const variant = model2.forms.find((form) => form.family === state.family && form.past === state.past && form.negative === state.negative && form.polite === state.polite && form.spoken === state.spoken);
-      const japanese3 = annotated(pristine ? model2.source : variant?.text ?? model2.source, pristine ? model2.sourceReading : variant?.reading ?? model2.sourceReading, model2.source);
-      japanese3.className = "verb-japanese";
+      const japanese4 = annotated(pristine ? model2.source : variant?.text ?? model2.source, pristine ? model2.sourceReading : variant?.reading ?? model2.sourceReading, model2.source);
+      japanese4.className = "verb-japanese";
       const caption = document.createElement("p");
       caption.className = "verb-state";
       const traits = [];
@@ -1834,7 +1837,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         if (state.spoken) traits.push("Spoken shortening");
       } else traits.push("Original spelling \xB7 Choose an interpretation above");
       caption.textContent = traits.join(" \xB7 ");
-      result.replaceChildren(japanese3, caption);
+      result.replaceChildren(japanese4, caption);
       familyLabel.hidden = controls.hidden = explanation.hidden = !chosen;
       choices.hidden = chosen;
       select.value = state.family;
@@ -2450,6 +2453,120 @@ ${meaningForkStyles}
     }
   });
 
+  // src/mascot-target.ts
+  function resolveWord(target, words, readings, overrides) {
+    const corrected = Object.entries(overrides).filter(([word]) => target.text.includes(word)).map(([word, reading2]) => {
+      let start2 = target.text.indexOf(word);
+      while (start2 >= 0) {
+        if (start2 <= target.offset && start2 + word.length > target.offset) return { start: start2, end: start2 + word.length, word, reading: reading2 };
+        start2 = target.text.indexOf(word, start2 + 1);
+      }
+    }).filter((v) => !!v).sort((a, b) => b.word.length - a.word.length)[0];
+    const token = words.find((w) => w.start <= target.offset && w.end > target.offset);
+    if (!token && !corrected) return;
+    const start = corrected?.start ?? token.start, end = corrected?.end ?? token.end;
+    const surface = target.text.slice(start, end);
+    if (!japanese3.test(surface) || surface.length > 80) return;
+    if (target.selection && (start !== 0 || end !== target.text.length)) return;
+    let reading = corrected?.reading;
+    if (reading === void 0) {
+      let cursor = start, value = "", unknown = false;
+      for (const part of readings) {
+        if (part.start < cursor || part.end > end) continue;
+        value += target.text.slice(cursor, part.start) + part.reading;
+        cursor = part.end;
+        if (!part.reading) unknown = true;
+      }
+      value += target.text.slice(cursor, end);
+      reading = !unknown && !/[\p{Script=Han}々〆]/u.test(value) ? hiragana(value) : token?.reading;
+    }
+    if (!reading || reading === "*" || !/^[\p{Script=Hiragana}\p{Script=Katakana}ー\s]+$/u.test(reading)) reading = "";
+    return { word: { surface, lemma: corrected ? surface : token?.lemma || surface, reading: hiragana(reading) }, start, end };
+  }
+  function blocked(node) {
+    let element4 = node instanceof Element ? node : node.parentElement;
+    while (element4) {
+      if (element4.closest(ignored)) return true;
+      const root = element4.getRootNode();
+      element4 = root instanceof ShadowRoot ? root.host : null;
+    }
+    return false;
+  }
+  function textTarget(node, offset) {
+    if (!(node instanceof Text) || blocked(node) || !node.parentElement) return;
+    let root = node.parentElement;
+    while (root.parentElement && ["inline", "contents"].includes(getComputedStyle(root).display)) root = root.parentElement;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: (n) => blocked(n) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+    let text = "", position = -1, count = 0, current;
+    const parts = [];
+    while ((current = walker.nextNode()) && ++count <= 256) {
+      if (current === node) position = text.length + offset;
+      const start2 = text.length;
+      text += current.textContent ?? "";
+      parts.push({ node: current, start: start2, end: text.length });
+      if (text.length > 1e4) break;
+    }
+    if (position < 0 || !japanese3.test(text)) return;
+    const start = Math.max(0, position - 450), end = Math.min(text.length, start + 1e3);
+    return { text: text.slice(start, end), offset: position - start, rects: (a, b) => {
+      const boxes = [];
+      for (const part of parts) {
+        const from = Math.max(start + a, part.start), to = Math.min(start + b, part.end);
+        if (from >= to || !part.node.isConnected) continue;
+        if (part.node.data !== text.slice(part.start, part.end)) return [];
+        const range = document.createRange();
+        range.setStart(part.node, from - part.start);
+        range.setEnd(part.node, to - part.start);
+        boxes.push(...range.getClientRects());
+      }
+      return boxes;
+    } };
+  }
+  function webTarget(x, y2) {
+    let element4 = document.elementFromPoint(x, y2);
+    const shadows = [];
+    while (element4?.shadowRoot) {
+      const root = element4.shadowRoot;
+      shadows.push(root);
+      const inner = root.elementFromPoint(x, y2);
+      if (!inner || inner === element4) break;
+      element4 = inner;
+    }
+    if (!element4 || blocked(element4)) return;
+    const doc = document;
+    const caret = doc.caretPositionFromPoint?.(x, y2, { shadowRoots: shadows }), range = caret ? void 0 : doc.caretRangeFromPoint?.(x, y2);
+    const node = caret?.offsetNode ?? range?.startContainer, offset = caret?.offset ?? range?.startOffset;
+    if (!(node instanceof Text) || offset === void 0) return;
+    for (const index of [offset, offset - 1]) {
+      if (index < 0 || index >= node.length) continue;
+      const r = document.createRange();
+      r.setStart(node, index);
+      r.setEnd(node, index + 1);
+      if ([...r.getClientRects()].some((b) => x >= b.left && x <= b.right && y2 >= b.top && y2 <= b.bottom)) return textTarget(node, index);
+    }
+  }
+  function selectedTarget(selection = window.getSelection()) {
+    if (!selection || selection.isCollapsed || selection.rangeCount !== 1 || !selection.anchorNode || !selection.focusNode || blocked(selection.anchorNode) || blocked(selection.focusNode)) return;
+    const text = selectionText(selection);
+    if (!text || text.length > 80 || /\s/u.test(text) || !japanese3.test(text)) return;
+    return { text, offset: 0, selection: true };
+  }
+  function selectionText(selection) {
+    if (!selection.rangeCount) return "";
+    const fragment = selection.getRangeAt(0).cloneContents();
+    fragment.querySelectorAll("rt,rp").forEach((node) => node.remove());
+    return (fragment.textContent ?? "").trim();
+  }
+  var japanese3, ignored;
+  var init_mascot_target = __esm({
+    "src/mascot-target.ts"() {
+      "use strict";
+      init_shared();
+      japanese3 = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々〆]/u;
+      ignored = 'script,style,noscript,rt,rp,input,textarea,select,[contenteditable]:not([contenteditable="false"]),ko-mascot,ko-overlay,ko-reading-view';
+    }
+  });
+
   // src/reading-panel.ts
   function readingLines(runs) {
     const rows = [];
@@ -2482,7 +2599,9 @@ ${meaningForkStyles}
       init_definitions();
       init_exploration();
       init_playground_browser();
+      init_mascot_target();
       ReadingPanel = class {
+        mascotHooks;
         host = document.createElement("ko-reading-view");
         root = this.host.attachShadow({ mode: "closed" });
         content;
@@ -2551,6 +2670,19 @@ ${playgroundBrowserStyles}
           });
           this.content = this.root.querySelector(".content");
           this.status = this.root.querySelector(".status");
+          this.content.addEventListener("pointerover", (event) => {
+            const button = event.target.closest(".word");
+            if (button && !(event.relatedTarget instanceof Node && button.contains(event.relatedTarget))) this.mascotHooks?.hover({ surface: button.dataset.surface, lemma: button.dataset.word, reading: button.dataset.reading }, (x, y2) => button.isConnected && [...button.getClientRects()].some((r) => x >= r.left && x <= r.right && y2 >= r.top && y2 <= r.bottom));
+          });
+          this.content.addEventListener("pointerout", (event) => {
+            const button = event.target.closest(".word");
+            if (button && !(event.relatedTarget instanceof Node && button.contains(event.relatedTarget))) this.mascotHooks?.leave();
+          });
+          document.addEventListener("selectionchange", () => {
+            if (!this.mascotHooks || !this.host.isConnected) return;
+            const selection = this.root.getSelection?.();
+            if (selection && !selection.isCollapsed && selection.anchorNode && this.content.contains(selection.anchorNode) && selection.focusNode && this.content.contains(selection.focusNode)) this.mascotHooks.selection(selectionText(selection));
+          });
           this.definition = this.root.querySelector(".definition");
           this.root.querySelector('[aria-label="Close reading view"]').addEventListener("click", close);
           this.playgroundLauncher = this.root.querySelector(".playgrounds-open");
@@ -2596,6 +2728,9 @@ ${playgroundBrowserStyles}
         }
         owns(event) {
           return event.composedPath().includes(this.host);
+        }
+        bounds() {
+          return this.host.isConnected ? this.host.getBoundingClientRect() : void 0;
         }
         loading(show, text, keepContent = false) {
           if (show && keepContent && this.rendered !== void 0) return;
@@ -3033,6 +3168,1050 @@ ${playgroundBrowserStyles}
     }
   });
 
+  // src/mascot-preferences.ts
+  function mascotPreferences(value) {
+    const v = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    const positions = /* @__PURE__ */ Object.create(null);
+    if (v.positions && typeof v.positions === "object" && !Array.isArray(v.positions)) {
+      for (const [site, p] of Object.entries(v.positions).slice(-200)) {
+        if (!site || site.length > 253 || /[\s/\\?#]/u.test(site) || !p || typeof p !== "object") continue;
+        if (typeof p.x === "number" && Number.isFinite(p.x) && typeof p.y === "number" && Number.isFinite(p.y)) positions[site] = { x: Math.max(0, Math.min(1, p.x)), y: Math.max(0, Math.min(1, p.y)) };
+      }
+    }
+    return { enabled: v.enabled === true, trigger: v.trigger === "highlight" ? "highlight" : "hover", definitions: v.definitions === "en" || v.definitions === "ja" ? v.definitions : "off", size: v.size === 96 || v.size === 160 ? v.size : 128, motion: v.motion === "reduced" ? "reduced" : "system", positions };
+  }
+  var init_mascot_preferences = __esm({
+    "src/mascot-preferences.ts"() {
+      "use strict";
+    }
+  });
+
+  // src/mascot-motion.ts
+  function posePath(clips, from, to) {
+    const pending = [{ state: from, path: [] }], seen = /* @__PURE__ */ new Set([from]);
+    while (pending.length) {
+      const { state, path } = pending.shift();
+      if (state === to) return path;
+      for (const clip of clips) {
+        if (clip.loop || clip.from !== state || seen.has(clip.to) || !(clip.routine === "transition" || ["exit", "stop"].includes(clip.phase))) continue;
+        seen.add(clip.to);
+        pending.push({ state: clip.to, path: [...path, clip] });
+      }
+    }
+    throw new Error(`No mascot pose transition: ${from} \u2192 ${to}`);
+  }
+  function routineSteps(manifest, from, id, holdMs) {
+    const routine = manifest.routines.find((r) => r.id === id);
+    if (!routine) throw new Error("Unknown mascot routine");
+    const clips = routine.clips.map((id2) => manifest.clips.find((c) => c.id === id2));
+    if (clips.some((c) => !c)) throw new Error("Missing mascot clip");
+    const steps = [...posePath(manifest.clips, from, clips[0].from), ...clips].map((clip) => ({ clip, duration: clip.loop ? clip.durationMs * Math.max(1, Math.min(routine.kind === "activity" ? 2 : Infinity, Math.ceil(holdMs / clip.durationMs))) : clip.durationMs }));
+    if (!clips.some((c) => c.loop)) {
+      const end = clips.at(-1).to, id2 = end === "seated" ? "seated-watch-loop" : end === "standing" ? "attentive-idle-loop" : void 0;
+      const idle = manifest.clips.find((c) => c.id === id2);
+      if (idle && holdMs > 0) steps.push({ clip: idle, duration: Math.ceil(holdMs / idle.durationMs) * idle.durationMs });
+    }
+    if (id === "hover-idle" || id === "floating-travel") steps.push(...posePath(manifest.clips, clips.at(-1).to, "standing").map((clip) => ({ clip, duration: clip.durationMs })));
+    return steps;
+  }
+  function nearbyDestination(position, home, bounds, scale, _floating, random = Math.random) {
+    const homeX = Math.max(bounds.left, Math.min(bounds.right, home.x));
+    const left = Math.max(bounds.left, homeX - 180 * scale), right = Math.min(bounds.right, homeX + 180 * scale);
+    let x = left + random() * Math.max(0, right - left);
+    if (Math.abs(x - position.x) < 48 * scale) x = position.x - (left + right) / 2 > 0 ? left : right;
+    const y2 = Math.max(bounds.top, Math.min(bounds.bottom, position.y));
+    return { x: Math.max(bounds.left, Math.min(bounds.right, x)), y: y2 };
+  }
+  function motionProfile(clip) {
+    if (clip.id === "take-off") return { kind: "take-off", height: 36 };
+    if (clip.id === "land") return { kind: "land" };
+    if (clip.from === "hovering" || clip.from === "floating-travel-travel") return { kind: "hover", height: 36, bob: 2, period: 2400 };
+    if (clip.phase === "loop") {
+      if (clip.routine === "ninja") return { kind: "creep", distance: 24 };
+      if (clip.routine === "fan-dance") return { kind: "step", distance: 6 };
+      if (clip.routine === "samurai") return { kind: "lunge", distance: 4, start: 0.25, peak: 0.58, end: 0.92 };
+      if (clip.routine === "straw-hat-adventurer") return { kind: "lunge", distance: 4, start: 4 / 12, peak: 7 / 12, end: 11 / 12 };
+    }
+    return { kind: "grounded" };
+  }
+  function sampleMotion(clip, elapsed, startHeight = 0, hoverTime = 0) {
+    const profile = motionProfile(clip), p = unit(elapsed / clip.durationMs), cycle = Math.max(0, elapsed) % clip.durationMs / clip.durationMs;
+    const result = { height: 0, offsetX: 0, creep: 0 };
+    switch (profile.kind) {
+      case "take-off":
+        result.height = startHeight + (profile.height - startHeight) * smoothMotion(p);
+        break;
+      case "land":
+        result.height = startHeight * (1 - smoothMotion(p));
+        break;
+      case "hover":
+        result.height = profile.height + profile.bob * Math.sin(2 * Math.PI * hoverTime / profile.period);
+        break;
+      case "creep":
+        result.creep = profile.distance * Math.min(2, Math.max(0, elapsed / clip.durationMs));
+        break;
+      case "step":
+        result.offsetX = profile.distance * Math.sin(Math.PI * cycle) ** 2;
+        break;
+      case "lunge":
+        result.offsetX = profile.distance * (cycle < profile.peak ? smoothMotion((cycle - profile.start) / (profile.peak - profile.start)) : 1 - smoothMotion((cycle - profile.peak) / (profile.end - profile.peak)));
+        break;
+    }
+    return result;
+  }
+  function travelTiming(distance, maxSpeed, startMs, loopMs, stopMs) {
+    const loops = Math.max(1, Math.ceil((distance / maxSpeed * 1e3 - (startMs + stopMs) / 2) / loopMs));
+    const duration = loops * loopMs;
+    return { startMs, loopMs: duration, stopMs, speed: distance / ((startMs + stopMs) / 2e3 + duration / 1e3), distance };
+  }
+  function travelProgress(timing, phase, elapsed) {
+    if (!timing.distance || phase === "stop" && elapsed >= timing.stopMs) return 1;
+    const integral = (p) => p * p * p - p * p * p * p / 2;
+    const start = timing.startMs / 1e3, loop = timing.loopMs / 1e3, stop = timing.stopMs / 1e3;
+    let seconds = 0;
+    if (phase === "start") seconds = start * integral(unit(elapsed / timing.startMs));
+    if (phase === "loop") seconds = start / 2 + loop * unit(elapsed / timing.loopMs);
+    if (phase === "stop") {
+      const p = unit(elapsed / timing.stopMs);
+      seconds = start / 2 + loop + stop * (p - integral(p));
+    }
+    return unit(seconds * timing.speed / timing.distance);
+  }
+  function loopSeamMix(clip, elapsed, duration) {
+    const cycle = Math.floor(elapsed / clip.durationMs), time = elapsed % clip.durationMs;
+    if (!clip.loop || (cycle + 1) * clip.durationMs >= duration) return 0;
+    const last = clip.frameDurationsMs.at(-1);
+    const progress = Math.max(0, (time - (clip.durationMs - last)) / last);
+    return progress * progress * (3 - 2 * progress);
+  }
+  var specialRoutines, MascotScheduler, unit, smoothMotion;
+  var init_mascot_motion = __esm({
+    "src/mascot-motion.ts"() {
+      "use strict";
+      specialRoutines = ["samurai", "ninja", "spirit-magic", "straw-hat-adventurer", "fishing", "bamboo-flute", "tea-break", "fan-dance"];
+      MascotScheduler = class {
+        constructor(random = Math.random, now = 0) {
+          this.random = random;
+          this.nextSpecial = now + this.delay();
+          this.sleepAfter = now + 18e4;
+        }
+        random;
+        nextSpecial;
+        bag = [];
+        previous = "";
+        needsRest = true;
+        awakeUntil = 0;
+        wasAwake = false;
+        sleepAfter;
+        walksSinceSleep = 0;
+        delay() {
+          return 3e5 + this.random() * 3e5;
+        }
+        isAwake(wallNow) {
+          return wallNow < this.awakeUntil;
+        }
+        wake(wallNow) {
+          this.awakeUntil = wallNow + 6e4;
+          this.wasAwake = true;
+          this.needsRest = true;
+        }
+        choose(now, wallNow = now) {
+          const awake = this.isAwake(wallNow);
+          if (awake) this.sleepAfter = Math.max(this.sleepAfter, now + 18e4);
+          if (this.wasAwake && !awake) this.needsRest = true;
+          this.wasAwake = awake;
+          if (this.needsRest) {
+            this.needsRest = false;
+            const n2 = this.random();
+            const sleep = !awake && now >= this.sleepAfter && this.walksSinceSleep >= 3 && n2 < 0.12;
+            const holdMs = sleep ? 6e4 + this.random() * 6e4 : awake ? 8e3 + this.random() * 8e3 : 12e3 + this.random() * 12e3;
+            if (sleep) {
+              this.walksSinceSleep = 0;
+              this.sleepAfter = now + holdMs + 18e4;
+            }
+            return { id: sleep ? "sleep" : awake || n2 >= 0.5 ? "attentive-idle" : "seated-watch", holdMs, rest: true };
+          }
+          this.needsRest = true;
+          if (now >= this.nextSpecial) {
+            this.nextSpecial = now + this.delay();
+            if (!this.bag.length) {
+              this.bag = [...specialRoutines];
+              for (let i = this.bag.length - 1; i > 0; i--) {
+                const j2 = Math.floor(this.random() * (i + 1));
+                [this.bag[i], this.bag[j2]] = [this.bag[j2], this.bag[i]];
+              }
+              if (this.bag.at(-1) === this.previous) [this.bag[0], this.bag[this.bag.length - 1]] = [this.bag.at(-1), this.bag[0]];
+            }
+            this.previous = this.bag.pop();
+            return { id: this.previous, holdMs: awake ? 2400 : 1200 };
+          }
+          const n = this.random();
+          if (this.walksSinceSleep < 3 || n < (awake ? 0.7 : 0.65)) {
+            this.walksSinceSleep++;
+            return { id: awake && this.random() < 0.12 ? "trot" : "walk", holdMs: 1200, travelLimit: awake ? 96 : 80 };
+          }
+          if (n < (awake ? 0.78 : 0.72)) return { id: "floating-travel", holdMs: 1200, travelLimit: awake ? 72 : 48 };
+          const ordinary = awake ? ["read", "write", "think", "groom", "stretch", "tail-play", "meditate", "hover-idle", "greeting", "insight"] : ["think", "groom", "stretch", "tail-play", "read", "write", "insight"];
+          return { id: ordinary[Math.floor(this.random() * ordinary.length)], holdMs: awake ? 2400 : 1200 };
+        }
+      };
+      unit = (value) => Math.max(0, Math.min(1, value));
+      smoothMotion = (value) => {
+        const p = unit(value);
+        return p * p * (3 - 2 * p);
+      };
+    }
+  });
+
+  // src/mascot-bubble.ts
+  function loadPixelFont() {
+    if (!pixelFont) {
+      const face = new FontFace("KoKunDotGothic16", `url("${chrome.runtime.getURL("art/fonts/DotGothic16-Regular.ttf")}")`);
+      pixelFont = face.load().then((font) => document.fonts.add(font)).catch(() => {
+      });
+    }
+  }
+  var mascotBubbleStyles, pixelFont, MascotBubble;
+  var init_mascot_bubble = __esm({
+    "src/mascot-bubble.ts"() {
+      "use strict";
+      init_definitions();
+      mascotBubbleStyles = `
+.bubble{position:absolute;width:max-content;max-width:min(480px,calc(100vw - 16px));max-height:min(340px,55vh);overflow:auto;pointer-events:auto;padding:12px 16px;background-color:#d3d5bd;background-image:repeating-conic-gradient(#475d5010 0% 25%,transparent 0% 50%);background-size:4px 4px;color:#263d46;border:2px solid #30454c;border-radius:0;box-shadow:inset 2px 2px #f4efce,inset -2px -2px #9da98f,4px 4px #30454c;font:16px/1.5 KoKunDotGothic16,'MS Gothic',monospace;overflow-wrap:anywhere;user-select:text;-webkit-font-smoothing:none}
+.bubble[hidden]{display:none}.bubble header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.bubble ruby{display:inline-grid;grid-template-columns:minmax(0,1fr);min-width:0;max-width:100%;font:32px/1.2 KoKunDotGothic16,'MS Gothic',monospace;text-align:center}.bubble .surface{grid-column:1;grid-row:2;min-width:0;overflow-wrap:anywhere}.bubble rt{display:block;grid-column:1;grid-row:1;min-width:0;white-space:normal;overflow-wrap:anywhere;font:16px/1.5 KoKunDotGothic16,'MS Gothic',monospace;color:#536651}
+.bubble button{font:inherit;cursor:pointer;color:inherit;background:#c4cbb0;border:2px solid #536651;border-radius:0;box-shadow:inset 2px 2px #f4efce,inset -2px -2px #9da98f;padding:2px 8px}.bubble .close{flex:none;display:grid;place-items:center;width:24px;height:24px;font:16px/1 KoKunDotGothic16,monospace;padding:0;margin-top:4px}.bubble p{margin:8px 0}.bubble ol{padding-left:24px;margin:8px 0;max-width:42ch}.bubble a{color:#314b64;text-underline-offset:3px}.bubble small{display:block;font:12px/1.5 KoKunDotGothic16,'MS Gothic',monospace;color:#536651;margin-top:8px}.bubble :focus-visible{outline:2px solid #314b64;outline-offset:3px}
+.bubble:after{content:'';position:fixed;width:12px;height:12px;background:#9da98f;clip-path:polygon(0 0,100% 0,100% 33.33%,66.67% 33.33%,66.67% 66.67%,33.33% 66.67%,33.33% 100%,0 100%);left:var(--tail-x);top:var(--tail-y);pointer-events:none}.bubble.below:after{transform:scaleY(-1)}
+`;
+      MascotBubble = class {
+        constructor(send, close) {
+          this.send = send;
+          this.element.className = "bubble";
+          this.element.hidden = true;
+          this.element.setAttribute("aria-label", "K\u014D\u304F\u3093 word reading");
+          this.element.setAttribute("aria-live", "polite");
+          this.element.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") close();
+          });
+          this.close = close;
+        }
+        send;
+        element = document.createElement("section");
+        version = 0;
+        cache = /* @__PURE__ */ new Map();
+        close;
+        get open() {
+          return !this.element.hidden;
+        }
+        hide() {
+          this.version++;
+          this.element.hidden = true;
+          this.element.replaceChildren();
+        }
+        show(word, language) {
+          loadPixelFont();
+          this.hide();
+          const version = this.version;
+          this.element.hidden = false;
+          const header = document.createElement("header"), ruby = document.createElement("ruby"), surface = document.createElement("span");
+          ruby.lang = "ja";
+          surface.className = "surface";
+          surface.textContent = word.surface;
+          ruby.append(surface);
+          if (word.reading) {
+            const rt = document.createElement("rt");
+            rt.textContent = word.reading;
+            ruby.append(rt);
+          }
+          const close = document.createElement("button");
+          close.type = "button";
+          close.className = "close";
+          close.textContent = "\xD7";
+          close.setAttribute("aria-label", "Close K\u014D\u304F\u3093 bubble");
+          close.onclick = this.close;
+          header.append(ruby, close);
+          this.element.append(header);
+          if (!word.reading) {
+            const message = document.createElement("p");
+            message.textContent = "Reading unavailable.";
+            this.element.append(message);
+          }
+          if (word.lemma !== word.surface) {
+            const base = document.createElement("p");
+            base.lang = "ja";
+            base.textContent = `\u8F9E\u66F8\u5F62: ${word.lemma}`;
+            this.element.append(base);
+          }
+          if (language === "off") return;
+          const body = document.createElement("div");
+          body.className = "meaning";
+          body.lang = language;
+          this.element.append(body);
+          const lookup = async () => {
+            body.textContent = "Looking up definition\u2026";
+            body.setAttribute("aria-busy", "true");
+            const key = JSON.stringify([word.lemma, language]);
+            let page = this.cache.get(key);
+            if (!page) {
+              try {
+                const reply = await this.send({ type: "define-word", word: word.lemma, language });
+                page = reply?.[language] ?? { status: "error" };
+              } catch {
+                page = { status: "error" };
+              }
+              if (page.status !== "error") {
+                this.cache.set(key, page);
+                if (this.cache.size > 100) this.cache.delete(this.cache.keys().next().value);
+              }
+            }
+            if (this.version !== version || !this.open) return;
+            body.replaceChildren();
+            body.setAttribute("aria-busy", "false");
+            const definitions = definitionText(page.html ?? "", language).slice(0, 2);
+            if (definitions.length) {
+              const list = document.createElement("ol");
+              for (const text of definitions) {
+                const item = document.createElement("li");
+                item.textContent = text;
+                list.append(item);
+              }
+              body.append(list);
+            } else {
+              const message = document.createElement("p");
+              message.textContent = page.status === "error" ? "Definition unavailable. Check your connection." : "No definition found in this language.";
+              body.append(message);
+            }
+            if (page.status === "error") {
+              const retry = document.createElement("button");
+              retry.type = "button";
+              retry.textContent = "Retry definition";
+              retry.onclick = () => void lookup();
+              body.append(retry);
+            }
+            const source = document.createElement("a");
+            source.href = dictionaryURL(language, page.title ?? word.lemma);
+            source.target = "_blank";
+            source.rel = "noopener noreferrer";
+            source.textContent = language === "en" ? "English Wiktionary \u2197" : "\u30A6\u30A3\u30AF\u30B7\u30E7\u30CA\u30EA\u30FC\u65E5\u672C\u8A9E\u7248 \u2197";
+            const notice = document.createElement("small");
+            notice.textContent = "Wiktionary \xB7 CC BY-SA \xB7 Only this word is sent.";
+            body.append(source, notice);
+          };
+          void lookup();
+        }
+      };
+    }
+  });
+
+  // src/mascot-lookup.ts
+  var MascotLookup;
+  var init_mascot_lookup = __esm({
+    "src/mascot-lookup.ts"() {
+      "use strict";
+      init_mascot_target();
+      MascotLookup = class {
+        constructor(options) {
+          this.options = options;
+          const listen = (name, fn) => document.addEventListener(name, fn, { capture: true, passive: true, signal: this.abort.signal });
+          listen("pointermove", (e) => {
+            if (options.settings().trigger !== "hover") return;
+            if (this.sourceContains || this.last) {
+              if (this.sourceContains?.(e.clientX, e.clientY) && !options.paused() && !e.buttons) return;
+              this.close();
+            }
+            if (e.composedPath().some((node) => node instanceof Element && node.localName === "ko-reading-view")) return;
+            if (options.owns(e) || options.paused()) {
+              this.cancel();
+              return;
+            }
+            if (options.settings().trigger !== "hover" || e.buttons || e.pointerType === "touch") return;
+            if (this.point && Math.hypot(e.clientX - this.point.x, e.clientY - this.point.y) < 4) return;
+            this.cancel();
+            this.point = { x: e.clientX, y: e.clientY };
+            this.timer = window.setTimeout(() => {
+              const target = options.target ? options.target(e.clientX, e.clientY) : webTarget(e.clientX, e.clientY);
+              if (target) void this.analyze(target);
+            }, 600);
+          });
+          listen("pointerout", (e) => {
+            if (!e.relatedTarget || e.relatedTarget instanceof Element && e.relatedTarget.localName === "ko-reading-view") this.leave();
+          });
+          listen("pointerdown", (e) => {
+            this.cancel();
+            if (!options.owns(e)) this.close();
+          });
+          listen("scroll", (e) => {
+            if (!options.owns(e)) this.close();
+          });
+          listen("keydown", (e) => {
+            if (e.key === "Escape" || !options.owns(e)) this.close();
+          });
+          listen("compositionstart", () => this.close());
+          listen("input", () => this.close());
+          listen("selectionchange", () => {
+            if (options.settings().trigger !== "highlight" || options.paused()) return;
+            this.cancel();
+            this.timer = window.setTimeout(() => {
+              const target = selectedTarget();
+              if (target) void this.analyze(target);
+            }, 180);
+          });
+        }
+        options;
+        abort = new AbortController();
+        timer = 0;
+        version = 0;
+        request;
+        point;
+        last = "";
+        sourceContains;
+        cache = /* @__PURE__ */ new Map();
+        hoverWord(word, contains) {
+          if (this.options.settings().trigger !== "hover" || this.options.paused()) return;
+          this.close();
+          this.sourceContains = contains;
+          this.timer = window.setTimeout(() => this.present(word), 600);
+        }
+        selection(target) {
+          if (this.options.settings().trigger !== "highlight" || this.options.paused()) return;
+          this.cancel();
+          void this.analyze(target);
+        }
+        present(word) {
+          const key = JSON.stringify(word);
+          if (this.last === key) return;
+          this.last = key;
+          this.options.show(word);
+        }
+        async analyze(target) {
+          this.cancel();
+          const version = this.version, corrections = this.options.overrides();
+          const key = JSON.stringify([target.text, corrections]);
+          let result = this.cache.get(key);
+          if (!result) {
+            const request = this.request = crypto.randomUUID();
+            try {
+              const reply = await this.options.send({ type: "tokenize", purpose: "mascot", requestId: request, texts: [target.text], includeWords: true, overrides: corrections });
+              if (version !== this.version || !reply?.words?.[0] || !reply?.results?.[0]) return;
+              result = { words: reply.words[0], readings: reply.results[0] };
+              this.cache.set(key, result);
+              if (this.cache.size > 100) this.cache.delete(this.cache.keys().next().value);
+            } catch {
+              return;
+            } finally {
+              if (this.request === request) this.request = void 0;
+            }
+          }
+          if (version !== this.version || this.options.paused()) return;
+          const resolved = resolveWord(target, result.words, result.readings, corrections);
+          if (resolved) {
+            if (!target.selection && target.rects) this.sourceContains = (x, y2) => target.rects(resolved.start, resolved.end).some((r) => x >= r.left && x <= r.right && y2 >= r.top && y2 <= r.bottom);
+            this.present(resolved.word);
+          }
+        }
+        cancel() {
+          clearTimeout(this.timer);
+          this.timer = 0;
+          this.version++;
+          this.point = void 0;
+          if (this.request) {
+            void this.options.send({ type: "cancel-tokenize", purpose: "mascot", requestId: this.request }).catch(() => {
+            });
+            this.request = void 0;
+          }
+        }
+        leave() {
+          if (this.options.settings().trigger === "hover") this.close();
+          else this.cancel();
+        }
+        close() {
+          this.cancel();
+          this.sourceContains = void 0;
+          this.point = void 0;
+          this.last = "";
+          this.options.close();
+        }
+        destroy() {
+          this.close();
+          this.abort.abort();
+          this.cache.clear();
+        }
+      };
+    }
+  });
+
+  // src/mascot.ts
+  var asset, Mascot;
+  var init_mascot = __esm({
+    "src/mascot.ts"() {
+      "use strict";
+      init_mascot_preferences();
+      init_mascot_motion();
+      init_mascot_bubble();
+      init_mascot_lookup();
+      asset = (file) => chrome.runtime.getURL(`art/ko-kun/${file}`);
+      Mascot = class {
+        constructor(options) {
+          this.options = options;
+          this.root.innerHTML = `<style>
+:host{all:initial!important;position:fixed!important;inset:0!important;z-index:2147483647!important;pointer-events:none!important;contain:strict!important;color-scheme:light!important;display:block!important}
+:host([hidden]){display:none!important}*{box-sizing:border-box}.sprite{position:absolute;display:block;margin:0;padding:0;border:0;background:transparent;box-shadow:none;pointer-events:auto;cursor:grab;touch-action:none;user-select:none;line-height:0}.sprite:active{cursor:grabbing}.sprite:focus-visible{outline:2px solid #294c66;outline-offset:2px;border-radius:12px}canvas{width:100%;height:100%;pointer-events:none}
+${mascotBubbleStyles}
+@media print{:host{display:none!important}}
+</style><button class="sprite" type="button" aria-label="K\u014D\u304F\u3093. Click to wake for a minute. Drag to move, or use arrow keys when focused." title="Click to wake K\u014D\u304F\u3093 for a minute; drag to move him"><canvas width="256" height="256" aria-hidden="true"></canvas></button>`;
+          this.sprite = this.root.querySelector("button");
+          this.canvas = this.root.querySelector("canvas");
+          this.context = this.canvas.getContext("2d");
+          this.bubble = new MascotBubble(options.send, () => this.lookup?.close());
+          this.root.append(this.bubble.element);
+          const resize = new ResizeObserver(() => {
+            if (this.bubble.open) this.positionBubble();
+          });
+          resize.observe(this.bubble.element);
+          this.abort.signal.addEventListener("abort", () => resize.disconnect(), { once: true });
+          this.sprite.addEventListener("pointerdown", (e) => {
+            if (e.button !== 0) return;
+            e.preventDefault();
+            this.lookup?.close();
+            this.ignoreClick = false;
+            this.drag = { pointer: e.pointerId, x: e.clientX, y: e.clientY, origin: this.displayPosition(), moved: false };
+            this.sprite.setPointerCapture(e.pointerId);
+            this.syncPlayback();
+          });
+          this.sprite.addEventListener("pointermove", (e) => {
+            if (!this.drag || this.drag.pointer !== e.pointerId) return;
+            const dx = e.clientX - this.drag.x, dy = e.clientY - this.drag.y;
+            if (!this.drag.moved && Math.hypot(dx, dy) <= 3) return;
+            if (!this.drag.moved) this.cancelMovement();
+            this.drag.moved = true;
+            this.position = { x: this.drag.origin.x + dx, y: this.drag.origin.y + dy };
+            this.place();
+          });
+          const finish = (e) => {
+            if (!this.drag || this.drag.pointer !== e.pointerId) return;
+            const moved = this.drag.moved;
+            this.drag = void 0;
+            this.ignoreClick = moved || e.type !== "pointerup";
+            if (this.sprite.hasPointerCapture(e.pointerId)) this.sprite.releasePointerCapture(e.pointerId);
+            if (moved) {
+              this.restAfterDrop();
+              void options.savePosition(this.normalized()).catch(() => {
+                this.sprite.title = "Position could not be saved. Drag again to retry.";
+              });
+            }
+            this.syncPlayback();
+          };
+          this.sprite.addEventListener("pointerup", finish);
+          this.sprite.addEventListener("pointercancel", finish);
+          this.sprite.addEventListener("lostpointercapture", finish);
+          this.sprite.addEventListener("click", (e) => {
+            if (e.detail && this.ignoreClick) {
+              this.ignoreClick = false;
+              return;
+            }
+            this.ignoreClick = false;
+            this.wake();
+          });
+          this.sprite.addEventListener("keydown", (e) => {
+            if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+            e.preventDefault();
+            e.stopPropagation();
+            this.lookup?.close();
+            this.cancelMovement();
+            this.position.x += e.key === "ArrowLeft" ? -20 : e.key === "ArrowRight" ? 20 : 0;
+            this.position.y += e.key === "ArrowUp" ? -20 : e.key === "ArrowDown" ? 20 : 0;
+            this.place();
+            this.restAfterDrop();
+            void options.savePosition(this.normalized()).catch(() => {
+            });
+          });
+          const signal = this.abort.signal;
+          document.addEventListener("visibilitychange", () => {
+            this.lookup?.close();
+            this.syncPlayback();
+          }, { signal });
+          document.addEventListener("fullscreenchange", () => {
+            this.lookup?.close();
+            this.syncPlayback();
+          }, { signal });
+          this.media.addEventListener("change", () => this.syncPlayback(), { signal });
+          window.addEventListener("resize", () => {
+            this.lookup?.close();
+            this.place();
+          }, { signal });
+          window.visualViewport?.addEventListener("resize", () => {
+            this.lookup?.close();
+            this.place();
+          }, { signal });
+          window.visualViewport?.addEventListener("scroll", () => {
+            this.lookup?.close();
+            this.place();
+          }, { signal });
+          window.addEventListener("beforeprint", () => {
+            this.printing = true;
+            this.syncPlayback();
+          }, { signal });
+          window.addEventListener("afterprint", () => {
+            this.printing = false;
+            this.syncPlayback();
+          }, { signal });
+        }
+        options;
+        host = document.createElement("ko-mascot");
+        root = this.host.attachShadow({ mode: "closed" });
+        sprite;
+        canvas;
+        context;
+        bubble;
+        lookup;
+        settings = mascotPreferences(void 0);
+        abort = new AbortController();
+        media = matchMedia("(prefers-reduced-motion: reduce)");
+        manifest;
+        loading;
+        cache = /* @__PURE__ */ new Map();
+        decoded = /* @__PURE__ */ new Map();
+        scheduler = new MascotScheduler();
+        step;
+        queue = [];
+        state = "standing";
+        elapsed = 0;
+        activeTime = 0;
+        last = 0;
+        raf = 0;
+        restTimer = 0;
+        image;
+        failed = false;
+        disposed = false;
+        visible = false;
+        size = 128;
+        position = { x: 0, y: 0 };
+        home = { x: 0, y: 0 };
+        initialized = false;
+        mirrored = false;
+        destination;
+        journey;
+        flightHeight = 0;
+        hoverTime = 0;
+        offsetX = 0;
+        stepOrigin = { height: 0, hoverTime: 0 };
+        stepCreep = 0;
+        motionCancelled = false;
+        printing = false;
+        ignoreClick = false;
+        drag;
+        painting = "";
+        ownsNode(node) {
+          return node === this.host || this.host.contains(node);
+        }
+        owns(event) {
+          return event.composedPath().includes(this.host);
+        }
+        get active() {
+          return this.visible;
+        }
+        get reduced() {
+          return this.settings.motion === "reduced" || this.media.matches;
+        }
+        update(settings, paused, hostname) {
+          const previous = this.settings, old = previous.positions[hostname], next = settings.positions[hostname];
+          this.settings = settings;
+          if (JSON.stringify(old) !== JSON.stringify(next) || !this.initialized) {
+            this.restore(next);
+            this.initialized = true;
+          }
+          this.visible = settings.enabled && !paused;
+          if (!this.visible) {
+            this.lookup?.destroy();
+            this.lookup = void 0;
+            this.host.remove();
+            this.suspend();
+            this.bubble.hide();
+            return;
+          }
+          if (!this.host.isConnected) document.documentElement.append(this.host);
+          if (!this.lookup) this.lookup = new MascotLookup({ send: this.options.send, settings: () => this.settings, overrides: this.options.overrides, owns: (e) => this.owns(e), paused: () => !this.visible || !!this.drag || document.hidden || !!document.fullscreenElement, target: this.options.target, show: (word) => this.showWord(word), close: () => {
+            this.bubble.hide();
+            this.syncPlayback();
+          } });
+          if (previous.trigger !== settings.trigger || previous.definitions !== settings.definitions) this.lookup.close();
+          this.place();
+          void this.load();
+          this.syncPlayback();
+        }
+        readerHover(word, contains) {
+          this.lookup?.hoverWord(word, contains);
+        }
+        readerLeave() {
+          this.lookup?.leave();
+        }
+        invalidateLookup() {
+          this.lookup?.close();
+        }
+        readerSelection(target) {
+          this.lookup?.selection(target);
+        }
+        showWord(word) {
+          this.bubble.show(word, this.settings.definitions);
+          this.positionBubble();
+          this.startReading();
+          this.syncPlayback();
+        }
+        startReading() {
+          if (this.manifest && !this.reduced && !this.failed && (this.step?.clip.routine !== "read" || this.step.clip.phase === "exit")) {
+            this.position.x = this.displayPosition().x;
+            this.offsetX = 0;
+            this.hoverTime = 0;
+            this.destination = void 0;
+            this.journey = void 0;
+            this.motionCancelled = false;
+            this.state = "seated";
+            this.step = void 0;
+            this.queue = routineSteps(this.manifest, "seated", "read", 2400).filter((step) => step.clip.phase !== "entry");
+            clearTimeout(this.restTimer);
+            this.restTimer = 0;
+            this.last = 0;
+            this.beginStep();
+            this.draw();
+          }
+        }
+        bounds() {
+          const vv = window.visualViewport, width = vv?.width ?? innerWidth, height = vv?.height ?? innerHeight, left = vv?.offsetLeft ?? 0, top = vv?.offsetTop ?? 0;
+          this.size = Math.max(16, Math.min(this.settings.size, width - 16, height - 16));
+          const scale = this.size / 256;
+          const bounds = { left: left + 8 + 160 * scale, right: left + width - 8 - 160 * scale, top: top + 8 + 218 * scale, bottom: top + height - 8 - 38 * scale };
+          const obstacle = this.options.obstacle();
+          if (obstacle && obstacle.left - 16 - 160 * scale > bounds.left) bounds.right = Math.min(bounds.right, obstacle.left - 16 - 160 * scale);
+          bounds.right = Math.max(bounds.left, bounds.right);
+          bounds.bottom = Math.max(bounds.top, bounds.bottom);
+          return bounds;
+        }
+        restore(position) {
+          this.destination = void 0;
+          this.journey = void 0;
+          this.flightHeight = 0;
+          this.offsetX = 0;
+          this.motionCancelled = !!this.step;
+          const b = this.bounds();
+          this.position = { x: b.left + (position?.x ?? 1) * (b.right - b.left), y: b.top + (position?.y ?? 1) * (b.bottom - b.top) };
+          this.home = { ...this.position };
+        }
+        normalized() {
+          const b = this.bounds();
+          return { x: (this.position.x - b.left) / (b.right - b.left || 1), y: (this.position.y - b.top) / (b.bottom - b.top || 1) };
+        }
+        place() {
+          const b = this.bounds(), before = { ...this.position };
+          this.position.x = Math.max(b.left, Math.min(b.right, this.position.x));
+          this.position.y = Math.max(b.top, Math.min(b.bottom, this.position.y));
+          if (this.journey) {
+            const x = Math.max(b.left, Math.min(b.right, this.journey.to.x));
+            if (x !== this.journey.to.x || this.position.x !== before.x || this.position.y !== this.journey.from.y) {
+              this.journey.from = { ...this.position };
+              this.journey.to = { x, y: this.position.y };
+              this.journey.startProgress = this.journey.progress;
+              this.destination = { ...this.journey.to };
+            }
+          }
+          const anchor = this.step?.clip.groundAnchor ?? [160, 218], scale = this.size / 256;
+          const displayed = this.displayPosition();
+          this.sprite.style.cssText = `width:${this.size}px;height:${this.size}px;left:${displayed.x - (this.mirrored ? 256 - anchor[0] : anchor[0]) * scale}px;top:${displayed.y - anchor[1] * scale}px`;
+          if (this.bubble.open) this.positionBubble();
+        }
+        displayPosition() {
+          const b = this.bounds(), scale = this.size / 128;
+          return { x: Math.max(b.left, Math.min(b.right, this.position.x + this.offsetX * scale)), y: Math.max(b.top, Math.min(b.bottom, this.position.y - this.flightHeight * scale)) };
+        }
+        positionBubble() {
+          const bubble = this.bubble.element, vv = window.visualViewport, left = vv?.offsetLeft ?? 0, top = vv?.offsetTop ?? 0, height = vv?.height ?? innerHeight;
+          let width = vv?.width ?? innerWidth;
+          const obstacle = this.options.obstacle();
+          if (obstacle && obstacle.left - left > 180) width = Math.min(width, obstacle.left - left - 8);
+          const sprite = this.sprite.getBoundingClientRect();
+          bubble.style.maxWidth = `${Math.min(480, Math.max(32, width - 16))}px`;
+          bubble.style.maxHeight = `${Math.max(32, Math.min(340, height * 0.55))}px`;
+          const box = bubble.getBoundingClientRect(), above = sprite.top - box.height - 12 >= top + 8;
+          const displayed = this.displayPosition(), x = Math.max(left + 8, Math.min(left + width - box.width - 8, displayed.x - box.width / 2));
+          const y2 = Math.max(top + 8, Math.min(top + height - box.height - 8, above ? sprite.top - box.height - 12 : sprite.bottom + 12));
+          bubble.style.left = `${x}px`;
+          bubble.style.top = `${y2}px`;
+          bubble.classList.toggle("below", !above);
+          bubble.style.setProperty("--tail-x", `${Math.max(x + 18, Math.min(x + box.width - 24, displayed.x))}px`);
+          bubble.style.setProperty("--tail-y", `${above ? y2 + box.height - 2 : y2 - 10}px`);
+        }
+        async load() {
+          if (this.loading || this.manifest || this.failed) return this.loading;
+          this.loading = (async () => {
+            try {
+              const response = await fetch(asset("manifest.json"));
+              if (!response.ok) throw new Error("Mascot assets unavailable");
+              const manifest = await response.json();
+              if (!Array.isArray(manifest.clips) || manifest.clips.length !== 56 || manifest.clips.some((c) => !/^[-a-z]+\.webp$/.test(c.file) || c.frameRectangles.length !== c.frameCount)) throw new Error("Invalid mascot assets");
+              if (this.disposed) return;
+              this.manifest = manifest;
+              void this.decode("read-loop.webp").catch(() => {
+              });
+              if (this.bubble.open) this.startReading();
+              this.syncPlayback();
+            } catch {
+              this.failed = true;
+              this.syncPlayback();
+            }
+          })();
+          return this.loading;
+        }
+        decode(file) {
+          let job = this.cache.get(file);
+          if (job) {
+            this.cache.delete(file);
+            this.cache.set(file, job);
+            return job;
+          }
+          job = new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => resolve(image);
+            image.onerror = () => reject(new Error("Mascot image unavailable"));
+            image.src = asset(file);
+          });
+          this.cache.set(file, job);
+          void job.then((image) => {
+            if (!this.disposed && this.cache.get(file) === job) this.decoded.set(file, image);
+          }).catch(() => {
+          });
+          while (this.cache.size > 6) {
+            const oldest = [...this.cache.keys()].find((file2) => file2 !== "read-loop.webp");
+            this.cache.delete(oldest);
+            this.decoded.delete(oldest);
+          }
+          return job;
+        }
+        fallback() {
+          const key = "static";
+          if (this.painting === key) return;
+          this.painting = key;
+          this.destination = void 0;
+          this.journey = void 0;
+          this.flightHeight = 0;
+          this.offsetX = 0;
+          this.hoverTime = 0;
+          this.step = void 0;
+          this.queue = [];
+          this.state = "standing";
+          this.elapsed = 0;
+          this.mirrored = false;
+          this.place();
+          void this.decode("static-fallback.png").then((image) => {
+            if (this.painting !== key || this.disposed) return;
+            this.context.clearRect(0, 0, 256, 256);
+            this.context.drawImage(image, 0, 0, 256, 256);
+          }).catch(() => {
+            this.sprite.hidden = true;
+          });
+        }
+        cancelMovement() {
+          this.position = this.displayPosition();
+          this.flightHeight = 0;
+          this.offsetX = 0;
+          this.hoverTime = 0;
+          this.journey = void 0;
+          this.destination = void 0;
+          this.motionCancelled = true;
+        }
+        restAfterDrop() {
+          this.cancelMovement();
+          this.place();
+          this.home = { ...this.position };
+          this.destination = void 0;
+          if (!this.manifest) return;
+          if (this.step) this.step.duration = Math.min(this.step.duration, Math.max(this.step.clip.durationMs, Math.ceil(this.elapsed / this.step.clip.durationMs) * this.step.clip.durationMs));
+          const from = this.step?.clip.to ?? this.state;
+          const holdMs = this.scheduler.isAwake(performance.now()) ? 9600 : 14400;
+          this.queue = [...posePath(this.manifest.clips, from, "standing").map((clip) => ({ clip, duration: clip.durationMs })), ...routineSteps(this.manifest, "standing", "attentive-idle", holdMs).map((step) => ({ ...step, rest: step.clip.loop, duration: step.clip.loop ? holdMs : step.duration }))];
+        }
+        wake() {
+          if (!this.visible || this.reduced || this.failed || !this.manifest || document.hidden || document.fullscreenElement || this.printing) return;
+          this.suspend();
+          this.scheduler.wake(performance.now());
+          this.lookup?.close();
+          this.destination = void 0;
+          this.journey = void 0;
+          const from = this.step?.clip.to ?? this.state;
+          if (this.step?.rest) {
+            this.state = from;
+            this.step = void 0;
+            this.elapsed = 0;
+          } else if (this.step) this.step.duration = Math.min(this.step.duration, Math.max(this.step.clip.durationMs, Math.ceil(this.elapsed / this.step.clip.durationMs) * this.step.clip.durationMs));
+          this.queue = [...posePath(this.manifest.clips, from, "standing").map((clip) => ({ clip, duration: clip.durationMs })), ...routineSteps(this.manifest, "standing", "greeting", 0)];
+          this.syncPlayback();
+        }
+        suspend() {
+          cancelAnimationFrame(this.raf);
+          clearTimeout(this.restTimer);
+          this.restTimer = 0;
+          this.raf = 0;
+          this.last = 0;
+          this.lookup?.cancel();
+        }
+        syncPlayback() {
+          if (this.disposed) return;
+          this.host.hidden = document.hidden || !!document.fullscreenElement || this.printing;
+          if (!this.visible || this.host.hidden || this.drag) {
+            this.suspend();
+            if (this.reduced || this.failed || !this.manifest) this.fallback();
+            return;
+          }
+          if (this.reduced || this.failed || !this.manifest) {
+            this.suspend();
+            this.fallback();
+            return;
+          }
+          if (!this.raf && !this.restTimer) this.raf = requestAnimationFrame((now) => this.tick(now));
+        }
+        plan() {
+          if (!this.manifest) return;
+          const next = this.scheduler.choose(this.activeTime, performance.now()), b = this.bounds();
+          this.motionCancelled = false;
+          this.journey = void 0;
+          if (["walk", "trot", "floating-travel"].includes(next.id)) {
+            this.destination = nearbyDestination(this.position, this.home, b, this.size / 128, next.id === "floating-travel");
+            const limit = next.travelLimit * this.size / 128;
+            this.destination.x = this.position.x + Math.max(-limit, Math.min(limit, this.destination.x - this.position.x));
+          } else this.destination = void 0;
+          this.queue = routineSteps(this.manifest, this.state, next.id, next.holdMs);
+          if (next.rest) this.queue = this.queue.map((step) => step.clip.loop ? { ...step, duration: step.clip.routine === "sleep" ? next.holdMs : Math.ceil(next.holdMs / step.clip.durationMs) * step.clip.durationMs, rest: true } : step);
+        }
+        beginStep(carry = 0) {
+          if (!this.queue.length) this.plan();
+          this.step = this.queue.shift();
+          this.elapsed = carry;
+          this.image = void 0;
+          this.painting = "";
+          const step = this.step;
+          if (!step) return;
+          if (step.clip.phase === "start" && this.destination && !this.motionCancelled) {
+            const b = this.bounds(), to = { x: Math.max(b.left, Math.min(b.right, this.destination.x)), y: this.position.y };
+            const loop = this.queue.find((s) => s.clip.routine === step.clip.routine && s.clip.loop), stop = this.queue.find((s) => s.clip.routine === step.clip.routine && s.clip.phase === "stop");
+            if (loop && stop) {
+              const timing = travelTiming(Math.abs(to.x - this.position.x), loop.clip.intendedTravelSpeedPxPerSecondAt256 * this.size / 256, step.duration, loop.clip.durationMs, stop.duration);
+              loop.duration = timing.loopMs;
+              this.destination = to;
+              this.journey = { routine: step.clip.routine, from: { ...this.position }, to, timing, progress: 0, startProgress: 0 };
+            }
+            this.mirrored = to.x < this.position.x;
+          }
+          if (step.clip.routine === "ninja" && step.clip.phase === "entry" && !this.motionCancelled) {
+            const b = this.localBounds(), direction = this.mirrored ? -1 : 1;
+            if ((direction > 0 ? b.right - this.position.x : this.position.x - b.left) < 48 * this.size / 128) this.mirrored = this.position.x > (b.left + b.right) / 2;
+          }
+          this.stepOrigin = { height: this.flightHeight, hoverTime: this.hoverTime };
+          this.stepCreep = 0;
+          this.image = this.decoded.get(step.clip.file);
+          void this.decode(step.clip.file).then((image) => {
+            if (this.step === step && !this.disposed) {
+              this.image = image;
+              this.draw();
+            }
+          }).catch(() => {
+            this.failed = true;
+            this.syncPlayback();
+          });
+          for (const next of this.queue.slice(0, 2)) void this.decode(next.clip.file).catch(() => {
+          });
+          this.place();
+        }
+        localBounds() {
+          const b = this.bounds(), homeX = Math.max(b.left, Math.min(b.right, this.home.x)), radius = 180 * this.size / 128;
+          return { ...b, left: Math.max(b.left, homeX - radius), right: Math.min(b.right, homeX + radius) };
+        }
+        move(elapsed) {
+          if (!this.step || this.step.rest || this.motionCancelled) return;
+          const clip = this.step.clip, direction = this.mirrored ? -1 : 1;
+          const hover = motionProfile(clip).kind === "hover";
+          if (hover) this.hoverTime = this.stepOrigin.hoverTime + elapsed;
+          const motion = sampleMotion(clip, elapsed, this.stepOrigin.height, this.hoverTime);
+          if (clip.routine === "read" && this.stepOrigin.height > 0) motion.height = this.stepOrigin.height * (1 - smoothMotion(elapsed / 1200));
+          this.flightHeight = motion.height;
+          this.offsetX = motion.offsetX * direction;
+          if (clip.id === "land" && elapsed >= clip.durationMs) this.hoverTime = 0;
+          if (this.journey?.routine === clip.routine) {
+            const j2 = this.journey, progress = travelProgress(j2.timing, clip.phase, elapsed);
+            const remaining = (progress - j2.startProgress) / (1 - j2.startProgress || 1);
+            this.position = { x: j2.from.x + (j2.to.x - j2.from.x) * Math.max(0, Math.min(1, remaining)), y: j2.from.y };
+            j2.progress = progress;
+            if (clip.phase === "stop" && elapsed >= this.step.duration) {
+              this.journey = void 0;
+              this.destination = void 0;
+            }
+          }
+          if (motion.creep) {
+            const b = this.localBounds(), left = Math.min(b.left, this.position.x), right = Math.max(b.right, this.position.x);
+            this.position.x = Math.max(left, Math.min(right, this.position.x + direction * (motion.creep - this.stepCreep) * this.size / 128));
+            this.stepCreep = motion.creep;
+          }
+          this.place();
+        }
+        tick(now) {
+          this.raf = 0;
+          if (!this.visible || document.hidden || document.fullscreenElement || this.printing || this.reduced || this.drag || this.failed) return;
+          const delta = this.last ? Math.min(this.step?.rest && this.step.clip.routine === "sleep" ? 1e3 : 100, now - this.last) : 0;
+          this.last = now;
+          this.activeTime += delta;
+          if (!this.step) this.beginStep();
+          if (this.step && this.image) {
+            this.elapsed += delta;
+            while (this.step && this.image) {
+              this.move(Math.min(this.elapsed, this.step.duration));
+              if (this.elapsed < this.step.duration) break;
+              const carry = this.elapsed - this.step.duration;
+              this.state = this.step.clip.to;
+              this.beginStep(carry);
+            }
+            this.draw();
+          }
+          if (this.step?.rest && this.step.clip.routine === "sleep") this.restTimer = window.setTimeout(() => {
+            this.restTimer = 0;
+            this.raf = requestAnimationFrame((time) => this.tick(time));
+          }, 250);
+          else this.raf = requestAnimationFrame((time) => this.tick(time));
+        }
+        draw() {
+          if (!this.step || !this.image) return;
+          const clip = this.step.clip, still = this.step.rest && clip.routine === "sleep";
+          let time = still ? 0 : this.elapsed % clip.durationMs, index = 0;
+          while (index < clip.frameDurationsMs.length - 1 && time >= clip.frameDurationsMs[index]) time -= clip.frameDurationsMs[index++];
+          const mix = still ? 0 : loopSeamMix(clip, this.elapsed, this.step.duration);
+          const key = `${clip.id}:${index}:${this.mirrored}:${Math.round(mix * 100)}`;
+          if (this.painting === key) return;
+          this.painting = key;
+          const [x, y2, w, h] = clip.frameRectangles[index];
+          this.context.clearRect(0, 0, 256, 256);
+          this.context.save();
+          if (this.mirrored) {
+            this.context.translate(256, 0);
+            this.context.scale(-1, 1);
+          }
+          this.context.globalAlpha = 1 - mix;
+          this.context.drawImage(this.image, x, y2, w, h, 0, 0, 256, 256);
+          if (mix) {
+            const [a, b, c, d] = clip.frameRectangles[0];
+            this.context.globalAlpha = mix;
+            this.context.globalCompositeOperation = "lighter";
+            this.context.drawImage(this.image, a, b, c, d, 0, 0, 256, 256);
+          }
+          this.context.restore();
+        }
+        destroy() {
+          this.disposed = true;
+          this.suspend();
+          this.lookup?.destroy();
+          this.abort.abort();
+          this.host.remove();
+          this.cache.clear();
+          this.decoded.clear();
+        }
+      };
+    }
+  });
+
   // src/content.ts
   var require_content = __commonJS({
     "src/content.ts"() {
@@ -3041,6 +4220,10 @@ ${playgroundBrowserStyles}
       init_preferences();
       init_pacing();
       init_geometry();
+      init_mascot();
+      init_mascot_preferences();
+      init_preferences();
+      init_mascot_target();
       var hostname = location.hostname || (location.ancestorOrigins[0] ? new URL(location.ancestorOrigins[0]).hostname : "");
       var docs = location.hostname === "docs.google.com" && location.pathname.startsWith("/document/");
       if (docs) {
@@ -3082,6 +4265,8 @@ ${playgroundBrowserStyles}
         clear();
         host.remove();
         reader?.loading(false, "");
+        mascot?.destroy();
+        mascot = void 0;
         message = "Extension updated or reloaded. Reload this page to restore readings.";
         statusState = "unavailable";
         toolbarAvailability = "unavailable";
@@ -3119,6 +4304,43 @@ ${playgroundBrowserStyles}
       var topFrame = window === window.top;
       var readingModeEnabled = () => topFrame && panelEnabled(viewSettings, hostname);
       var reader;
+      var mascot;
+      var mascotSettings = mascotPreferences(void 0);
+      function syncMascot() {
+        if (!topFrame || contextInvalidated) return;
+        if (!mascotSettings.enabled) {
+          mascot?.destroy();
+          mascot = void 0;
+          return;
+        }
+        mascot ??= new Mascot({ send: sendToExtension, savePosition: (position) => updateMascotPosition(hostname, position), overrides: () => overrides, target: mascotTarget, obstacle: () => reader?.bounds() });
+        mascot.update(mascotSettings, excluded.includes(hostname), hostname);
+      }
+      function mascotTarget(x, y2) {
+        if (!docs) return webTarget(x, y2);
+        const editor = document.querySelector(".kix-appview-editor")?.getBoundingClientRect();
+        if (editor && (x < editor.left || x > editor.right || y2 < editor.top || y2 > editor.bottom)) return;
+        const page = [...visiblePages].find((element4) => {
+          const box = element4.getBoundingClientRect();
+          return x >= box.left && x <= box.right && y2 >= box.top && y2 <= box.bottom;
+        });
+        const root = page ?? document.querySelector(".kix-appview-editor") ?? document;
+        let inspected = 0;
+        for (const element4 of root.querySelectorAll("svg rect[aria-label]")) {
+          if (++inspected > 4096) break;
+          const box = element4.getBoundingClientRect();
+          if (x < box.left || x > box.right || y2 < box.top || y2 > box.bottom) continue;
+          const source = docsSource(element4, editor);
+          if (!source || source.text.length > 1e3) continue;
+          for (let offset = 0; offset < source.text.length; offset++) {
+            const rect = source.rect(offset, offset + 1);
+            if (rect && x >= rect.left && x <= rect.right && y2 >= rect.top && y2 <= rect.bottom) return { text: source.text, offset, rects: (start2, end) => {
+              const rect2 = source.rect(start2, end);
+              return rect2 ? [rect2] : [];
+            } };
+          }
+        }
+      }
       function ensureReader() {
         if (reader || !readingModeEnabled()) return;
         reader = new ReadingPanel(() => {
@@ -3126,6 +4348,9 @@ ${playgroundBrowserStyles}
         }, (width) => updateReadingView({ width }));
         reader.setOverrides(overrides);
         reader.appearance(viewSettings, readingAppearance);
+        reader.mascotHooks = { hover: (word, contains) => mascot?.readerHover(word, contains), leave: () => mascot?.readerLeave(), selection: (text) => {
+          if (text && text.length <= 80 && !/\s/u.test(text)) mascot?.readerSelection({ text, offset: 0, selection: true });
+        } };
       }
       var activeRequest;
       var pacer = new AdaptivePacer();
@@ -3180,6 +4405,7 @@ ${playgroundBrowserStyles}
       function schedule(delay = 150, activity) {
         if (!extensionAvailable()) return;
         ensureReader();
+        syncMascot();
         revision++;
         clear();
         window.clearTimeout(timer);
@@ -3307,7 +4533,7 @@ ${playgroundBrowserStyles}
         }
       }
       var measure = document.createElement("canvas").getContext("2d");
-      function docsSource(element4) {
+      function docsSource(element4, clip = editorClip) {
         const text = element4.getAttribute("aria-label") ?? "";
         if (!text || text.length > 2e3) return;
         const box = element4.getBoundingClientRect();
@@ -3332,7 +4558,6 @@ ${playgroundBrowserStyles}
         if (!size) return;
         const localHeight = element4 instanceof SVGRectElement ? element4.height.baseVal.value : box.height;
         const scaleY = localHeight > 0 ? box.height / localHeight : 1;
-        const clip = editorClip;
         const svg = element4.closest("svg")?.getBoundingClientRect();
         if (clip && (box.bottom <= clip.top || box.top >= clip.bottom || box.right <= clip.left || box.left >= clip.right)) return;
         if (svg && (box.bottom <= svg.top || box.top >= svg.bottom)) return;
@@ -3363,7 +4588,7 @@ ${playgroundBrowserStyles}
           let descend = true;
           let source;
           if (node instanceof Element) {
-            if (node === host || reader?.ownsNode(node) || node.matches('script,style,noscript,ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) descend = false;
+            if (node === host || mascot?.ownsNode(node) || reader?.ownsNode(node) || node.matches('script,style,noscript,ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) descend = false;
             else if (node !== root) {
               const r = node.getBoundingClientRect();
               const style = getComputedStyle(node);
@@ -3670,6 +4895,7 @@ ${playgroundBrowserStyles}
           else message = `Active \u2014 ${layer.childElementCount} visible readings${docs ? activePage ? " on the active page" : " in the editor viewport" : ""}.${skippedSpace ? ` Tight spacing: ${skippedSpace} omitted.` : ""}${unknown ? ` Unknown words: ${unknown}. Add a local correction in the menu.` : ""}${attempted >= 500 ? " View limit reached; scroll to reveal more." : ""}`;
           if (readingMode && (!docs || prepared?.length)) {
             reader?.display(readingRuns, !docs ? "web" : activePage ? String([...pages].indexOf(activePage)) : "pageless", viewSettings, readingAppearance, (docs ? editorClip?.top : 12) ?? 100, panelLimited || attempted >= 500);
+            syncMascot();
             message = `Reading view \u2014 ${count} readings in ${!docs ? "the visible webpage text" : activePage ? "the active page\u2019s visible text" : "the editor viewport"}.${unknown ? ` Unknown words: ${unknown}. Add a local correction in the menu.` : ""}${panelLimited || attempted >= 500 ? " View limit reached; scroll to reveal more." : ""}`;
           }
           async function process(batch) {
@@ -3788,29 +5014,38 @@ ${playgroundBrowserStyles}
         if (request?.type === "status") respond({ message, state: statusState, toolbarAvailability });
       });
       chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === "local" && changes.mascot) {
+          mascotSettings = mascotPreferences(changes.mascot.newValue);
+          syncMascot();
+        }
         if (area === "local" && changes.showLegacyAnimations) setMimeticLegacyAnimations(changes.showLegacyAnimations.newValue);
         if (area !== "local" || !["enabled", "excluded", "siteAppearance", "readingOverrides", "docsReadingView", "readingView"].some((key) => key in changes)) return;
         const wasReading = readingModeEnabled();
         if (changes.enabled) enabled = changes.enabled.newValue !== false;
         if (changes.excluded) excluded = Array.isArray(changes.excluded.newValue) ? changes.excluded.newValue : [];
+        if (changes.excluded) syncMascot();
         if (changes.siteAppearance) readingAppearance = appearanceForSite(changes.siteAppearance.newValue, hostname);
         if (changes.readingOverrides) {
           overrides = validOverrides(changes.readingOverrides.newValue);
           reader?.setOverrides(overrides);
+          mascot?.invalidateLookup();
         }
         if (changes.docsReadingView) legacyView = changes.docsReadingView.newValue;
         if (changes.readingView) rawView = changes.readingView.newValue;
         viewSettings = readingViewPreferences(rawView, legacyView);
         if (wasReading === readingModeEnabled() && !changes.enabled && !changes.excluded && !changes.readingOverrides && (readingModeEnabled() || !changes.siteAppearance)) {
           reader?.appearance(viewSettings, readingAppearance);
+          syncMascot();
           return;
         }
         schedule(0);
       });
       async function start() {
-        const state = await chrome.storage.local.get({ enabled: true, excluded: [], siteAppearance: {}, readingOverrides: {}, docsReadingView: {}, readingView: null, showLegacyAnimations: false });
+        const state = await chrome.storage.local.get({ enabled: true, excluded: [], siteAppearance: {}, readingOverrides: {}, docsReadingView: {}, readingView: null, showLegacyAnimations: false, mascot: null });
         enabled = state.enabled !== false;
         excluded = Array.isArray(state.excluded) ? state.excluded : [];
+        mascotSettings = mascotPreferences(state.mascot);
+        syncMascot();
         setMimeticLegacyAnimations(state.showLegacyAnimations);
         readingAppearance = appearanceForSite(state.siteAppearance, hostname);
         overrides = validOverrides(state.readingOverrides);
@@ -3827,7 +5062,8 @@ ${playgroundBrowserStyles}
         const observer = new MutationObserver((records) => {
           let relevant = false;
           for (const record of records) {
-            if (record.target === host || host.contains(record.target) || reader?.ownsNode(record.target)) continue;
+            if (record.target === host || host.contains(record.target) || mascot?.ownsNode(record.target) || reader?.ownsNode(record.target)) continue;
+            if (record.type === "childList" && [...record.addedNodes, ...record.removedNodes].every((node) => node instanceof Element && node.localName === "ko-mascot")) continue;
             const element4 = record.target instanceof Element ? record.target : record.target.parentElement;
             if (docs && element4?.closest(".kix-cursor,.kix-selection-overlay,.kix-selection-overlay-content")) continue;
             if (docs && record.type !== "childList" && element4?.closest(".kix-page") && element4.closest(".kix-page") !== activePage) continue;
@@ -3844,10 +5080,10 @@ ${playgroundBrowserStyles}
         mutationObserver = observer;
         observer.observe(document.body, observerOptions);
         document.addEventListener("scroll", (event) => {
-          if (!reader?.owns(event)) schedule(100, "scroll");
+          if (!mascot?.owns(event) && !reader?.owns(event)) schedule(100, "scroll");
         }, { capture: true, passive: true });
         document.addEventListener("load", (event) => {
-          if (!reader?.owns(event)) schedule();
+          if (!mascot?.owns(event) && !reader?.owns(event)) schedule();
         }, true);
         window.addEventListener("resize", () => schedule(100));
         window.visualViewport?.addEventListener("resize", () => schedule(100));

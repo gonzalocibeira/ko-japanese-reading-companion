@@ -1,0 +1,17 @@
+{
+  "id": "spirit-magic-entry",
+  "source": "ps1/sheets/spirit-magic-entry.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/spirit-magic-entry.txt",
+  "sourceSha256": "291e214a282b661eacccb2012e3cf4d4b036afb9bbcfb2124ff25009872e6da9",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/spirit-magic-loop/00.png"
+  ],
+  "anatomyReview": "pending",
+  "technicalStatus": "failed",
+  "layout": {
+    "scale": 1.4
+  },
+  "technicalError": "(6, 'export clipped', (95, 53, 256, 189))"
+}

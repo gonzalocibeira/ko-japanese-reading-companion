@@ -1,0 +1,285 @@
+{
+  "id": "fan-dance-entry",
+  "source": "ps1/sheets/fan-dance-entry.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/fan-dance-entry.txt",
+  "sourceSha256": "443f71a7f522543040b1986c9f6e550ae55b437915db08ead338691632d3bb22",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/fan-dance-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "layout": {
+    "scale": 1.5,
+    "offset": [
+      -30,
+      -3
+    ]
+  },
+  "technicalError": "(2, 'export clipped', (0, 49, 135, 195))",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceRects": [
+    [
+      174,
+      13,
+      432,
+      257
+    ],
+    [
+      648,
+      10,
+      896,
+      258
+    ],
+    [
+      1065,
+      9,
+      1295,
+      257
+    ],
+    [
+      191,
+      274,
+      440,
+      515
+    ],
+    [
+      645,
+      266,
+      907,
+      515
+    ],
+    [
+      1057,
+      262,
+      1329,
+      516
+    ],
+    [
+      191,
+      516,
+      482,
+      765
+    ],
+    [
+      636,
+      516,
+      947,
+      764
+    ],
+    [
+      1058,
+      518,
+      1387,
+      766
+    ],
+    [
+      184,
+      766,
+      510,
+      1018
+    ],
+    [
+      644,
+      767,
+      958,
+      1017
+    ],
+    [
+      1068,
+      767,
+      1374,
+      1022
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      177,
+      16,
+      429,
+      254
+    ],
+    [
+      651,
+      13,
+      893,
+      255
+    ],
+    [
+      1068,
+      12,
+      1292,
+      254
+    ],
+    [
+      194,
+      277,
+      437,
+      512
+    ],
+    [
+      648,
+      269,
+      904,
+      512
+    ],
+    [
+      1060,
+      265,
+      1326,
+      513
+    ],
+    [
+      194,
+      519,
+      479,
+      762
+    ],
+    [
+      639,
+      519,
+      944,
+      761
+    ],
+    [
+      1061,
+      521,
+      1384,
+      763
+    ],
+    [
+      187,
+      769,
+      507,
+      1015
+    ],
+    [
+      647,
+      770,
+      955,
+      1014
+    ],
+    [
+      1071,
+      770,
+      1371,
+      1019
+    ]
+  ],
+  "exportBounds": [
+    [
+      50,
+      74,
+      202,
+      218
+    ],
+    [
+      61,
+      73,
+      207,
+      219
+    ],
+    [
+      61,
+      72,
+      196,
+      218
+    ],
+    [
+      61,
+      76,
+      207,
+      218
+    ],
+    [
+      59,
+      71,
+      213,
+      218
+    ],
+    [
+      56,
+      69,
+      216,
+      219
+    ],
+    [
+      61,
+      71,
+      233,
+      218
+    ],
+    [
+      53,
+      71,
+      237,
+      217
+    ],
+    [
+      56,
+      73,
+      251,
+      219
+    ],
+    [
+      56,
+      70,
+      250,
+      218
+    ],
+    [
+      58,
+      70,
+      244,
+      217
+    ],
+    [
+      62,
+      70,
+      244,
+      220
+    ]
+  ],
+  "rowOffsets": [
+    -10,
+    -12,
+    -6,
+    -3
+  ],
+  "columnOffsets": [
+    0,
+    55,
+    150
+  ],
+  "canvasSize": 636,
+  "exportScale": 1.5,
+  "exportOffset": [
+    -30,
+    -3
+  ],
+  "placementDy": 23,
+  "frames": "ps1/source-frames/fan-dance-entry",
+  "auditBoard": "ps1/audit/fan-dance-entry.png",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

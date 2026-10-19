@@ -50,7 +50,15 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       var theme = document.createElement("style");
       theme.textContent = uiTheme;
       document.head.append(theme);
-      document.querySelector("#version").textContent = `Version ${chrome.runtime.getManifest().version}`;
+      var version = document.querySelector("#version");
+      version.textContent = `Version ${chrome.runtime.getManifest().version}`;
+      var versionClicks = 0;
+      version.addEventListener("click", () => {
+        if (++versionClicks === 5) {
+          versionClicks = 0;
+          location.href = chrome.runtime.getURL("animations.html");
+        }
+      });
       var legacy = document.querySelector("#show-legacy-animations");
       var status = document.querySelector("#animation-status");
       var saved = false;

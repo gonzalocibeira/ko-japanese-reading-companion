@@ -1,0 +1,279 @@
+{
+  "id": "stretch-action",
+  "source": "ps1/sheets/stretch-action.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/stretch-action.txt",
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      13,
+      31,
+      319,
+      340
+    ],
+    [
+      359,
+      63,
+      699,
+      345
+    ],
+    [
+      745,
+      65,
+      1071,
+      348
+    ],
+    [
+      8,
+      396,
+      344,
+      710
+    ],
+    [
+      381,
+      401,
+      706,
+      709
+    ],
+    [
+      744,
+      418,
+      1067,
+      710
+    ],
+    [
+      13,
+      789,
+      352,
+      1070
+    ],
+    [
+      372,
+      766,
+      695,
+      1071
+    ],
+    [
+      732,
+      766,
+      1047,
+      1070
+    ],
+    [
+      11,
+      1113,
+      322,
+      1426
+    ],
+    [
+      375,
+      1113,
+      686,
+      1429
+    ],
+    [
+      735,
+      1112,
+      1037,
+      1426
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      16,
+      34,
+      316,
+      337
+    ],
+    [
+      362,
+      66,
+      696,
+      342
+    ],
+    [
+      748,
+      68,
+      1068,
+      345
+    ],
+    [
+      11,
+      399,
+      341,
+      707
+    ],
+    [
+      384,
+      404,
+      703,
+      706
+    ],
+    [
+      747,
+      421,
+      1064,
+      707
+    ],
+    [
+      16,
+      792,
+      349,
+      1067
+    ],
+    [
+      375,
+      769,
+      692,
+      1068
+    ],
+    [
+      735,
+      769,
+      1044,
+      1067
+    ],
+    [
+      14,
+      1116,
+      319,
+      1423
+    ],
+    [
+      378,
+      1116,
+      683,
+      1426
+    ],
+    [
+      738,
+      1115,
+      1034,
+      1423
+    ]
+  ],
+  "exportBounds": [
+    [
+      20,
+      17,
+      216,
+      215
+    ],
+    [
+      10,
+      38,
+      228,
+      218
+    ],
+    [
+      25,
+      39,
+      234,
+      220
+    ],
+    [
+      18,
+      17,
+      233,
+      218
+    ],
+    [
+      24,
+      20,
+      233,
+      217
+    ],
+    [
+      25,
+      31,
+      232,
+      218
+    ],
+    [
+      20,
+      38,
+      238,
+      218
+    ],
+    [
+      18,
+      23,
+      225,
+      219
+    ],
+    [
+      17,
+      23,
+      219,
+      218
+    ],
+    [
+      19,
+      18,
+      218,
+      218
+    ],
+    [
+      20,
+      18,
+      219,
+      220
+    ],
+    [
+      20,
+      17,
+      212,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    3,
+    0,
+    2,
+    8
+  ],
+  "canvasSize": 450,
+  "exportScale": 1.15,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": -14,
+  "frames": "ps1/source-frames/stretch-action",
+  "auditBoard": "ps1/audit/stretch-action.png",
+  "layout": {
+    "scale": 1.15
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "sourceSha256": "513e5d896a7fc1555f4939f77cf8621c500ad0246c071e2e55757d07cdf2de3c",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms.",
+  "references": [
+    "ps1/references/approved-design.png"
+  ]
+}

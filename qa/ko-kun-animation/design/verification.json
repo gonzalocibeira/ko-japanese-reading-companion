@@ -1,0 +1,51 @@
+{
+  "stage": "complete",
+  "routineCount": 24,
+  "plannedClipCount": 56,
+  "generatedAnimationClips": 56,
+  "proposals": [
+    {
+      "file": "design/proposal-a.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "transparentPixelFraction": 0.4788,
+      "visibleBounds": [
+        51,
+        36,
+        1238,
+        1193
+      ],
+      "allCornersTransparent": true,
+      "unclippedBounds": true
+    },
+    {
+      "file": "design/proposal-b.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "transparentPixelFraction": 0.48,
+      "visibleBounds": [
+        50,
+        64,
+        1236,
+        1192
+      ],
+      "allCornersTransparent": true,
+      "unclippedBounds": true
+    }
+  ],
+  "limitations": "Alpha checks cannot establish identity, anatomy, tail count, or edge quality. See production source-frame visual reviews and animation-review.html."
+}

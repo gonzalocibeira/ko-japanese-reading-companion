@@ -1,0 +1,14 @@
+{
+  "status": "pass",
+  "routines": 24,
+  "transitions": 6,
+  "clipsStepped": 56,
+  "framesStepped": 168,
+  "allLocalImagesDecoded": true,
+  "mirroredCards": 30,
+  "previewSize": 128,
+  "backgrounds": 4,
+  "playPause": "pass",
+  "pageErrors": [],
+  "remoteRequests": []
+}

@@ -1,0 +1,10 @@
+{
+  "generator": "Built-in image_gen tool",
+  "transparentBackground": true,
+  "approvalStatus": "proposal-a-approved-by-user",
+  "approvalEvidence": "A (no collar)",
+  "proposals": [
+    {"id":"a","file":"proposal-a.png","prompt":"../prompts/proposal-a-final.txt","reference":"proposal-b.png","original":"/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-6bd7943f-15ec-4cf2-9ced-24c961239355.png","initialPrompt":"../prompts/proposal-a.txt","initialReference":"/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-39dc99e2-d978-43d3-806b-b9b916029ebc.png","supersededOriginal":"/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-c2bc74d8-2d26-49b9-b301-b2b2dbbb70e1.png","reason":"Regenerated from collar variant to remove faint stray background alpha."},
+    {"id":"b","file":"proposal-b.png","prompt":"../prompts/proposal-b.txt","reference":"proposal-a.png","original":"/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-b8a7e341-7896-4f07-bcfe-e738ba84a328.png"}
+  ]
+}

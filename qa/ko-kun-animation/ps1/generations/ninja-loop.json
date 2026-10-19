@@ -1,0 +1,283 @@
+{
+  "id": "ninja-loop",
+  "source": "ps1/sheets/ninja-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/ninja-loop.txt",
+  "sourceSha256": "de6d4dfa62bab5f213801416f5dcc1ff5e6574c27757889165ef112fdaf155e8",
+  "references": [
+    "ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      12,
+      66,
+      353,
+      323
+    ],
+    [
+      384,
+      64,
+      718,
+      324
+    ],
+    [
+      732,
+      68,
+      1076,
+      323
+    ],
+    [
+      12,
+      401,
+      372,
+      661
+    ],
+    [
+      385,
+      402,
+      731,
+      661
+    ],
+    [
+      740,
+      403,
+      1080,
+      664
+    ],
+    [
+      14,
+      749,
+      375,
+      1025
+    ],
+    [
+      390,
+      735,
+      725,
+      1026
+    ],
+    [
+      737,
+      761,
+      1079,
+      1022
+    ],
+    [
+      14,
+      1103,
+      373,
+      1371
+    ],
+    [
+      383,
+      1103,
+      738,
+      1371
+    ],
+    [
+      748,
+      1107,
+      1079,
+      1371
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      15,
+      69,
+      350,
+      320
+    ],
+    [
+      387,
+      67,
+      715,
+      321
+    ],
+    [
+      735,
+      71,
+      1073,
+      320
+    ],
+    [
+      15,
+      404,
+      369,
+      658
+    ],
+    [
+      388,
+      405,
+      728,
+      658
+    ],
+    [
+      743,
+      406,
+      1077,
+      661
+    ],
+    [
+      17,
+      752,
+      372,
+      1022
+    ],
+    [
+      393,
+      738,
+      722,
+      1023
+    ],
+    [
+      740,
+      764,
+      1076,
+      1019
+    ],
+    [
+      17,
+      1106,
+      370,
+      1368
+    ],
+    [
+      386,
+      1106,
+      735,
+      1368
+    ],
+    [
+      751,
+      1110,
+      1076,
+      1368
+    ]
+  ],
+  "exportBounds": [
+    [
+      38,
+      83,
+      219,
+      218
+    ],
+    [
+      43,
+      81,
+      220,
+      219
+    ],
+    [
+      36,
+      84,
+      218,
+      218
+    ],
+    [
+      38,
+      81,
+      229,
+      218
+    ],
+    [
+      44,
+      81,
+      227,
+      218
+    ],
+    [
+      40,
+      82,
+      220,
+      220
+    ],
+    [
+      39,
+      72,
+      231,
+      218
+    ],
+    [
+      46,
+      65,
+      224,
+      219
+    ],
+    [
+      38,
+      79,
+      220,
+      216
+    ],
+    [
+      39,
+      77,
+      230,
+      218
+    ],
+    [
+      43,
+      77,
+      231,
+      218
+    ],
+    [
+      44,
+      79,
+      220,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    25,
+    49,
+    47,
+    63
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.95,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 5,
+  "frames": "ps1/source-frames/ninja-loop",
+  "auditBoard": "ps1/audit/ninja-loop.png",
+  "layout": {
+    "scale": 0.95,
+    "offset": [
+      0,
+      -3
+    ]
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

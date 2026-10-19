@@ -1,0 +1,279 @@
+{
+  "id": "sleep-loop",
+  "source": "ps1/sheets/sleep-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/sleep-loop.txt",
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      13,
+      134,
+      362,
+      374
+    ],
+    [
+      374,
+      134,
+      722,
+      374
+    ],
+    [
+      733,
+      134,
+      1081,
+      374
+    ],
+    [
+      11,
+      452,
+      362,
+      692
+    ],
+    [
+      372,
+      455,
+      723,
+      689
+    ],
+    [
+      733,
+      455,
+      1083,
+      692
+    ],
+    [
+      11,
+      768,
+      363,
+      1006
+    ],
+    [
+      372,
+      790,
+      725,
+      1008
+    ],
+    [
+      733,
+      768,
+      1083,
+      1007
+    ],
+    [
+      12,
+      1096,
+      362,
+      1335
+    ],
+    [
+      372,
+      1096,
+      723,
+      1336
+    ],
+    [
+      734,
+      1096,
+      1082,
+      1336
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      16,
+      137,
+      359,
+      371
+    ],
+    [
+      377,
+      137,
+      719,
+      371
+    ],
+    [
+      736,
+      137,
+      1078,
+      371
+    ],
+    [
+      14,
+      455,
+      359,
+      689
+    ],
+    [
+      375,
+      458,
+      720,
+      686
+    ],
+    [
+      736,
+      458,
+      1080,
+      689
+    ],
+    [
+      14,
+      771,
+      360,
+      1003
+    ],
+    [
+      375,
+      793,
+      722,
+      1005
+    ],
+    [
+      736,
+      771,
+      1080,
+      1004
+    ],
+    [
+      15,
+      1099,
+      359,
+      1332
+    ],
+    [
+      375,
+      1099,
+      720,
+      1333
+    ],
+    [
+      737,
+      1099,
+      1079,
+      1333
+    ]
+  ],
+  "exportBounds": [
+    [
+      51,
+      109,
+      211,
+      218
+    ],
+    [
+      51,
+      108,
+      210,
+      218
+    ],
+    [
+      49,
+      108,
+      209,
+      218
+    ],
+    [
+      51,
+      108,
+      211,
+      218
+    ],
+    [
+      50,
+      110,
+      211,
+      216
+    ],
+    [
+      49,
+      110,
+      210,
+      218
+    ],
+    [
+      50,
+      109,
+      212,
+      217
+    ],
+    [
+      50,
+      120,
+      212,
+      218
+    ],
+    [
+      49,
+      109,
+      210,
+      218
+    ],
+    [
+      51,
+      108,
+      211,
+      217
+    ],
+    [
+      50,
+      108,
+      211,
+      217
+    ],
+    [
+      50,
+      108,
+      209,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    -26,
+    18,
+    65,
+    98
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.82,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "frames": "ps1/source-frames/sleep-loop",
+  "auditBoard": "ps1/audit/sleep-loop.png",
+  "layout": {
+    "scale": 0.82
+  },
+  "placementDy": 16,
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "sourceSha256": "f6454d13c24e67e9dfe3faa03df0ece32238953e970bc36b7f8115888722058e",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms.",
+  "references": [
+    "ps1/references/approved-design.png"
+  ]
+}

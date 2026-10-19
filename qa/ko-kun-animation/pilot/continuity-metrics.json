@@ -1,0 +1,92 @@
+{
+  "method": "Mean premultiplied RGBA difference on the fixed 256px canvas; descriptive only, not artistic acceptance.",
+  "loopSeams": [
+    {
+      "id": "attentive-idle-loop",
+      "lastToFirstDelta": 0.012563,
+      "medianAdjacentDelta": 0.024808,
+      "seamToMedianRatio": 0.506
+    },
+    {
+      "id": "walk-loop",
+      "lastToFirstDelta": 0.050359,
+      "medianAdjacentDelta": 0.080892,
+      "seamToMedianRatio": 0.623
+    },
+    {
+      "id": "read-loop",
+      "lastToFirstDelta": 0.04713,
+      "medianAdjacentDelta": 0.025663,
+      "seamToMedianRatio": 1.836
+    },
+    {
+      "id": "straw-hat-adventurer-loop",
+      "lastToFirstDelta": 0.070642,
+      "medianAdjacentDelta": 0.061634,
+      "seamToMedianRatio": 1.146
+    }
+  ],
+  "joins": [
+    {
+      "from": "attentive-idle-loop",
+      "to": "walk-start",
+      "visiblePixelDelta": 0.073928
+    },
+    {
+      "from": "walk-start",
+      "to": "walk-loop",
+      "visiblePixelDelta": 0.089637
+    },
+    {
+      "from": "walk-loop",
+      "to": "walk-stop",
+      "visiblePixelDelta": 0.091553
+    },
+    {
+      "from": "walk-stop",
+      "to": "attentive-idle-loop",
+      "visiblePixelDelta": 0.089272
+    },
+    {
+      "from": "read-entry",
+      "to": "read-loop",
+      "visiblePixelDelta": 0.0
+    },
+    {
+      "from": "read-loop",
+      "to": "read-exit",
+      "visiblePixelDelta": 0.073076
+    },
+    {
+      "from": "straw-hat-adventurer-entry",
+      "to": "straw-hat-adventurer-loop",
+      "visiblePixelDelta": 0.076896
+    },
+    {
+      "from": "straw-hat-adventurer-loop",
+      "to": "straw-hat-adventurer-exit",
+      "visiblePixelDelta": 0.060521
+    },
+    {
+      "from": "straw-hat-adventurer-exit",
+      "to": "attentive-idle-loop",
+      "visiblePixelDelta": 0.095146
+    },
+    {
+      "from": "sit-down",
+      "to": "read-entry",
+      "visiblePixelDelta": 0.089892
+    },
+    {
+      "from": "read-exit",
+      "to": "stand-up",
+      "visiblePixelDelta": 0.080421
+    },
+    {
+      "from": "stand-up",
+      "to": "attentive-idle-loop",
+      "visiblePixelDelta": 0.083466
+    }
+  ],
+  "pilotApproved": false
+}

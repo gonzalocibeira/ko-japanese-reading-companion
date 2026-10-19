@@ -1,0 +1,279 @@
+{
+  "id": "greeting-action",
+  "source": "ps1/sheets/greeting-action.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/greeting-action.txt",
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1330,
+    1182
+  ],
+  "sourceRects": [
+    [
+      53,
+      9,
+      408,
+      294
+    ],
+    [
+      481,
+      27,
+      849,
+      294
+    ],
+    [
+      913,
+      38,
+      1286,
+      294
+    ],
+    [
+      49,
+      325,
+      425,
+      581
+    ],
+    [
+      479,
+      311,
+      853,
+      581
+    ],
+    [
+      910,
+      304,
+      1271,
+      581
+    ],
+    [
+      51,
+      592,
+      417,
+      870
+    ],
+    [
+      479,
+      587,
+      860,
+      874
+    ],
+    [
+      912,
+      594,
+      1281,
+      871
+    ],
+    [
+      50,
+      877,
+      403,
+      1154
+    ],
+    [
+      479,
+      888,
+      843,
+      1158
+    ],
+    [
+      906,
+      877,
+      1272,
+      1158
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      56,
+      12,
+      405,
+      291
+    ],
+    [
+      484,
+      30,
+      846,
+      291
+    ],
+    [
+      916,
+      41,
+      1283,
+      291
+    ],
+    [
+      52,
+      328,
+      422,
+      578
+    ],
+    [
+      482,
+      314,
+      850,
+      578
+    ],
+    [
+      913,
+      307,
+      1268,
+      578
+    ],
+    [
+      54,
+      595,
+      414,
+      867
+    ],
+    [
+      482,
+      590,
+      857,
+      871
+    ],
+    [
+      915,
+      597,
+      1278,
+      868
+    ],
+    [
+      53,
+      880,
+      400,
+      1151
+    ],
+    [
+      482,
+      891,
+      840,
+      1155
+    ],
+    [
+      909,
+      880,
+      1269,
+      1155
+    ]
+  ],
+  "exportBounds": [
+    [
+      36,
+      63,
+      230,
+      218
+    ],
+    [
+      35,
+      73,
+      237,
+      218
+    ],
+    [
+      35,
+      79,
+      239,
+      218
+    ],
+    [
+      33,
+      79,
+      239,
+      218
+    ],
+    [
+      34,
+      71,
+      239,
+      218
+    ],
+    [
+      33,
+      67,
+      231,
+      218
+    ],
+    [
+      34,
+      66,
+      235,
+      218
+    ],
+    [
+      34,
+      64,
+      243,
+      220
+    ],
+    [
+      34,
+      67,
+      236,
+      218
+    ],
+    [
+      34,
+      65,
+      227,
+      216
+    ],
+    [
+      34,
+      71,
+      234,
+      218
+    ],
+    [
+      31,
+      65,
+      231,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    -9,
+    -1,
+    5,
+    13
+  ],
+  "canvasSize": 551,
+  "exportScale": 1.2,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 19,
+  "frames": "ps1/source-frames/greeting-action",
+  "auditBoard": "ps1/audit/greeting-action.png",
+  "layout": {
+    "scale": 1.2
+  },
+  "columnOffsets": [
+    0,
+    15,
+    26
+  ],
+  "sourceSha256": "15054d97cf4042120076cf7e0fecd875a24c9ac11e808a8482b479383c76b888",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms.",
+  "references": [
+    "ps1/references/approved-design.png"
+  ]
+}

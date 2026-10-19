@@ -2,13 +2,42 @@ import {appearanceForSite,validOverrides,readingViewPreferences,panelEnabled,upd
 import {uiTheme} from './ui-theme';
 import type {PageStatus} from './action-state';
 import {setupUpdateBanner} from './update-banner';
+import {mascotPreferences,type MascotPatch} from './mascot-preferences';
+import {updateMascot,updateMascotPosition} from './preferences';
 const theme=document.createElement('style');theme.textContent=uiTheme;document.head.append(theme);
+document.querySelector('#extension-version')!.textContent=`v${chrome.runtime.getManifest().version}`;
 void setupUpdateBanner();
 async function main() {
   const [tab] = await chrome.tabs.query({active:true, currentWindow:true});
   let hostname='';
   try { if (tab?.url && /^https?:/.test(tab.url)) hostname=new URL(tab.url).hostname; } catch { /* Unavailable tab URL. */ }
-  const state = await chrome.storage.local.get({enabled:true, excluded:[],siteAppearance:{},readingOverrides:{},docsReadingView:{},readingView:null});
+  const state = await chrome.storage.local.get({enabled:true, excluded:[],siteAppearance:{},readingOverrides:{},docsReadingView:{},readingView:null,mascot:null});
+  const mascotEnabled=document.querySelector<HTMLInputElement>('#mascot-enabled')!;
+  const mascotTrigger=document.querySelector<HTMLSelectElement>('#mascot-trigger')!;
+  const mascotDefinitions=document.querySelector<HTMLSelectElement>('#mascot-definitions')!;
+  const mascotSize=document.querySelector<HTMLSelectElement>('#mascot-size')!;
+  const mascotMotion=document.querySelector<HTMLSelectElement>('#mascot-motion')!;
+  const mascotReset=document.querySelector<HTMLButtonElement>('#mascot-reset')!;
+  const mascotFeedback=document.querySelector<HTMLElement>('#mascot-feedback')!;
+  function renderMascot(value:unknown) {
+    const m=mascotPreferences(value);mascotEnabled.checked=m.enabled;mascotTrigger.value=m.trigger;mascotDefinitions.value=m.definitions;mascotSize.value=String(m.size);mascotMotion.value=m.motion;
+    for(const input of [mascotTrigger,mascotDefinitions,mascotSize,mascotMotion])input.disabled=!m.enabled;
+    mascotReset.disabled=!hostname || !m.enabled;
+  }
+  renderMascot(state.mascot);
+  async function saveMascot(patch:MascotPatch) {
+    try {renderMascot(await updateMascot(patch));mascotFeedback.textContent='Kōくん preference saved.';mascotFeedback.dataset.error='false';}
+    catch {mascotFeedback.textContent='Could not save Kōくん preferences. Try again.';mascotFeedback.dataset.error='true';}
+  }
+  mascotEnabled.onchange=()=>void saveMascot({enabled:mascotEnabled.checked});
+  mascotTrigger.onchange=()=>void saveMascot({trigger:mascotTrigger.value==='highlight'?'highlight':'hover'});
+  mascotDefinitions.onchange=()=>void saveMascot({definitions:mascotDefinitions.value==='en'?'en':mascotDefinitions.value==='ja'?'ja':'off'});
+  mascotSize.onchange=()=>void saveMascot({size:Number(mascotSize.value) as 96|128|160});
+  mascotMotion.onchange=()=>void saveMascot({motion:mascotMotion.value==='reduced'?'reduced':'system'});
+  mascotReset.onclick=async()=>{
+    try {await updateMascotPosition(hostname,null);mascotFeedback.textContent='Kōくん will start near the bottom-right corner on this site.';mascotFeedback.dataset.error='false';}
+    catch {mascotFeedback.textContent='Could not reset the position. Try again.';mascotFeedback.dataset.error='true';}
+  };
   const enabled = document.querySelector<HTMLInputElement>('#enabled')!;
   const excluded = document.querySelector<HTMLInputElement>('#excluded')!;
   const status = document.querySelector('#status')!;
@@ -124,6 +153,7 @@ async function main() {
   search.oninput=()=>renderCorrections(currentCorrections);
   chrome.storage.onChanged.addListener((changes,area)=>{
     if(area!=='local')return;
+    if(changes.mascot)renderMascot(changes.mascot.newValue);
     if(changes.enabled)enabled.checked=changes.enabled.newValue!==false;
     if(changes.excluded)excluded.checked=Array.isArray(changes.excluded.newValue) && changes.excluded.newValue.includes(hostname);
     if(changes.enabled || changes.excluded)changed();

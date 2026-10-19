@@ -1,0 +1,279 @@
+{
+  "id": "hover-idle-loop",
+  "source": "ps1/sheets/hover-idle-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/hover-idle-loop.txt",
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      31,
+      43,
+      357,
+      326
+    ],
+    [
+      387,
+      34,
+      707,
+      313
+    ],
+    [
+      738,
+      43,
+      1060,
+      333
+    ],
+    [
+      30,
+      380,
+      353,
+      661
+    ],
+    [
+      383,
+      392,
+      705,
+      682
+    ],
+    [
+      737,
+      395,
+      1061,
+      676
+    ],
+    [
+      29,
+      744,
+      352,
+      1027
+    ],
+    [
+      384,
+      745,
+      705,
+      1030
+    ],
+    [
+      734,
+      749,
+      1056,
+      1033
+    ],
+    [
+      27,
+      1097,
+      359,
+      1390
+    ],
+    [
+      381,
+      1100,
+      710,
+      1390
+    ],
+    [
+      739,
+      1097,
+      1062,
+      1385
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      34,
+      46,
+      354,
+      323
+    ],
+    [
+      390,
+      37,
+      704,
+      310
+    ],
+    [
+      741,
+      46,
+      1057,
+      330
+    ],
+    [
+      33,
+      383,
+      350,
+      658
+    ],
+    [
+      386,
+      395,
+      702,
+      679
+    ],
+    [
+      740,
+      398,
+      1058,
+      673
+    ],
+    [
+      32,
+      747,
+      349,
+      1024
+    ],
+    [
+      387,
+      748,
+      702,
+      1027
+    ],
+    [
+      737,
+      752,
+      1053,
+      1030
+    ],
+    [
+      30,
+      1100,
+      356,
+      1387
+    ],
+    [
+      384,
+      1103,
+      707,
+      1387
+    ],
+    [
+      742,
+      1100,
+      1059,
+      1382
+    ]
+  ],
+  "exportBounds": [
+    [
+      38,
+      32,
+      220,
+      190
+    ],
+    [
+      39,
+      34,
+      218,
+      189
+    ],
+    [
+      39,
+      30,
+      218,
+      192
+    ],
+    [
+      39,
+      33,
+      219,
+      189
+    ],
+    [
+      39,
+      30,
+      218,
+      191
+    ],
+    [
+      38,
+      33,
+      219,
+      189
+    ],
+    [
+      39,
+      32,
+      220,
+      190
+    ],
+    [
+      39,
+      32,
+      218,
+      190
+    ],
+    [
+      39,
+      32,
+      219,
+      190
+    ],
+    [
+      36,
+      29,
+      222,
+      192
+    ],
+    [
+      38,
+      31,
+      221,
+      192
+    ],
+    [
+      39,
+      31,
+      220,
+      191
+    ]
+  ],
+  "rowOffsets": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "canvasSize": 450,
+  "exportScale": 1,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": -5,
+  "frames": "ps1/source-frames/hover-idle-loop",
+  "auditBoard": "ps1/audit/hover-idle-loop.png",
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "sourceSha256": "10fdb590f5b94c0833046a41ea3ecb89effee26387a0d836b169b8aa5810ebcc",
+  "layout": {
+    "stabilizeCenter": true
+  },
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms.",
+  "references": [
+    "ps1/references/approved-design.png"
+  ]
+}

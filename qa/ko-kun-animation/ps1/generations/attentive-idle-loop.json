@@ -1,0 +1,276 @@
+{
+  "id": "attentive-idle-loop",
+  "source": "ps1/sheets/attentive-idle-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/attentive-idle-loop.txt",
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      17,
+      25,
+      341,
+      342
+    ],
+    [
+      376,
+      30,
+      701,
+      343
+    ],
+    [
+      743,
+      37,
+      1063,
+      343
+    ],
+    [
+      22,
+      396,
+      354,
+      704
+    ],
+    [
+      381,
+      387,
+      701,
+      704
+    ],
+    [
+      739,
+      389,
+      1062,
+      704
+    ],
+    [
+      19,
+      757,
+      343,
+      1065
+    ],
+    [
+      381,
+      755,
+      707,
+      1066
+    ],
+    [
+      743,
+      759,
+      1069,
+      1066
+    ],
+    [
+      19,
+      1114,
+      342,
+      1427
+    ],
+    [
+      380,
+      1115,
+      701,
+      1427
+    ],
+    [
+      740,
+      1109,
+      1065,
+      1427
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      20,
+      28,
+      338,
+      339
+    ],
+    [
+      379,
+      33,
+      698,
+      340
+    ],
+    [
+      746,
+      40,
+      1060,
+      340
+    ],
+    [
+      25,
+      399,
+      351,
+      701
+    ],
+    [
+      384,
+      390,
+      698,
+      701
+    ],
+    [
+      742,
+      392,
+      1059,
+      701
+    ],
+    [
+      22,
+      760,
+      340,
+      1062
+    ],
+    [
+      384,
+      758,
+      704,
+      1063
+    ],
+    [
+      746,
+      762,
+      1066,
+      1063
+    ],
+    [
+      22,
+      1117,
+      339,
+      1424
+    ],
+    [
+      383,
+      1118,
+      698,
+      1424
+    ],
+    [
+      743,
+      1112,
+      1062,
+      1424
+    ]
+  ],
+  "exportBounds": [
+    [
+      36,
+      41,
+      217,
+      218
+    ],
+    [
+      35,
+      44,
+      216,
+      218
+    ],
+    [
+      38,
+      48,
+      216,
+      218
+    ],
+    [
+      39,
+      46,
+      225,
+      218
+    ],
+    [
+      38,
+      41,
+      216,
+      218
+    ],
+    [
+      35,
+      43,
+      216,
+      218
+    ],
+    [
+      38,
+      46,
+      218,
+      218
+    ],
+    [
+      38,
+      45,
+      220,
+      218
+    ],
+    [
+      38,
+      47,
+      220,
+      218
+    ],
+    [
+      38,
+      44,
+      218,
+      218
+    ],
+    [
+      37,
+      44,
+      216,
+      218
+    ],
+    [
+      36,
+      41,
+      217,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    5,
+    6,
+    6,
+    7
+  ],
+  "canvasSize": 450,
+  "exportScale": 1,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "frames": "ps1/source-frames/attentive-idle-loop",
+  "auditBoard": "ps1/audit/attentive-idle-loop.png",
+  "placementDy": 0,
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "sourceSha256": "6ebbfa8684a480c6e93612c8fe4d1a1ad59651bb5489a0b5496055b25c98d1fc",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms.",
+  "references": [
+    "ps1/references/approved-design.png"
+  ]
+}

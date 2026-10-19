@@ -1,8 +1,12 @@
 # Chrome Web Store audit and release records
 
-## 1.2.0 · planned release 28 October 2026
+## 1.3.0 · Work in progress
 
-The full 1.2.0 release is prepared from RC1. See the [1.2 release audit](release-1.2-audit.md) for current checks and publication status. GitHub publication and Chrome Web Store review/publication remain separate.
+The primary branch contains **1.3.0 WIP**, including the optional Kōくん companion, offline animation gallery, updated privacy disclosures and compiled runtime. This is a development snapshot, with no 1.3 tag, GitHub release, store submission, or launch date. See the [1.3 verification notes](release-1.3-audit.md). The published GitHub **v1.2.0** assets remain separate; the store records below describe their dated submissions rather than live dashboard state.
+
+## 1.2.0 · GitHub publication 18 October; announced launch 28 October 2026
+
+The full 1.2.0 release was prepared from RC1 and published on GitHub on 18 October 2026. See the [1.2 release audit](release-1.2-audit.md) for its checks and dated store submission status. GitHub publication and Chrome Web Store review/publication remain separate.
 
 Upload `ko-japanese-reading-companion-1.2.0-chrome-web-store.zip`, with `manifest.json` at its root. Keep publication deferred until **28 October 2026**; uploading or passing review is not permission to launch early. The manifest version remains 1.2.0, with unchanged permissions, host access, CSP, and network origins.
 

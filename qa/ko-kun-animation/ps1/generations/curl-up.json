@@ -1,0 +1,281 @@
+{
+  "id": "curl-up",
+  "source": "ps1/sheets/curl-up.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/curl-up.txt",
+  "sourceSha256": "ea138e9fd54d89dd67343cd04a57e45313790bcbc2640839b6f4837051fb5b1a",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/sleep-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceRects": [
+    [
+      114,
+      6,
+      419,
+      283
+    ],
+    [
+      605,
+      28,
+      911,
+      283
+    ],
+    [
+      1093,
+      50,
+      1427,
+      281
+    ],
+    [
+      88,
+      312,
+      446,
+      542
+    ],
+    [
+      577,
+      311,
+      939,
+      539
+    ],
+    [
+      1084,
+      324,
+      1446,
+      547
+    ],
+    [
+      95,
+      577,
+      468,
+      795
+    ],
+    [
+      607,
+      578,
+      949,
+      787
+    ],
+    [
+      1117,
+      592,
+      1453,
+      788
+    ],
+    [
+      116,
+      819,
+      452,
+      1006
+    ],
+    [
+      616,
+      819,
+      948,
+      1003
+    ],
+    [
+      1133,
+      829,
+      1445,
+      1011
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      117,
+      9,
+      416,
+      280
+    ],
+    [
+      608,
+      31,
+      908,
+      280
+    ],
+    [
+      1096,
+      53,
+      1424,
+      278
+    ],
+    [
+      91,
+      315,
+      443,
+      539
+    ],
+    [
+      580,
+      314,
+      936,
+      536
+    ],
+    [
+      1087,
+      327,
+      1443,
+      544
+    ],
+    [
+      98,
+      580,
+      465,
+      792
+    ],
+    [
+      610,
+      581,
+      946,
+      784
+    ],
+    [
+      1120,
+      595,
+      1450,
+      785
+    ],
+    [
+      119,
+      822,
+      449,
+      1003
+    ],
+    [
+      619,
+      822,
+      945,
+      1000
+    ],
+    [
+      1136,
+      832,
+      1442,
+      1008
+    ]
+  ],
+  "exportBounds": [
+    [
+      52,
+      71,
+      215,
+      218
+    ],
+    [
+      46,
+      83,
+      210,
+      218
+    ],
+    [
+      41,
+      95,
+      219,
+      217
+    ],
+    [
+      38,
+      96,
+      230,
+      218
+    ],
+    [
+      31,
+      96,
+      225,
+      216
+    ],
+    [
+      36,
+      103,
+      230,
+      221
+    ],
+    [
+      42,
+      107,
+      242,
+      222
+    ],
+    [
+      47,
+      107,
+      230,
+      218
+    ],
+    [
+      54,
+      115,
+      234,
+      218
+    ],
+    [
+      53,
+      120,
+      233,
+      218
+    ],
+    [
+      52,
+      120,
+      230,
+      216
+    ],
+    [
+      63,
+      125,
+      229,
+      221
+    ]
+  ],
+  "rowOffsets": [
+    -36,
+    -39,
+    -29,
+    9
+  ],
+  "canvasSize": 636,
+  "exportScale": 1.35,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 30,
+  "frames": "ps1/source-frames/curl-up",
+  "auditBoard": "ps1/audit/curl-up.png",
+  "layout": {
+    "scale": 1.35
+  },
+  "columnOffsets": [
+    0,
+    10,
+    24
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

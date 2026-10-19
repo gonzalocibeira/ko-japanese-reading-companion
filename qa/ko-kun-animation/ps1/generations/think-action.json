@@ -1,0 +1,402 @@
+{
+  "id": "think-action",
+  "source": "ps1/sheets/think-action.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/think-action.txt",
+  "sourceSha256": "eb4679043168e29d36baff1e1371305df6b59dda7808c8c734af3a6abe522e3c",
+  "references": [
+    "ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      28,
+      31,
+      327,
+      336
+    ],
+    [
+      373,
+      31,
+      684,
+      336
+    ],
+    [
+      742,
+      31,
+      1049,
+      336
+    ],
+    [
+      18,
+      386,
+      336,
+      698
+    ],
+    [
+      381,
+      388,
+      704,
+      698
+    ],
+    [
+      751,
+      384,
+      1056,
+      696
+    ],
+    [
+      26,
+      740,
+      340,
+      1060
+    ],
+    [
+      378,
+      738,
+      698,
+      1057
+    ],
+    [
+      736,
+      743,
+      1056,
+      1058
+    ],
+    [
+      20,
+      1098,
+      340,
+      1404
+    ],
+    [
+      376,
+      1097,
+      694,
+      1403
+    ],
+    [
+      740,
+      1097,
+      1049,
+      1403
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      31,
+      34,
+      324,
+      333
+    ],
+    [
+      376,
+      34,
+      681,
+      333
+    ],
+    [
+      745,
+      34,
+      1046,
+      333
+    ],
+    [
+      21,
+      389,
+      333,
+      695
+    ],
+    [
+      384,
+      391,
+      701,
+      695
+    ],
+    [
+      754,
+      387,
+      1053,
+      693
+    ],
+    [
+      29,
+      743,
+      337,
+      1057
+    ],
+    [
+      381,
+      741,
+      695,
+      1054
+    ],
+    [
+      739,
+      746,
+      1053,
+      1055
+    ],
+    [
+      23,
+      1101,
+      337,
+      1401
+    ],
+    [
+      379,
+      1100,
+      691,
+      1400
+    ],
+    [
+      743,
+      1100,
+      1046,
+      1400
+    ]
+  ],
+  "exportBounds": [
+    [
+      58,
+      78,
+      195,
+      218
+    ],
+    [
+      50,
+      78,
+      192,
+      218
+    ],
+    [
+      53,
+      78,
+      194,
+      218
+    ],
+    [
+      53,
+      75,
+      199,
+      218
+    ],
+    [
+      54,
+      76,
+      202,
+      218
+    ],
+    [
+      58,
+      74,
+      197,
+      217
+    ],
+    [
+      57,
+      72,
+      201,
+      218
+    ],
+    [
+      52,
+      71,
+      199,
+      217
+    ],
+    [
+      51,
+      73,
+      197,
+      218
+    ],
+    [
+      54,
+      78,
+      201,
+      218
+    ],
+    [
+      51,
+      78,
+      197,
+      218
+    ],
+    [
+      52,
+      78,
+      194,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    12,
+    12,
+    14,
+    31
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.82,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 16,
+  "frames": "ps1/source-frames/think-action",
+  "auditBoard": "ps1/audit/think-action.png",
+  "layout": {
+    "scale": 0.82,
+    "offset": [
+      0,
+      -3
+    ]
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "All exported poses retain four limbs and exactly three tails. Source poses 4-8 are explicitly excluded.",
+  "acceptedFrames": [
+    0,
+    1,
+    2,
+    3,
+    9,
+    10,
+    11
+  ],
+  "excludedFrames": [
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "poseOrder": [
+    0,
+    1,
+    2,
+    3,
+    3,
+    3,
+    3,
+    9,
+    9,
+    10,
+    11,
+    0
+  ],
+  "reviewScope": "Exported poses only; every raw source pose inspected, five rejected for a fourth tail.",
+  "fullSheetAnatomyReview": "Five excluded poses contain a fourth tail.",
+  "poseOrderReason": "Use verified head-tilt poses, hold the thoughtful beat, then return to neutral. No failed tail-curl pose enters the timeline.",
+  "frameReviews": [
+    {
+      "frame": 0,
+      "limbs": 4,
+      "tails": 3,
+      "status": "accepted",
+      "method": "direct visual review"
+    },
+    {
+      "frame": 1,
+      "limbs": 4,
+      "tails": 3,
+      "status": "accepted",
+      "method": "direct visual review"
+    },
+    {
+      "frame": 2,
+      "limbs": 4,
+      "tails": 3,
+      "status": "accepted",
+      "method": "direct visual review"
+    },
+    {
+      "frame": 3,
+      "limbs": 4,
+      "tails": 3,
+      "status": "accepted",
+      "method": "direct visual review"
+    },
+    {
+      "frame": 4,
+      "limbs": 4,
+      "tails": 4,
+      "status": "rejected",
+      "method": "direct visual review"
+    },
+    {
+      "frame": 5,
+      "limbs": 4,
+      "tails": 4,
+      "status": "rejected",
+      "method": "direct visual review"
+    },
+    {
+      "frame": 6,
+      "limbs": 4,
+      "tails": 4,
+      "status": "rejected",
+      "method": "direct visual review"
+    },
+    {
+      "frame": 7,
+      "limbs": 4,
+      "tails": 4,
+      "status": "rejected",
+      "method": "direct visual review"
+    },
+    {
+      "frame": 8,
+      "limbs": 4,
+      "tails": 4,
+      "status": "rejected",
+      "method": "direct visual review"
+    },
+    {
+      "frame": 9,
+      "limbs": 4,
+      "tails": 3,
+      "status": "accepted",
+      "method": "direct visual review"
+    },
+    {
+      "frame": 10,
+      "limbs": 4,
+      "tails": 3,
+      "status": "accepted",
+      "method": "direct visual review"
+    },
+    {
+      "frame": 11,
+      "limbs": 4,
+      "tails": 3,
+      "status": "accepted",
+      "method": "direct visual review"
+    }
+  ]
+}

@@ -1,0 +1,455 @@
+{
+  "status": "pass",
+  "routines": 24,
+  "clips": 56,
+  "frames": 672,
+  "generatedSourceSheets": 40,
+  "reverseClipsChecked": 16,
+  "losslessFrameComparisons": 672,
+  "exactEndpointChecks": 76,
+  "exactPhaseJoinChecks": 26,
+  "transparentAnimatedPreviews": 27,
+  "decodedPreviewFrames": 1188,
+  "repeatExportFrameComparisons": 672,
+  "anatomyVerification": "Direct visual review of every accepted source pose; not inferred from pixel tests.",
+  "excludedSourcePoses": {
+    "think-action": [
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  "loopSeamOutliers": [],
+  "clipMeasurements": [
+    {
+      "id": "attentive-idle-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.048864178359508514,
+      "medianAdjacentDelta": 0.028502289205789566,
+      "loopSeamDelta": 0.01182628609240055,
+      "loopSeamToMedianRatio": 0.41492407879989934,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "walk-start",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.11138620972633362,
+      "medianAdjacentDelta": 0.05239101126790047,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "walk-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.07718735188245773,
+      "medianAdjacentDelta": 0.037694282829761505,
+      "loopSeamDelta": 0.018508227542042732,
+      "loopSeamToMedianRatio": 0.491008878604518,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "walk-stop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.11138620972633362,
+      "medianAdjacentDelta": 0.05239101126790047,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "trot-start",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.07309846580028534,
+      "medianAdjacentDelta": 0.03820352628827095,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "trot-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.06379904597997665,
+      "medianAdjacentDelta": 0.05185640603303909,
+      "loopSeamDelta": 0.03968657925724983,
+      "loopSeamToMedianRatio": 0.7653168102695829,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "trot-stop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.07309846580028534,
+      "medianAdjacentDelta": 0.03820352628827095,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "hover-idle-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.043573737144470215,
+      "medianAdjacentDelta": 0.026897866278886795,
+      "loopSeamDelta": 0.017481928691267967,
+      "loopSeamToMedianRatio": 0.6499373783038779,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "floating-travel-start",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.07353554666042328,
+      "medianAdjacentDelta": 0.061944376677274704,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "floating-travel-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.04704272001981735,
+      "medianAdjacentDelta": 0.021512988954782486,
+      "loopSeamDelta": 0.023894760757684708,
+      "loopSeamToMedianRatio": 1.1107131978688967,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "floating-travel-stop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.07353554666042328,
+      "medianAdjacentDelta": 0.061944376677274704,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "seated-watch-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.039807215332984924,
+      "medianAdjacentDelta": 0.026534706354141235,
+      "loopSeamDelta": 0.025505928322672844,
+      "loopSeamToMedianRatio": 0.9612289648983497,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "think-action",
+      "distinctFrames": 7,
+      "maximumAdjacentDelta": 0.03979965299367905,
+      "medianAdjacentDelta": 0.021330565214157104,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "read-entry",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.06328493356704712,
+      "medianAdjacentDelta": 0.025650231167674065,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "read-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.042431287467479706,
+      "medianAdjacentDelta": 0.03426788002252579,
+      "loopSeamDelta": 0.02048616111278534,
+      "loopSeamToMedianRatio": 0.5978240001808949,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "read-exit",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.06328493356704712,
+      "medianAdjacentDelta": 0.025650231167674065,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "write-entry",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.06829413771629333,
+      "medianAdjacentDelta": 0.0432593934237957,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "write-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.08453699946403503,
+      "medianAdjacentDelta": 0.038698457181453705,
+      "loopSeamDelta": 0.025378182530403137,
+      "loopSeamToMedianRatio": 0.6557931343724388,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "write-exit",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.06829413771629333,
+      "medianAdjacentDelta": 0.0432593934237957,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "insight-action",
+      "distinctFrames": 11,
+      "maximumAdjacentDelta": 0.06722687929868698,
+      "medianAdjacentDelta": 0.036133743822574615,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "groom-action",
+      "distinctFrames": 11,
+      "maximumAdjacentDelta": 0.05074990540742874,
+      "medianAdjacentDelta": 0.030674230307340622,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "stretch-action",
+      "distinctFrames": 11,
+      "maximumAdjacentDelta": 0.11185793578624725,
+      "medianAdjacentDelta": 0.07125144451856613,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "tail-play-action",
+      "distinctFrames": 11,
+      "maximumAdjacentDelta": 0.06371781975030899,
+      "medianAdjacentDelta": 0.02748250961303711,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "greeting-action",
+      "distinctFrames": 11,
+      "maximumAdjacentDelta": 0.10401633381843567,
+      "medianAdjacentDelta": 0.03267081454396248,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "sleep-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.011245660483837128,
+      "medianAdjacentDelta": 0.006718480959534645,
+      "loopSeamDelta": 0.007757818792015314,
+      "loopSeamToMedianRatio": 1.1546983371301627,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "meditate-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.0537017360329628,
+      "medianAdjacentDelta": 0.029459159821271896,
+      "loopSeamDelta": 0.025880116969347,
+      "loopSeamToMedianRatio": 0.8785083188509492,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "samurai-entry",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.11130335927009583,
+      "medianAdjacentDelta": 0.07397903501987457,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "samurai-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.10093430429697037,
+      "medianAdjacentDelta": 0.060323067009449005,
+      "loopSeamDelta": 0.08721430599689484,
+      "loopSeamToMedianRatio": 1.4457869985827079,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "samurai-exit",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.11130335927009583,
+      "medianAdjacentDelta": 0.07397903501987457,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "ninja-entry",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.10405756533145905,
+      "medianAdjacentDelta": 0.04909169673919678,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "ninja-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.0677427351474762,
+      "medianAdjacentDelta": 0.047082751989364624,
+      "loopSeamDelta": 0.047281716018915176,
+      "loopSeamToMedianRatio": 1.0042258368753698,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "ninja-exit",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.10405756533145905,
+      "medianAdjacentDelta": 0.04909169673919678,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "spirit-magic-entry",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.06300908327102661,
+      "medianAdjacentDelta": 0.029609879478812218,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "spirit-magic-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.039895862340927124,
+      "medianAdjacentDelta": 0.022718971595168114,
+      "loopSeamDelta": 0.013631045818328857,
+      "loopSeamToMedianRatio": 0.5999851604738974,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "spirit-magic-exit",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.06300908327102661,
+      "medianAdjacentDelta": 0.029609879478812218,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "straw-hat-adventurer-entry",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.12231744825839996,
+      "medianAdjacentDelta": 0.07830296456813812,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "straw-hat-adventurer-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.05112292617559433,
+      "medianAdjacentDelta": 0.039118342101573944,
+      "loopSeamDelta": 0.053992047905921936,
+      "loopSeamToMedianRatio": 1.3802233173820917,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "straw-hat-adventurer-exit",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.12231744825839996,
+      "medianAdjacentDelta": 0.07830296456813812,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "fishing-entry",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.06596740335226059,
+      "medianAdjacentDelta": 0.030437972396612167,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "fishing-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.07349475473165512,
+      "medianAdjacentDelta": 0.04175886511802673,
+      "loopSeamDelta": 0.021319175139069557,
+      "loopSeamToMedianRatio": 0.5105305203772494,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "fishing-exit",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.06596740335226059,
+      "medianAdjacentDelta": 0.030437972396612167,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "bamboo-flute-entry",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.05540378764271736,
+      "medianAdjacentDelta": 0.038994137197732925,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "bamboo-flute-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.06076453626155853,
+      "medianAdjacentDelta": 0.04379718005657196,
+      "loopSeamDelta": 0.02866525389254093,
+      "loopSeamToMedianRatio": 0.6544999896229525,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "bamboo-flute-exit",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.05540378764271736,
+      "medianAdjacentDelta": 0.038994137197732925,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "tea-break-entry",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.08018718659877777,
+      "medianAdjacentDelta": 0.041597239673137665,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "tea-break-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.06003131717443466,
+      "medianAdjacentDelta": 0.04459623247385025,
+      "loopSeamDelta": 0.03779657185077667,
+      "loopSeamToMedianRatio": 0.8475283617946724,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "tea-break-exit",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.08018718659877777,
+      "medianAdjacentDelta": 0.041597239673137665,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "fan-dance-entry",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.08909453451633453,
+      "medianAdjacentDelta": 0.04788926988840103,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "fan-dance-loop",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.09009839594364166,
+      "medianAdjacentDelta": 0.0737328827381134,
+      "loopSeamDelta": 0.03215162083506584,
+      "loopSeamToMedianRatio": 0.4360553886013504,
+      "loopSeamOutlier": false
+    },
+    {
+      "id": "fan-dance-exit",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.08909453451633453,
+      "medianAdjacentDelta": 0.04788926988840103,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "sit-down",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.07454294711351395,
+      "medianAdjacentDelta": 0.05505122244358063,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "stand-up",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.07454294711351395,
+      "medianAdjacentDelta": 0.05505122244358063,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "curl-up",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.05968289077281952,
+      "medianAdjacentDelta": 0.03513382002711296,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "wake-and-sit",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.05968289077281952,
+      "medianAdjacentDelta": 0.03513382002711296,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "take-off",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.08948443830013275,
+      "medianAdjacentDelta": 0.04595503583550453,
+      "loopSeamDelta": null
+    },
+    {
+      "id": "land",
+      "distinctFrames": 12,
+      "maximumAdjacentDelta": 0.08948443830013275,
+      "medianAdjacentDelta": 0.04595503583550453,
+      "loopSeamDelta": null
+    }
+  ]
+}

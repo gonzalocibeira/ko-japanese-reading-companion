@@ -1,4 +1,5 @@
 import {hiragana, type Reading} from './shared';
+import type {MascotPatch,MascotPosition,MascotPreferences} from './mascot-preferences';
 export interface Appearance { scale: number; contrast: 'auto'|'high' }
 export function appearance(value: unknown): Appearance {
   const v=value as Partial<Appearance> | undefined;
@@ -53,6 +54,8 @@ export function readingViewPreferences(value:unknown,legacy?:unknown):ReadingVie
 }
 export function panelEnabled(settings:ReadingViewPreferences,hostname:string) {return Object.hasOwn(settings.sites,hostname) && settings.sites[hostname]===true;}
 export type PreferenceMutation =
+  | {kind:'mascot';patch:MascotPatch}
+  | {kind:'mascot-position';hostname:string;position:MascotPosition|null}
   | {kind:'reading-view';patch:Partial<Omit<ReadingViewPreferences,'sites'>>;site?:{hostname:string;enabled:boolean}}
   | {kind:'save-correction';word:string;reading:string;previousWord?:string}
   | {kind:'remove-correction';word:string}
@@ -68,6 +71,8 @@ async function mutatePreferences<T>(mutation:PreferenceMutation):Promise<T> {
 export function updateReadingView(patch:Partial<Omit<ReadingViewPreferences,'sites'>>,site?:{hostname:string;enabled:boolean}) {
   return mutatePreferences<ReadingViewPreferences>({kind:'reading-view',patch,site});
 }
+export function updateMascot(patch:MascotPatch) {return mutatePreferences<MascotPreferences>({kind:'mascot',patch});}
+export function updateMascotPosition(hostname:string,position:MascotPosition|null) {return mutatePreferences<MascotPreferences>({kind:'mascot-position',hostname,position});}
 export function saveCorrection(word:string,reading:string,previousWord?:string) {
   return mutatePreferences<Record<string,string>>({kind:'save-correction',word,reading,previousWord});
 }

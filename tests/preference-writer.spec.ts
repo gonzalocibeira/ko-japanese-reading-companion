@@ -84,3 +84,13 @@ test('the preference writer rejects unknown senders and malformed operations wit
   expect(h.state()).toEqual({});
   await h.a.saveCorrection('東京','とうきょう');expect(h.state().readingOverrides).toEqual({'東京':'とうきょう'});
 });
+
+test('mascot patches and per-site drops serialize without overwriting settings or other sites',async()=>{
+  const h=await harness();
+  await Promise.all([h.a.updateMascot({enabled:true}),h.b.updateMascot({definitions:'ja'}),h.a.updateMascotPosition('one.test',{x:.2,y:.7}),h.b.updateMascotPosition('two.test',{x:.4,y:.5})]);
+  expect(h.state().mascot).toMatchObject({enabled:true,definitions:'ja',trigger:'hover',positions:{'one.test':{x:.2,y:.7},'two.test':{x:.4,y:.5}}});
+  await h.a.updateMascotPosition('one.test',null);
+  expect(Object.keys(h.state().mascot.positions)).toEqual(['two.test']);
+  for(const mutation of [{kind:'mascot',patch:{definitions:'both'}},{kind:'mascot',patch:{positions:{}}},{kind:'mascot-position',hostname:'bad/site',position:{x:0,y:0}},{kind:'mascot-position',hostname:'one.test',position:{x:NaN,y:0}}])expect((await h.send(mutation)).error).toBeTruthy();
+  expect(h.state().mascot.enabled).toBe(true);
+});

@@ -1,0 +1,270 @@
+{
+  "id": "tail-play-action",
+  "version": 2,
+  "generator": "Built-in image_gen tool",
+  "source": "production/sheets/tail-play-action-v2.png",
+  "prompt": "production/prompts/tail-play-action-v2.txt",
+  "original": "/Users/turco/.codex/generated_images/01a15023-7a40-74e3-b719-8bb34579c4c6/exec-4b66c4ab-7304-4b5f-81b6-1a62cade1a30.png",
+  "anatomyReview": "pass",
+  "status": "generated",
+  "supersededSource": "production/sheets/tail-play-action-v1.png",
+  "rejectionReason": "Extra arm above four grounded legs; switched to seated two-feet/two-forearms pose.",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      25,
+      7,
+      344,
+      359
+    ],
+    [
+      383,
+      9,
+      690,
+      362
+    ],
+    [
+      746,
+      8,
+      1059,
+      367
+    ],
+    [
+      22,
+      366,
+      345,
+      729
+    ],
+    [
+      393,
+      362,
+      714,
+      726
+    ],
+    [
+      746,
+      364,
+      1065,
+      725
+    ],
+    [
+      25,
+      730,
+      343,
+      1085
+    ],
+    [
+      391,
+      723,
+      713,
+      1088
+    ],
+    [
+      747,
+      727,
+      1064,
+      1089
+    ],
+    [
+      28,
+      1090,
+      338,
+      1443
+    ],
+    [
+      386,
+      1092,
+      699,
+      1443
+    ],
+    [
+      751,
+      1092,
+      1064,
+      1441
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      28,
+      10,
+      341,
+      356
+    ],
+    [
+      386,
+      12,
+      687,
+      359
+    ],
+    [
+      749,
+      11,
+      1056,
+      364
+    ],
+    [
+      25,
+      369,
+      342,
+      726
+    ],
+    [
+      396,
+      365,
+      711,
+      723
+    ],
+    [
+      749,
+      367,
+      1062,
+      722
+    ],
+    [
+      28,
+      733,
+      340,
+      1082
+    ],
+    [
+      394,
+      726,
+      710,
+      1085
+    ],
+    [
+      750,
+      730,
+      1061,
+      1086
+    ],
+    [
+      31,
+      1093,
+      335,
+      1440
+    ],
+    [
+      389,
+      1095,
+      696,
+      1440
+    ],
+    [
+      754,
+      1095,
+      1061,
+      1438
+    ]
+  ],
+  "exportBounds": [
+    [
+      41,
+      20,
+      219,
+      217
+    ],
+    [
+      39,
+      21,
+      210,
+      218
+    ],
+    [
+      39,
+      20,
+      214,
+      221
+    ],
+    [
+      39,
+      17,
+      220,
+      220
+    ],
+    [
+      44,
+      15,
+      224,
+      218
+    ],
+    [
+      40,
+      16,
+      217,
+      218
+    ],
+    [
+      41,
+      18,
+      218,
+      217
+    ],
+    [
+      43,
+      14,
+      223,
+      218
+    ],
+    [
+      40,
+      16,
+      217,
+      219
+    ],
+    [
+      43,
+      21,
+      216,
+      218
+    ],
+    [
+      40,
+      22,
+      215,
+      218
+    ],
+    [
+      42,
+      22,
+      217,
+      217
+    ]
+  ],
+  "rowOffsets": [
+    -14,
+    -16,
+    -16,
+    -9
+  ],
+  "canvasSize": 450,
+  "exportScale": 1,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "frames": "production/frames/tail-play-action",
+  "auditBoard": "production/audit/tail-play-action.png",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "reviewMethod": "Direct visual inspection of all twelve seated two-hindfeet/two-forearms poses"
+}

@@ -1,0 +1,281 @@
+{
+  "id": "write-entry",
+  "source": "ps1/sheets/write-entry.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/write-entry.txt",
+  "sourceSha256": "2fbb0f43a9ae8f8553ce4c3da7be22248f106395a3f8a6197846223052790b94",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/write-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      26,
+      67,
+      319,
+      351
+    ],
+    [
+      391,
+      78,
+      696,
+      346
+    ],
+    [
+      742,
+      100,
+      1064,
+      365
+    ],
+    [
+      25,
+      409,
+      345,
+      696
+    ],
+    [
+      383,
+      409,
+      683,
+      696
+    ],
+    [
+      742,
+      411,
+      1054,
+      697
+    ],
+    [
+      15,
+      750,
+      328,
+      1036
+    ],
+    [
+      380,
+      771,
+      714,
+      1047
+    ],
+    [
+      737,
+      790,
+      1077,
+      1056
+    ],
+    [
+      11,
+      1101,
+      371,
+      1396
+    ],
+    [
+      373,
+      1097,
+      736,
+      1387
+    ],
+    [
+      740,
+      1104,
+      1086,
+      1397
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      29,
+      70,
+      316,
+      348
+    ],
+    [
+      394,
+      81,
+      693,
+      343
+    ],
+    [
+      745,
+      103,
+      1061,
+      362
+    ],
+    [
+      28,
+      412,
+      342,
+      693
+    ],
+    [
+      386,
+      412,
+      680,
+      693
+    ],
+    [
+      745,
+      414,
+      1051,
+      694
+    ],
+    [
+      18,
+      753,
+      325,
+      1033
+    ],
+    [
+      383,
+      774,
+      711,
+      1044
+    ],
+    [
+      740,
+      793,
+      1074,
+      1053
+    ],
+    [
+      14,
+      1104,
+      368,
+      1393
+    ],
+    [
+      376,
+      1100,
+      733,
+      1384
+    ],
+    [
+      743,
+      1107,
+      1085,
+      1394
+    ]
+  ],
+  "exportBounds": [
+    [
+      52,
+      79,
+      195,
+      218
+    ],
+    [
+      53,
+      85,
+      202,
+      216
+    ],
+    [
+      47,
+      96,
+      205,
+      225
+    ],
+    [
+      51,
+      78,
+      208,
+      218
+    ],
+    [
+      49,
+      78,
+      196,
+      218
+    ],
+    [
+      47,
+      79,
+      200,
+      219
+    ],
+    [
+      46,
+      73,
+      199,
+      213
+    ],
+    [
+      47,
+      83,
+      211,
+      218
+    ],
+    [
+      45,
+      93,
+      212,
+      223
+    ],
+    [
+      44,
+      74,
+      221,
+      218
+    ],
+    [
+      44,
+      72,
+      222,
+      214
+    ],
+    [
+      46,
+      75,
+      217,
+      219
+    ]
+  ],
+  "rowOffsets": [
+    -3,
+    14,
+    25,
+    38
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.88,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 12,
+  "frames": "ps1/source-frames/write-entry",
+  "auditBoard": "ps1/audit/write-entry.png",
+  "layout": {
+    "scale": 0.88
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

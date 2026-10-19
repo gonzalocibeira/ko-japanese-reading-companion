@@ -1,0 +1,281 @@
+{
+  "id": "samurai-entry",
+  "source": "ps1/sheets/samurai-entry.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/samurai-entry.txt",
+  "sourceSha256": "a6b26807af7945bbff8c06c20f94c648c3a3fe395ef61011103ec2341561ea8e",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/samurai-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      26,
+      70,
+      337,
+      347
+    ],
+    [
+      385,
+      103,
+      702,
+      346
+    ],
+    [
+      751,
+      33,
+      1024,
+      355
+    ],
+    [
+      32,
+      389,
+      319,
+      720
+    ],
+    [
+      384,
+      401,
+      684,
+      720
+    ],
+    [
+      758,
+      396,
+      1028,
+      721
+    ],
+    [
+      27,
+      760,
+      309,
+      1066
+    ],
+    [
+      376,
+      759,
+      707,
+      1070
+    ],
+    [
+      724,
+      756,
+      1075,
+      1070
+    ],
+    [
+      41,
+      1103,
+      390,
+      1412
+    ],
+    [
+      388,
+      1104,
+      728,
+      1414
+    ],
+    [
+      730,
+      1104,
+      1073,
+      1413
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      29,
+      73,
+      334,
+      344
+    ],
+    [
+      388,
+      106,
+      699,
+      343
+    ],
+    [
+      754,
+      36,
+      1021,
+      352
+    ],
+    [
+      35,
+      392,
+      316,
+      717
+    ],
+    [
+      387,
+      404,
+      681,
+      717
+    ],
+    [
+      761,
+      399,
+      1025,
+      718
+    ],
+    [
+      30,
+      763,
+      306,
+      1063
+    ],
+    [
+      379,
+      762,
+      704,
+      1067
+    ],
+    [
+      727,
+      759,
+      1072,
+      1067
+    ],
+    [
+      44,
+      1106,
+      387,
+      1409
+    ],
+    [
+      391,
+      1107,
+      725,
+      1411
+    ],
+    [
+      733,
+      1107,
+      1070,
+      1410
+    ]
+  ],
+  "exportBounds": [
+    [
+      50,
+      79,
+      206,
+      218
+    ],
+    [
+      49,
+      96,
+      208,
+      217
+    ],
+    [
+      51,
+      60,
+      187,
+      222
+    ],
+    [
+      53,
+      52,
+      197,
+      218
+    ],
+    [
+      48,
+      58,
+      199,
+      218
+    ],
+    [
+      54,
+      55,
+      189,
+      218
+    ],
+    [
+      51,
+      62,
+      192,
+      216
+    ],
+    [
+      44,
+      62,
+      210,
+      218
+    ],
+    [
+      37,
+      60,
+      213,
+      218
+    ],
+    [
+      58,
+      62,
+      233,
+      217
+    ],
+    [
+      50,
+      63,
+      221,
+      218
+    ],
+    [
+      40,
+      63,
+      212,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    1,
+    -10,
+    2,
+    21
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.9,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 9,
+  "frames": "ps1/source-frames/samurai-entry",
+  "auditBoard": "ps1/audit/samurai-entry.png",
+  "layout": {
+    "scale": 0.9
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

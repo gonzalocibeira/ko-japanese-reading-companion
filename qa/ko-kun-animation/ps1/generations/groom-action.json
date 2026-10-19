@@ -1,0 +1,283 @@
+{
+  "id": "groom-action",
+  "source": "ps1/sheets/groom-action.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/groom-action.txt",
+  "sourceSha256": "9a4d32056f71807baf334ff015eaac2913aee2fbb0d92df8d96f30b38bb22891",
+  "references": [
+    "ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      10,
+      33,
+      315,
+      339
+    ],
+    [
+      371,
+      41,
+      668,
+      335
+    ],
+    [
+      729,
+      39,
+      1063,
+      335
+    ],
+    [
+      5,
+      401,
+      330,
+      696
+    ],
+    [
+      371,
+      392,
+      706,
+      696
+    ],
+    [
+      731,
+      397,
+      1054,
+      696
+    ],
+    [
+      10,
+      745,
+      325,
+      1054
+    ],
+    [
+      367,
+      740,
+      710,
+      1054
+    ],
+    [
+      729,
+      756,
+      1046,
+      1053
+    ],
+    [
+      6,
+      1102,
+      330,
+      1403
+    ],
+    [
+      369,
+      1107,
+      687,
+      1403
+    ],
+    [
+      728,
+      1090,
+      1041,
+      1397
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      13,
+      36,
+      312,
+      336
+    ],
+    [
+      374,
+      44,
+      665,
+      332
+    ],
+    [
+      732,
+      42,
+      1060,
+      332
+    ],
+    [
+      8,
+      404,
+      327,
+      693
+    ],
+    [
+      374,
+      395,
+      703,
+      693
+    ],
+    [
+      734,
+      400,
+      1051,
+      693
+    ],
+    [
+      13,
+      748,
+      322,
+      1051
+    ],
+    [
+      370,
+      743,
+      707,
+      1051
+    ],
+    [
+      732,
+      759,
+      1043,
+      1050
+    ],
+    [
+      9,
+      1105,
+      327,
+      1400
+    ],
+    [
+      372,
+      1110,
+      684,
+      1400
+    ],
+    [
+      731,
+      1093,
+      1038,
+      1394
+    ]
+  ],
+  "exportBounds": [
+    [
+      50,
+      80,
+      189,
+      219
+    ],
+    [
+      50,
+      83,
+      185,
+      218
+    ],
+    [
+      48,
+      82,
+      200,
+      218
+    ],
+    [
+      47,
+      83,
+      196,
+      218
+    ],
+    [
+      49,
+      78,
+      203,
+      218
+    ],
+    [
+      48,
+      81,
+      196,
+      218
+    ],
+    [
+      50,
+      76,
+      194,
+      218
+    ],
+    [
+      47,
+      74,
+      205,
+      218
+    ],
+    [
+      47,
+      81,
+      192,
+      217
+    ],
+    [
+      48,
+      80,
+      196,
+      218
+    ],
+    [
+      48,
+      82,
+      194,
+      218
+    ],
+    [
+      47,
+      74,
+      190,
+      215
+    ]
+  ],
+  "rowOffsets": [
+    13,
+    14,
+    18,
+    31
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.82,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 16,
+  "frames": "ps1/source-frames/groom-action",
+  "auditBoard": "ps1/audit/groom-action.png",
+  "layout": {
+    "scale": 0.82,
+    "offset": [
+      0,
+      -3
+    ]
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Corrected source: one raised foreleg replaces its grounded paw during the ear wipe; no extra arm."
+}

@@ -1,0 +1,280 @@
+{
+  "id": "write-loop",
+  "source": "ps1/sheets/write-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/write-loop.txt",
+  "sourceSha256": "c38b73b41d804822a3364a7ce782269ab26352205b362ed3e453dcfbfbf1b95e",
+  "references": [
+    "/Users/turco/.codex/generated_images/01a150f2-a7af-7301-9a3a-7ad6fae38b23/exec-3f467456-c3ff-4be7-8ee2-41a3b3c26583.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "layout": {
+    "scale": 1.15
+  },
+  "sourceSize": [
+    1312,
+    1199
+  ],
+  "sourceRects": [
+    [
+      68,
+      43,
+      401,
+      298
+    ],
+    [
+      496,
+      44,
+      830,
+      298
+    ],
+    [
+      917,
+      44,
+      1246,
+      298
+    ],
+    [
+      71,
+      332,
+      421,
+      590
+    ],
+    [
+      493,
+      319,
+      846,
+      589
+    ],
+    [
+      929,
+      319,
+      1272,
+      588
+    ],
+    [
+      65,
+      609,
+      420,
+      877
+    ],
+    [
+      498,
+      609,
+      853,
+      877
+    ],
+    [
+      924,
+      609,
+      1273,
+      877
+    ],
+    [
+      68,
+      893,
+      417,
+      1152
+    ],
+    [
+      499,
+      894,
+      851,
+      1155
+    ],
+    [
+      931,
+      895,
+      1272,
+      1153
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      71,
+      46,
+      398,
+      295
+    ],
+    [
+      499,
+      47,
+      827,
+      295
+    ],
+    [
+      920,
+      47,
+      1243,
+      295
+    ],
+    [
+      74,
+      335,
+      418,
+      587
+    ],
+    [
+      496,
+      322,
+      843,
+      586
+    ],
+    [
+      932,
+      322,
+      1269,
+      585
+    ],
+    [
+      68,
+      612,
+      417,
+      874
+    ],
+    [
+      501,
+      612,
+      850,
+      874
+    ],
+    [
+      927,
+      612,
+      1270,
+      874
+    ],
+    [
+      71,
+      896,
+      414,
+      1149
+    ],
+    [
+      502,
+      897,
+      848,
+      1152
+    ],
+    [
+      934,
+      898,
+      1269,
+      1150
+    ]
+  ],
+  "exportBounds": [
+    [
+      48,
+      83,
+      225,
+      218
+    ],
+    [
+      43,
+      83,
+      220,
+      218
+    ],
+    [
+      35,
+      83,
+      209,
+      218
+    ],
+    [
+      50,
+      81,
+      236,
+      218
+    ],
+    [
+      42,
+      74,
+      229,
+      217
+    ],
+    [
+      41,
+      74,
+      223,
+      216
+    ],
+    [
+      46,
+      76,
+      235,
+      218
+    ],
+    [
+      44,
+      76,
+      233,
+      218
+    ],
+    [
+      38,
+      76,
+      224,
+      218
+    ],
+    [
+      48,
+      80,
+      233,
+      217
+    ],
+    [
+      45,
+      81,
+      232,
+      219
+    ],
+    [
+      42,
+      81,
+      223,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    -9,
+    -1,
+    11,
+    35
+  ],
+  "canvasSize": 544,
+  "exportScale": 1.15,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 19,
+  "frames": "ps1/source-frames/write-loop",
+  "auditBoard": "ps1/audit/write-loop.png",
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Corrected source: same single ink stroke throughout; full scroll and actors within transparent margins."
+}

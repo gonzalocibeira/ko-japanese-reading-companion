@@ -1,12 +1,12 @@
 # Kō 1.2.0 release audit
 
-Release date: **28 October 2026**. Prepared on **18 October 2026** from RC1. Manifest and npm package versions remain **1.2.0**. The stable GitHub release is prepared as a draft under **v1.2.0**, held until launch. Chrome Web Store upload and review are tracked separately below.
+Announced launch date: **28 October 2026**. Prepared on **18 October 2026** from RC1 and published on GitHub that day under **v1.2.0**. The 1.2 release assets retain manifest and npm versions **1.2.0**. The primary branch now contains **1.3 WIP**; this audit and its hashes describe the historical 1.2 artifacts. Chrome Web Store upload and review are tracked separately below.
 
 ## Scope
 
 The release retains RC1 functionality and all 90 mimetic animation strips. The newer `public/art/ko-kun/` character library is excluded by the build and rejected by package verification. The local Kō-kun artwork and QA workspace are preserved for future work and are not committed with this release.
 
-README, release notes, bundled About, offline history, technical notes, and store guidance identify 1.2.0 and 28 October 2026. Download links target the full-release tag and become available when the draft is published. The privacy policy retains its actual effective date, 18 October 2026. Original project material retains the Kō No-Resale License 1.0; third-party terms and previously distributed MIT copies remain unchanged.
+The 1.2 release's README, notes, bundled About, offline history, technical notes, and store guidance identify 1.2.0 and 28 October 2026. Download links target the published full-release tag. Its privacy policy retains its effective date, 18 October 2026. Original project material retains the Kō No-Resale License 1.0; third-party terms and previously distributed MIT copies remain unchanged.
 
 ## Final preparation verification
 
@@ -26,11 +26,11 @@ Final archive sizes and SHA-256 digests:
 
 ## Publication status
 
-- GitHub: prepared for a stable-release draft; do not publish before 28 October 2026.
+- GitHub: published as the stable **v1.2.0** release on **18 October 2026**, verified again on 19 October. This source-only 1.3 WIP update does not change that tag or its assets.
 - Chrome Web Store: **1.2.0 uploaded and submitted for review on 18 October 2026**, revision `00003`. The dashboard confirms **Pending review**, with published version **1.1.0**. Automatic publication after review was explicitly unchecked. The listing was updated for adjective forms, 90 mimetics, and current license terms. No launch date has been scheduled in the console; its pending-review state exposes no date picker.
 - Both ZIPs must match the same built runtime byte-for-byte; the store layout has `manifest.json` at its root, and the manual layout has a `dist/` prefix. No Kō-kun files, source maps, development docs, tests, or QA files may appear.
 
-The user cancelled the Codex launch follow-up. No follow-up automation remains. The planned release date is **28 October 2026**; launch still requires publication after store approval. Store submission evidence is retained locally in `qa/release-1.2/store-submission-1.2.0.png` (excluded from Git because the dashboard includes account details).
+The user cancelled the Codex launch follow-up. No follow-up automation remains. The announced launch date is **28 October 2026**; store launch still requires publication after approval. The store status above is the 18 October submission snapshot, not a fresh dashboard check. Store submission evidence is retained locally in `qa/release-1.2/store-submission-1.2.0.png` (excluded from Git because the dashboard includes account details).
 
 ## Historical RC1 evidence
 

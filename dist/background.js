@@ -173,15 +173,20 @@
           respond({ error: "Invalid dictionary request" });
           return;
         }
-        const word = message.word.trim();
-        let job = pending.get(word);
+        if (message.language !== void 0 && message.language !== "en" && message.language !== "ja") {
+          respond({ error: "Invalid dictionary language" });
+          return;
+        }
+        const word = message.word.trim(), languages = message.language ? [message.language] : ["en", "ja"];
+        const key = JSON.stringify([word, languages]);
+        let job = pending.get(key);
         if (!job) {
           if (pending.size >= 8) {
             respond({ error: "Dictionary is busy. Try again." });
             return;
           }
-          job = Promise.all([page("en", word), page("ja", word)]).then(([en, ja]) => ({ en, ja })).finally(() => pending.delete(word));
-          pending.set(word, job);
+          job = Promise.all(languages.map(async (language) => [language, await page(language, word)])).then((entries) => Object.fromEntries(entries)).finally(() => pending.delete(key));
+          pending.set(key, job);
         }
         void job.then(respond);
         return true;
@@ -262,11 +267,30 @@
     }
   });
 
+  // src/mascot-preferences.ts
+  function mascotPreferences(value) {
+    const v = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    const positions = /* @__PURE__ */ Object.create(null);
+    if (v.positions && typeof v.positions === "object" && !Array.isArray(v.positions)) {
+      for (const [site, p] of Object.entries(v.positions).slice(-200)) {
+        if (!site || site.length > 253 || /[\s/\\?#]/u.test(site) || !p || typeof p !== "object") continue;
+        if (typeof p.x === "number" && Number.isFinite(p.x) && typeof p.y === "number" && Number.isFinite(p.y)) positions[site] = { x: Math.max(0, Math.min(1, p.x)), y: Math.max(0, Math.min(1, p.y)) };
+      }
+    }
+    return { enabled: v.enabled === true, trigger: v.trigger === "highlight" ? "highlight" : "hover", definitions: v.definitions === "en" || v.definitions === "ja" ? v.definitions : "off", size: v.size === 96 || v.size === 160 ? v.size : 128, motion: v.motion === "reduced" ? "reduced" : "system", positions };
+  }
+  var init_mascot_preferences = __esm({
+    "src/mascot-preferences.ts"() {
+      "use strict";
+    }
+  });
+
   // src/preference-writer.ts
   var require_preference_writer = __commonJS({
     "src/preference-writer.ts"() {
       "use strict";
       init_preferences();
+      init_mascot_preferences();
       var pending = Promise.resolve();
       function string(value, limit) {
         if (typeof value !== "string" || value.length > limit) throw new Error("Invalid preference value.");
@@ -283,6 +307,25 @@
       }
       async function apply(mutation) {
         switch (mutation.kind) {
+          case "mascot": {
+            const patch = record(mutation.patch);
+            const choices = { enabled: [true, false], trigger: ["hover", "highlight"], definitions: ["off", "en", "ja"], size: [96, 128, 160], motion: ["system", "reduced"] };
+            if (Object.entries(patch).some(([key, value]) => !Object.hasOwn(choices, key) || !choices[key].includes(value))) throw new Error("Invalid K\u014D\u304F\u3093 preference.");
+            const state = await chrome.storage.local.get("mascot");
+            const next = mascotPreferences({ ...mascotPreferences(state.mascot), ...patch });
+            await chrome.storage.local.set({ mascot: next });
+            return next;
+          }
+          case "mascot-position": {
+            const site = hostname(mutation.hostname), p = mutation.position;
+            if (p !== null && (!p || typeof p.x !== "number" || !Number.isFinite(p.x) || p.x < 0 || p.x > 1 || typeof p.y !== "number" || !Number.isFinite(p.y) || p.y < 0 || p.y > 1)) throw new Error("Invalid K\u014D\u304F\u3093 position.");
+            const state = await chrome.storage.local.get("mascot"), next = mascotPreferences(state.mascot);
+            delete next.positions[site];
+            if (p) next.positions[site] = { x: p.x, y: p.y };
+            const bounded = mascotPreferences(next);
+            await chrome.storage.local.set({ mascot: bounded });
+            return bounded;
+          }
           case "reading-view": {
             const patch = record(mutation.patch);
             if (Object.entries(patch).some(([key, value]) => !["spacing", "fontSize", "width"].includes(key) || typeof value !== "number" || !Number.isFinite(value))) throw new Error("Invalid reading panel preference.");
@@ -422,7 +465,7 @@
       }
       chrome.runtime.onMessage.addListener((message, sender, respond) => {
         if (!["tokenize", "cancel-tokenize"].includes(message?.type) || sender.tab?.id === void 0) return;
-        if (message.purpose !== void 0 && message.purpose !== "readings" && message.purpose !== "playground") {
+        if (message.purpose !== void 0 && !["readings", "playground", "mascot"].includes(message.purpose)) {
           respond({ error: "Invalid analysis purpose" });
           return;
         }
@@ -444,6 +487,10 @@
         }
         if (purpose === "playground" && (!message.texts.length || message.texts.length > 4 || message.texts.some((text) => !text.length || text.length > 40))) {
           respond({ error: "Playground analysis accepts up to four verbs of 40 characters each" });
+          return;
+        }
+        if (purpose === "mascot" && (sender.frameId !== 0 || message.texts.length !== 1 || !message.texts[0].length || message.texts[0].length > 1e3)) {
+          respond({ error: "Invalid mascot analysis" });
           return;
         }
         if (!queue) {

@@ -1,0 +1,1168 @@
+{
+  "character": "Approved PS1 design",
+  "fullProductionAuthorized": true,
+  "authorization": "Generate all animations in the approved PS1 style with four limbs, smooth transitions and good loops",
+  "browserAudit": "See browser-audit.json and final-validation.json.",
+  "limbLimit": 4,
+  "tailCount": 3,
+  "clips": [
+    {
+      "id": "attentive-idle-loop",
+      "routine": "attentive-idle",
+      "name": "Attentive idle",
+      "kind": "loop",
+      "phase": "loop",
+      "from": "standing",
+      "to": "standing",
+      "loop": true,
+      "frameDurationMs": 200,
+      "props": [],
+      "mode": "generate",
+      "sourceReview": "pass",
+      "action": "Standing attentive neutral. Gentle breathing, blink once at midpoint, a small ear turn and gentle three-tail sway; four planted paws stay stable. A perfectly seamless idle cycle.",
+      "generationStage": 1,
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Standing attentive neutral. Gentle breathing, blink once at midpoint, a small ear turn and gentle three-tail sway; four planted paws stay stable. A perfectly seamless idle cycle.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "walk-start",
+      "routine": "walk",
+      "name": "Walk",
+      "kind": "travel",
+      "phase": "start",
+      "from": "standing",
+      "to": "walk-travel",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "sourceReview": "pass",
+      "action": "Standing neutral shifts weight and progressively starts the natural quadrupedal walking gait. Body remains centered. Last pose matches the first walk-loop contact pose.",
+      "generationStage": 2,
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Standing neutral shifts weight and progressively starts the natural quadrupedal walking gait. Body remains centered. Last pose matches the first walk-loop contact pose.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nReference 1 is the approved character design. Reference 2 is the EXACT first pose, reference 3 is the EXACT last pose. Match those endpoints' proportions, head size, facing and placement. The 10 intervening poses must progressively connect them without a pose jump, body-size change or camera change. Animate only the same four legs and three tails.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/walk-loop/00.png"
+      ]
+    },
+    {
+      "id": "walk-loop",
+      "routine": "walk",
+      "name": "Walk",
+      "kind": "travel",
+      "phase": "loop",
+      "from": "walk-travel",
+      "to": "walk-travel",
+      "loop": true,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "sourceReview": "pass",
+      "action": "One complete in-place quadrupedal WALK cycle over twelve evenly timed poses. All FOUR actual legs participate with natural staggered paw contacts and bent knees. Body lightly rises and falls, head stays steady, three tails softly counter-swing. No sliding paw during stance. At frame12 the gait is one phase step before frame1, for a seamless loop.",
+      "generationStage": 1,
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the reference, matching its chunky early-PS1 low-poly design, angular geometry, small pixel eyes, charcoal paws and pixelated diffuse textures. Exactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Smooth evenly spaced animation poses with stable volume. Transparent background and clear transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor comfortably within its cell. Last pose immediately precedes first for a seamless cycle. Action: One full in-place quadrupedal walking cycle. All four legs participate in natural staggered footfalls, paws lift and knees bend, slight body rise/fall, three tails counter-swing. Fixed body location; no translation.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "walk-stop",
+      "routine": "walk",
+      "name": "Walk",
+      "kind": "travel",
+      "phase": "stop",
+      "from": "walk-travel",
+      "to": "standing",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "reverse",
+      "sourceReview": "inherits-reviewed-source",
+      "deriveFrom": "walk-start"
+    },
+    {
+      "id": "trot-start",
+      "routine": "trot",
+      "name": "Trot",
+      "kind": "travel",
+      "phase": "start",
+      "from": "standing",
+      "to": "trot-travel",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "Begin neutral standing pose. Shift into trot travel gradually, using only the SAME FOUR actual legs. No props or new arms. End in the supplied travel loop first contact/ready pose. Body stays in place; exit will reverse this transition.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Begin neutral standing pose. Shift into trot travel gradually, using only the SAME FOUR actual legs. No props or new arms. End in the supplied travel loop first contact/ready pose. Body stays in place; exit will reverse this transition.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nReference 1 is the approved character design. Reference 2 is the EXACT first pose, reference 3 is the EXACT last pose. Match those endpoints' proportions, head size, facing and placement. The 10 intervening poses must progressively connect them without a pose jump, body-size change or camera change. Animate only the same four legs and three tails.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/trot-loop/00.png"
+      ]
+    },
+    {
+      "id": "trot-loop",
+      "routine": "trot",
+      "name": "Trot",
+      "kind": "travel",
+      "phase": "loop",
+      "from": "trot-travel",
+      "to": "trot-travel",
+      "loop": true,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "A complete in-place quick quadrupedal trot cycle. Alternate the two diagonal leg pairs over twelve frames; all FOUR actual legs move, two forelegs and two hindlegs. Planted paws stay on the baseline, knees bend and paws lift visibly. No arms or props. Three tails counter-swing. Return to first contact pose.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: A complete in-place quick quadrupedal trot cycle. Alternate the two diagonal leg pairs over twelve frames; all FOUR actual legs move, two forelegs and two hindlegs. Planted paws stay on the baseline, knees bend and paws lift visibly. No arms or props. Three tails counter-swing. Return to first contact pose.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "trot-stop",
+      "routine": "trot",
+      "name": "Trot",
+      "kind": "travel",
+      "phase": "stop",
+      "from": "trot-travel",
+      "to": "standing",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "reverse",
+      "deriveFrom": "trot-start",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "hover-idle-loop",
+      "routine": "hover-idle",
+      "name": "Hover idle",
+      "kind": "loop",
+      "phase": "loop",
+      "from": "hovering",
+      "to": "hovering",
+      "loop": true,
+      "frameDurationMs": 200,
+      "props": [],
+      "mode": "generate",
+      "action": "Float calmly in place, body bobbing slowly up then down over twelve frames. All FOUR actual fox legs are tucked or dangling, never extra arms. Feet remain above the invisible baseline. Three tails gently undulate; blink at midpoint. Return to initial hovering pose.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Float calmly in place, body bobbing slowly up then down over twelve frames. All FOUR actual fox legs are tucked or dangling, never extra arms. Feet remain above the invisible baseline. Three tails gently undulate; blink at midpoint. Return to initial hovering pose.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "floating-travel-start",
+      "routine": "floating-travel",
+      "name": "Floating travel",
+      "kind": "travel",
+      "phase": "start",
+      "from": "hovering",
+      "to": "floating-travel-travel",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "Begin neutral hovering pose. Shift into floating-travel travel gradually, using only the SAME FOUR actual legs. No props or new arms. End in the supplied travel loop first contact/ready pose. Body stays in place; exit will reverse this transition.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Begin neutral hovering pose. Shift into floating-travel travel gradually, using only the SAME FOUR actual legs. No props or new arms. End in the supplied travel loop first contact/ready pose. Body stays in place; exit will reverse this transition.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nReference 1 is the approved character design. Reference 2 is the EXACT first pose, reference 3 is the EXACT last pose. Match those endpoints' proportions, head size, facing and placement. The 10 intervening poses must progressively connect them without a pose jump, body-size change or camera change. Animate only the same four legs and three tails.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/hover-idle-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/floating-travel-loop/00.png"
+      ]
+    },
+    {
+      "id": "floating-travel-loop",
+      "routine": "floating-travel",
+      "name": "Floating travel",
+      "kind": "travel",
+      "phase": "loop",
+      "from": "floating-travel-travel",
+      "to": "floating-travel-travel",
+      "loop": true,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "In-place rightward floating travel cycle. Lean gently right, four actual fox legs tucked, three tails stream LEFT and softly wave. No running legs and no added arms. Small bob through twelve poses; return to first traveling hover pose.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: In-place rightward floating travel cycle. Lean gently right, four actual fox legs tucked, three tails stream LEFT and softly wave. No running legs and no added arms. Small bob through twelve poses; return to first traveling hover pose.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "floating-travel-stop",
+      "routine": "floating-travel",
+      "name": "Floating travel",
+      "kind": "travel",
+      "phase": "stop",
+      "from": "floating-travel-travel",
+      "to": "hovering",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "reverse",
+      "deriveFrom": "floating-travel-start",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "seated-watch-loop",
+      "routine": "seated-watch",
+      "name": "Seated watch",
+      "kind": "loop",
+      "phase": "loop",
+      "from": "seated",
+      "to": "seated",
+      "loop": true,
+      "frameDurationMs": 200,
+      "props": [],
+      "mode": "generate",
+      "action": "Seated neutral fox with TWO forelegs ending at two front paws, and TWO hindlegs with their rear paws beside the rump. Four limbs total. Calm breathing, small ear turn, a blink, tails swaying slightly; return to first seated neutral pose.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Seated neutral fox with TWO forelegs ending at two front paws, and TWO hindlegs with their rear paws beside the rump. Four limbs total. Calm breathing, small ear turn, a blink, tails swaying slightly; return to first seated neutral pose.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "think-action",
+      "routine": "think",
+      "name": "Think",
+      "kind": "one-shot",
+      "phase": "action",
+      "from": "seated",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "Use the seven verified three-tail head-tilt poses, hold a thoughtful beat, and return to neutral. Five failed tail-curl source poses are explicitly excluded.",
+      "generationStage": 1,
+      "sourceReview": "pass for exported subset; source poses 4-8 excluded for a fourth tail",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Seated neutral -> thoughtful head tilt and one of his THREE tails curls toward cheek -> return seated neutral. Keep the FOUR actual limbs resting naturally; the curling tail has a vermilion fur tip and is not a hand. No new arms.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "read-entry",
+      "routine": "read",
+      "name": "Read",
+      "kind": "activity",
+      "phase": "entry",
+      "from": "seated",
+      "to": "read-active",
+      "loop": false,
+      "frameDurationMs": 200,
+      "props": [
+        "scroll"
+      ],
+      "mode": "generate",
+      "action": "Lean back on rump and two hindfeet, lift both actual forelegs, then hold and open the scroll with those same two forepaws.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Generate a polished 12-frame animation sprite sheet, regular 3 columns by4rows, of this same PS1 low-poly cream three-tailed fox, facing right. Image1 is initial seated neutral, image2 final scroll-reading pose. Connect them smoothly. Four actual limbs total: two hindlegs and two forelegs, never a new arm behind the shoulder. Frames1-2 neutral seated. Frames3-4 lean back on rump and lift BOTH existing front legs away from the ground, showing ONLY TWO hindfeet below the body. Frames5-6 those same two forepaws hold a small rolled ivory scroll at chest. Frames7-10 slowly unroll it between those same two forepaws. Frames11-12 settle into the second reference. Do not reach behind the hip and do not leave straight forelegs on the ground once arms lift. At most two hindfeet plus two hand-paws at every point. Exactly three tails throughout. Identical model proportions, head size, orthographic camera, pixel textures and matte angular PS1 rendering in all cells. Clear anticipation and easing. Generous fully transparent padding all sides of every actor and whole sheet. No shadows, floor, text or UI.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/read-loop/00.png"
+      ]
+    },
+    {
+      "id": "read-loop",
+      "routine": "read",
+      "name": "Read",
+      "kind": "activity",
+      "phase": "loop",
+      "from": "read-active",
+      "to": "read-active",
+      "loop": true,
+      "frameDurationMs": 200,
+      "props": [
+        "scroll"
+      ],
+      "mode": "generate",
+      "sourceReview": "pass",
+      "action": "Seated on rump and TWO hind feet. Exactly TWO actual forelegs are lifted and become the ONLY two arms, holding an open ivory scroll with indigo rollers. There are NO additional forepaws on the ground. Eyes scan the scroll, head dips, ears move, one blink, three tails gently sway. Same scroll throughout. Seamless cycle.",
+      "generationStage": 1,
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Seated on rump and TWO hind feet. Exactly TWO actual forelegs are lifted and become the ONLY two arms, holding an open ivory scroll with indigo rollers. There are NO additional forepaws on the ground. Eyes scan the scroll, head dips, ears move, one blink, three tails gently sway. Same scroll throughout. Seamless cycle.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "read-exit",
+      "routine": "read",
+      "name": "Read",
+      "kind": "activity",
+      "phase": "exit",
+      "from": "read-active",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 200,
+      "props": [
+        "scroll"
+      ],
+      "mode": "reverse",
+      "deriveFrom": "read-entry",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "write-entry",
+      "routine": "write",
+      "name": "Write",
+      "kind": "activity",
+      "phase": "entry",
+      "from": "seated",
+      "to": "write-active",
+      "loop": false,
+      "frameDurationMs": 200,
+      "props": [
+        "scroll",
+        "brush"
+      ],
+      "mode": "generate",
+      "action": "Retrieve and unroll ivory scroll, then bring out brush; use the same TWO forepaws, not added arms. End in seated ready-to-write pose, one paw holding brush and the other steadying scroll. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Retrieve and unroll ivory scroll, then bring out brush; use the same TWO forepaws, not added arms. End in seated ready-to-write pose, one paw holding brush and the other steadying scroll. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nReference 1 locks the visual design. Reference 2 is the exact initial neutral connection pose. Reference 3 is the exact final active connection pose. Gradually connect these poses with the SAME fox model, head size and body placement. Frames1-2 anticipate, frames3-9 progressively perform the transition, frames10-12 ease into the final reference. Props must be retrieved or unfolded visibly, never pop into existence. Only the existing two front legs may become arms. Once raised, those paws must be absent from the floor. Two hindlegs plus two forelimbs total. Generous empty transparent margins around ALL actors/props and at sheet edges, no clipping, floor or shadow.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/write-loop/00.png"
+      ]
+    },
+    {
+      "id": "write-loop",
+      "routine": "write",
+      "name": "Write",
+      "kind": "activity",
+      "phase": "loop",
+      "from": "write-active",
+      "to": "write-active",
+      "loop": true,
+      "frameDurationMs": 200,
+      "props": [
+        "scroll",
+        "brush"
+      ],
+      "mode": "generate",
+      "action": "Seated, only TWO hind feet on the ground and TWO forearms working. Near forepaw holds a small brush, far forepaw steadies open ivory scroll with indigo rollers. Twelve poses: make two slow abstract ink strokes, lift brush, think, return to first ready-to-write pose. No extra front paws on ground. No readable letters. Same scroll and brush throughout.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Edit the FIRST reference, a twelve-frame writing animation sprite sheet. Preserve this exact PS1 fox identity, the chronological 12 poses, four limbs, three tails, scroll, brush, colors and pixel texture. Fix its framing: every complete actor and scroll must have ample transparent padding on ALL sides, especially the final row where the scroll is cropped. Shrink each actor uniformly inside the same regular 3 columns by4rows layout by about15%, restore the complete scroll edges, and give the entire sheet an empty transparent outer margin. No actor may touch a cell or sheet edge. Keep exactly the SAME single abstract ink stroke on the scroll in ALL12frames including first and last; he traces an already existing stroke then pauses and resumes. Do not add ink marks. Second reference is the approved character design for style only. True transparent background, no ground, no text, no UI or shadows. Consistent orthographic view and actor proportions.",
+      "references": [
+        "/Users/turco/.codex/generated_images/01a150f2-a7af-7301-9a3a-7ad6fae38b23/exec-3f467456-c3ff-4be7-8ee2-41a3b3c26583.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "write-exit",
+      "routine": "write",
+      "name": "Write",
+      "kind": "activity",
+      "phase": "exit",
+      "from": "write-active",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 200,
+      "props": [
+        "scroll",
+        "brush"
+      ],
+      "mode": "reverse",
+      "deriveFrom": "write-entry",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "insight-action",
+      "routine": "insight",
+      "name": "Insight",
+      "kind": "one-shot",
+      "phase": "action",
+      "from": "seated",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "Seated neutral -> ears perk and eyes brighten, one tiny vermilion ink-like spark appears above a paw -> spark dissolves and fox returns neutral. Do not add an arm to hold the spark. Four actual limbs only, three tails throughout.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Seated neutral -> ears perk and eyes brighten, one tiny vermilion ink-like spark appears above a paw -> spark dissolves and fox returns neutral. Do not add an arm to hold the spark. Four actual limbs only, three tails throughout.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "groom-action",
+      "routine": "groom",
+      "name": "Groom",
+      "kind": "one-shot",
+      "phase": "action",
+      "from": "seated",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "Seated fox lifts ONE of his existing forelegs to lick its paw, uses that same forepaw to smooth one ear, then returns it to its original resting location. The lifted front paw is NOT also drawn on the ground. Other forepaw and two hind paws remain; total four limbs. Three tails.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Seated fox lifts ONE of his existing forelegs to lick its paw, uses that same forepaw to smooth one ear, then returns it to its original resting location. The lifted front paw is NOT also drawn on the ground. Other forepaw and two hind paws remain; total four limbs. Three tails.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nCritical correction: During the ear wipe, the raised near foreleg MUST be absent from its old grounded position. Only ONE foreleg remains grounded alongside the TWO hindlegs. Never draw two straight forelegs beneath the raised arm. Three grounded limbs plus one raised limb equals FOUR total. Make the attachment at the near shoulder unmistakable; do not add an arm behind the shoulder.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "stretch-action",
+      "routine": "stretch",
+      "name": "Stretch",
+      "kind": "one-shot",
+      "phase": "action",
+      "from": "standing",
+      "to": "standing",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "Standing four-pawed fox -> extend the SAME two forelegs forward, lower chest, arch back with the same two hindlegs supporting rump -> return standing neutral. Four legs total, three tails unfurl and settle. No other limbs.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Standing four-pawed fox -> extend the SAME two forelegs forward, lower chest, arch back with the same two hindlegs supporting rump -> return standing neutral. Four legs total, three tails unfurl and settle. No other limbs.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "tail-play-action",
+      "routine": "tail-play",
+      "name": "Tail play",
+      "kind": "one-shot",
+      "phase": "action",
+      "from": "seated",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "Keep four paws grounded, look back at the three existing tails behind the body, then turn forward.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production-quality animation sprite sheet of this exact chunky early-PS1 low-polygon cream-and-vermilion fox. Use the first reference as the exact neutral pose and the second only as the style guide. Exactly12 full-body chronological poses, regular3columns by4rows, orthographic three-quarter camera facing right. Identical model proportions, head size, flat polygon planes, charcoal paws, tiny blue-gray eyes, pixelated textures, matte lighting and scale throughout. Animation: A playful look-back gesture while standing on the same FOUR grounded paws: neutral, turn the head back toward the three-tail fan behind the rump, lean the muzzle back slightly toward the existing middle tail tip, watch the three tails sway together gently, then turn forward and settle. All THREE existing tails stay BEHIND the body with exactly THREE separate red tail tips visible. No tail curls across the chest or appears at the cheek, and no new tail is added. Keep all four paws grounded, no arm gesture. IMPORTANT: FOUR limbs total and THREE tails total in EVERY pose, never four tails. Keep all three tails behind the body in their existing attachments and preserve their identities, not duplicated appendages. Smooth gradual changes across12frames, anticipation/action/recovery, first and last neutral. Generous empty transparent margins inside every cell and at every sheet edge. True transparent background; no floor, shadow, props, labels, text or UI.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "greeting-action",
+      "routine": "greeting",
+      "name": "Greeting",
+      "kind": "one-shot",
+      "phase": "action",
+      "from": "standing",
+      "to": "standing",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "Four-pawed standing neutral -> small head bow -> lift ONE actual foreleg and wave its paw -> lower that SAME paw into its original position. During wave only THREE other paws stay on the ground. Exactly four limbs, three tails, no props.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Four-pawed standing neutral -> small head bow -> lift ONE actual foreleg and wave its paw -> lower that SAME paw into its original position. During wave only THREE other paws stay on the ground. Exactly four limbs, three tails, no props.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "sleep-loop",
+      "routine": "sleep",
+      "name": "Sleep",
+      "kind": "loop",
+      "phase": "loop",
+      "from": "curled",
+      "to": "curled",
+      "loop": true,
+      "frameDurationMs": 200,
+      "props": [],
+      "mode": "generate",
+      "action": "Curled sleeping fox, muzzle resting on ONE actual forepaw, other forepaw tucked beneath chest, two hindlegs tucked into body. Four limbs total, not all need be visible. Exactly THREE tails curl around the body with three separate vermilion tips visible. Subtle breathing and tiny ear twitch. Return to starting curled pose.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the reference, matching its chunky early-PS1 low-poly design, angular geometry, small pixel eyes, charcoal paws and pixelated diffuse textures. Exactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Smooth evenly spaced animation poses with stable volume. Transparent background and clear transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor comfortably within its cell. Last pose immediately precedes first for a seamless cycle. Action: Curled sleeping on side, muzzle on one forepaw, other forepaw and two hindlegs tucked in. Three tails wrap around body, all three red tips visible. Gentle breathing and one ear twitch.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "meditate-loop",
+      "routine": "meditate",
+      "name": "Meditate",
+      "kind": "loop",
+      "phase": "loop",
+      "from": "seated",
+      "to": "seated",
+      "loop": true,
+      "frameDurationMs": 200,
+      "props": [],
+      "mode": "generate",
+      "action": "Sit calmly with eyes closed, breathing gently, head and three tails swaying slightly; four actual limbs total.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Seated upright on rump with TWO hind paws on the ground; TWO forepaws rest lightly on thighs, attached to the only two forearms. NO additional straight forelegs below these arms. Close eyes, breathe slowly, three tails sway in a calm coordinated fan. Return to initial meditation pose.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "samurai-entry",
+      "routine": "samurai",
+      "name": "Samurai practice",
+      "kind": "activity",
+      "phase": "entry",
+      "from": "standing",
+      "to": "samurai-active",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "headband",
+        "steel-katana",
+        "scabbard"
+      ],
+      "mode": "generate",
+      "action": "Rear onto ONLY the two hind feet; use the TWO forepaws to retrieve and tie vermilion headband, attach scabbard and draw the real steel katana. End in the supplied upright guard pose. No front feet remain on ground once forearms lift. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Rear onto ONLY the two hind feet; use the TWO forepaws to retrieve and tie vermilion headband, attach scabbard and draw the real steel katana. End in the supplied upright guard pose. No front feet remain on ground once forearms lift. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nReference 1 locks the visual design. Reference 2 is the exact initial neutral connection pose. Reference 3 is the exact final active connection pose. Gradually connect these poses with the SAME fox model, head size and body placement. Frames1-2 anticipate, frames3-9 progressively perform the transition, frames10-12 ease into the final reference. Props must be retrieved or unfolded visibly, never pop into existence. Only the existing two front legs may become arms. Once raised, those paws must be absent from the floor. Two hindlegs plus two forelimbs total. Generous empty transparent margins around ALL actors/props and at sheet edges, no clipping, floor or shadow.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/samurai-loop/00.png"
+      ]
+    },
+    {
+      "id": "samurai-loop",
+      "routine": "samurai",
+      "name": "Samurai practice",
+      "kind": "activity",
+      "phase": "loop",
+      "from": "samurai-active",
+      "to": "samurai-active",
+      "loop": true,
+      "frameDurationMs": 100,
+      "props": [
+        "headband",
+        "steel-katana",
+        "scabbard"
+      ],
+      "mode": "generate",
+      "action": "Upright bipedal fox with ONLY TWO hind feet grounded and EXACTLY TWO forearms. Both actual forepaws hold ONE real steel katana with dark wrapped grip and a small guard. Simple vermilion headband and scabbard at hip. Ready guard -> raise blade -> one controlled practice cut to right -> recover and small respectful nod -> return ready guard. Metal blade has restrained highlight, fixed length. No targets or scenery. No grounded front legs beneath the sword arms. Exactly four limbs and three tails.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Upright bipedal fox with ONLY TWO hind feet grounded and EXACTLY TWO forearms. Both actual forepaws hold ONE real steel katana with dark wrapped grip and a small guard. Simple vermilion headband and scabbard at hip. Ready guard -> raise blade -> one controlled practice cut to right -> recover and small respectful nod -> return ready guard. Metal blade has restrained highlight, fixed length. No targets or scenery. No grounded front legs beneath the sword arms. Exactly four limbs and three tails.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "samurai-exit",
+      "routine": "samurai",
+      "name": "Samurai practice",
+      "kind": "activity",
+      "phase": "exit",
+      "from": "samurai-active",
+      "to": "standing",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "headband",
+        "steel-katana",
+        "scabbard"
+      ],
+      "mode": "reverse",
+      "deriveFrom": "samurai-entry",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "ninja-entry",
+      "routine": "ninja",
+      "name": "Ninja sneak",
+      "kind": "activity",
+      "phase": "entry",
+      "from": "standing",
+      "to": "ninja-active",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "indigo-headband"
+      ],
+      "mode": "generate",
+      "action": "Use the SAME actual forepaws to retrieve and tie indigo headband while briefly balancing on hind feet, then lower these forepaws back to ground and crouch into the ninja ready pose. Never add arms to four grounded legs. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Use the SAME actual forepaws to retrieve and tie indigo headband while briefly balancing on hind feet, then lower these forepaws back to ground and crouch into the ninja ready pose. Never add arms to four grounded legs. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nReference 1 locks the visual design. Reference 2 is the exact initial neutral connection pose. Reference 3 is the exact final active connection pose. Gradually connect these poses with the SAME fox model, head size and body placement. Frames1-2 anticipate, frames3-9 progressively perform the transition, frames10-12 ease into the final reference. Props must be retrieved or unfolded visibly, never pop into existence. Only the existing two front legs may become arms. Once raised, those paws must be absent from the floor. Two hindlegs plus two forelimbs total. Generous empty transparent margins around ALL actors/props and at sheet edges, no clipping, floor or shadow.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/ninja-loop/00.png"
+      ]
+    },
+    {
+      "id": "ninja-loop",
+      "routine": "ninja",
+      "name": "Ninja sneak",
+      "kind": "activity",
+      "phase": "loop",
+      "from": "ninja-active",
+      "to": "ninja-active",
+      "loop": true,
+      "frameDurationMs": 100,
+      "props": [
+        "indigo-headband"
+      ],
+      "mode": "generate",
+      "action": "Wearing a simple indigo headband, creep in place to the RIGHT on the SAME FOUR quadrupedal legs. Lower body, tiptoe cautiously, glance around, pause, return to first crouched ready pose. No arm gestures, no weapons, no duplicated legs. Three tails stay low but distinct.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Wearing a simple indigo headband, creep in place to the RIGHT on the SAME FOUR quadrupedal legs. Lower body, tiptoe cautiously, glance around, pause, return to first crouched ready pose. No arm gestures, no weapons, no duplicated legs. Three tails stay low but distinct.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "ninja-exit",
+      "routine": "ninja",
+      "name": "Ninja sneak",
+      "kind": "activity",
+      "phase": "exit",
+      "from": "ninja-active",
+      "to": "standing",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "indigo-headband"
+      ],
+      "mode": "reverse",
+      "deriveFrom": "ninja-entry",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "spirit-magic-entry",
+      "routine": "spirit-magic",
+      "name": "Spirit magic",
+      "kind": "activity",
+      "phase": "entry",
+      "from": "seated",
+      "to": "spirit-magic-active",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "bounded-spirit-wisp"
+      ],
+      "mode": "generate",
+      "action": "Lift the two existing forelegs into an empty ready position at the chest. Spell effects begin in the main loop.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Generate a polished twelve-frame transparent animation sprite sheet of this same angular PS1 three-tailed cream fox. Exactly3columns by4rows, chronological. Image1 is the exact initial seated pose, image2 is exact final ready pose with two forepaws raised. Animate ONLY gently lifting the SAME two existing front legs off the floor and easing their paws into a ready position in front of chest. Begin leaning back on the rump and two hindfeet, then lift both forelegs, slowly turn palms inward, settle into second reference. The paws remain EMPTY: no visible spell, particles, glow or prop in any frame. Spell effects belong to a later animation. Exactly four actual limbs, two hindlegs plus two raised forearms; no grounded front paws beneath the raised arms. Exactly three tails. Stable head size, body placement, pixel texture, orthographic right-facing camera and chunky PS1 model throughout. Plenty of transparent margin around every complete actor and all sheet edges. No floor, shadows, labels or UI.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/spirit-magic-loop/00.png"
+      ]
+    },
+    {
+      "id": "spirit-magic-loop",
+      "routine": "spirit-magic",
+      "name": "Spirit magic",
+      "kind": "activity",
+      "phase": "loop",
+      "from": "spirit-magic-active",
+      "to": "spirit-magic-active",
+      "loop": true,
+      "frameDurationMs": 100,
+      "props": [
+        "bounded-spirit-wisp"
+      ],
+      "mode": "generate",
+      "action": "Seated with TWO hind feet grounded and TWO forearms lifted in front of chest, no straight front legs on floor. Only those TWO forepaws guide a tiny vermilion-and-indigo wisp: round wisp -> little fox-shaped spirit -> round wisp again, all between paws and within cell. Four limbs total, three tails. No halo, smoke background, magic circle or additional body parts.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Seated with TWO hind feet grounded and TWO forearms lifted in front of chest, no straight front legs on floor. Only those TWO forepaws guide a tiny vermilion-and-indigo wisp: round wisp -> little fox-shaped spirit -> round wisp again, all between paws and within cell. Four limbs total, three tails. No halo, smoke background, magic circle or additional body parts.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "spirit-magic-exit",
+      "routine": "spirit-magic",
+      "name": "Spirit magic",
+      "kind": "activity",
+      "phase": "exit",
+      "from": "spirit-magic-active",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "bounded-spirit-wisp"
+      ],
+      "mode": "reverse",
+      "deriveFrom": "spirit-magic-entry",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "straw-hat-adventurer-entry",
+      "routine": "straw-hat-adventurer",
+      "name": "Straw-hat adventurer",
+      "kind": "activity",
+      "phase": "entry",
+      "from": "standing",
+      "to": "straw-hat-adventurer-active",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "red-banded-straw-hat",
+        "red-vest"
+      ],
+      "mode": "generate",
+      "action": "From four-pawed neutral rear onto ONLY TWO hind feet, lifting BOTH forelegs off the ground. Those SAME TWO forepaws retrieve and slip into open red vest, retrieve red-banded straw hat and put it between ears. End upright in supplied adventurer ready pose, with TWO feet on ground and TWO forepaws at chest. No grounded front legs, no added arms. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Make a high-quality animation sprite sheet of the charming cream-and-red low-polygon fox in these two images. Match its PS1 game appearance, chunky angular geometry, tiny pixel eyes and pixelated matte texture. Image1 is the first pose; image2 is the final pose. Draw twelve chronological intermediate poses in a regular 3-column, 4-row grid, with the first and last cells matching these references. Same orthographic camera facing right, same model, head size and lighting throughout. Action: From four-pawed neutral rear onto ONLY TWO hind feet, lifting BOTH forelegs off the ground. Those SAME TWO forepaws retrieve and slip into open red vest, retrieve red-banded straw hat and put it between ears. End upright in supplied adventurer ready pose, with TWO feet on ground and TWO forepaws at chest. No grounded front legs, no added arms. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible. Every fox has exactly four limbs (two front, two rear) and three tails. For working gestures, the two front legs become the two arms; they cannot remain on the floor at the same time. Gradual natural movement with anticipation and settling. Use generous transparent empty margins around every complete actor and prop, including all outer sheet edges. Transparent background, without ground, shadows, captions or other interface elements. This entrance will be played backward as its exit, so keep the prop retrieval physically reversible.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/straw-hat-adventurer-loop/00.png"
+      ]
+    },
+    {
+      "id": "straw-hat-adventurer-loop",
+      "routine": "straw-hat-adventurer",
+      "name": "Straw-hat adventurer",
+      "kind": "activity",
+      "phase": "loop",
+      "from": "straw-hat-adventurer-active",
+      "to": "straw-hat-adventurer-active",
+      "loop": true,
+      "frameDurationMs": 100,
+      "props": [
+        "red-banded-straw-hat",
+        "red-vest"
+      ],
+      "mode": "generate",
+      "action": "UPRIGHT ON TWO HIND FEET ONLY. Exactly TWO forearms and TWO hindlegs in the WHOLE body. No quadrupedal forelegs touching ground. Wear straw hat with red band and an open red vest. Frames 1-3 use one actual forepaw to tip hat while the other forepaw rests at chest; 4-5 lower that same paw and draw back; 6-8 extend that ONE forearm in a playful rubbery punch to right (Luffy reference), other forearm remains at chest; 9-12 retract and return ready pose. Two feet plus two hand-paws at every point, never five or six limbs. Exactly three tails. Punch stays inside cell.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Edit the first image, this12-frame PS1 fox adventurer animation sheet. Preserve the character, four limbs total, three tails, low-poly pixel textures, red vest, red-banded straw hat, fixed camera, exact 3columns by4rows grid and true transparency. Fix ONLY the loop's recovery in the final row: frame10 retracts the same punching arm toward chest, frame11 raises that same forepaw halfway toward hat brim, frame12 has it almost touching the hat brim, so frame12 flows smoothly into frame1's hat-tipping pose. The OTHER forepaw stays at chest, with only two hindfeet grounded. No new arms, paws or tails. Keep the first nine poses and the playful punch. Generous transparent margins; keep every actor completely inside its cell and every sheet edge. No backdrop, floor, text or shadows. Second image is the approved PS1 design for style reference.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/sheets/straw-hat-adventurer-loop.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "straw-hat-adventurer-exit",
+      "routine": "straw-hat-adventurer",
+      "name": "Straw-hat adventurer",
+      "kind": "activity",
+      "phase": "exit",
+      "from": "straw-hat-adventurer-active",
+      "to": "standing",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "red-banded-straw-hat",
+        "red-vest"
+      ],
+      "mode": "reverse",
+      "deriveFrom": "straw-hat-adventurer-entry",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "fishing-entry",
+      "routine": "fishing",
+      "name": "Fishing daydream",
+      "kind": "activity",
+      "phase": "entry",
+      "from": "seated",
+      "to": "fishing-active",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "fishing-rod",
+        "line",
+        "autumn-leaf"
+      ],
+      "mode": "generate",
+      "action": "Lift the TWO actual forelegs off ground while seated on rump and two hind feet; retrieve a tiny rod, unfold it and arrange line into ready-to-cast pose. Four limbs total; no grounded front legs under the working forearms. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Make a high-quality animation sprite sheet of the charming cream-and-red low-polygon fox in these two images. Match its PS1 game appearance, chunky angular geometry, tiny pixel eyes and pixelated matte texture. Image1 is the first pose; image2 is the final pose. Draw twelve chronological intermediate poses in a regular 3-column, 4-row grid, with the first and last cells matching these references. Same orthographic camera facing right, same model, head size and lighting throughout. Action: Lift the TWO actual forelegs off ground while seated on rump and two hind feet; retrieve a tiny rod, unfold it and arrange line into ready-to-cast pose. Four limbs total; no grounded front legs under the working forearms. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible. Every fox has exactly four limbs (two front, two rear) and three tails. For working gestures, the two front legs become the two arms; they cannot remain on the floor at the same time. Gradual natural movement with anticipation and settling. Use generous transparent empty margins around every complete actor and prop, including all outer sheet edges. Transparent background, without ground, shadows, captions or other interface elements. This entrance will be played backward as its exit, so keep the prop retrieval physically reversible.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/fishing-loop/00.png"
+      ]
+    },
+    {
+      "id": "fishing-loop",
+      "routine": "fishing",
+      "name": "Fishing daydream",
+      "kind": "activity",
+      "phase": "loop",
+      "from": "fishing-active",
+      "to": "fishing-active",
+      "loop": true,
+      "frameDurationMs": 100,
+      "props": [
+        "fishing-rod",
+        "line",
+        "autumn-leaf"
+      ],
+      "mode": "generate",
+      "action": "Seated with TWO hind feet and TWO working forearms only. Hold tiny fishing rod in one forepaw, other forepaw manages line. Cast a short line within cell, wait, lift a single autumn leaf on hook, inspect with mild surprise, detach and tuck leaf behind hip, return rod to first ready position. No pond, floor or scenery. Never draw extra grounded front legs beneath working arms. Same rod throughout.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Seated with TWO hind feet and TWO working forearms only. Hold tiny fishing rod in one forepaw, other forepaw manages line. Cast a short line within cell, wait, lift a single autumn leaf on hook, inspect with mild surprise, detach and tuck leaf behind hip, return rod to first ready position. No pond, floor or scenery. Never draw extra grounded front legs beneath working arms. Same rod throughout.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "fishing-exit",
+      "routine": "fishing",
+      "name": "Fishing daydream",
+      "kind": "activity",
+      "phase": "exit",
+      "from": "fishing-active",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "fishing-rod",
+        "line",
+        "autumn-leaf"
+      ],
+      "mode": "reverse",
+      "deriveFrom": "fishing-entry",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "bamboo-flute-entry",
+      "routine": "bamboo-flute",
+      "name": "Bamboo flute",
+      "kind": "activity",
+      "phase": "entry",
+      "from": "seated",
+      "to": "bamboo-flute-active",
+      "loop": false,
+      "frameDurationMs": 200,
+      "props": [
+        "bamboo-flute"
+      ],
+      "mode": "generate",
+      "action": "While seated, lift the TWO actual forelegs away from ground, retrieve ONE small bamboo flute and raise to muzzle into supplied ready-to-play pose. Two hind feet plus two forepaws only. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: While seated, lift the TWO actual forelegs away from ground, retrieve ONE small bamboo flute and raise to muzzle into supplied ready-to-play pose. Two hind feet plus two forepaws only. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nReference 1 locks the visual design. Reference 2 is the exact initial neutral connection pose. Reference 3 is the exact final active connection pose. Gradually connect these with the SAME fox model, head size and body placement. Frames1-2 anticipate, frames3-9 progressively retrieve and put on or unfold the props, frames10-12 ease into the final reference. No teleporting props. Only the two existing front legs become the working arms: once raised, those paws are no longer on the floor. Exactly two hindlegs plus two forelimbs total, never extra arms over four grounded legs. Exactly three tails at every stage. Generous empty transparent margins around all actors/props and every sheet edge; no clipping, floor or shadows.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/bamboo-flute-loop/00.png"
+      ]
+    },
+    {
+      "id": "bamboo-flute-loop",
+      "routine": "bamboo-flute",
+      "name": "Bamboo flute",
+      "kind": "activity",
+      "phase": "loop",
+      "from": "bamboo-flute-active",
+      "to": "bamboo-flute-active",
+      "loop": true,
+      "frameDurationMs": 200,
+      "props": [
+        "bamboo-flute"
+      ],
+      "mode": "generate",
+      "action": "Seated, TWO hind feet grounded, TWO actual forearms holding ONE short bamboo flute near muzzle. No extra front legs on floor. Play a gentle phrase, sway ears and three tails, blink, return first playing pose. Four limbs total, no musical text or background.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Seated, TWO hind feet grounded, TWO actual forearms holding ONE short bamboo flute near muzzle. No extra front legs on floor. Play a gentle phrase, sway ears and three tails, blink, return first playing pose. Four limbs total, no musical text or background.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "bamboo-flute-exit",
+      "routine": "bamboo-flute",
+      "name": "Bamboo flute",
+      "kind": "activity",
+      "phase": "exit",
+      "from": "bamboo-flute-active",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 200,
+      "props": [
+        "bamboo-flute"
+      ],
+      "mode": "reverse",
+      "deriveFrom": "bamboo-flute-entry",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "tea-break-entry",
+      "routine": "tea-break",
+      "name": "Tea break",
+      "kind": "activity",
+      "phase": "entry",
+      "from": "seated",
+      "to": "tea-break-active",
+      "loop": false,
+      "frameDurationMs": 200,
+      "props": [
+        "cup",
+        "flask",
+        "cloth"
+      ],
+      "mode": "generate",
+      "action": "While seated, use the TWO actual forepaws to unwrap a little cloth with cup and flask. Set cloth near body, pick up cup and flask into ready-to-pour pose. Two forearms plus two hindlegs only; no grounded forelegs under arms. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: While seated, use the TWO actual forepaws to unwrap a little cloth with cup and flask. Set cloth near body, pick up cup and flask into ready-to-pour pose. Two forearms plus two hindlegs only; no grounded forelegs under arms. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nReference 1 locks the visual design. Reference 2 is the exact initial neutral connection pose. Reference 3 is the exact final active connection pose. Gradually connect these with the SAME fox model, head size and body placement. Frames1-2 anticipate, frames3-9 progressively retrieve and put on or unfold the props, frames10-12 ease into the final reference. No teleporting props. Only the two existing front legs become the working arms: once raised, those paws are no longer on the floor. Exactly two hindlegs plus two forelimbs total, never extra arms over four grounded legs. Exactly three tails at every stage. Generous empty transparent margins around all actors/props and every sheet edge; no clipping, floor or shadows.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/tea-break-loop/00.png"
+      ]
+    },
+    {
+      "id": "tea-break-loop",
+      "routine": "tea-break",
+      "name": "Tea break",
+      "kind": "activity",
+      "phase": "loop",
+      "from": "tea-break-active",
+      "to": "tea-break-active",
+      "loop": true,
+      "frameDurationMs": 200,
+      "props": [
+        "cup",
+        "flask",
+        "cloth"
+      ],
+      "mode": "generate",
+      "action": "Seated with TWO hind paws grounded and TWO working forepaws only. Tiny cup, flask and folded cloth near body. Use one forepaw to hold cup and the other to pour from flask; SET flask down before bringing cup to mouth; sip with same two forepaws, lower cup, pick flask up again into ready-to-pour starting pose. Never create a third hand or extra front legs. No steam background, no tabletop or floor.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Seated with TWO hind paws grounded and TWO working forepaws only. Tiny cup, flask and folded cloth near body. Use one forepaw to hold cup and the other to pour from flask; SET flask down before bringing cup to mouth; sip with same two forepaws, lower cup, pick flask up again into ready-to-pour starting pose. Never create a third hand or extra front legs. No steam background, no tabletop or floor.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "tea-break-exit",
+      "routine": "tea-break",
+      "name": "Tea break",
+      "kind": "activity",
+      "phase": "exit",
+      "from": "tea-break-active",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 200,
+      "props": [
+        "cup",
+        "flask",
+        "cloth"
+      ],
+      "mode": "reverse",
+      "deriveFrom": "tea-break-entry",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "fan-dance-entry",
+      "routine": "fan-dance",
+      "name": "Fan dance",
+      "kind": "activity",
+      "phase": "entry",
+      "from": "standing",
+      "to": "fan-dance-active",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "vermilion-folding-fan"
+      ],
+      "mode": "generate",
+      "action": "Rear onto ONLY TWO hind feet; the TWO actual forepaws retrieve one small folded vermilion fan and open it into ready-to-dance pose. Forepaws are lifted front legs, not added arms. Four limbs total. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Make a high-quality animation sprite sheet of the charming cream-and-red low-polygon fox in these two images. Match its PS1 game appearance, chunky angular geometry, tiny pixel eyes and pixelated matte texture. Image1 is the first pose; image2 is the final pose. Draw twelve chronological intermediate poses in a regular 3-column, 4-row grid, with the first and last cells matching these references. Same orthographic camera facing right, same model, head size and lighting throughout. Action: Rear onto ONLY TWO hind feet; the TWO actual forepaws retrieve one small folded vermilion fan and open it into ready-to-dance pose. Forepaws are lifted front legs, not added arms. Four limbs total. First frame neutral, last frame matches the supplied active endpoint; move only the actual four limbs. Props enter visibly. The exit will reverse these same poses, so keep unpacking physically reversible. Every fox has exactly four limbs (two front, two rear) and three tails. For working gestures, the two front legs become the two arms; they cannot remain on the floor at the same time. Gradual natural movement with anticipation and settling. Use generous transparent empty margins around every complete actor and prop, including all outer sheet edges. Transparent background, without ground, shadows, captions or other interface elements. This entrance will be played backward as its exit, so keep the prop retrieval physically reversible.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/fan-dance-loop/00.png"
+      ]
+    },
+    {
+      "id": "fan-dance-loop",
+      "routine": "fan-dance",
+      "name": "Fan dance",
+      "kind": "activity",
+      "phase": "loop",
+      "from": "fan-dance-active",
+      "to": "fan-dance-active",
+      "loop": true,
+      "frameDurationMs": 100,
+      "props": [
+        "vermilion-folding-fan"
+      ],
+      "mode": "generate",
+      "action": "UPRIGHT on TWO hind feet with TWO forearms only. One forepaw holds open muted vermilion folding fan; other forepaw rests near chest. Small two-step flourish on those same two hind feet, fan arcs gracefully, small bow, return initial fan-ready stance. No extra grounded front legs or spare hand. Exactly three tails.",
+      "generationStage": 1,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: UPRIGHT on TWO hind feet with TWO forearms only. One forepaw holds open muted vermilion folding fan; other forepaw rests near chest. Small two-step flourish on those same two hind feet, fan arcs gracefully, small bow, return initial fan-ready stance. No extra grounded front legs or spare hand. Exactly three tails.\nThis is a seamless loop: frame 12 is one phase step before frame 1, without a held duplicate. Return to precisely the same model and starting posture.",
+      "references": [
+        "ps1/references/approved-design.png"
+      ]
+    },
+    {
+      "id": "fan-dance-exit",
+      "routine": "fan-dance",
+      "name": "Fan dance",
+      "kind": "activity",
+      "phase": "exit",
+      "from": "fan-dance-active",
+      "to": "standing",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [
+        "vermilion-folding-fan"
+      ],
+      "mode": "reverse",
+      "deriveFrom": "fan-dance-entry",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "sit-down",
+      "routine": "transition",
+      "name": "Sit Down",
+      "kind": "transition",
+      "phase": "action",
+      "from": "standing",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "sourceReview": "pass",
+      "action": "From standing on FOUR paws, gently bend BOTH hindlegs, lower rump, keep the SAME two forelegs straight in front and finish seated. Two forelegs plus two hindlegs throughout. Exactly three tails settle behind, maintaining identity.",
+      "generationStage": 2,
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: From standing on FOUR paws, gently bend BOTH hindlegs, lower rump, keep the SAME two forelegs straight in front and finish seated. Two forelegs plus two hindlegs throughout. Exactly three tails settle behind, maintaining identity.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nReference 1 is the approved character design. Reference 2 is the EXACT first pose, reference 3 is the EXACT last pose. Match those endpoints' proportions, head size, facing and placement. The 10 intervening poses must progressively connect them without a pose jump, body-size change or camera change. Animate only the same four legs and three tails.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png"
+      ]
+    },
+    {
+      "id": "stand-up",
+      "routine": "transition",
+      "name": "Stand Up",
+      "kind": "transition",
+      "phase": "action",
+      "from": "seated",
+      "to": "standing",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "reverse",
+      "sourceReview": "inherits-reviewed-source",
+      "deriveFrom": "sit-down"
+    },
+    {
+      "id": "curl-up",
+      "routine": "transition",
+      "name": "Curl Up",
+      "kind": "transition",
+      "phase": "action",
+      "from": "seated",
+      "to": "curled",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "Seated neutral four-limbed fox progressively folds the SAME two forelegs and two hindlegs beneath body, curls muzzle onto one forepaw, wraps exactly THREE tails around body, ending in curled sleeping ready pose with three vermilion tail tips visible. No duplicated paws or extra tails.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Seated neutral four-limbed fox progressively folds the SAME two forelegs and two hindlegs beneath body, curls muzzle onto one forepaw, wraps exactly THREE tails around body, ending in curled sleeping ready pose with three vermilion tail tips visible. No duplicated paws or extra tails.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nReference 1 locks the visual design. Reference 2 is the exact initial neutral connection pose. Reference 3 is the exact final active connection pose. Gradually connect these poses with the SAME fox model, head size and body placement. Frames1-2 anticipate, frames3-9 progressively perform the transition, frames10-12 ease into the final reference. Props must be retrieved or unfolded visibly, never pop into existence. Only the existing two front legs may become arms. Once raised, those paws must be absent from the floor. Two hindlegs plus two forelimbs total. Generous empty transparent margins around ALL actors/props and at sheet edges, no clipping, floor or shadow.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/sleep-loop/00.png"
+      ]
+    },
+    {
+      "id": "wake-and-sit",
+      "routine": "transition",
+      "name": "Wake And Sit",
+      "kind": "transition",
+      "phase": "action",
+      "from": "curled",
+      "to": "seated",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "reverse",
+      "deriveFrom": "curl-up",
+      "sourceReview": "inherits-reviewed-source"
+    },
+    {
+      "id": "take-off",
+      "routine": "transition",
+      "name": "Take Off",
+      "kind": "transition",
+      "phase": "action",
+      "from": "standing",
+      "to": "hovering",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "generate",
+      "action": "Standing on the SAME FOUR fox paws -> bend legs slightly -> lift body gently above invisible baseline -> tuck those SAME four legs into a calm hover. Exactly three tails spread and float. No extra arms, floor, takeoff cloud, dust or shadow. End in neutral hover pose.",
+      "generationStage": 2,
+      "sourceReview": "pass",
+      "prompt": "Create a production game-animation sprite sheet of the little cream and vermilion three-tailed fox in the first reference, matching its chunky early-PS1 low-poly design, angular geometry, small blue-gray pixel eyes, charcoal paws and pixelated diffuse textures. The other references, when supplied, are the exact connection poses or same-character examples.\nExactly 12 full-body poses arranged in a regular 3 columns by 4 rows grid, chronological reading order. Orthographic three-quarter view facing right, identical camera, scale, lighting, anatomy, markings and proportions throughout. Exactly four limbs (two forelegs, two hindlegs), exactly three tails. Raised forepaws are the same front limbs, not additional arms above four grounded legs. Smooth evenly spaced animation poses with stable volume and clear anticipation, action and recovery.\nTransparent background and clear generous transparent gutters; no floor or ground shadow, no labels, text or dialogue box, no collar. Each complete actor, tail and prop comfortably within its own cell. Preserve the reference's coarse geometry and restrained dithered vertex shading. Do not add fluffy fur or smooth modern toy rendering.\n\nAnimation: Standing on the SAME FOUR fox paws -> bend legs slightly -> lift body gently above invisible baseline -> tuck those SAME four legs into a calm hover. Exactly three tails spread and float. No extra arms, floor, takeoff cloud, dust or shadow. End in neutral hover pose.\nThis is a continuous non-looping motion with gradual acceleration and deceleration. First and last poses must match the supplied connection-pose references when present.\nReference 1 is the approved character design. Reference 2 is the EXACT first pose, reference 3 is the EXACT last pose. Match those endpoints' proportions, head size, facing and placement. The 10 intervening poses must progressively connect them without a pose jump, body-size change or camera change. Animate only the same four legs and three tails.",
+      "references": [
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+        "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/hover-idle-loop/00.png"
+      ]
+    },
+    {
+      "id": "land",
+      "routine": "transition",
+      "name": "Land",
+      "kind": "transition",
+      "phase": "action",
+      "from": "hovering",
+      "to": "standing",
+      "loop": false,
+      "frameDurationMs": 100,
+      "props": [],
+      "mode": "reverse",
+      "deriveFrom": "take-off",
+      "sourceReview": "inherits-reviewed-source"
+    }
+  ],
+  "stage": "complete",
+  "sourceReview": "all 35 generated sources and 7 reused clips visually reviewed; 14 reversed clips inherit reviewed poses",
+  "style": "PS1 low-poly, cream/vermilion, three tails",
+  "scope": "Generate, visually review and integrate the complete PS1 replacement artwork; retain existing feature behavior."
+}

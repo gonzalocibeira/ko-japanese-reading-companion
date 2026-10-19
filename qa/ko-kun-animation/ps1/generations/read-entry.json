@@ -1,0 +1,284 @@
+{
+  "id": "read-entry",
+  "source": "ps1/sheets/read-entry.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/read-entry.txt",
+  "sourceSha256": "1efd12f54ddac5c8327c72b26e53cb8ed28aa60ece339cfe8efb5b9ff9112988",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/seated-watch-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/read-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "layout": {
+    "scale": 0.82,
+    "offset": [
+      0,
+      -3
+    ]
+  },
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      34,
+      46,
+      332,
+      342
+    ],
+    [
+      382,
+      49,
+      687,
+      341
+    ],
+    [
+      739,
+      47,
+      1040,
+      342
+    ],
+    [
+      29,
+      390,
+      332,
+      689
+    ],
+    [
+      380,
+      393,
+      691,
+      693
+    ],
+    [
+      735,
+      393,
+      1035,
+      696
+    ],
+    [
+      29,
+      750,
+      356,
+      1046
+    ],
+    [
+      375,
+      746,
+      692,
+      1046
+    ],
+    [
+      728,
+      741,
+      1046,
+      1045
+    ],
+    [
+      25,
+      1093,
+      344,
+      1398
+    ],
+    [
+      394,
+      1094,
+      703,
+      1397
+    ],
+    [
+      728,
+      1086,
+      1035,
+      1397
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      37,
+      49,
+      329,
+      339
+    ],
+    [
+      385,
+      52,
+      684,
+      338
+    ],
+    [
+      742,
+      50,
+      1037,
+      339
+    ],
+    [
+      32,
+      393,
+      329,
+      686
+    ],
+    [
+      383,
+      396,
+      688,
+      690
+    ],
+    [
+      738,
+      396,
+      1032,
+      693
+    ],
+    [
+      32,
+      753,
+      353,
+      1043
+    ],
+    [
+      378,
+      749,
+      689,
+      1043
+    ],
+    [
+      731,
+      744,
+      1043,
+      1042
+    ],
+    [
+      28,
+      1096,
+      341,
+      1395
+    ],
+    [
+      397,
+      1097,
+      700,
+      1394
+    ],
+    [
+      731,
+      1089,
+      1032,
+      1394
+    ]
+  ],
+  "exportBounds": [
+    [
+      61,
+      82,
+      197,
+      218
+    ],
+    [
+      59,
+      84,
+      198,
+      217
+    ],
+    [
+      62,
+      83,
+      200,
+      218
+    ],
+    [
+      58,
+      79,
+      197,
+      216
+    ],
+    [
+      58,
+      80,
+      200,
+      218
+    ],
+    [
+      60,
+      80,
+      198,
+      219
+    ],
+    [
+      58,
+      82,
+      208,
+      218
+    ],
+    [
+      56,
+      80,
+      201,
+      218
+    ],
+    [
+      57,
+      78,
+      203,
+      217
+    ],
+    [
+      57,
+      78,
+      203,
+      218
+    ],
+    [
+      65,
+      79,
+      206,
+      218
+    ],
+    [
+      57,
+      75,
+      198,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    6,
+    17,
+    26,
+    37
+  ],
+  "columnOffsets": [
+    0,
+    10,
+    22
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.82,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 16,
+  "frames": "ps1/source-frames/read-entry",
+  "auditBoard": "ps1/audit/read-entry.png",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Corrected source: both actual forelegs lift, with only two hindfeet beneath the two working arms."
+}

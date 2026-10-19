@@ -1,0 +1,279 @@
+{
+  "id": "insight-action",
+  "source": "ps1/sheets/insight-action.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/insight-action.txt",
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      26,
+      54,
+      334,
+      347
+    ],
+    [
+      378,
+      46,
+      682,
+      347
+    ],
+    [
+      727,
+      43,
+      1069,
+      347
+    ],
+    [
+      20,
+      388,
+      345,
+      688
+    ],
+    [
+      373,
+      394,
+      713,
+      688
+    ],
+    [
+      726,
+      387,
+      1062,
+      688
+    ],
+    [
+      27,
+      731,
+      378,
+      1041
+    ],
+    [
+      381,
+      738,
+      713,
+      1040
+    ],
+    [
+      738,
+      739,
+      1054,
+      1041
+    ],
+    [
+      25,
+      1089,
+      358,
+      1389
+    ],
+    [
+      372,
+      1093,
+      694,
+      1389
+    ],
+    [
+      735,
+      1097,
+      1048,
+      1389
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      29,
+      57,
+      331,
+      344
+    ],
+    [
+      381,
+      49,
+      679,
+      344
+    ],
+    [
+      730,
+      46,
+      1066,
+      344
+    ],
+    [
+      23,
+      391,
+      342,
+      685
+    ],
+    [
+      376,
+      397,
+      710,
+      685
+    ],
+    [
+      729,
+      390,
+      1059,
+      685
+    ],
+    [
+      30,
+      734,
+      375,
+      1038
+    ],
+    [
+      384,
+      741,
+      710,
+      1037
+    ],
+    [
+      741,
+      742,
+      1051,
+      1038
+    ],
+    [
+      28,
+      1092,
+      355,
+      1386
+    ],
+    [
+      375,
+      1096,
+      691,
+      1386
+    ],
+    [
+      738,
+      1100,
+      1045,
+      1386
+    ]
+  ],
+  "exportBounds": [
+    [
+      54,
+      79,
+      201,
+      218
+    ],
+    [
+      50,
+      76,
+      194,
+      218
+    ],
+    [
+      43,
+      75,
+      206,
+      218
+    ],
+    [
+      51,
+      76,
+      206,
+      218
+    ],
+    [
+      47,
+      79,
+      209,
+      218
+    ],
+    [
+      43,
+      76,
+      203,
+      218
+    ],
+    [
+      55,
+      71,
+      222,
+      218
+    ],
+    [
+      51,
+      75,
+      209,
+      218
+    ],
+    [
+      49,
+      75,
+      199,
+      218
+    ],
+    [
+      54,
+      76,
+      212,
+      218
+    ],
+    [
+      47,
+      78,
+      200,
+      218
+    ],
+    [
+      47,
+      80,
+      196,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    1,
+    22,
+    31,
+    45
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.85,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 14,
+  "frames": "ps1/source-frames/insight-action",
+  "auditBoard": "ps1/audit/insight-action.png",
+  "layout": {
+    "scale": 0.85
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "sourceSha256": "40eee29ee4a494ea3764886674d246c167bc1e1a265311395a107fa416c9b4a0",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms.",
+  "references": [
+    "ps1/references/approved-design.png"
+  ]
+}

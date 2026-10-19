@@ -1,0 +1,283 @@
+{
+  "id": "fan-dance-loop",
+  "source": "ps1/sheets/fan-dance-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/fan-dance-loop.txt",
+  "sourceSha256": "1c372581351de96c3bf5c71692fcd6cba920864b3647862b2a8f6105d1638dc3",
+  "references": [
+    "ps1/references/approved-design.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      22,
+      50,
+      374,
+      357
+    ],
+    [
+      383,
+      45,
+      727,
+      357
+    ],
+    [
+      741,
+      19,
+      1064,
+      357
+    ],
+    [
+      29,
+      382,
+      385,
+      698
+    ],
+    [
+      387,
+      385,
+      749,
+      705
+    ],
+    [
+      743,
+      382,
+      1077,
+      702
+    ],
+    [
+      25,
+      738,
+      368,
+      1026
+    ],
+    [
+      385,
+      767,
+      738,
+      1024
+    ],
+    [
+      733,
+      731,
+      1073,
+      1030
+    ],
+    [
+      31,
+      1047,
+      370,
+      1379
+    ],
+    [
+      389,
+      1038,
+      708,
+      1377
+    ],
+    [
+      737,
+      1070,
+      1081,
+      1382
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      25,
+      53,
+      371,
+      354
+    ],
+    [
+      386,
+      48,
+      724,
+      354
+    ],
+    [
+      744,
+      22,
+      1061,
+      354
+    ],
+    [
+      32,
+      385,
+      382,
+      695
+    ],
+    [
+      390,
+      388,
+      746,
+      702
+    ],
+    [
+      746,
+      385,
+      1074,
+      699
+    ],
+    [
+      28,
+      741,
+      365,
+      1023
+    ],
+    [
+      388,
+      770,
+      735,
+      1021
+    ],
+    [
+      736,
+      734,
+      1070,
+      1027
+    ],
+    [
+      34,
+      1050,
+      367,
+      1376
+    ],
+    [
+      392,
+      1041,
+      705,
+      1374
+    ],
+    [
+      740,
+      1073,
+      1078,
+      1379
+    ]
+  ],
+  "exportBounds": [
+    [
+      48,
+      64,
+      225,
+      218
+    ],
+    [
+      48,
+      61,
+      221,
+      218
+    ],
+    [
+      46,
+      48,
+      208,
+      218
+    ],
+    [
+      52,
+      57,
+      231,
+      216
+    ],
+    [
+      50,
+      59,
+      232,
+      219
+    ],
+    [
+      47,
+      57,
+      214,
+      218
+    ],
+    [
+      50,
+      74,
+      222,
+      218
+    ],
+    [
+      49,
+      89,
+      226,
+      217
+    ],
+    [
+      42,
+      70,
+      212,
+      220
+    ],
+    [
+      53,
+      51,
+      223,
+      218
+    ],
+    [
+      51,
+      47,
+      211,
+      217
+    ],
+    [
+      44,
+      63,
+      216,
+      219
+    ]
+  ],
+  "rowOffsets": [
+    -9,
+    8,
+    46,
+    55
+  ],
+  "canvasSize": 450,
+  "exportScale": 0.9,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 9,
+  "frames": "ps1/source-frames/fan-dance-loop",
+  "auditBoard": "ps1/audit/fan-dance-loop.png",
+  "layout": {
+    "scale": 0.9,
+    "offset": [
+      0,
+      -3
+    ]
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

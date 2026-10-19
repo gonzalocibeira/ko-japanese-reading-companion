@@ -76,6 +76,12 @@
   function updateReadingView(patch, site) {
     return mutatePreferences({ kind: "reading-view", patch, site });
   }
+  function updateMascot(patch) {
+    return mutatePreferences({ kind: "mascot", patch });
+  }
+  function updateMascotPosition(hostname, position) {
+    return mutatePreferences({ kind: "mascot-position", hostname, position });
+  }
   function saveCorrection(word, reading, previousWord) {
     return mutatePreferences({ kind: "save-correction", word, reading, previousWord });
   }
@@ -169,15 +175,36 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     }
   });
 
+  // src/mascot-preferences.ts
+  function mascotPreferences(value) {
+    const v = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    const positions = /* @__PURE__ */ Object.create(null);
+    if (v.positions && typeof v.positions === "object" && !Array.isArray(v.positions)) {
+      for (const [site, p] of Object.entries(v.positions).slice(-200)) {
+        if (!site || site.length > 253 || /[\s/\\?#]/u.test(site) || !p || typeof p !== "object") continue;
+        if (typeof p.x === "number" && Number.isFinite(p.x) && typeof p.y === "number" && Number.isFinite(p.y)) positions[site] = { x: Math.max(0, Math.min(1, p.x)), y: Math.max(0, Math.min(1, p.y)) };
+      }
+    }
+    return { enabled: v.enabled === true, trigger: v.trigger === "highlight" ? "highlight" : "hover", definitions: v.definitions === "en" || v.definitions === "ja" ? v.definitions : "off", size: v.size === 96 || v.size === 160 ? v.size : 128, motion: v.motion === "reduced" ? "reduced" : "system", positions };
+  }
+  var init_mascot_preferences = __esm({
+    "src/mascot-preferences.ts"() {
+      "use strict";
+    }
+  });
+
   // src/popup.ts
   var require_popup = __commonJS({
     "src/popup.ts"() {
       init_preferences();
       init_ui_theme();
       init_update_banner();
+      init_mascot_preferences();
+      init_preferences();
       var theme = document.createElement("style");
       theme.textContent = uiTheme;
       document.head.append(theme);
+      document.querySelector("#extension-version").textContent = `v${chrome.runtime.getManifest().version}`;
       void setupUpdateBanner();
       async function main() {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -186,7 +213,50 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
           if (tab?.url && /^https?:/.test(tab.url)) hostname = new URL(tab.url).hostname;
         } catch {
         }
-        const state = await chrome.storage.local.get({ enabled: true, excluded: [], siteAppearance: {}, readingOverrides: {}, docsReadingView: {}, readingView: null });
+        const state = await chrome.storage.local.get({ enabled: true, excluded: [], siteAppearance: {}, readingOverrides: {}, docsReadingView: {}, readingView: null, mascot: null });
+        const mascotEnabled = document.querySelector("#mascot-enabled");
+        const mascotTrigger = document.querySelector("#mascot-trigger");
+        const mascotDefinitions = document.querySelector("#mascot-definitions");
+        const mascotSize = document.querySelector("#mascot-size");
+        const mascotMotion = document.querySelector("#mascot-motion");
+        const mascotReset = document.querySelector("#mascot-reset");
+        const mascotFeedback = document.querySelector("#mascot-feedback");
+        function renderMascot(value) {
+          const m = mascotPreferences(value);
+          mascotEnabled.checked = m.enabled;
+          mascotTrigger.value = m.trigger;
+          mascotDefinitions.value = m.definitions;
+          mascotSize.value = String(m.size);
+          mascotMotion.value = m.motion;
+          for (const input of [mascotTrigger, mascotDefinitions, mascotSize, mascotMotion]) input.disabled = !m.enabled;
+          mascotReset.disabled = !hostname || !m.enabled;
+        }
+        renderMascot(state.mascot);
+        async function saveMascot(patch) {
+          try {
+            renderMascot(await updateMascot(patch));
+            mascotFeedback.textContent = "K\u014D\u304F\u3093 preference saved.";
+            mascotFeedback.dataset.error = "false";
+          } catch {
+            mascotFeedback.textContent = "Could not save K\u014D\u304F\u3093 preferences. Try again.";
+            mascotFeedback.dataset.error = "true";
+          }
+        }
+        mascotEnabled.onchange = () => void saveMascot({ enabled: mascotEnabled.checked });
+        mascotTrigger.onchange = () => void saveMascot({ trigger: mascotTrigger.value === "highlight" ? "highlight" : "hover" });
+        mascotDefinitions.onchange = () => void saveMascot({ definitions: mascotDefinitions.value === "en" ? "en" : mascotDefinitions.value === "ja" ? "ja" : "off" });
+        mascotSize.onchange = () => void saveMascot({ size: Number(mascotSize.value) });
+        mascotMotion.onchange = () => void saveMascot({ motion: mascotMotion.value === "reduced" ? "reduced" : "system" });
+        mascotReset.onclick = async () => {
+          try {
+            await updateMascotPosition(hostname, null);
+            mascotFeedback.textContent = "K\u014D\u304F\u3093 will start near the bottom-right corner on this site.";
+            mascotFeedback.dataset.error = "false";
+          } catch {
+            mascotFeedback.textContent = "Could not reset the position. Try again.";
+            mascotFeedback.dataset.error = "true";
+          }
+        };
         const enabled = document.querySelector("#enabled");
         const excluded = document.querySelector("#excluded");
         const status = document.querySelector("#status");
@@ -373,6 +443,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         search.oninput = () => renderCorrections(currentCorrections);
         chrome.storage.onChanged.addListener((changes, area) => {
           if (area !== "local") return;
+          if (changes.mascot) renderMascot(changes.mascot.newValue);
           if (changes.enabled) enabled.checked = changes.enabled.newValue !== false;
           if (changes.excluded) excluded.checked = Array.isArray(changes.excluded.newValue) && changes.excluded.newValue.includes(hostname);
           if (changes.enabled || changes.excluded) changed();

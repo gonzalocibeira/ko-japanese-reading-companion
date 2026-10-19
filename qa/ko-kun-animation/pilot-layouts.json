@@ -1,0 +1,337 @@
+{
+  "attentive-idle-loop": {
+    "source": "sheets/attentive-idle-loop.png",
+    "columns": 3,
+    "rows": 4,
+    "gridReviewed": true,
+    "scale": 0.8,
+    "offset": [
+      0,
+      -4
+    ],
+    "bodyAnchor": [
+      160,
+      174
+    ],
+    "groundBaseline": 218,
+    "props": []
+  },
+  "walk-loop": {
+    "source": "sheets/walk-loop.png",
+    "columns": 3,
+    "rows": 4,
+    "gridReviewed": true,
+    "componentExtraction": true,
+    "sourceCanvasSize": [
+      450,
+      450
+    ],
+    "rowPaddingY": [
+      2,
+      13,
+      14,
+      30
+    ],
+    "scale": 1.1,
+    "offset": [
+      -3,
+      -12
+    ],
+    "groundBaseline": 218,
+    "props": [],
+    "note": " Uniform scale adjusted after endpoint comparison to match idle body height; no per-frame scaling."
+  },
+  "straw-hat-adventurer-loop": {
+    "source": "sheets/straw-hat-adventurer-loop.png",
+    "columns": 3,
+    "rows": 4,
+    "gridReviewed": true,
+    "componentExtraction": true,
+    "sourceCanvasSize": [
+      450,
+      450
+    ],
+    "rowPaddingY": [
+      -5,
+      11,
+      22,
+      36
+    ],
+    "scale": 1,
+    "offset": [
+      0,
+      -3
+    ],
+    "groundBaseline": 218,
+    "props": [
+      "red-banded-straw-hat",
+      "red-vest"
+    ],
+    "note": "Whole disconnected sprites extracted by source alpha; nominal grid alone would cut extended paws. No motion is synthesized."
+  },
+  "read-loop": {
+    "source": "sheets/read-loop-v2.png",
+    "columns": 3,
+    "rows": 4,
+    "ycuts": [
+      0,
+      386,
+      737,
+      1096,
+      1448
+    ],
+    "gridReviewed": true,
+    "sourceCanvasSize": [
+      400,
+      400
+    ],
+    "rowPaddingY": [
+      0,
+      34,
+      28,
+      38
+    ],
+    "scale": 1,
+    "offset": [
+      0,
+      -18
+    ],
+    "bodyAnchor": [
+      160,
+      174
+    ],
+    "groundBaseline": 218,
+    "props": [
+      "scroll"
+    ],
+    "note": "Uneven row spacing corrected by explicit row crops and transparent padding; painted poses are unchanged. First crowded source retained but excluded."
+  },
+  "walk-start": {
+    "source": "sheets/walk-start.png",
+    "columns": 3,
+    "rows": 4,
+    "gridReviewed": true,
+    "componentExtraction": true,
+    "sourceCanvasSize": [
+      450,
+      450
+    ],
+    "rowPaddingY": [
+      0,
+      8,
+      11,
+      20
+    ],
+    "scale": 1.1,
+    "offset": [
+      -3,
+      -12
+    ],
+    "groundBaseline": 218,
+    "props": [],
+    "note": "Grid and pose order visually inspected. Row offsets align sheet spacing to the common ground baseline without repainting or synthesizing poses. Uniform scale adjusted after endpoint comparison to match idle body height; no per-frame scaling."
+  },
+  "walk-stop": {
+    "source": "sheets/walk-stop.png",
+    "columns": 3,
+    "rows": 4,
+    "gridReviewed": true,
+    "componentExtraction": true,
+    "sourceCanvasSize": [
+      450,
+      450
+    ],
+    "rowPaddingY": [
+      3,
+      5,
+      7,
+      8
+    ],
+    "scale": 1.1,
+    "offset": [
+      -3,
+      -12
+    ],
+    "groundBaseline": 218,
+    "props": [],
+    "note": "Grid and pose order visually inspected. Row offsets align sheet spacing to the common ground baseline without repainting or synthesizing poses. Uniform scale adjusted after endpoint comparison to match idle body height; no per-frame scaling."
+  },
+  "read-entry": {
+    "source": "sheets/read-entry.png",
+    "columns": 3,
+    "rows": 4,
+    "gridReviewed": true,
+    "componentExtraction": true,
+    "sourceCanvasSize": [
+      450,
+      450
+    ],
+    "rowPaddingY": [
+      -11,
+      -10,
+      1,
+      24
+    ],
+    "scale": 1,
+    "offset": [
+      0,
+      -3
+    ],
+    "groundBaseline": 218,
+    "props": [
+      "scroll"
+    ],
+    "note": "Grid and pose order visually inspected. Row offsets align sheet spacing to the common ground baseline without repainting or synthesizing poses. First nine poses from original source, then two complete corrected poses, then the shared generated loop endpoint. Clipped right-column poses in v2 are excluded.",
+    "frameOverrides": {
+      "9": {
+        "source": "sheets/read-entry-v2.png",
+        "index": 9,
+        "paddingY": 6,
+        "reason": "Corrected chin lift; this source pose is complete."
+      },
+      "10": {
+        "source": "sheets/read-entry-v2.png",
+        "index": 10,
+        "paddingY": 4,
+        "reason": "Corrected chin lift; this source pose is complete."
+      },
+      "11": {
+        "file": "pilot/frames/read-loop/00.png",
+        "reason": "Reuse the actual generated reading-loop connection pose; exact matching endpoint."
+      }
+    }
+  },
+  "sit-down": {
+    "source": "sheets/sit-down.png",
+    "columns": 3,
+    "rows": 4,
+    "gridReviewed": true,
+    "componentExtraction": true,
+    "sourceCanvasSize": [
+      450,
+      450
+    ],
+    "rowPaddingY": [
+      -12,
+      -21,
+      -21,
+      -2
+    ],
+    "scale": 1,
+    "offset": [
+      0,
+      -3
+    ],
+    "groundBaseline": 218,
+    "props": [],
+    "note": "Grid and pose order visually inspected. Row offsets align sheet spacing to the common ground baseline without repainting or synthesizing poses."
+  },
+  "stand-up": {
+    "source": "sheets/stand-up.png",
+    "columns": 3,
+    "rows": 4,
+    "gridReviewed": true,
+    "componentExtraction": true,
+    "sourceCanvasSize": [
+      450,
+      450
+    ],
+    "rowPaddingY": [
+      -28,
+      -22,
+      -14,
+      17
+    ],
+    "scale": 1.07,
+    "offset": [
+      -2,
+      -9
+    ],
+    "groundBaseline": 218,
+    "props": [],
+    "note": "Grid and pose order visually inspected. Row offsets align sheet spacing to the common ground baseline without repainting or synthesizing poses."
+  },
+  "read-exit": {
+    "source": "sheets/read-exit.png",
+    "columns": 3,
+    "rows": 4,
+    "gridReviewed": true,
+    "componentExtraction": true,
+    "sourceCanvasSize": [
+      450,
+      450
+    ],
+    "rowPaddingY": [
+      -17,
+      -4,
+      4,
+      23
+    ],
+    "scale": 1.04,
+    "offset": [
+      -1,
+      -7
+    ],
+    "groundBaseline": 218,
+    "props": [
+      "scroll"
+    ],
+    "note": "Grid and pose order visually inspected. Extract complete disconnected source sprites, including temporary props; retain painted pixels and original alpha. Row offsets correct source sheet spacing."
+  },
+  "straw-hat-adventurer-entry": {
+    "source": "sheets/straw-hat-adventurer-entry.png",
+    "columns": 3,
+    "rows": 4,
+    "gridReviewed": true,
+    "componentExtraction": true,
+    "sourceCanvasSize": [
+      450,
+      450
+    ],
+    "rowPaddingY": [
+      -21,
+      -15,
+      0,
+      17
+    ],
+    "scale": 1,
+    "offset": [
+      0,
+      -3
+    ],
+    "groundBaseline": 218,
+    "props": [
+      "red-banded-straw-hat",
+      "red-vest"
+    ],
+    "note": "Grid and pose order visually inspected. Extract complete disconnected source sprites, including temporary props; retain painted pixels and original alpha. Row offsets correct source sheet spacing."
+  },
+  "straw-hat-adventurer-exit": {
+    "source": "sheets/straw-hat-adventurer-exit.png",
+    "columns": 3,
+    "rows": 4,
+    "gridReviewed": true,
+    "componentExtraction": true,
+    "sourceCanvasSize": [
+      450,
+      450
+    ],
+    "rowPaddingY": [
+      -15,
+      -1,
+      7,
+      23
+    ],
+    "scale": 1,
+    "offset": [
+      0,
+      -3
+    ],
+    "groundBaseline": 218,
+    "props": [
+      "red-banded-straw-hat",
+      "red-vest"
+    ],
+    "note": "Grid and pose order visually inspected. Extract complete disconnected source sprites, including temporary props; retain painted pixels and original alpha. Row offsets correct source sheet spacing."
+  }
+}

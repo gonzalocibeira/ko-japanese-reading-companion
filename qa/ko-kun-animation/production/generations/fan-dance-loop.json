@@ -1,0 +1,270 @@
+{
+  "id": "fan-dance-loop",
+  "version": 2,
+  "generator": "Built-in image_gen tool",
+  "source": "production/sheets/fan-dance-loop-v2.png",
+  "prompt": "production/prompts/fan-dance-loop-v2.txt",
+  "anatomyReview": "pass",
+  "status": "generated",
+  "supersededSource": "production/sheets/fan-dance-loop-v1.png",
+  "rejectionReason": "First fan source touched the top canvas edge.",
+  "originalRetained": "Exact generated PNG retained at the source path.",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1086,
+    1448
+  ],
+  "sourceRects": [
+    [
+      41,
+      25,
+      313,
+      375
+    ],
+    [
+      391,
+      27,
+      678,
+      375
+    ],
+    [
+      748,
+      27,
+      1060,
+      375
+    ],
+    [
+      34,
+      377,
+      328,
+      723
+    ],
+    [
+      385,
+      374,
+      718,
+      723
+    ],
+    [
+      753,
+      378,
+      1064,
+      726
+    ],
+    [
+      38,
+      744,
+      333,
+      1072
+    ],
+    [
+      388,
+      773,
+      696,
+      1071
+    ],
+    [
+      766,
+      733,
+      1054,
+      1074
+    ],
+    [
+      38,
+      1088,
+      386,
+      1423
+    ],
+    [
+      400,
+      1080,
+      691,
+      1427
+    ],
+    [
+      756,
+      1080,
+      1031,
+      1427
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      44,
+      28,
+      310,
+      372
+    ],
+    [
+      394,
+      30,
+      675,
+      372
+    ],
+    [
+      751,
+      30,
+      1057,
+      372
+    ],
+    [
+      37,
+      380,
+      325,
+      720
+    ],
+    [
+      388,
+      377,
+      715,
+      720
+    ],
+    [
+      756,
+      381,
+      1061,
+      723
+    ],
+    [
+      41,
+      747,
+      330,
+      1069
+    ],
+    [
+      391,
+      776,
+      693,
+      1068
+    ],
+    [
+      769,
+      736,
+      1051,
+      1071
+    ],
+    [
+      41,
+      1091,
+      383,
+      1420
+    ],
+    [
+      403,
+      1083,
+      688,
+      1424
+    ],
+    [
+      759,
+      1083,
+      1028,
+      1424
+    ]
+  ],
+  "exportBounds": [
+    [
+      50,
+      23,
+      201,
+      218
+    ],
+    [
+      43,
+      24,
+      203,
+      218
+    ],
+    [
+      40,
+      24,
+      214,
+      218
+    ],
+    [
+      46,
+      25,
+      210,
+      218
+    ],
+    [
+      40,
+      23,
+      226,
+      218
+    ],
+    [
+      43,
+      25,
+      217,
+      220
+    ],
+    [
+      48,
+      35,
+      213,
+      218
+    ],
+    [
+      42,
+      52,
+      213,
+      218
+    ],
+    [
+      51,
+      29,
+      211,
+      219
+    ],
+    [
+      48,
+      29,
+      243,
+      216
+    ],
+    [
+      49,
+      24,
+      210,
+      218
+    ],
+    [
+      45,
+      24,
+      198,
+      218
+    ]
+  ],
+  "rowOffsets": [
+    -27,
+    -13,
+    0,
+    7
+  ],
+  "canvasSize": 450,
+  "exportScale": 1,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "frames": "production/frames/fan-dance-loop",
+  "auditBoard": "production/audit/fan-dance-loop.png",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "reviewMethod": "Direct visual inspection of all twelve extracted poses"
+}

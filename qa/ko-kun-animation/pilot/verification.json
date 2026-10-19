@@ -1,0 +1,112 @@
+{
+  "automatedChecks": [
+    {
+      "id": "attentive-idle-loop",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "walk-loop",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "read-loop",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "straw-hat-adventurer-loop",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "walk-start",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "walk-stop",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "read-entry",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "read-exit",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "straw-hat-adventurer-entry",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "straw-hat-adventurer-exit",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "sit-down",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    },
+    {
+      "id": "stand-up",
+      "frameCount": 12,
+      "distinctFrames": 12,
+      "alphaPreserved": true,
+      "meaningfulArtInsideCells": true,
+      "losslessStripRoundTrip": true
+    }
+  ],
+  "generatedClips": 12,
+  "expectedPilotClips": 12,
+  "visualReviewRequired": [
+    "tail count and anatomy",
+    "identity consistency",
+    "foot contact",
+    "loop seams",
+    "entry/exit matching",
+    "prop continuity",
+    "96\u2013128 pixel readability"
+  ],
+  "pilotApproved": false
+}

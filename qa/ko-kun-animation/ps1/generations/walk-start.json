@@ -1,0 +1,281 @@
+{
+  "id": "walk-start",
+  "source": "ps1/sheets/walk-start.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/walk-start.txt",
+  "sourceSha256": "7dbf574b11eb194e7dd289a8ccb7c0c16ddfd698eb060a3601714b985c9655f6",
+  "references": [
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/references/approved-design.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/attentive-idle-loop/00.png",
+    "/Users/turco/Documents/ChatGPT/FOB/qa/ko-kun-animation/ps1/frames/walk-loop/00.png"
+  ],
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceRects": [
+    [
+      96,
+      5,
+      402,
+      254
+    ],
+    [
+      582,
+      4,
+      898,
+      256
+    ],
+    [
+      1096,
+      8,
+      1426,
+      257
+    ],
+    [
+      87,
+      268,
+      428,
+      510
+    ],
+    [
+      589,
+      268,
+      934,
+      509
+    ],
+    [
+      1106,
+      261,
+      1458,
+      512
+    ],
+    [
+      81,
+      520,
+      457,
+      762
+    ],
+    [
+      585,
+      517,
+      964,
+      763
+    ],
+    [
+      1107,
+      525,
+      1486,
+      763
+    ],
+    [
+      83,
+      771,
+      456,
+      1020
+    ],
+    [
+      600,
+      775,
+      954,
+      1017
+    ],
+    [
+      1136,
+      771,
+      1454,
+      1021
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      99,
+      8,
+      399,
+      251
+    ],
+    [
+      585,
+      7,
+      895,
+      253
+    ],
+    [
+      1099,
+      11,
+      1423,
+      254
+    ],
+    [
+      90,
+      271,
+      425,
+      507
+    ],
+    [
+      592,
+      271,
+      931,
+      506
+    ],
+    [
+      1109,
+      264,
+      1455,
+      509
+    ],
+    [
+      84,
+      523,
+      454,
+      759
+    ],
+    [
+      588,
+      520,
+      961,
+      760
+    ],
+    [
+      1110,
+      528,
+      1483,
+      760
+    ],
+    [
+      86,
+      774,
+      453,
+      1017
+    ],
+    [
+      603,
+      778,
+      951,
+      1014
+    ],
+    [
+      1139,
+      774,
+      1451,
+      1018
+    ]
+  ],
+  "exportBounds": [
+    [
+      33,
+      70,
+      214,
+      217
+    ],
+    [
+      18,
+      70,
+      205,
+      218
+    ],
+    [
+      19,
+      72,
+      214,
+      219
+    ],
+    [
+      28,
+      76,
+      230,
+      218
+    ],
+    [
+      22,
+      76,
+      226,
+      217
+    ],
+    [
+      25,
+      71,
+      234,
+      219
+    ],
+    [
+      24,
+      75,
+      248,
+      217
+    ],
+    [
+      19,
+      73,
+      245,
+      218
+    ],
+    [
+      25,
+      78,
+      251,
+      218
+    ],
+    [
+      25,
+      71,
+      247,
+      218
+    ],
+    [
+      28,
+      74,
+      238,
+      216
+    ],
+    [
+      43,
+      71,
+      231,
+      219
+    ]
+  ],
+  "rowOffsets": [
+    -9,
+    -7,
+    -4,
+    -5
+  ],
+  "canvasSize": 636,
+  "exportScale": 1.5,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 23,
+  "frames": "ps1/source-frames/walk-start",
+  "auditBoard": "ps1/audit/walk-start.png",
+  "layout": {
+    "scale": 1.5
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms."
+}

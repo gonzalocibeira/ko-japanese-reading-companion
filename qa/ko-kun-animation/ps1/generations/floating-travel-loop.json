@@ -1,0 +1,284 @@
+{
+  "id": "floating-travel-loop",
+  "source": "ps1/sheets/floating-travel-loop.png",
+  "generator": "built-in image_gen",
+  "prompt": "ps1/prompts/floating-travel-loop.txt",
+  "anatomyReview": "pass",
+  "technicalStatus": "pass",
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "sourceRects": [
+    [
+      67,
+      12,
+      468,
+      260
+    ],
+    [
+      543,
+      12,
+      929,
+      259
+    ],
+    [
+      1020,
+      15,
+      1410,
+      260
+    ],
+    [
+      68,
+      279,
+      470,
+      537
+    ],
+    [
+      543,
+      269,
+      948,
+      527
+    ],
+    [
+      1021,
+      270,
+      1415,
+      524
+    ],
+    [
+      53,
+      551,
+      478,
+      798
+    ],
+    [
+      552,
+      562,
+      947,
+      797
+    ],
+    [
+      1024,
+      555,
+      1421,
+      801
+    ],
+    [
+      45,
+      814,
+      458,
+      1064
+    ],
+    [
+      548,
+      814,
+      945,
+      1063
+    ],
+    [
+      1029,
+      815,
+      1421,
+      1065
+    ]
+  ],
+  "sourceActorBounds": [
+    [
+      70,
+      15,
+      465,
+      257
+    ],
+    [
+      546,
+      15,
+      926,
+      256
+    ],
+    [
+      1023,
+      18,
+      1407,
+      257
+    ],
+    [
+      71,
+      282,
+      467,
+      534
+    ],
+    [
+      546,
+      272,
+      945,
+      524
+    ],
+    [
+      1024,
+      273,
+      1412,
+      521
+    ],
+    [
+      56,
+      554,
+      475,
+      795
+    ],
+    [
+      555,
+      565,
+      944,
+      794
+    ],
+    [
+      1027,
+      558,
+      1418,
+      798
+    ],
+    [
+      48,
+      817,
+      455,
+      1061
+    ],
+    [
+      551,
+      817,
+      942,
+      1060
+    ],
+    [
+      1032,
+      818,
+      1418,
+      1062
+    ]
+  ],
+  "exportBounds": [
+    [
+      40,
+      72,
+      234,
+      190
+    ],
+    [
+      45,
+      72,
+      231,
+      190
+    ],
+    [
+      44,
+      72,
+      232,
+      189
+    ],
+    [
+      41,
+      69,
+      234,
+      192
+    ],
+    [
+      40,
+      69,
+      235,
+      192
+    ],
+    [
+      42,
+      70,
+      232,
+      192
+    ],
+    [
+      35,
+      72,
+      240,
+      190
+    ],
+    [
+      42,
+      75,
+      233,
+      187
+    ],
+    [
+      42,
+      72,
+      233,
+      189
+    ],
+    [
+      37,
+      71,
+      237,
+      190
+    ],
+    [
+      41,
+      71,
+      233,
+      190
+    ],
+    [
+      43,
+      71,
+      232,
+      191
+    ]
+  ],
+  "rowOffsets": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "canvasSize": 600,
+  "exportScale": 1.15,
+  "exportOffset": [
+    0,
+    -3
+  ],
+  "placementDy": 7,
+  "frames": "ps1/source-frames/floating-travel-loop",
+  "auditBoard": "ps1/audit/floating-travel-loop.png",
+  "layout": {
+    "scale": 1.15,
+    "offset": [
+      0,
+      -3
+    ],
+    "stabilizeCenter": true
+  },
+  "columnOffsets": [
+    0,
+    0,
+    0
+  ],
+  "sourceSha256": "0a97992ace42c5acd7de4a2cff1caaeb3aa6e70032889a0e620cd073089fb819",
+  "reviewedFrames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "limbCountMaximum": 4,
+  "tailCount": 3,
+  "anatomyReviewMethod": "Direct visual inspection of every source pose and composited audit board, including raised-paw and prop frames. This is not an automated limb-count result.",
+  "reviewNotes": "Four attached limbs total, exactly three tails, consistent PS1 identity; no duplicate grounded forelegs under working arms.",
+  "references": [
+    "ps1/references/approved-design.png"
+  ]
+}

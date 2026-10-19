@@ -1,4 +1,5 @@
 import {appearance,appearanceForSite,validOverrides,validateOverride,readingViewPreferences,mergeCorrectionBackup,correctionBackupLimit,type PreferenceMutation} from './preferences';
+import {mascotPreferences} from './mascot-preferences';
 
 // Runtime messages wake this single MV3 worker; keep each read/modify/write in
 // the same queue, including imports and deletions, so other clients cannot race it.
@@ -18,6 +19,22 @@ function record(value:unknown):Record<string,unknown> {
 }
 async function apply(mutation:PreferenceMutation) {
   switch(mutation.kind) {
+    case 'mascot': {
+      const patch=record(mutation.patch);
+      const choices:Record<string,unknown[]>={enabled:[true,false],trigger:['hover','highlight'],definitions:['off','en','ja'],size:[96,128,160],motion:['system','reduced']};
+      if(Object.entries(patch).some(([key,value])=>!Object.hasOwn(choices,key) || !choices[key].includes(value)))throw new Error('Invalid Kōくん preference.');
+      const state=await chrome.storage.local.get('mascot');
+      const next=mascotPreferences({...mascotPreferences(state.mascot),...patch});
+      await chrome.storage.local.set({mascot:next});return next;
+    }
+    case 'mascot-position': {
+      const site=hostname(mutation.hostname),p=mutation.position;
+      if(p!==null && (!p || typeof p.x!=='number' || !Number.isFinite(p.x) || p.x<0 || p.x>1 || typeof p.y!=='number' || !Number.isFinite(p.y) || p.y<0 || p.y>1))throw new Error('Invalid Kōくん position.');
+      const state=await chrome.storage.local.get('mascot'),next=mascotPreferences(state.mascot);
+      delete next.positions[site];
+      if(p)next.positions[site]={x:p.x,y:p.y};
+      const bounded=mascotPreferences(next);await chrome.storage.local.set({mascot:bounded});return bounded;
+    }
     case 'reading-view': {
       const patch=record(mutation.patch);
       if(Object.entries(patch).some(([key,value])=>!['spacing','fontSize','width'].includes(key) || typeof value!=='number' || !Number.isFinite(value)))throw new Error('Invalid reading panel preference.');
