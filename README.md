@@ -31,8 +31,6 @@
 
 His PS1-inspired design uses chunky cream polygons, vermilion markings, pixel textures, four limbs, and three tails. All 24 routines have been rebuilt as 56 transparent clips. [Preview the animation library](qa/ko-kun-animation/ps1-review.html).
 
-**A small easter egg:** click the version number on About Kō five times to open a compact animation gallery. All 24 routines and six transitions play automatically across 30 tiles, with no controls. It works offline and respects reduced motion. Enter or Space on the focused version number also counts.
-
 He walks gently around his drop area and occasionally takes off, floats, and lands back at his ground height. Physical specials have small movements matched to their poses; quiet activities stay planted. Activities run for at most two loop iterations. Drag him to move him; the visible drop location becomes his new ground position and is remembered per site. Use arrow keys when focused for keyboard repositioning. He has no permanent window or controls.
 
 Hover over a Japanese word for 600 ms to open his speech bubble, or choose **Highlight** in his settings. Hover bubbles close when you leave the word. The content-sized pixel dialogue follows him while his animation keeps running. A word reading immediately starts his open-scroll animation, taking priority over roaming and other activities. Readings work offline, including on exposed Google Docs text and in Reading view. Definitions start off; optionally enable English or Japanese Wiktionary definitions. Only the lookup word is sent to that edition. His switch works with automatic page furigana off; **Pause on this site** hides him. Sizes and a still-character option are in the popup, and system reduced motion is respected.
@@ -131,6 +129,12 @@ Scrolling, typing, and background-tab suspension do not change an otherwise acti
 ### On the web
 
 The Wikipedia example above shows furigana added directly above Japanese text. Open the extension menu to pause a site, customize readings, or check the page status.
+
+### Kōくん word lookups · 1.3 development
+
+![Kōくん beside Japanese text, with a pixel-style speech bubble showing 海賊, its reading かいぞく, and the English Wiktionary definition of pirate](docs/screenshots/ko-kun-word-lookup.png)
+
+Kōくん shows a word’s reading in a speech bubble. Enable optional English or Japanese definitions to see its meaning from Wiktionary, as shown here for **海賊** (かいぞく, pirate).
 
 ### In Google Docs
 
@@ -277,7 +281,7 @@ For release downloads, run `npm run package:release`. It rebuilds `dist`, create
 
 The test suite also covers per-version announcement dismissal across browser restarts, failure/retry behavior, offline changelog access, and the GitHub suggestion link. It covers automatic annotations, unchanged source/layout, a 100,000-node webpage, a 100-page Docs fixture, cancellation, IME handling, settings, corrections, vocabulary/name disambiguation, local exploration and real-dictionary form round trips, keyboard and reduced-motion behavior, the reading panel, debounced refreshes, automatic bilingual word definitions on word activation, toolbar state and lifecycle, and expanded popup forms. Browser integration tests use a temporary profile and localhost server. The native toolbar-popup regression opens a temporary visible browser window to verify Chrome’s popup sizing and wheel scrolling. They default to Brave's standard macOS executable; set `CHROMIUM_PATH` to an extension-capable Chromium executable elsewhere. Chrome distributions that disable command-line extension loading cannot run these integration tests. Your normal browser profile and Google account are not used.
 
-The four inline 1.0 screenshots supplied by the project owner cover webpage overlays, Google Docs overlays, the reading panel, and bilingual word definitions. Linked 1.1 playground previews were captured during a live public read-only Google Docs smoke test. Earlier fixture captures remain in [`docs/screenshots/`](docs/screenshots/). Regenerated browser captures are written to `test-results/` during tests.
+The four inline 1.0 screenshots supplied by the project owner cover webpage overlays, Google Docs overlays, the reading panel, and bilingual word definitions. The Kōくん word-lookup capture was supplied by the project owner for the 1.3 development build. Linked 1.1 playground previews were captured during a live public read-only Google Docs smoke test. Earlier fixture captures remain in [`docs/screenshots/`](docs/screenshots/). Regenerated browser captures are written to `test-results/` during tests.
 
 </details>
 
@@ -292,7 +296,7 @@ See [technical notes](docs/technical-notes.md) for the architecture, exact budge
 
 ## License
 
-The 1.2.0 distribution uses the [Kō No-Resale License 1.0](LICENSE) for original project code, documentation, and assets. You may use Kō freely, including at work, inspect and modify its source, and share copies for free. Selling Kō, charging for access, or including it in a paid product requires written permission from Gonzalo Cibeira. This applies to modified and rebranded copies too. Independent paid support, training, and custom development are permitted under the license's conditions.
+Kō 1.2.0 and later use the [Kō No-Resale License 1.0](LICENSE) for original project code, documentation, and assets. You may use Kō freely, including at work, inspect and modify its source, and share copies for free. Selling Kō, charging for access, or including it in a paid product requires written permission from Gonzalo Cibeira. This applies to modified and rebranded copies too. Independent paid support, training, and custom development are permitted under the license's conditions.
 
 Kō is source available under these terms. Earlier copies distributed under MIT, including the initially published RC1, retain their MIT permissions; this change does not revoke them. Check the `LICENSE` supplied with your copy.
 
