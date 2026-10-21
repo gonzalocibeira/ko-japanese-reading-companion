@@ -5080,6 +5080,49 @@
   });
 
   // src/vocabulary.ts
+  function joinNounCompounds(tokens, text, lexicon) {
+    const out = [];
+    let offset = 0;
+    const noun = (token) => token.word_type === "KNOWN" && token.pos === "\u540D\u8A5E" && !["\u56FA\u6709\u540D\u8A5E", "\u4EE3\u540D\u8A5E", "\u6570", "\u975E\u81EA\u7ACB"].includes(token.pos_detail_1) && /^[\p{Script=Han}々〆]+$/u.test(token.surface_form) && !!token.reading && token.reading !== "*";
+    for (let i = 0; i < tokens.length; i++) {
+      const first = tokens[i], start = text.indexOf(first.surface_form, offset);
+      offset = start + first.surface_form.length;
+      let best = i, surface = first.surface_form, reading = first.reading ?? "", bestReading = reading;
+      if (start >= 0 && noun(first) && first.pos_detail_1 !== "\u63A5\u5C3E") {
+        let end = offset;
+        for (let j2 = i + 1; j2 < tokens.length; j2++) {
+          const next = tokens[j2];
+          if (!noun(next) || !text.startsWith(next.surface_form, end) || surface.length + next.surface_form.length > 24) break;
+          surface += next.surface_form;
+          reading += next.reading;
+          end += next.surface_form.length;
+          if (lexicon[surface]?.includes(hiragana(reading))) {
+            best = j2;
+            bestReading = reading;
+          }
+        }
+      }
+      if (best === i) {
+        out.push(first);
+        continue;
+      }
+      surface = tokens.slice(i, best + 1).map((token) => token.surface_form).join("");
+      const last = tokens[best];
+      out.push({
+        ...first,
+        surface_form: surface,
+        basic_form: surface,
+        reading: bestReading,
+        pronunciation: bestReading,
+        pos_detail_1: last.pos_detail_2 === "\u30B5\u5909\u63A5\u7D9A" ? "\u30B5\u5909\u63A5\u7D9A" : "\u4E00\u822C",
+        pos_detail_2: "*",
+        pos_detail_3: "*"
+      });
+      offset = start + surface.length;
+      i = best;
+    }
+    return out;
+  }
   function vocabularyHeadwords(text) {
     const out = [];
     for (const line of text.matchAll(/[^\r\n]+/gu)) {
@@ -5124,6 +5167,7 @@
   var init_vocabulary = __esm({
     "src/vocabulary.ts"() {
       "use strict";
+      init_shared();
       japanese2 = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々〆]/u;
     }
   });
@@ -5141,6 +5185,10 @@
       var ready = new Promise((resolve, reject) => {
         import_kuromoji.default.builder({ dicPath: new URL("dict/", self.location.href).href }).build((error, tokenizer) => error ? reject(error) : resolve(tokenizer));
       });
+      var compoundsReady = fetch(new URL("dictionaries/jmdict/compounds.json.gz", self.location.href)).then(async (response) => {
+        if (!response.ok || !response.body) throw new Error("Compound dictionary unavailable");
+        return JSON.parse(await new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).text());
+      }).catch(() => ({}));
       var cancelled = /* @__PURE__ */ new Set();
       var known = /* @__PURE__ */ new Set();
       var verbReadings = /* @__PURE__ */ new Map();
@@ -5172,7 +5220,7 @@
           return;
         }
         try {
-          const tokenizer = await ready;
+          const [tokenizer, compounds] = await Promise.all([ready, compoundsReady]);
           let cache = caches3.get(key);
           if (!cache) {
             cache = new ReadingCache();
@@ -5184,7 +5232,7 @@
           for (const text of texts) {
             if (cancelled.has(id)) return;
             const headwords = vocabularyHeadwords(text);
-            const tokens = data.includeWords ? tokenizeVocabulary(tokenizer, text, headwords) : void 0;
+            const tokens = data.includeWords ? joinNounCompounds(tokenizeVocabulary(tokenizer, text, headwords), text, compounds) : void 0;
             if (tokens) {
               let offset = 0;
               const entries = [];

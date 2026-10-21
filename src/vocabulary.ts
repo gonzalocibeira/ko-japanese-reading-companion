@@ -1,4 +1,38 @@
 import type {IpadicFeatures, Tokenizer, ViterbiLattice, ViterbiNode} from 'kuromoji';
+import {hiragana} from './shared';
+
+export type CompoundLexicon = Record<string,string[]>;
+
+// Merge only dictionary-confirmed noun compounds. Keep names, grammar, gaps,
+// and unknown tokens intact, and require the tokenizer's reading to agree.
+export function joinNounCompounds(tokens:IpadicFeatures[],text:string,lexicon:CompoundLexicon):IpadicFeatures[] {
+  const out:IpadicFeatures[]=[];
+  let offset=0;
+  const noun=(token:IpadicFeatures)=>token.word_type==='KNOWN' && token.pos==='名詞' &&
+    !['固有名詞','代名詞','数','非自立'].includes(token.pos_detail_1) &&
+    /^[\p{Script=Han}々〆]+$/u.test(token.surface_form) && !!token.reading && token.reading!=='*';
+  for(let i=0;i<tokens.length;i++) {
+    const first=tokens[i],start=text.indexOf(first.surface_form,offset);
+    offset=start+first.surface_form.length;
+    let best=i,surface=first.surface_form,reading=first.reading ?? '',bestReading=reading;
+    if(start>=0 && noun(first) && first.pos_detail_1!=='接尾') {
+      let end=offset;
+      for(let j=i+1;j<tokens.length;j++) {
+        const next=tokens[j];
+        if(!noun(next) || !text.startsWith(next.surface_form,end) || surface.length+next.surface_form.length>24)break;
+        surface+=next.surface_form;reading+=next.reading;end+=next.surface_form.length;
+        if(lexicon[surface]?.includes(hiragana(reading))) {best=j;bestReading=reading;}
+      }
+    }
+    if(best===i) {out.push(first);continue;}
+    surface=tokens.slice(i,best+1).map(token=>token.surface_form).join('');
+    const last=tokens[best];
+    out.push({...first,surface_form:surface,basic_form:surface,reading:bestReading,pronunciation:bestReading,
+      pos_detail_1:last.pos_detail_2==='サ変接続'?'サ変接続':'一般',pos_detail_2:'*',pos_detail_3:'*'});
+    offset=start+surface.length;i=best;
+  }
+  return out;
+}
 
 interface Headword {start:number;end:number}
 const japanese = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々〆]/u;

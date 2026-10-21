@@ -3,11 +3,16 @@ import {adjectiveDictionaryBases} from './adjective-dictionary';
 import {readWithOverrides} from './preferences';
 import kuromoji from 'kuromoji';
 import { align, hiragana, ReadingCache, type Reading, type Word } from './shared';
-import {tokenizeVocabulary,vocabularyHeadwords} from './vocabulary';
+import {joinNounCompounds,tokenizeVocabulary,vocabularyHeadwords,type CompoundLexicon} from './vocabulary';
 const caches = new Map<string, ReadingCache>();
 const ready = new Promise<kuromoji.Tokenizer<kuromoji.IpadicFeatures>>((resolve, reject) => {
   kuromoji.builder({dicPath: new URL('dict/', self.location.href).href}).build((error, tokenizer) => error ? reject(error) : resolve(tokenizer));
 });
+const compoundsReady:Promise<CompoundLexicon> = fetch(new URL('dictionaries/jmdict/compounds.json.gz',self.location.href))
+  .then(async response=>{
+    if(!response.ok || !response.body)throw new Error('Compound dictionary unavailable');
+    return JSON.parse(await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).text());
+  }).catch(()=>({}));
 const cancelled = new Set<number>();
 const known = new Set<number>();
 // Only word-detail requests need dictionary-form readings. Bound this extra
@@ -34,7 +39,7 @@ async function run(data: any) {
   const {id, key, texts} = data;
   if (data.type === 'worker-release') { for (const name of caches.keys()) if (name.startsWith(`${data.tabId}:`)) caches.delete(name); return; }
   try {
-    const tokenizer = await ready;
+    const [tokenizer,compounds] = await Promise.all([ready,compoundsReady]);
     let cache = caches.get(key); if (!cache) { cache = new ReadingCache(); caches.set(key, cache); }
     const results: Reading[][]=[];
     const words: Word[][]=[];
@@ -42,7 +47,7 @@ async function run(data: any) {
     for(const text of texts as string[]) {
       if(cancelled.has(id))return;
       const headwords=vocabularyHeadwords(text);
-      const tokens=data.includeWords?tokenizeVocabulary(tokenizer,text,headwords):undefined;
+      const tokens=data.includeWords?joinNounCompounds(tokenizeVocabulary(tokenizer,text,headwords),text,compounds):undefined;
       if(tokens) {
         let offset=0;const entries:Word[]=[];
         for(const token of tokens) {

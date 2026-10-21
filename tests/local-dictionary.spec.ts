@@ -21,12 +21,17 @@ test('importer preserves dictionary restrictions and metadata, is deterministic,
       <entry><ent_seq>2</ent_seq><r_ele><reb>こう</reb><re_nokanji/></r_ele><sense><gloss>kana homograph</gloss></sense></entry>
       <entry><ent_seq>3</ent_seq><k_ele><keb>合</keb></k_ele><r_ele><reb>こう</reb><re_nokanji/></r_ele><sense><stagk>合</stagk><gloss>must not match no-kanji reading</gloss></sense><sense><gloss>kana only</gloss></sense></entry>
       <entry><ent_seq>4</ent_seq><r_ele><reb>か\u3099</reb></r_ele><sense><gloss>normalized kana</gloss></sense></entry>
-      </JMdict>`;
+      <entry><ent_seq>5</ent_seq><k_ele><keb>近代化</keb></k_ele><k_ele><keb>国際化</keb></k_ele>
+      <r_ele><reb>きんだいか</reb><re_restr>近代化</re_restr></r_ele><r_ele><reb>こくさいか</reb><re_restr>国際化</re_restr></r_ele>
+      <r_ele><reb>かなだけ</reb><re_nokanji/></r_ele>
+      <sense><stagk>近代化</stagk><stagr>きんだいか</stagr><pos>noun (common) (futsuumeishi)</pos><gloss>modernization</gloss></sense>
+      <sense><stagk>国際化</stagk><pos>expression</pos><gloss>excluded non-noun fixture</gloss></sense></entry></JMdict>`;
     const source=join(root,'source.gz'),metadata=join(root,'snapshot.json');const bytes=gzipSync(xml);
     await writeFile(source,bytes);await writeFile(metadata,JSON.stringify({sha256:createHash('sha256').update(bytes).digest('hex'),retrieved:'2026-10-21'}));
     for(const name of ['a','b'])execFileSync('python3',['scripts/import-jmdict.py','--source',source,'--metadata',metadata,'--output',join(root,name)]);
-    const names=await readdir(join(root,'a'));expect(names).toHaveLength(257);
+    const names=await readdir(join(root,'a'));expect(names).toHaveLength(258);
     for(const name of names)expect(await readFile(join(root,'a',name))).toEqual(await readFile(join(root,'b',name)));
+    expect(JSON.parse(gunzipSync(await readFile(join(root,'a','compounds.json.gz'))).toString('utf8'))).toEqual({'近代化':['きんだいか']});
     const compiled=(await build({entryPoints:['src/local-dictionary.ts'],bundle:true,write:false,format:'iife',globalName:'Local'})).outputFiles[0].text;
     const loads:string[]=[];
     const api=runInNewContext(compiled+';Local',{Response,DecompressionStream,chrome:{runtime:{getURL:(path:string)=>path}},fetch:async(path:string)=>{loads.push(path);return new Response(await readFile(join(root,'a',path.split('/').at(-1)!)));}});

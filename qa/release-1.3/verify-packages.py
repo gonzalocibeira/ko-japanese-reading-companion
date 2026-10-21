@@ -38,7 +38,8 @@ assert json.loads(expected['manifest.json']) == json.loads((root / 'public/manif
 dictionary = json.loads(expected['dictionaries/jmdict/manifest.json'])
 assert dictionary['schema'] == 1 and dictionary['shards'] == 256
 assert dictionary['entries'] >= 200_000, 'Complete English JMdict snapshot missing'
-assert sum(path.startswith('dictionaries/jmdict/') and path.endswith('.json.gz') for path in expected) == 256
+assert sum(path.startswith('dictionaries/jmdict/') and path.endswith('.json.gz') and path != 'dictionaries/jmdict/compounds.json.gz' for path in expected) == 256
+assert 'dictionaries/jmdict/compounds.json.gz' in expected
 snapshot = json.loads((root / 'data/jmdict/snapshot.json').read_text())
 assert dictionary['snapshot'] == snapshot
 assert hashlib.sha256((root / 'data/jmdict/JMdict_e.gz').read_bytes()).hexdigest() == snapshot['sha256']
