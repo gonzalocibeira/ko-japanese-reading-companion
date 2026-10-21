@@ -124,44 +124,206 @@
     }
   });
 
-  // src/dictionary.ts
-  var require_dictionary = __commonJS({
-    "src/dictionary.ts"() {
+  // src/local-dictionary.ts
+  function dictionaryBucket(term) {
+    let hash = 2166136261;
+    for (const char of term) hash = Math.imul(hash ^ char.codePointAt(0), 16777619) >>> 0;
+    return (hash & 255).toString(16).padStart(2, "0");
+  }
+  async function load(bucket) {
+    const cached = shards.get(bucket);
+    if (cached) {
+      shards.delete(bucket);
+      shards.set(bucket, cached);
+      return cached.value;
+    }
+    let job = loading.get(bucket);
+    if (!job) {
+      job = (async () => {
+        const response = await fetch(chrome.runtime.getURL(`dictionaries/jmdict/${bucket}.json.gz`));
+        if (!response.ok || !response.body) throw new Error("Local dictionary unavailable");
+        const text = await new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).text(), value = JSON.parse(text);
+        if (!value.terms || !value.entries) throw new Error("Invalid dictionary shard");
+        const bytes = text.length * 2;
+        shards.set(bucket, { value, bytes });
+        retainedBytes += bytes;
+        while (shards.size > 16 || retainedBytes > 8 * 1024 * 1024) {
+          const key = shards.keys().next().value;
+          retainedBytes -= shards.get(key).bytes;
+          shards.delete(key);
+        }
+        return value;
+      })().finally(() => loading.delete(bucket));
+      loading.set(bucket, job);
+    }
+    return job;
+  }
+  async function localDefinition(raw) {
+    const word = raw.normalize("NFC"), shard = await load(dictionaryBucket(word));
+    const entries = (shard.terms[word] ?? []).map((id) => shard.entries[id]).filter((entry) => !!entry);
+    const rank = (entry) => [
+      entry.spellings.some((k) => k.text === word) ? 0 : 1,
+      entry.spellings.concat(entry.readings).some((k) => k.priority.length) ? 0 : 1,
+      Number(entry.id)
+    ];
+    entries.sort((a, b) => {
+      const x = rank(a), y = rank(b);
+      return x[0] - y[0] || x[1] - y[1] || x[2] - y[2];
+    });
+    const definitions = [], entryIds = [];
+    for (const entry of entries) {
+      const exact = entry.spellings.some((k) => k.text === word);
+      const pairs = entry.readings.flatMap((reading) => {
+        if (!exact && reading.text !== word) return [];
+        const spellings = reading.noKanji ? [] : entry.spellings.filter((k) => (!exact || k.text === word) && (!reading.restrict.length || reading.restrict.includes(k.text)));
+        if (exact && !spellings.length) return [];
+        return spellings.length ? spellings.map((k) => ({ spelling: k.text, reading: reading.text })) : [{ spelling: "", reading: reading.text }];
+      });
+      for (const sense of entry.senses) {
+        if (!pairs.some((pair) => (!sense.spellings.length || sense.spellings.includes(pair.spelling)) && (!sense.readings.length || sense.readings.includes(pair.reading)))) continue;
+        const labels = [...sense.field, ...sense.misc, ...sense.dialect, ...sense.info];
+        const text = `${labels.length ? `(${labels.join("; ")}) ` : ""}${sense.glosses.join("; ")}`.slice(0, 600);
+        if (text && !definitions.includes(text)) {
+          definitions.push(text);
+          if (!entryIds.includes(entry.id)) entryIds.push(entry.id);
+        }
+        if (definitions.length === 4) break;
+      }
+      if (definitions.length === 4) break;
+    }
+    return definitions.length ? { status: "ok", definitions, title: word, source: "jmdict", entryIds } : void 0;
+  }
+  var shards, loading, retainedBytes;
+  var init_local_dictionary = __esm({
+    "src/local-dictionary.ts"() {
       "use strict";
-      var pending = /* @__PURE__ */ new Map();
-      async function page(language, word) {
+      shards = /* @__PURE__ */ new Map();
+      loading = /* @__PURE__ */ new Map();
+      retainedBytes = 0;
+    }
+  });
+
+  // src/offscreen-client.ts
+  async function ensureOffscreen() {
+    const contexts = await chrome.runtime.getContexts({ contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT] });
+    if (contexts.length) return;
+    if (!creating) creating = chrome.offscreen.createDocument({
+      url: "offscreen.html",
+      reasons: [chrome.offscreen.Reason.WORKERS, chrome.offscreen.Reason.DOM_PARSER],
+      justification: "Run the offline Japanese tokenizer and safely extract dictionary text."
+    }).finally(() => {
+      creating = void 0;
+    });
+    await creating;
+  }
+  var creating;
+  var init_offscreen_client = __esm({
+    "src/offscreen-client.ts"() {
+      "use strict";
+    }
+  });
+
+  // src/dictionary.ts
+  async function onlineDefinition(language, word) {
+    const signal = AbortSignal.timeout(8e3);
+    const run = async () => {
+      const visited = /* @__PURE__ */ new Set();
+      let title = word;
+      for (let hop = 0; hop <= 2; hop++) {
+        if (signal.aborted) throw new Error("Dictionary timeout");
+        if (visited.has(title)) return failure("structure");
+        visited.add(title);
+        const url = new URL(`https://${language}.wiktionary.org/w/api.php`);
+        url.search = new URLSearchParams({ action: "parse", page: title, prop: "text", format: "json", formatversion: "2", redirects: "1", disableeditsection: "1" }).toString();
+        const response = await fetch(url, { credentials: "omit", referrerPolicy: "no-referrer", redirect: "error", signal });
+        if (!response.ok) return response.status === 404 ? { status: "missing", definitions: [], source: "wiktionary", title } : failure("network");
+        const reader = response.body?.getReader();
+        if (!reader) return failure("network");
+        const chunks = [];
+        let size = 0;
+        for (; ; ) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          size += value.byteLength;
+          if (size > 1e6) {
+            await reader.cancel();
+            return failure("structure");
+          }
+          chunks.push(value);
+        }
+        const bytes = new Uint8Array(size);
+        let offset = 0;
+        for (const chunk of chunks) {
+          bytes.set(chunk, offset);
+          offset += chunk.byteLength;
+        }
+        const data = JSON.parse(new TextDecoder().decode(bytes));
+        if (data.error) return data.error.code === "missingtitle" ? { status: "missing", definitions: [], source: "wiktionary", title } : failure("network");
+        if (typeof data.parse?.text !== "string") return failure("structure");
+        const resolved = typeof data.parse.title === "string" ? data.parse.title : title;
+        await ensureOffscreen();
+        if (signal.aborted) throw new Error("Dictionary timeout");
+        const parsed = await chrome.runtime.sendMessage({ type: "dictionary-parse", html: data.parse.text, language });
+        if (parsed?.status === "ok" && Array.isArray(parsed.definitions) && parsed.definitions.length) return { status: "ok", definitions: parsed.definitions, title: resolved, source: "wiktionary" };
+        if (parsed?.status === "missing") return { status: "missing", definitions: [], title: resolved, source: "wiktionary" };
+        if (parsed?.status !== "reference" || typeof parsed.target !== "string" || !/^[\p{L}\p{M}\p{N}々〆ー・\s'-]{1,80}$/u.test(parsed.target)) return failure("structure");
+        if (visited.has(resolved) && resolved !== title) return failure("structure");
+        visited.add(resolved);
+        title = parsed.target;
+      }
+      return failure("structure");
+    };
+    let abort = () => {
+    };
+    try {
+      return await Promise.race([run(), new Promise((resolve) => {
+        abort = () => resolve(failure("network"));
+        signal.addEventListener("abort", abort, { once: true });
+      })]);
+    } catch {
+      return failure("network");
+    } finally {
+      signal.removeEventListener("abort", abort);
+    }
+  }
+  function lookupDefinition(language, word) {
+    const key = JSON.stringify([word, language]), stored = cache.get(key);
+    if (stored && stored.expires > Date.now()) {
+      cache.delete(key);
+      cache.set(key, stored);
+      return Promise.resolve(stored.page);
+    }
+    cache.delete(key);
+    const active = pending.get(key);
+    if (active) return active;
+    if (pending.size >= 8) return Promise.resolve(failure("busy"));
+    const job = (async () => {
+      let page;
+      if (language === "en") {
         try {
-          const url = new URL(`https://${language}.wiktionary.org/w/api.php`);
-          url.search = new URLSearchParams({ action: "parse", page: word, prop: "text", format: "json", formatversion: "2", redirects: "1", disableeditsection: "1" }).toString();
-          const response = await fetch(url, { credentials: "omit", referrerPolicy: "no-referrer", redirect: "error", signal: AbortSignal.timeout(8e3) });
-          if (!response.ok) return { status: response.status === 404 ? "missing" : "error" };
-          const reader = response.body?.getReader();
-          if (!reader) return { status: "error" };
-          const chunks = [];
-          let size = 0;
-          for (; ; ) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            size += value.byteLength;
-            if (size > 1e6) {
-              await reader.cancel();
-              return { status: "error" };
-            }
-            chunks.push(value);
-          }
-          const bytes = new Uint8Array(size);
-          let offset = 0;
-          for (const chunk of chunks) {
-            bytes.set(chunk, offset);
-            offset += chunk.byteLength;
-          }
-          const data = JSON.parse(new TextDecoder().decode(bytes));
-          if (data.error) return { status: data.error.code === "missingtitle" ? "missing" : "error" };
-          return typeof data.parse?.text === "string" ? { status: "ok", html: data.parse.text, title: data.parse.title } : { status: "error" };
+          page = await localDefinition(word);
         } catch {
-          return { status: "error" };
         }
       }
+      page ??= await onlineDefinition(language, word);
+      if (page.status !== "error") {
+        cache.set(key, { page, expires: page.status === "missing" ? Date.now() + 5 * 6e4 : Infinity });
+        while (cache.size > 256) cache.delete(cache.keys().next().value);
+      }
+      return page;
+    })().finally(() => pending.delete(key));
+    pending.set(key, job);
+    return job;
+  }
+  var pending, cache, failure;
+  var init_dictionary = __esm({
+    "src/dictionary.ts"() {
+      "use strict";
+      init_local_dictionary();
+      init_offscreen_client();
+      pending = /* @__PURE__ */ new Map();
+      cache = /* @__PURE__ */ new Map();
+      failure = (reason) => ({ status: "error", definitions: [], source: "wiktionary", reason });
       chrome.runtime.onMessage.addListener((message, sender, respond) => {
         if (message?.type !== "define-word") return;
         let url;
@@ -177,18 +339,8 @@
           respond({ error: "Invalid dictionary language" });
           return;
         }
-        const word = message.word.trim(), languages = message.language ? [message.language] : ["en", "ja"];
-        const key = JSON.stringify([word, languages]);
-        let job = pending.get(key);
-        if (!job) {
-          if (pending.size >= 8) {
-            respond({ error: "Dictionary is busy. Try again." });
-            return;
-          }
-          job = Promise.all(languages.map(async (language) => [language, await page(language, word)])).then((entries) => Object.fromEntries(entries)).finally(() => pending.delete(key));
-          pending.set(key, job);
-        }
-        void job.then(respond);
+        const word = message.word.trim().normalize("NFC"), languages = message.language ? [message.language] : ["en", "ja"];
+        void Promise.all(languages.map(async (language) => [language, await lookupDefinition(language, word)])).then((entries) => respond(Object.fromEntries(entries)));
         return true;
       });
     }
@@ -291,7 +443,7 @@
       "use strict";
       init_preferences();
       init_mascot_preferences();
-      var pending = Promise.resolve();
+      var pending2 = Promise.resolve();
       function string(value, limit) {
         if (typeof value !== "string" || value.length > limit) throw new Error("Invalid preference value.");
         return value;
@@ -405,8 +557,8 @@
           respond({ error: "Invalid preference operation." });
           return;
         }
-        const job = pending.then(() => apply(message.mutation));
-        pending = job.then(() => {
+        const job = pending2.then(() => apply(message.mutation));
+        pending2 = job.then(() => {
         }, () => {
         });
         void job.then((value) => respond({ value }), (error) => respond({ error: error instanceof Error ? error.message : "Could not save the preference. Try again." }));
@@ -419,18 +571,10 @@
   var require_background = __commonJS({
     "src/background.ts"() {
       init_preferences();
-      var import_dictionary = __toESM(require_dictionary());
+      init_dictionary();
       var import_action = __toESM(require_action());
       var import_preference_writer = __toESM(require_preference_writer());
-      var creating;
-      async function ensureOffscreen() {
-        const contexts = await chrome.runtime.getContexts({ contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT] });
-        if (contexts.length) return;
-        if (!creating) creating = chrome.offscreen.createDocument({ url: "offscreen.html", reasons: [chrome.offscreen.Reason.WORKERS], justification: "Run the bundled offline Japanese tokenizer in a worker." }).finally(() => {
-          creating = void 0;
-        });
-        await creating;
-      }
+      init_offscreen_client();
       var queues = /* @__PURE__ */ new Map();
       function cancel(job) {
         if (job.cancelled) return;

@@ -153,38 +153,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   function dictionaryURL(language, word) {
     return `https://${language}.wiktionary.org/wiki/${encodeURIComponent(word)}#${language === "en" ? "Japanese" : "\u65E5\u672C\u8A9E"}`;
   }
-  function definitionText(html, language) {
-    const template = document.createElement("template");
-    template.innerHTML = html;
-    let japanese4 = false, partOfSpeech = false;
-    const out = [];
-    const clean = (element4) => {
-      const copy = element4.cloneNode(true);
-      copy.querySelectorAll("script,style,iframe,img,video,audio,svg,ul,ol,dl,table,rt,rp,.mw-editsection,.reference,.citation-whole,.quotation,.h-usage-example").forEach((node) => node.remove());
-      return (copy.textContent ?? "").replace(/\s+/g, " ").trim();
+  function definitionSource(page, language, word) {
+    if (page.source === "jmdict") return {
+      url: "https://www.edrdg.org/jmdict/j_jmdict.html",
+      label: "JMdict \xB7 offline \u2197",
+      notice: "JMdict \xB7 EDRDG \xB7 CC BY-SA 4.0 \xB7 Looked up on this device."
     };
-    for (const element4 of template.content.querySelectorAll("h2,h3,h4,h5,h6,ol")) {
-      if (element4.closest("table,dl,.toc")) continue;
-      if (element4.tagName === "H2") {
-        japanese4 = /^(Japanese|日本語)(?:\s|$)/u.test(clean(element4));
-        partOfSpeech = false;
-        continue;
-      }
-      if (!japanese4) continue;
-      if (element4.tagName !== "OL") {
-        const heading = clean(element4);
-        if (!/^語義(?:\s|$)/u.test(heading)) partOfSpeech = /^(Noun|Proper noun|Verb|Adjective|Adverb|Pronoun|Particle|Conjunction|Interjection|Prefix|Suffix|Counter|Numeral|Determiner|Phrase|Proverb|Idiom|Affix|名詞|固有名詞|動詞|形容詞|形容動詞|副詞|代名詞|助詞|接続詞|感動詞|接頭辞|接尾辞|助数詞|数詞|連体詞|成句|熟語|ことわざ|熟字訓|語素)(?:\s|[:：0-9０-９]|$)/u.test(heading);
-        continue;
-      }
-      if (!partOfSpeech || element4.parentElement?.closest("ol,ul")) continue;
-      for (const item of element4.querySelectorAll("li")) {
-        if (item.parentElement?.tagName !== "OL" || item.closest("ul")) continue;
-        const value = clean(item).slice(0, 600);
-        if (value && !out.includes(value)) out.push(value);
-        if (out.length === 4) return out;
-      }
-    }
-    return out;
+    return {
+      url: dictionaryURL(language, page.title ?? word),
+      label: language === "en" ? "English Wiktionary \u2197" : "\u30A6\u30A3\u30AF\u30B7\u30E7\u30CA\u30EA\u30FC\u65E5\u672C\u8A9E\u7248 \u2197",
+      notice: "Wiktionary \xB7 CC BY-SA \xB7 Only the lookup term and any spelling-reference terms are sent."
+    };
   }
   var init_definitions = __esm({
     "src/definitions.ts"() {
@@ -297,7 +276,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     }
   });
 
-  // node_modules/kamiya-codec/dist/kamiya.min.mjs
+  // ../../../Users/turco/Documents/ChatGPT/FOB/node_modules/kamiya-codec/dist/kamiya.min.mjs
   function N(r, e) {
     if (e < 0 || e > 4) throw new Error("vowel must be between 0 and 4");
     let n = k.get(r);
@@ -473,7 +452,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   }
   var f, A, k, T, V, j, C, P, K, W, U;
   var init_kamiya_min = __esm({
-    "node_modules/kamiya-codec/dist/kamiya.min.mjs"() {
+    "../../../Users/turco/Documents/ChatGPT/FOB/node_modules/kamiya-codec/dist/kamiya.min.mjs"() {
       f = (r) => r.split("");
       A = [f("\u3042\u3044\u3046\u3048\u304A"), f("\u304B\u304D\u304F\u3051\u3053"), f("\u304C\u304E\u3050\u3052\u3054"), f("\u3055\u3057\u3059\u305B\u305D"), f("\u3056\u3058\u305A\u305C\u305E"), f("\u305F\u3061\u3064\u3066\u3068"), f("\u3060\u3062\u3065\u3067\u3069"), f("\u306A\u306B\u306C\u306D\u306E"), f("\u306F\u3072\u3075\u3078\u307B"), f("\u3070\u3073\u3076\u3079\u307C"), f("\u3071\u3074\u3077\u307A\u307D"), f("\u307E\u307F\u3080\u3081\u3082"), ["\u3084", "", "\u3086", "", "\u3088"], f("\u3089\u308A\u308B\u308C\u308D"), ["\u308F", "", "", "", "\u3092"], ["\u3093", "", "", "", ""]];
       k = /* @__PURE__ */ new Map([]);
@@ -2612,7 +2591,6 @@ ${meaningForkStyles}
         definition;
         lookupVersion = 0;
         selected;
-        definitions = /* @__PURE__ */ new Map();
         wordContexts = /* @__PURE__ */ new WeakMap();
         overrides = {};
         resizeHandle;
@@ -3050,39 +3028,34 @@ ${playgroundBrowserStyles}
           void this.lookupDefinitions(word, body, version);
         }
         async lookupDefinitions(word, body, version) {
-          body.setAttribute("aria-busy", "true");
-          const loading = document.createElement("p");
-          loading.className = "feedback";
-          loading.textContent = "Looking up English and Japanese definitions\u2026";
-          body.replaceChildren(loading);
-          let result = this.definitions.get(word);
-          if (!result) {
-            try {
-              const reply = await chrome.runtime.sendMessage({ type: "define-word", word });
-              if (reply?.error || !reply?.en || !reply?.ja) throw new Error("Dictionary unavailable");
-              result = { en: { page: reply.en, definitions: definitionText(reply.en.html ?? "", "en") }, ja: { page: reply.ja, definitions: definitionText(reply.ja.html ?? "", "ja") } };
-              if (reply.en.status !== "error" && reply.ja.status !== "error") {
-                this.definitions.set(word, result);
-                while (this.definitions.size > 100) this.definitions.delete(this.definitions.keys().next().value);
-              }
-            } catch {
-              result = { en: { page: { status: "error" }, definitions: [] }, ja: { page: { status: "error" }, definitions: [] } };
-            }
-          }
-          if (version !== this.lookupVersion || !this.host.isConnected) return;
+          const busy = /* @__PURE__ */ new Set(["en", "ja"]);
           body.replaceChildren();
-          body.setAttribute("aria-busy", "false");
-          const failed = result.en.page.status === "error" || result.ja.page.status === "error";
-          for (const language of ["en", "ja"]) {
-            const { page, definitions } = result[language];
-            const section = document.createElement("section");
-            section.lang = language;
+          body.setAttribute("aria-busy", "true");
+          const current = () => version === this.lookupVersion && this.host.isConnected;
+          const load = async (language, section) => {
+            busy.add(language);
+            body.setAttribute("aria-busy", "true");
+            section.setAttribute("aria-busy", "true");
             const heading = document.createElement("h4");
             heading.textContent = language === "en" ? "English" : "\u65E5\u672C\u8A9E";
-            section.append(heading);
-            if (definitions.length) {
+            const loading = document.createElement("p");
+            loading.className = "feedback";
+            loading.textContent = language === "en" ? "Looking up English definitions\u2026" : "\u65E5\u672C\u8A9E\u306E\u5B9A\u7FA9\u3092\u691C\u7D22\u4E2D\u2026";
+            section.replaceChildren(heading, loading);
+            let page;
+            try {
+              const reply = await chrome.runtime.sendMessage({ type: "define-word", word, language });
+              if (reply?.error || !reply?.[language] || !Array.isArray(reply[language].definitions)) throw new Error("Dictionary unavailable");
+              page = reply[language];
+            } catch {
+              page = { status: "error", definitions: [] };
+            }
+            if (!current()) return;
+            section.replaceChildren(heading);
+            section.setAttribute("aria-busy", "false");
+            if (page.definitions.length) {
               const list = document.createElement("ol");
-              for (const text of definitions) {
+              for (const text of page.definitions.slice(0, 4)) {
                 const item = document.createElement("li");
                 item.textContent = text;
                 list.append(item);
@@ -3091,30 +3064,38 @@ ${playgroundBrowserStyles}
             } else {
               const message = document.createElement("p");
               message.className = "feedback";
-              message.textContent = page.status === "error" ? language === "en" ? "Could not load definitions. Check your connection and choose Retry definitions online." : "\u5B9A\u7FA9\u3092\u53D6\u5F97\u3067\u304D\u307E\u305B\u3093\u3002\u63A5\u7D9A\u3092\u78BA\u8A8D\u3057\u3066\u3001\u30AA\u30F3\u30E9\u30A4\u30F3\u691C\u7D22\u3092\u518D\u8A66\u884C\u3057\u3066\u304F\u3060\u3055\u3044\u3002" : language === "en" ? "No English definition found for this Japanese word." : "\u3053\u306E\u5358\u8A9E\u306E\u65E5\u672C\u8A9E\u306E\u5B9A\u7FA9\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F\u3002";
+              message.textContent = page.status === "error" ? page.reason === "structure" ? language === "en" ? "Could not read this dictionary entry. Retry or open the source." : "\u8F9E\u66F8\u306E\u9805\u76EE\u3092\u8AAD\u307F\u53D6\u308C\u307E\u305B\u3093\u3067\u3057\u305F\u3002\u518D\u8A66\u884C\u3059\u308B\u304B\u3001\u51FA\u5178\u3092\u958B\u3044\u3066\u304F\u3060\u3055\u3044\u3002" : language === "en" ? "Could not load definitions. Check your connection and choose Retry definitions online." : "\u5B9A\u7FA9\u3092\u53D6\u5F97\u3067\u304D\u307E\u305B\u3093\u3002\u63A5\u7D9A\u3092\u78BA\u8A8D\u3057\u3066\u3001\u30AA\u30F3\u30E9\u30A4\u30F3\u691C\u7D22\u3092\u518D\u8A66\u884C\u3057\u3066\u304F\u3060\u3055\u3044\u3002" : language === "en" ? "No English definition found for this Japanese word." : "\u3053\u306E\u5358\u8A9E\u306E\u65E5\u672C\u8A9E\u306E\u5B9A\u7FA9\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F\u3002";
               section.append(message);
             }
+            if (page.status === "error") {
+              const retry = document.createElement("button");
+              retry.type = "button";
+              retry.className = "definition-retry";
+              retry.textContent = "Retry definitions online";
+              retry.addEventListener("click", () => void load(language, section));
+              section.append(retry);
+            }
+            const attribution = definitionSource(page, language, word);
             const source = document.createElement("a");
             source.className = "source";
-            source.textContent = language === "en" ? "English Wiktionary \u2197" : "\u30A6\u30A3\u30AF\u30B7\u30E7\u30CA\u30EA\u30FC\u65E5\u672C\u8A9E\u7248 \u2197";
-            source.href = dictionaryURL(language, page.title ?? word);
+            source.textContent = attribution.label;
+            source.href = attribution.url;
             source.target = "_blank";
             source.rel = "noopener noreferrer";
             section.append(source);
+            const notice = document.createElement("p");
+            notice.className = "source";
+            notice.textContent = attribution.notice;
+            section.append(notice);
+            busy.delete(language);
+            body.setAttribute("aria-busy", String(busy.size > 0));
+          };
+          await Promise.all(["en", "ja"].map((language) => {
+            const section = document.createElement("section");
+            section.lang = language;
             body.append(section);
-          }
-          if (failed) {
-            const retry = document.createElement("button");
-            retry.type = "button";
-            retry.className = "definition-retry";
-            retry.textContent = "Retry definitions online";
-            retry.addEventListener("click", () => void this.lookupDefinitions(word, body, version));
-            body.append(retry);
-          }
-          const notice = document.createElement("p");
-          notice.className = "source";
-          notice.textContent = "Wiktionary \xB7 CC BY-SA \xB7 Only this word is sent for lookup.";
-          body.append(notice);
+            return load(language, section);
+          }));
         }
       };
     }
@@ -3397,7 +3378,6 @@ ${playgroundBrowserStyles}
         send;
         element = document.createElement("section");
         version = 0;
-        cache = /* @__PURE__ */ new Map();
         close;
         get open() {
           return !this.element.hidden;
@@ -3449,24 +3429,17 @@ ${playgroundBrowserStyles}
           const lookup = async () => {
             body.textContent = "Looking up definition\u2026";
             body.setAttribute("aria-busy", "true");
-            const key = JSON.stringify([word.lemma, language]);
-            let page = this.cache.get(key);
-            if (!page) {
-              try {
-                const reply = await this.send({ type: "define-word", word: word.lemma, language });
-                page = reply?.[language] ?? { status: "error" };
-              } catch {
-                page = { status: "error" };
-              }
-              if (page.status !== "error") {
-                this.cache.set(key, page);
-                if (this.cache.size > 100) this.cache.delete(this.cache.keys().next().value);
-              }
+            let page;
+            try {
+              const reply = await this.send({ type: "define-word", word: word.lemma, language });
+              page = reply?.[language] ?? { status: "error", definitions: [] };
+            } catch {
+              page = { status: "error", definitions: [] };
             }
             if (this.version !== version || !this.open) return;
             body.replaceChildren();
             body.setAttribute("aria-busy", "false");
-            const definitions = definitionText(page.html ?? "", language).slice(0, 2);
+            const definitions = page.definitions.slice(0, 2);
             if (definitions.length) {
               const list = document.createElement("ol");
               for (const text of definitions) {
@@ -3477,7 +3450,7 @@ ${playgroundBrowserStyles}
               body.append(list);
             } else {
               const message = document.createElement("p");
-              message.textContent = page.status === "error" ? "Definition unavailable. Check your connection." : "No definition found in this language.";
+              message.textContent = page.status === "error" ? page.reason === "structure" ? "Could not read this dictionary entry. Try again or open the source." : "Definition unavailable. Check your connection." : "No definition found in this language.";
               body.append(message);
             }
             if (page.status === "error") {
@@ -3487,13 +3460,14 @@ ${playgroundBrowserStyles}
               retry.onclick = () => void lookup();
               body.append(retry);
             }
+            const attribution = definitionSource(page, language, word.lemma);
             const source = document.createElement("a");
-            source.href = dictionaryURL(language, page.title ?? word.lemma);
+            source.href = attribution.url;
             source.target = "_blank";
             source.rel = "noopener noreferrer";
-            source.textContent = language === "en" ? "English Wiktionary \u2197" : "\u30A6\u30A3\u30AF\u30B7\u30E7\u30CA\u30EA\u30FC\u65E5\u672C\u8A9E\u7248 \u2197";
+            source.textContent = attribution.label;
             const notice = document.createElement("small");
-            notice.textContent = "Wiktionary \xB7 CC BY-SA \xB7 Only this word is sent.";
+            notice.textContent = attribution.notice;
             body.append(source, notice);
           };
           void lookup();

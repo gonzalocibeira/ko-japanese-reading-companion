@@ -1,4 +1,4 @@
-import {definitionText,dictionaryURL,type DictionaryPage} from './definitions';
+import {definitionSource,type DictionaryPage} from './definitions';
 import type {MascotWord} from './mascot-target';
 export const mascotBubbleStyles=`
 .bubble{position:absolute;width:max-content;max-width:min(480px,calc(100vw - 16px));max-height:min(340px,55vh);overflow:auto;pointer-events:auto;padding:12px 16px;background-color:#d3d5bd;background-image:repeating-conic-gradient(#475d5010 0% 25%,transparent 0% 50%);background-size:4px 4px;color:#263d46;border:2px solid #30454c;border-radius:0;box-shadow:inset 2px 2px #f4efce,inset -2px -2px #9da98f,4px 4px #30454c;font:16px/1.5 KoKunDotGothic16,'MS Gothic',monospace;overflow-wrap:anywhere;user-select:text;-webkit-font-smoothing:none}
@@ -16,7 +16,6 @@ function loadPixelFont() {
 export class MascotBubble {
   readonly element=document.createElement('section');
   private version=0;
-  private cache=new Map<string,DictionaryPage>();
   constructor(private send:(request:unknown)=>Promise<any>,close:()=>void) {
     this.element.className='bubble';this.element.hidden=true;this.element.setAttribute('aria-label','Kōくん word reading');this.element.setAttribute('aria-live','polite');
     this.element.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
@@ -38,23 +37,21 @@ export class MascotBubble {
     const body=document.createElement('div');body.className='meaning';body.lang=language;this.element.append(body);
     const lookup=async()=>{
       body.textContent='Looking up definition…';body.setAttribute('aria-busy','true');
-      const key=JSON.stringify([word.lemma,language]);let page=this.cache.get(key);
-      if(!page) {
-        try {const reply=await this.send({type:'define-word',word:word.lemma,language});page=reply?.[language] ?? {status:'error'};}
-        catch {page={status:'error'};}
-        if(page!.status!=='error') {this.cache.set(key,page!);if(this.cache.size>100)this.cache.delete(this.cache.keys().next().value!);}
-      }
+      let page:DictionaryPage;
+      try {const reply=await this.send({type:'define-word',word:word.lemma,language});page=reply?.[language] ?? {status:'error',definitions:[]};}
+      catch {page={status:'error',definitions:[]};}
       if(this.version!==version || !this.open)return;
       body.replaceChildren();body.setAttribute('aria-busy','false');
-      const definitions=definitionText(page!.html ?? '',language).slice(0,2);
+      const definitions=page.definitions.slice(0,2);
       if(definitions.length) {
         const list=document.createElement('ol');for(const text of definitions) {const item=document.createElement('li');item.textContent=text;list.append(item);}body.append(list);
       } else {
-        const message=document.createElement('p');message.textContent=page!.status==='error'?'Definition unavailable. Check your connection.':'No definition found in this language.';body.append(message);
+        const message=document.createElement('p');message.textContent=page.status==='error'?(page.reason==='structure'?'Could not read this dictionary entry. Try again or open the source.':'Definition unavailable. Check your connection.'):'No definition found in this language.';body.append(message);
       }
-      if(page!.status==='error') {const retry=document.createElement('button');retry.type='button';retry.textContent='Retry definition';retry.onclick=()=>void lookup();body.append(retry);}
-      const source=document.createElement('a');source.href=dictionaryURL(language,page!.title ?? word.lemma);source.target='_blank';source.rel='noopener noreferrer';source.textContent=language==='en'?'English Wiktionary ↗':'ウィクショナリー日本語版 ↗';
-      const notice=document.createElement('small');notice.textContent='Wiktionary · CC BY-SA · Only this word is sent.';body.append(source,notice);
+      if(page.status==='error') {const retry=document.createElement('button');retry.type='button';retry.textContent='Retry definition';retry.onclick=()=>void lookup();body.append(retry);}
+      const attribution=definitionSource(page,language,word.lemma);
+      const source=document.createElement('a');source.href=attribution.url;source.target='_blank';source.rel='noopener noreferrer';source.textContent=attribution.label;
+      const notice=document.createElement('small');notice.textContent=attribution.notice;body.append(source,notice);
     };
     void lookup();
   }

@@ -2,13 +2,7 @@ import {validOverrides} from './preferences';
 import './dictionary';
 import './action';
 import './preference-writer';
-let creating: Promise<void> | undefined;
-async function ensureOffscreen() {
-  const contexts = await chrome.runtime.getContexts({contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT]});
-  if (contexts.length) return;
-  if (!creating) creating = chrome.offscreen.createDocument({url: 'offscreen.html', reasons: [chrome.offscreen.Reason.WORKERS], justification: 'Run the bundled offline Japanese tokenizer in a worker.'}).finally(() => { creating = undefined; });
-  await creating;
-}
+import {ensureOffscreen} from './offscreen-client';
 type TokenizePurpose = 'readings' | 'playground' | 'mascot';
 interface Job { overrides:Record<string,string>; texts:string[]; includeWords:boolean; requestId:string; owner:string; purpose:TokenizePurpose; jobId:string; cancelled:boolean; dispatched:boolean; respond:(result:unknown)=>void }
 interface Queue { jobs:Job[]; running:boolean; closed:boolean; active?:Job }

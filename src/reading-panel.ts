@@ -3,7 +3,7 @@ import {uiTheme} from './ui-theme';
 declare const __KO_LOGO_SVG__:string;
 import type {Reading,Word} from './shared';
 import {saveCorrection,removeCorrection,type Appearance,type ReadingViewPreferences} from './preferences';
-import {definitionText,dictionaryURL,type DictionaryReply,type DictionaryPage,type DefinitionLanguage} from './definitions';
+import {definitionSource,type DictionaryPage,type DefinitionLanguage} from './definitions';
 import {wordExplorations,renderExplorations,disposeExplorations,explorationStyles} from './exploration';
 import {renderPlaygroundBrowser,playgroundBrowserStyles} from './playground-browser';
 import {selectionText} from './mascot-target';
@@ -27,7 +27,6 @@ export function readingLines(runs:ReadingRun[]) {
     return {text,readings,...(row.some(run=>run.words)?{words}:{})};
   });
 }
-type DefinitionResult=Record<DefinitionLanguage,{page:DictionaryPage;definitions:string[]}>;
 export class ReadingPanel {
   mascotHooks?:{hover:(word:{surface:string;lemma:string;reading:string},contains:(x:number,y:number)=>boolean)=>void;leave:()=>void;selection:(text:string)=>void};
   private host=document.createElement('ko-reading-view');
@@ -40,7 +39,6 @@ export class ReadingPanel {
   private definition:HTMLElement;
   private lookupVersion=0;
   private selected?:HTMLButtonElement;
-  private definitions=new Map<string,DefinitionResult>();
   private wordContexts=new WeakMap<HTMLButtonElement,{text:string;words:Word[];index:number}>();
   private overrides:Record<string,string>={};
   private resizeHandle:HTMLElement;
@@ -291,39 +289,41 @@ ${playgroundBrowserStyles}
     void this.lookupDefinitions(word,body,version);
   }
   private async lookupDefinitions(word:string,body:HTMLElement,version:number) {
-    body.setAttribute('aria-busy','true');
-    const loading=document.createElement('p');loading.className='feedback';loading.textContent='Looking up English and Japanese definitions…';body.replaceChildren(loading);
-    let result=this.definitions.get(word);
-    if(!result) {
+    const busy=new Set<DefinitionLanguage>(['en','ja']);
+    body.replaceChildren();body.setAttribute('aria-busy','true');
+    const current=()=>version===this.lookupVersion && this.host.isConnected;
+    const load=async(language:DefinitionLanguage,section:HTMLElement)=>{
+      busy.add(language);body.setAttribute('aria-busy','true');section.setAttribute('aria-busy','true');
+      const heading=document.createElement('h4');heading.textContent=language==='en'?'English':'日本語';
+      const loading=document.createElement('p');loading.className='feedback';loading.textContent=language==='en'?'Looking up English definitions…':'日本語の定義を検索中…';section.replaceChildren(heading,loading);
+      let page:DictionaryPage;
       try {
-        const reply:DictionaryReply & {error?:string}=await chrome.runtime.sendMessage({type:'define-word',word});
-        if(reply?.error || !reply?.en || !reply?.ja)throw new Error('Dictionary unavailable');
-        result={en:{page:reply.en,definitions:definitionText(reply.en.html ?? '','en')},ja:{page:reply.ja,definitions:definitionText(reply.ja.html ?? '','ja')}};
-        if(reply.en.status!=='error' && reply.ja.status!=='error') {
-          this.definitions.set(word,result);
-          while(this.definitions.size>100)this.definitions.delete(this.definitions.keys().next().value!);
-        }
-      } catch {result={en:{page:{status:'error'},definitions:[]},ja:{page:{status:'error'},definitions:[]}};}
-    }
-    if(version!==this.lookupVersion || !this.host.isConnected)return;
-    body.replaceChildren();body.setAttribute('aria-busy','false');
-    const failed=result.en.page.status==='error' || result.ja.page.status==='error';
-    for(const language of ['en','ja'] as const) {
-      const {page,definitions}=result[language];
-      const section=document.createElement('section');section.lang=language;
-      const heading=document.createElement('h4');heading.textContent=language==='en'?'English':'日本語';section.append(heading);
-      if(definitions.length) {
-        const list=document.createElement('ol');for(const text of definitions) {const item=document.createElement('li');item.textContent=text;list.append(item);}section.append(list);
+        const reply=await chrome.runtime.sendMessage({type:'define-word',word,language});
+        if(reply?.error || !reply?.[language] || !Array.isArray(reply[language].definitions))throw new Error('Dictionary unavailable');
+        page=reply[language];
+      } catch {page={status:'error',definitions:[]};}
+      if(!current())return;
+      section.replaceChildren(heading);section.setAttribute('aria-busy','false');
+      if(page.definitions.length) {
+        const list=document.createElement('ol');for(const text of page.definitions.slice(0,4)) {const item=document.createElement('li');item.textContent=text;list.append(item);}section.append(list);
       } else {
         const message=document.createElement('p');message.className='feedback';
-        message.textContent=page.status==='error'?(language==='en'?'Could not load definitions. Check your connection and choose Retry definitions online.':'定義を取得できません。接続を確認して、オンライン検索を再試行してください。'):(language==='en'?'No English definition found for this Japanese word.':'この単語の日本語の定義が見つかりませんでした。');section.append(message);
+        message.textContent=page.status==='error'?(page.reason==='structure'?
+          (language==='en'?'Could not read this dictionary entry. Retry or open the source.':'辞書の項目を読み取れませんでした。再試行するか、出典を開いてください。'):
+          (language==='en'?'Could not load definitions. Check your connection and choose Retry definitions online.':'定義を取得できません。接続を確認して、オンライン検索を再試行してください。')):
+          (language==='en'?'No English definition found for this Japanese word.':'この単語の日本語の定義が見つかりませんでした。');section.append(message);
       }
-      const source=document.createElement('a');source.className='source';source.textContent=language==='en'?'English Wiktionary ↗':'ウィクショナリー日本語版 ↗';source.href=dictionaryURL(language,page.title ?? word);source.target='_blank';source.rel='noopener noreferrer';section.append(source);body.append(section);
-    }
-    if(failed) {
-      const retry=document.createElement('button');retry.type='button';retry.className='definition-retry';retry.textContent='Retry definitions online';
-      retry.addEventListener('click',()=>void this.lookupDefinitions(word,body,version));body.append(retry);
-    }
-    const notice=document.createElement('p');notice.className='source';notice.textContent='Wiktionary · CC BY-SA · Only this word is sent for lookup.';body.append(notice);
+      if(page.status==='error') {
+        const retry=document.createElement('button');retry.type='button';retry.className='definition-retry';retry.textContent='Retry definitions online';
+        retry.addEventListener('click',()=>void load(language,section));section.append(retry);
+      }
+      const attribution=definitionSource(page,language,word);
+      const source=document.createElement('a');source.className='source';source.textContent=attribution.label;source.href=attribution.url;source.target='_blank';source.rel='noopener noreferrer';section.append(source);
+      const notice=document.createElement('p');notice.className='source';notice.textContent=attribution.notice;section.append(notice);
+      busy.delete(language);body.setAttribute('aria-busy',String(busy.size>0));
+    };
+    await Promise.all((['en','ja'] as const).map(language=>{
+      const section=document.createElement('section');section.lang=language;body.append(section);return load(language,section);
+    }));
   }
 }

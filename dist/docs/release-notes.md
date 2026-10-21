@@ -13,10 +13,16 @@ Meet **Kōくん**, an optional browser companion who roams, rests, and helps re
 - Hover over a Japanese word for 600 ms, or choose Highlight in settings. The bubble closes automatically when the pointer leaves a hovered word. It follows Kōくん while his animation and movement continue.
 - Immediately starts his open-scroll reading animation when a word reading appears, taking priority over idle, sleep, travel, and activities. The animation keeps running with the bubble open and finishes its normal exit after one cycle.
 - Dialogue adapts to word length, wraps within the viewport, and uses a muted, dithered JRPG frame with a bundled Japanese pixel font. No runtime font service is used.
-- Definitions start off. Choose English or Japanese to request that word’s dictionary form from the selected Wiktionary edition. Missing or offline definitions leave the reading available.
+- Definitions start off. English meanings now use the complete bundled JMdict dictionary; missing English meanings and Japanese definitions use Wiktionary online. Readings remain available if definitions fail.
 - Supports ordinary webpage text, exposed Google Docs text geometry, and words in Kō’s reading view. Use Reading view when Docs cannot expose a reliable editor target. Embedded-frame lookup, arbitrary canvas/image text, browser-protected pages, and browser PDF viewers are excluded.
 - His switch works independently of automatic page furigana. Pause on this site hides him. Hidden tabs pause animations; reduced motion shows a still character. Printing and fullscreen hide him.
 - About easter egg: activate the version number five times to open a small offline animation gallery. Thirty tiles automatically play all 24 routines and six transitions, including every one of the 56 clips. There are no controls; system reduced motion shows still previews.
+
+### Local-first word definitions
+
+- The complete English JMdict dictionary works offline in word details and Kōくん. Japanese definitions and missing English meanings automatically fall back to Wiktionary. Local English appears immediately while Japanese loads.
+- Follow recognized spelling-reference entries, including 飲む → のむ. Unsupported page layouts offer retry instead of reporting a missing word. Retry only reloads failed languages.
+- Each result identifies its source. JMdict data remains under CC BY-SA 4.0 with EDRDG attribution and bundled documentation. No accounts or API keys are required.
 
 ### Development and updating
 

@@ -35,6 +35,16 @@ for clip in mascot['clips']:
     assert expected[path] == (root / 'public' / path).read_bytes()
 
 assert json.loads(expected['manifest.json']) == json.loads((root / 'public/manifest.json').read_text())
+dictionary = json.loads(expected['dictionaries/jmdict/manifest.json'])
+assert dictionary['schema'] == 1 and dictionary['shards'] == 256
+assert dictionary['entries'] >= 200_000, 'Complete English JMdict snapshot missing'
+assert sum(path.startswith('dictionaries/jmdict/') and path.endswith('.json.gz') for path in expected) == 256
+snapshot = json.loads((root / 'data/jmdict/snapshot.json').read_text())
+assert dictionary['snapshot'] == snapshot
+assert hashlib.sha256((root / 'data/jmdict/JMdict_e.gz').read_bytes()).hexdigest() == snapshot['sha256']
+assert 'licenses/jmdict/JMdict_e.gz' not in expected, 'Source archive must not ship twice'
+for notice in ['README.md', 'snapshot.json', 'CC-BY-SA-4.0.txt', 'edrdg-licence.html', 'jmdict-documentation.html']:
+    assert expected['licenses/jmdict/' + notice] == (root / 'data/jmdict' / notice).read_bytes()
 checksums = dict(line.split()[::-1] for line in (root / 'SHA256SUMS').read_text().splitlines())
 report = []
 for suffix, prefix in [('', 'dist/'), ('-chrome-web-store', '')]:

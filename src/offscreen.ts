@@ -1,3 +1,4 @@
+import {parseWiktionary} from './wiktionary-parser';
 const worker = new Worker(chrome.runtime.getURL('tokenizer.js'));
 let next = 0;
 const pending = new Map<number, {jobId:string; resolve:(result:unknown)=>void}>();
@@ -7,6 +8,10 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
   // Only the service worker may dispatch internal jobs. Content scripts must go
   // through background.ts's batch limits and per-document cancellation queue.
   if (sender.id !== chrome.runtime.id || sender.tab || sender.url !== chrome.runtime.getURL('background.js')) return;
+  if(message?.type==='dictionary-parse') {
+    if(typeof message.html!=='string' || message.html.length>1_000_000 || !['en','ja'].includes(message.language)) {respond({status:'unsupported',definitions:[]});return;}
+    respond(parseWiktionary(message.html,message.language));return;
+  }
   if (message?.type === 'worker-release') { worker.postMessage(message); return; }
   if (message?.type === 'worker-cancel') {
     for(const [id,job] of pending) if(job.jobId===message.jobId) {

@@ -1,3 +1,10 @@
 # Preserve the upstream font license's original whitespace and line endings.
 public/art/fonts/OFL.txt -whitespace
 dist/art/fonts/OFL.txt -whitespace
+
+# Preserve upstream licence/documentation and captured API markup verbatim.
+data/jmdict/*.html -whitespace
+data/jmdict/CC-BY-SA-4.0.txt -whitespace
+dist/licenses/jmdict/*.html -whitespace
+dist/licenses/jmdict/CC-BY-SA-4.0.txt -whitespace
+tests/fixtures/dictionary/*.html -whitespace

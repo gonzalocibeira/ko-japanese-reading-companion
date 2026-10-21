@@ -4,7 +4,7 @@
 
 <h1 align="center">Kō — Japanese Reading Companion</h1>
 <p align="center"><strong>Japanese reading companion.</strong></p>
-<p align="center">Automatic Japanese readings for webpages and Google Docs.<br>Furigana runs on your device. Optional word definitions use Wiktionary online.</p>
+<p align="center">Automatic Japanese readings for webpages and Google Docs.<br>Furigana runs on your device. English meanings use bundled JMdict, with Wiktionary as online fallback.</p>
 <p align="center"><strong>1.3.0 development build</strong> · Local build; not published</p>
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok">Install from the Chrome Web Store</a> ·
@@ -21,7 +21,7 @@
 | Read as you browse | Keep your work intact | Stay in control |
 | --- | --- | --- |
 | Furigana appears automatically on visible Japanese text. | Original webpage text and Google Docs formatting stay unchanged. | Pause a site, adjust the appearance, or save your own readings. |
-| **Offline furigana** uses bundled reading dictionaries. | **Reading panel for webpages and Google Docs** adds extra spacing and optional online word definitions. | **No extension account or API key** needed. Settings and corrections are saved on this device. |
+| **Offline furigana** uses bundled reading dictionaries. | **Reading panel for webpages and Google Docs** adds extra spacing and English meanings offline and Japanese definitions online. | **No extension account or API key** needed. Settings and corrections are saved on this device. |
 
 ## Release notes
 
@@ -33,7 +33,7 @@ His PS1-inspired design uses chunky cream polygons, vermilion markings, pixel te
 
 He walks gently around his drop area and occasionally takes off, floats, and lands back at his ground height. Physical specials have small movements matched to their poses; quiet activities stay planted. Activities run for at most two loop iterations. Drag him to move him; the visible drop location becomes his new ground position and is remembered per site. Use arrow keys when focused for keyboard repositioning. He has no permanent window or controls.
 
-Hover over a Japanese word for 600 ms to open his speech bubble, or choose **Highlight** in his settings. Hover bubbles close when you leave the word. The content-sized pixel dialogue follows him while his animation keeps running. A word reading immediately starts his open-scroll animation, taking priority over roaming and other activities. Readings work offline, including on exposed Google Docs text and in Reading view. Definitions start off; optionally enable English or Japanese Wiktionary definitions. Only the lookup word is sent to that edition. His switch works with automatic page furigana off; **Pause on this site** hides him. Sizes and a still-character option are in the popup, and system reduced motion is respected.
+Hover over a Japanese word for 600 ms to open his speech bubble, or choose **Highlight** in his settings. Hover bubbles close when you leave the word. The content-sized pixel dialogue follows him while his animation keeps running. A word reading immediately starts his open-scroll animation, taking priority over roaming and other activities. Readings work offline, including on exposed Google Docs text and in Reading view. Definitions start off; optionally enable English or Japanese definitions. English uses bundled JMdict first. Missing English meanings and Japanese definitions use Wiktionary online, sending only lookup terms and any spelling-reference terms. His switch works with automatic page furigana off; **Pause on this site** hides him. Sizes and a still-character option are in the popup, and system reduced motion is respected.
 
 Use Reading view when Google Docs does not expose enough editor text. Mascot lookups do not cover embedded frames, browser-protected pages, browser PDF viewers, or arbitrary image/canvas text. No needs, feeding, sound, or progression are included.
 
@@ -134,7 +134,7 @@ The Wikipedia example above shows furigana added directly above Japanese text. O
 
 ![Kōくん beside Japanese text, with a pixel-style speech bubble showing 海賊, its reading かいぞく, and the English Wiktionary definition of pirate](docs/screenshots/ko-kun-word-lookup.png)
 
-Kōくん shows a word’s reading in a speech bubble. Enable optional English or Japanese definitions to see its meaning from Wiktionary, as shown here for **海賊** (かいぞく, pirate).
+Kōくん shows a word’s reading in a speech bubble. Enable optional English or Japanese definitions to see its meaning. English now uses bundled JMdict first, with Wiktionary fallback; the screenshot shows the earlier Wiktionary view of **海賊** (かいぞく, pirate).
 
 ### In Google Docs
 
@@ -163,9 +163,9 @@ Choose **Playgrounds** in the extension menu to open a standalone tab, or use th
 
 ![Google Docs beside the reading panel, with 海賊 selected and its reading かいぞく, English and Japanese definitions, and Wiktionary source links visible](docs/screenshots/google-docs-dictionary-live.png)
 
-Here, **海賊** has the reading **かいぞく** and the meaning **pirate**, with definitions in both languages loaded automatically when clicked. The original Google Doc stays visible beside the panel. Follow either Wiktionary source link to read the full entry.
+Here, **海賊** has the reading **かいぞく** and the meaning **pirate**, with definitions in both languages loaded automatically when clicked. The original Google Doc stays visible beside the panel. The screenshot shows the earlier Wiktionary-only view; current results identify JMdict or Wiktionary as their source.
 
-Definitions come from the English and Japanese editions of Wiktionary and require an internet connection. Activating a word sends only its dictionary form; cached definitions can be shown without another request. Opening the Playgrounds browser and using exploration controls makes no definition requests. Each language shows its own unavailable or missing-entry message when necessary. Failed lookups offer **Retry definitions online**.
+English meanings use the complete bundled JMdict dictionary first and work offline. Missing English meanings and Japanese definitions automatically use Wiktionary online, sending only the lookup term and any recognized spelling-reference terms. English appears independently while Japanese loads; cached results can avoid another request. Opening the Playgrounds browser and using exploration controls makes no definition requests. Each language shows its own unavailable or missing-entry message when necessary. Failed lookups offer **Retry definitions online**.
 
 You can also focus a word with Tab and open it with Enter or Space. Exploration switches and comparison buttons work with the keyboard. Mimetic scenes loop automatically. Press Escape or the word card's **×** button to dismiss it and return to reading.
 
@@ -196,14 +196,14 @@ Open **About Kō** from the popup or Chrome’s extension options for the projec
 
 **Furigana readings run on your device.** The extension uses bundled Kuromoji/IPADIC reading dictionaries and sends no text to an external service to generate furigana.
 
-**Word definitions use Wiktionary online.** Kōくん definitions are off by default; when enabled, hovering or highlighting sends the dictionary form to only the selected language. Clicking a word in the reading panel, or activating it with Enter or Space, automatically sends that word's dictionary form to the English and Japanese Wiktionary services. Wiktionary receives the lookup word and normal connection information, including your IP address. The extension does not send the surrounding sentence or full document. Lookups require an internet connection; cached definitions stay in extension memory. Furigana and all exploration tools run locally, and experiments are not saved.
+**Word definitions are local-first.** Kōくん definitions are off by default. When enabled, English uses bundled JMdict first; missing English meanings and Japanese definitions use the selected Wiktionary edition online. Reading-panel activation requests both languages independently, so Japanese still requires an online request even when English is local. Online requests send only lookup terms and any spelling-reference terms. Wikimedia receives these terms and your IP address; surrounding sentences and full documents are not sent. Furigana and exploration work locally, and experiments are not saved.
 
 The extension has no analytics or account requirement. It saves your settings, reading corrections, animation-style choice, and per-version update-announcement dismissals to local storage.
 
 <details>
 <summary><strong>Permissions and local storage explained</strong></summary>
 
-Japanese readings are processed locally with bundled Kuromoji/IPADIC dictionaries in an extension worker. No runtime dictionary download is needed for readings. Activating a reading-panel word automatically requests definitions from `en.wiktionary.org` and `ja.wiktionary.org`, without credentials or a referrer. Definitions are cached in memory for up to 100 words per panel and are not saved to local storage. Wiktionary receives the requested word and the normal connection information, including your IP address. Exploration uses bundled code and original artwork; it makes no requests and saves no history.
+Japanese readings use bundled Kuromoji/IPADIC dictionaries in an extension worker; English meanings use bundled JMdict. Neither requires a runtime download. Online fallback uses `en.wiktionary.org` or `ja.wiktionary.org` without credentials or a referrer. A shared in-memory cache holds up to 256 language-specific results; misses expire after five minutes and failures are not cached. No definition history is persisted. Exploration uses bundled code and original artwork, makes no requests, and saves no history.
 
 - The extension needs access to HTTP/HTTPS pages to add readings automatically without a per-page click. You can narrow access using Chrome's extension site-access controls; it will only run on permitted sites.
 - It requests local storage for preferences and user-entered corrections, plus an offscreen document for the tokenizer worker.
@@ -259,7 +259,7 @@ Browser tests cover paged and pageless fixtures, editing, IME input, and page sw
 
 ## Why I built this
 
-I couldn't find a good option for adding furigana in Google Docs. I wanted readings to appear automatically, work offline, and leave the original document unchanged. That grew into this extension: a little help while browsing, with extra room to read when you need it. The reading panel works on webpages and also offers optional online word definitions from Wiktionary.
+I couldn't find a good option for adding furigana in Google Docs. I wanted readings to appear automatically, work offline, and leave the original document unchanged. That grew into this extension: a little help while browsing, with extra room to read when you need it. The reading panel works on webpages and offers English meanings offline, with online fallback and Japanese definitions from Wiktionary.
 
 ## For developers
 
@@ -277,7 +277,7 @@ npm test
 
 For release downloads, run `npm run package:release`. It rebuilds `dist`, creates a manual-install ZIP containing `dist/`, creates the store ZIP with `manifest.json` at its root, and writes `SHA256SUMS`. Both ZIPs use the same runtime allowlist and exclude source maps, tests, screenshots, and development documentation. Packaging does not publish to GitHub or the Chrome Web Store.
 
-`npm run build` regenerates the included `dist/` folder. Development dependency installation requires internet access. Furigana readings require no external service; optional word definitions contact Wiktionary and require an internet connection.
+`npm run build` requires Python 3 (standard library only) as well as Node.js, and regenerates the included `dist/` folder without downloading dictionaries. Development dependency installation requires internet access. The pinned complete English JMdict snapshot is converted to 256 lazy lookup shards; see [dictionary attribution and refresh instructions](licenses/jmdict/README.md). JMdict data and derived shards remain under CC BY-SA 4.0, copyright James William Breen and EDRDG, separately from Kō’s original material. Furigana and local English meanings require no external service; Wiktionary fallback and Japanese definitions require an internet connection.
 
 The test suite also covers per-version announcement dismissal across browser restarts, failure/retry behavior, offline changelog access, and the GitHub suggestion link. It covers automatic annotations, unchanged source/layout, a 100,000-node webpage, a 100-page Docs fixture, cancellation, IME handling, settings, corrections, vocabulary/name disambiguation, local exploration and real-dictionary form round trips, keyboard and reduced-motion behavior, the reading panel, debounced refreshes, automatic bilingual word definitions on word activation, toolbar state and lifecycle, and expanded popup forms. Browser integration tests use a temporary profile and localhost server. The native toolbar-popup regression opens a temporary visible browser window to verify Chrome’s popup sizing and wheel scrolling. They default to Brave's standard macOS executable; set `CHROMIUM_PATH` to an extension-capable Chromium executable elsewhere. Chrome distributions that disable command-line extension loading cannot run these integration tests. Your normal browser profile and Google account are not used.
 
@@ -288,7 +288,7 @@ The four inline 1.0 screenshots supplied by the project owner cover webpage over
 <details>
 <summary><strong>Performance and architecture</strong></summary>
 
-Furigana work is bounded to visible content. Reading analysis pauses in background tabs, waits for scrolling/editing to settle, and cancels stale queued work. Docs measurements are cached within each scan; collision checks inspect nearby glyphs. Reading caches and analysis batches have fixed limits. The reading panel is capped at 16,000 characters / 2,000 runs and 500 reading candidates. Typed verbs use a separate bounded local analysis channel. Activating a word automatically requests its definitions; up to 100 lookup results are cached in panel memory.
+Furigana work is bounded to visible content. Reading analysis pauses in background tabs, waits for scrolling/editing to settle, and cancels stale queued work. Docs measurements are cached within each scan; collision checks inspect nearby glyphs. Reading caches and analysis batches have fixed limits. The reading panel is capped at 16,000 characters / 2,000 runs and 500 reading candidates. Typed verbs use a separate bounded local analysis channel. Activating a word starts local-first definition lookup; a shared service-worker cache retains at most 256 language-specific results. Bundled shards load lazily with at most 16 shards retained and an 8 MiB source-text cache weight limit (parsed objects add overhead).
 
 See [technical notes](docs/technical-notes.md) for the architecture, exact budgets, and compatibility details.
 

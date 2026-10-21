@@ -82,13 +82,23 @@ test('drag and keyboard reposition persist per site, survive reload, clamp resiz
   await page.setViewportSize({width:380,height:320});const small=(await shadow(page,snapshot))!;expect(small.x).toBeGreaterThanOrEqual(0);expect(small.x+small.width).toBeLessThanOrEqual(380);
   await page.emulateMedia({media:'print'});await expect(page.locator('ko-mascot')).toBeHidden();await page.emulateMedia({media:'screen',reducedMotion:'reduce'});await expect(page.locator('ko-mascot')).toBeVisible();
 });
-test('chosen-language definitions use the lemma, render remote text safely, and preserve readings on failure',async()=>{
+test('chosen-language definitions use local English lemmas without requests and preserve readings on online failure',async()=>{
   const requested:string[]=[];await context.route('https://*.wiktionary.org/w/api.php*',route=>{requested.push(route.request().url());return route.fulfill({json:{parse:{title:'食べる',text:'<h2>Japanese</h2><h3>Verb</h3><ol><li>to eat<img src="https://bad.test/tracker"><script>alert(1)</script></li></ol>'}}});});
   const page=await openPage();await mascot({enabled:true,definitions:'en'});await hoverText(page,'#other');await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain('to eat');
-  expect(requested).toHaveLength(1);expect(new URL(requested[0]).hostname).toBe('en.wiktionary.org');expect(new URL(requested[0]).searchParams.get('page')).toBe('食べる');
+  expect(requested).toEqual([]);expect((await shadow(page,snapshot))?.text).toContain('JMdict');
   expect(await shadow(page,`function(){return this.querySelector('.bubble').querySelectorAll('img,script').length}`)).toBe(0);
   await context.unroute('https://*.wiktionary.org/w/api.php*');await context.route('https://*.wiktionary.org/w/api.php*',route=>route.abort());await mascot({definitions:'ja'});await page.mouse.move(800,50);await hoverText(page,'#word');
   await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain('Definition unavailable');expect((await shadow(page,snapshot))?.reading).toBe('にほんご');
+});
+test('飲む and its inflected text show offline English definitions in the real companion',async()=>{
+  const requested:string[]=[];await context.route('https://*.wiktionary.org/w/api.php*',route=>{requested.push(route.request().url());return route.abort();});
+  const page=await openPage();await page.locator('#word').evaluate(el=>{el.textContent='飲む';});await page.locator('#other').evaluate(el=>{el.textContent='飲みました。';});
+  await mascot({enabled:true,definitions:'en'});await expect.poll(async()=>(await shadow(page,snapshot))?.pixels).toBeGreaterThan(0);
+  for(const selector of ['#word','#other']) {
+    await hoverText(page,selector);await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain('to drink');
+    expect((await shadow(page,snapshot))?.text).toContain('JMdict');await page.mouse.move(800,50);
+  }
+  expect(requested).toEqual([]);
 });
 test('Google Docs geometry and reading-view word hooks work with their independent settings',async()=>{
   const page=await context.newPage();await page.route('https://docs.google.com/document/d/mascot/edit',route=>route.fulfill({contentType:'text/html; charset=utf-8',body:'<!doctype html><meta charset="utf-8"><style>body{margin:0}.kix-appview-editor{position:absolute;top:100px;width:900px;height:600px}</style><div class="kix-appview-editor"><svg width="900" height="600"><g data-font-css="24px system-ui"><rect x="40" y="60" width="72" height="28" aria-label="日本語" fill="transparent"/><text x="40" y="82" style="font:24px system-ui">日本語</text></g></svg></div>'}));
@@ -129,11 +139,11 @@ test('open-shadow text works under restrictive page CSP, and stale definition re
   await context.route('https://*.wiktionary.org/w/api.php*',async route=>{
     const word=new URL(route.request().url()).searchParams.get('page');
     if(word==='学校')await new Promise<void>(resolve=>{finish=resolve;});
-    await route.fulfill({json:{parse:{title:word,text:`<h2>Japanese</h2><h3>Noun</h3><ol><li>Definition for ${word}</li></ol>`}}});
+    await route.fulfill({json:{parse:{title:word,text:`<h2>日本語</h2><h3>名詞</h3><ol><li>Definition for ${word}</li></ol>`}}});
   });
   const page=await context.newPage();await page.route('https://mascot.test/csp',route=>route.fulfill({contentType:'text/html',headers:{'Content-Security-Policy':"img-src 'none'; connect-src 'none'"},body:fixture}));
   await page.goto('https://mascot.test/csp');await page.locator('#shadow').evaluate(el=>{el.attachShadow({mode:'open'}).innerHTML='<span id="shadow-word">日本語</span>';});
-  await mascot({enabled:true,definitions:'en'});await expect.poll(async()=>(await shadow(page,snapshot))?.pixels).toBeGreaterThan(0);
+  await mascot({enabled:true,definitions:'ja'});await expect.poll(async()=>(await shadow(page,snapshot))?.pixels).toBeGreaterThan(0);
   await hoverText(page,'#ruby');await expect.poll(()=>!!finish).toBe(true);await hoverText(page,'#shadow-word');await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain('Definition for 日本語');
   finish!();await page.waitForTimeout(150);expect((await shadow(page,snapshot))?.text).not.toContain('Definition for 学校');
 });
