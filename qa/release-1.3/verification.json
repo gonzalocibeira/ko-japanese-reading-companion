@@ -1,8 +1,7 @@
 {
   "version": "1.3.0",
-  "status": "work-in-progress",
-  "date": "2026-10-19",
-  "published": false,
+  "status": "stable-release",
+  "date": "2026-10-22",
   "typecheck": "pass",
   "build": "pass",
   "regression": {
@@ -63,7 +62,11 @@
     "nativeToolbarCheck": "blocked: macOS leaves the Brave test window unfocused; action.openPopup rejects inactive windows",
     "stage": "Before PS1 artwork replacement"
   },
-  "packages": "205 runtime files per layout, including offline gallery; local development ZIPs only. See packages.json and SHA256SUMS.",
+  "packages": {
+    "runtimeFiles": 728,
+    "parity": "pass",
+    "checksums": "SHA256SUMS"
+  },
   "idleReadingRevision": {
     "awakeStandingAndSeatedIdle": "authored blink and breathing loops",
     "sleepingPose": "still, 250 ms timer",
@@ -87,9 +90,8 @@
     "airborneReading": "immediate scroll with 1200 ms settling; ground and saved home preserved",
     "readLoopPreload": "retained within six-strip cache"
   },
-  "displayVersion": "1.3.0 WIP",
+  "displayVersion": "1.3.0",
   "primaryBranch": "master",
-  "releaseTagCreated": false,
   "storeSubmitted": false,
   "consolidatedRegression": {
     "command": "npx playwright test --reporter=line",
@@ -97,7 +99,7 @@
     "failed": 0,
     "skipped": 0,
     "nativeToolbarPopup": "pass",
-    "stage": "Final 1.3 WIP runtime including PS1 companion and gallery packaging"
+    "stage": "Historical 19 October development snapshot"
   },
   "animationGallery": {
     "fiveClickTrigger": "passed",
@@ -113,7 +115,21 @@
     "screenshot": "qa/release-1.3/animation-gallery.png"
   },
   "documentationLinks": {
-    "checked": 52,
+    "checked": 63,
     "missing": 0
+  },
+  "releaseTag": "v1.3.0",
+  "releaseRegression": {
+    "command": "npx playwright test --reporter=line",
+    "total": 245,
+    "initialPassed": 244,
+    "initialFailed": 1,
+    "skipped": 0,
+    "rerunCommand": "npx playwright test tests/exploration.spec.ts --grep 'verb controls explore the full chain' --reporter=line",
+    "rerunPassed": 1,
+    "cause": "Dictionary files were rebuilt concurrently with the initial run; focused rerun against completed build passed.",
+    "verifiedCases": 245,
+    "nativeToolbarPopup": "pass",
+    "invitationFocusedTests": 2
   }
 }

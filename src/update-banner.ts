@@ -5,6 +5,11 @@ export async function setupUpdateBanner() {
   if(!banner)return;
   const version=chrome.runtime.getManifest().version;
   const key=`dismissedUpdate:${version}`;
+  banner.querySelector<HTMLButtonElement>('#try-mascot')?.addEventListener('click',()=>{
+    const settings=document.querySelector<HTMLDetailsElement>('#mascot-panel');
+    if(settings)settings.open=true;
+    document.querySelector<HTMLInputElement>('#mascot-enabled')?.focus();
+  });
   const close=banner.querySelector<HTMLButtonElement>('#dismiss-update')!;
   const error=banner.querySelector<HTMLElement>('#update-error')!;
   const sync=(changes:Record<string,chrome.storage.StorageChange>,area:string)=>{

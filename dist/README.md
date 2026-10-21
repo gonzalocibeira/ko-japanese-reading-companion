@@ -4,8 +4,8 @@
 
 <h1 align="center">Kō — Japanese Reading Companion</h1>
 <p align="center"><strong>Japanese reading companion.</strong></p>
-<p align="center">Automatic Japanese readings for webpages and Google Docs.<br>Furigana runs on your device. English meanings use bundled JMdict, with Wiktionary as online fallback.</p>
-<p align="center"><strong>1.3.0 development build</strong> · Local build; not published</p>
+<p align="center">Automatic Japanese readings for webpages and Google Docs.<br>Furigana runs on your device. English and Japanese meanings use bundled dictionaries, with Wiktionary as online fallback.</p>
+<p align="center"><strong>1.3.0</strong> · Released 22 October 2026</p>
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok">Install from the Chrome Web Store</a> ·
   <a href="#see-it-in-action">See it in action</a> ·
@@ -21,11 +21,11 @@
 | Read as you browse | Keep your work intact | Stay in control |
 | --- | --- | --- |
 | Furigana appears automatically on visible Japanese text. | Original webpage text and Google Docs formatting stay unchanged. | Pause a site, adjust the appearance, or save your own readings. |
-| **Offline furigana** uses bundled reading dictionaries. | **Reading panel for webpages and Google Docs** adds extra spacing and English meanings offline and Japanese definitions online. | **No extension account or API key** needed. Settings and corrections are saved on this device. |
+| **Offline furigana** uses bundled reading dictionaries. | **Reading panel for webpages and Google Docs** adds extra spacing and English and Japanese meanings offline with online fallback. | **No extension account or API key** needed. Settings and corrections are saved on this device. |
 
 ## Release notes
 
-### 1.3.0 · Development build (WIP)
+### 1.3.0 · 22 October 2026
 
 **Kōくん** is an optional browser companion. Enable him in the extension popup; he starts off. He blinks and breathes while idle, takes regular walks around his drop area, and waits at least three active minutes and three walking trips before he can sleep. Awake pauses last about 12–24 seconds; sleeping stays still. Special routines retain a 5–10 minute cooldown. **Click him to wake him for one minute**: he greets you and becomes more active, with 8–16 second rests between actions. Clicking again refreshes that minute; dragging does not wake him. Enter or Space also wakes him when focused. The minute expires even while his tab is in the background, and a routine already underway finishes its normal exit.
 
@@ -33,11 +33,13 @@ His PS1-inspired design uses chunky cream polygons, vermilion markings, pixel te
 
 He walks gently around his drop area and occasionally takes off, floats, and lands back at his ground height. Physical specials have small movements matched to their poses; quiet activities stay planted. Activities run for at most two loop iterations. Drag him to move him; the visible drop location becomes his new ground position and is remembered per site. Use arrow keys when focused for keyboard repositioning. He has no permanent window or controls.
 
-Hover over a Japanese word for 600 ms to open his speech bubble, or choose **Highlight** in his settings. Hover bubbles close when you leave the word. The content-sized pixel dialogue follows him while his animation keeps running. A word reading immediately starts his open-scroll animation, taking priority over roaming and other activities. Readings work offline, including on exposed Google Docs text and in Reading view. Definitions start off; optionally enable English or Japanese definitions. English uses bundled JMdict first. Missing English meanings and Japanese definitions use Wiktionary online, sending only lookup terms and any spelling-reference terms. His switch works with automatic page furigana off; **Pause on this site** hides him. Sizes and a still-character option are in the popup, and system reduced motion is respected.
+Hover over a Japanese word for 600 ms to open his speech bubble, or choose **Highlight** in his settings. Hover bubbles close when you leave the word. The content-sized pixel dialogue follows him while his animation keeps running. A word reading immediately starts his open-scroll animation, taking priority over roaming and other activities. Readings work offline, including on exposed Google Docs text and in Reading view. Definitions start off; optionally enable English or Japanese definitions. English uses bundled JMdict and Japanese uses a bundled Japanese Wiktionary snapshot. Missing meanings use Wiktionary online, sending only lookup terms and any spelling-reference terms. His switch works with automatic page furigana off; **Pause on this site** hides him. Sizes and a still-character option are in the popup, and system reduced motion is respected.
 
 Use Reading view when Google Docs does not expose enough editor text. Mascot lookups do not cover embedded frames, browser-protected pages, browser PDF viewers, or arbitrary image/canvas text. No needs, feeding, sound, or progression are included.
 
-The primary branch, `master`, contains this work in progress. Load [`dist/`](.) or a locally generated 1.3.0 ZIP, then reload the extension and existing tabs. The numeric manifest version is `1.3.0`, with the display version `1.3.0 WIP`. There is no v1.3 release, tag, store submission, or launch date. See the [v1.3 verification notes](docs/release-1.3-audit.md) and [full changelog](docs/release-notes.md).
+Download [Kō 1.3.0](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.3.0), or load [`dist/`](.), then reload the extension and existing tabs. Existing settings and corrections remain compatible. The small popup invitation opens Kōくん settings and stays dismissed after closing it on this device. See the [1.3 release audit](docs/release-1.3-audit.md) and [full changelog](docs/release-notes.md).
+
+English definitions now use 218,942 bundled JMdict entries; Japanese definitions use 124,195 Japanese Wiktionary headwords. Missing meanings fall back online. Dictionary-backed kanji compounds stay together in word details. Google Docs highlight lookup follows supported painted selections, and direct SVG/XML pages are skipped safely.
 
 ### 1.2.0 · 28 October 2026
 
@@ -49,11 +51,11 @@ The primary branch, `master`, contains this work in progress. Load [`dist/`](.) 
 - **90 mimetic expressions in 45 illustrated comparisons**, with original examples, usage notes, references, and new ukiyo-e-inspired pixel animations. Scenes loop automatically; reduced motion shows a still pose. About → **Show legacy animations** restores the original line style.
 - **Release announcements:** a compact banner summarizes each version, links to the About changelog, and stays dismissed on this device after closing it. About also opens GitHub to **Suggest a feature or improvement**.
 
-Version 1.2.0 was published on GitHub on 18 October 2026 under `v1.2.0`; its announced launch date is 28 October. Chrome Web Store review and publication are managed separately. These download links contain the 1.2 runtime; the primary branch and its bundled `dist/` now contain 1.3 WIP.
+Version 1.2.0 was published on GitHub on 18 October 2026 under `v1.2.0`; its announced launch date is 28 October. Chrome Web Store review and publication are managed separately. The 1.2 release remains available as a historical download; current downloads contain 1.3.0.
 
 RC1 verification: all **186 tests** and **3 prior release-audit regressions** passed. Final release preparation checks are recorded in the audit. See the [1.2 audit](docs/release-1.2-audit.md) for scope and limits.
 
-Download [1.2.0](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.2.0), or load the rebuilt [`dist/`](.) folder. The release includes a manual-install ZIP, a store-layout ZIP, and SHA256SUMS. See the [1.2 audit](docs/release-1.2-audit.md) for current verification and [full release notes](docs/release-notes.md) for supported behavior and updating.
+Download [1.2.0](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.2.0), or load the rebuilt [`dist/`](.) folder. The release includes a manual-install ZIP, a store-layout ZIP, and SHA256SUMS. See the [1.2 audit](docs/release-1.2-audit.md) for historical verification and [full release notes](docs/release-notes.md) for supported behavior and updating.
 
 **About Kō → What’s new · Changelog** displays the current notes and links to the full offline history. The GitHub release body, bundled About page, and history use the same [changelog](docs/release-notes.md). Close the menu’s update announcement to hide that version on this device; a later version gets a new announcement. **Suggest a feature or improvement** opens a new GitHub issue.
 
@@ -77,7 +79,7 @@ Read the [full release notes](docs/release-notes.md) for details and update inst
 
 **[Install Kō from the Chrome Web Store](https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok).** Click **Add to Chrome**, confirm the installation, then reload your open tabs to start reading. Store installations receive updates automatically.
 
-The working tree contains **1.3.0 development**. Build locally for Kōくん. The historical 1.2 download links below are separate from this unpublished build; store availability depends on review and publication.
+**1.3.0 is available on GitHub**, including Kōくん and bundled English and Japanese definitions. Chrome Web Store availability is managed separately; this release does not submit or publish a store update.
 
 **Tip:** Pin **Kō — Japanese Reading Companion** from Chrome's puzzle-piece **Extensions** menu. Look for the warm-paper **考** (think) on a vermilion seal.
 
@@ -85,7 +87,7 @@ The working tree contains **1.3.0 development**. Build locally for Kōくん. Th
 
 You can also load the ready-to-use extension from [`dist/`](.). No Node.js, npm, or build step needed.
 
-1. **Download the [1.2.0 extension ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.2.0/ko-japanese-reading-companion-1.2.0.zip).** It contains the ready-to-load `dist` folder. You can also download the full source from [the repository](https://github.com/gonzalocibeira/ko-japanese-reading-companion) using **Code → Download ZIP**. Release assets include [SHA-256 checksums](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.2.0/SHA256SUMS).
+1. **Download the [1.3.0 extension ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.3.0/ko-japanese-reading-companion-1.3.0.zip).** It contains the ready-to-load `dist` folder. You can also download the full source from [the repository](https://github.com/gonzalocibeira/ko-japanese-reading-companion) using **Code → Download ZIP**. Release assets include [SHA-256 checksums](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.3.0/SHA256SUMS).
 2. **Extract and keep the folder.** Put it somewhere permanent, such as `Documents/Ko`.
 3. **Open Chrome's extensions page.** Enter `chrome://extensions` in the address bar and turn on **Developer mode**.
 4. **Load the extension.** Click **Load unpacked** and select the extracted folder containing `manifest.json`. For a repository/source download, this is the **extension folder**. A `chrome-web-store.zip` package has `manifest.json` directly in its extracted root.
@@ -95,7 +97,7 @@ You can also load the ready-to-use extension from [`dist/`](.). No Node.js, npm,
 <summary><strong>Which folder should I select?</strong></summary>
 
 ```text
-ko-japanese-reading-companion-1.2.0/
+ko-japanese-reading-companion-1.3.0/
 └── dist/                  ← Select this folder in “Load unpacked”
     ├── manifest.json
     ├── content.js
@@ -106,7 +108,7 @@ ko-japanese-reading-companion-1.2.0/
 
 Select the extracted folder containing `manifest.json`, not the ZIP or repository root. Keep that folder in place and leave Developer mode enabled. Managed work or school browsers may restrict unpacked extensions.
 
-The manual-install ZIP and repository/source downloads both contain a `dist` folder. The separate `ko-japanese-reading-companion-1.2.0-chrome-web-store.zip` asset is intended for store submission and has `manifest.json` directly at its root; if loading that package manually, select its extracted root instead.
+The manual-install ZIP and repository/source downloads both contain a `dist` folder. The separate `ko-japanese-reading-companion-1.3.0-chrome-web-store.zip` asset is intended for store submission and has `manifest.json` directly at its root; if loading that package manually, select its extracted root instead.
 
 See [Chrome's official instructions for loading unpacked extensions](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked).
 
@@ -130,11 +132,11 @@ Scrolling, typing, and background-tab suspension do not change an otherwise acti
 
 The Wikipedia example above shows furigana added directly above Japanese text. Open the extension menu to pause a site, customize readings, or check the page status.
 
-### Kōくん word lookups · 1.3 development
+### Kōくん word lookups · 1.3.0
 
 ![Kōくん beside Japanese text, with a pixel-style speech bubble showing 海賊, its reading かいぞく, and the English Wiktionary definition of pirate](docs/screenshots/ko-kun-word-lookup.png)
 
-Kōくん shows a word’s reading in a speech bubble. Enable optional English or Japanese definitions to see its meaning. English now uses bundled JMdict first, with Wiktionary fallback; the screenshot shows the earlier Wiktionary view of **海賊** (かいぞく, pirate).
+Kōくん shows a word’s reading in a speech bubble. Enable optional English or Japanese definitions to see its meaning. English now uses bundled JMdict and Japanese uses bundled Japanese Wiktionary, with online fallback; the screenshot shows the earlier Wiktionary view of **海賊** (かいぞく, pirate).
 
 ### In Google Docs
 
@@ -165,7 +167,7 @@ Choose **Playgrounds** in the extension menu to open a standalone tab, or use th
 
 Here, **海賊** has the reading **かいぞく** and the meaning **pirate**, with definitions in both languages loaded automatically when clicked. The original Google Doc stays visible beside the panel. The screenshot shows the earlier Wiktionary-only view; current results identify JMdict or Wiktionary as their source.
 
-English meanings use the complete bundled JMdict dictionary first and work offline. Missing English meanings and Japanese definitions automatically use Wiktionary online, sending only the lookup term and any recognized spelling-reference terms. English appears independently while Japanese loads; cached results can avoid another request. Opening the Playgrounds browser and using exploration controls makes no definition requests. Each language shows its own unavailable or missing-entry message when necessary. Failed lookups offer **Retry definitions online**.
+English meanings use complete bundled JMdict; Japanese definitions use a bundled Japanese Wiktionary snapshot. Both work offline for locally covered words. Missing meanings automatically use the corresponding Wiktionary edition online, sending only the lookup term and any recognized spelling-reference terms. Each language appears independently; cached results can avoid another request. Opening the Playgrounds browser and using exploration controls makes no definition requests. Each language shows its own unavailable or missing-entry message when necessary. Failed lookups offer **Retry definitions online**.
 
 You can also focus a word with Tab and open it with Enter or Space. Exploration switches and comparison buttons work with the keyboard. Mimetic scenes loop automatically. Press Escape or the word card's **×** button to dismiss it and return to reading.
 
@@ -196,14 +198,14 @@ Open **About Kō** from the popup or Chrome’s extension options for the projec
 
 **Furigana readings run on your device.** The extension uses bundled Kuromoji/IPADIC reading dictionaries and sends no text to an external service to generate furigana.
 
-**Word definitions are local-first.** Kōくん definitions are off by default. When enabled, English uses bundled JMdict first; missing English meanings and Japanese definitions use the selected Wiktionary edition online. Reading-panel activation requests both languages independently, so Japanese still requires an online request even when English is local. Online requests send only lookup terms and any spelling-reference terms. Wikimedia receives these terms and your IP address; surrounding sentences and full documents are not sent. Furigana and exploration work locally, and experiments are not saved.
+**Word definitions are local-first.** Kōくん definitions are off by default. When enabled, English uses bundled JMdict and Japanese uses a bundled Japanese Wiktionary snapshot first; misses use the selected Wiktionary edition online. Reading-panel activation requests both languages independently; local hits make no external request. Online requests send only lookup terms and any spelling-reference terms. Wikimedia receives these terms and your IP address; surrounding sentences and full documents are not sent. Furigana and exploration work locally, and experiments are not saved.
 
 The extension has no analytics or account requirement. It saves your settings, reading corrections, animation-style choice, and per-version update-announcement dismissals to local storage.
 
 <details>
 <summary><strong>Permissions and local storage explained</strong></summary>
 
-Japanese readings use bundled Kuromoji/IPADIC dictionaries in an extension worker; English meanings use bundled JMdict. Neither requires a runtime download. Online fallback uses `en.wiktionary.org` or `ja.wiktionary.org` without credentials or a referrer. A shared in-memory cache holds up to 256 language-specific results; misses expire after five minutes and failures are not cached. No definition history is persisted. Exploration uses bundled code and original artwork, makes no requests, and saves no history.
+Japanese readings use bundled Kuromoji/IPADIC dictionaries in an extension worker; English meanings use bundled JMdict and Japanese definitions use bundled Japanese Wiktionary. None requires a runtime download. Online fallback uses `en.wiktionary.org` or `ja.wiktionary.org` without credentials or a referrer. A shared in-memory cache holds up to 256 language-specific results; misses expire after five minutes and failures are not cached. No definition history is persisted. Exploration uses bundled code and original artwork, makes no requests, and saves no history.
 
 - The extension needs access to HTTP/HTTPS pages to add readings automatically without a per-page click. You can narrow access using Chrome's extension site-access controls; it will only run on permitted sites.
 - It requests local storage for preferences and user-entered corrections, plus an offscreen document for the tokenizer worker.
@@ -259,7 +261,7 @@ Browser tests cover paged and pageless fixtures, editing, IME input, and page sw
 
 ## Why I built this
 
-I couldn't find a good option for adding furigana in Google Docs. I wanted readings to appear automatically, work offline, and leave the original document unchanged. That grew into this extension: a little help while browsing, with extra room to read when you need it. The reading panel works on webpages and offers English meanings offline, with online fallback and Japanese definitions from Wiktionary.
+I couldn't find a good option for adding furigana in Google Docs. I wanted readings to appear automatically, work offline, and leave the original document unchanged. That grew into this extension: a little help while browsing, with extra room to read when you need it. The reading panel works on webpages and offers English and Japanese meanings offline, with Wiktionary fallback for locally missing entries.
 
 ## For developers
 
@@ -277,7 +279,7 @@ npm test
 
 For release downloads, run `npm run package:release`. It rebuilds `dist`, creates a manual-install ZIP containing `dist/`, creates the store ZIP with `manifest.json` at its root, and writes `SHA256SUMS`. Both ZIPs use the same runtime allowlist and exclude source maps, tests, screenshots, and development documentation. Packaging does not publish to GitHub or the Chrome Web Store.
 
-`npm run build` requires Python 3 (standard library only) as well as Node.js, and regenerates the included `dist/` folder without downloading dictionaries. Development dependency installation requires internet access. The pinned complete English JMdict snapshot is converted to 256 lazy lookup shards; see [dictionary attribution and refresh instructions](licenses/jmdict/README.md). JMdict data and derived shards remain under CC BY-SA 4.0, copyright James William Breen and EDRDG, separately from Kō’s original material. Furigana and local English meanings require no external service; Wiktionary fallback and Japanese definitions require an internet connection.
+`npm run build` requires Python 3 (standard library only) as well as Node.js, and regenerates the included `dist/` folder without downloading dictionaries. Development dependency installation requires internet access. The pinned complete English JMdict snapshot is converted to 256 lazy lookup shards; see [dictionary attribution and refresh instructions](licenses/jmdict/README.md). JMdict data and derived shards remain under CC BY-SA 4.0, copyright James William Breen and EDRDG, separately from Kō’s original material. Furigana and local English/Japanese meanings require no external service; Wiktionary fallback requires an internet connection. The Japanese snapshot covers 124,195 headwords including resolved spelling variants. Its extraction has incomplete coverage. See [Japanese dictionary source and refresh instructions](licenses/jawiktionary/README.md); data remains under CC BY-SA 4.0 with Wiktionary contributor and Kaikki/Wiktextract attribution.
 
 The test suite also covers per-version announcement dismissal across browser restarts, failure/retry behavior, offline changelog access, and the GitHub suggestion link. It covers automatic annotations, unchanged source/layout, a 100,000-node webpage, a 100-page Docs fixture, cancellation, IME handling, settings, corrections, vocabulary/name disambiguation, local exploration and real-dictionary form round trips, keyboard and reduced-motion behavior, the reading panel, debounced refreshes, automatic bilingual word definitions on word activation, toolbar state and lifecycle, and expanded popup forms. Browser integration tests use a temporary profile and localhost server. The native toolbar-popup regression opens a temporary visible browser window to verify Chrome’s popup sizing and wheel scrolling. They default to Brave's standard macOS executable; set `CHROMIUM_PATH` to an extension-capable Chromium executable elsewhere. Chrome distributions that disable command-line extension loading cannot run these integration tests. Your normal browser profile and Google account are not used.
 

@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kō release notes</title><style>body{max-width:800px;margin:40px auto;padding:0 24px;font:17px/1.65 system-ui;color:#242b2d;background:#f4ecd8}h1,h2,h3{line-height:1.3}h2{margin-top:36px;padding-top:20px;border-top:1px solid #625d50}li+li{margin-top:10px}a{color:#234e64;overflow-wrap:anywhere}code{overflow-wrap:anywhere}a:focus-visible{outline:3px solid #234e64;outline-offset:3px}</style><nav aria-label="About navigation"><a href="about.html#release-heading">Back to About Kō</a></nav><main><h1>Release notes</h1>
-<h2>1.3.0 · Development build (WIP)</h2>
-<p>Meet <strong>Kōくん</strong>, an optional browser companion who roams, rests, and helps read Japanese words. Turn him on in the extension menu; he starts off.</p>
+<h2>1.3.0 · 22 October 2026</h2>
+<p>Meet <strong>Kōくん</strong>, your optional Japanese-reading companion. Enable him in the extension menu to try him.</p>
 <h3>Kōくん</h3>
 <ul>
 <li>A PS1-inspired transparent character: chunky cream polygons, vermilion markings, pixel textures, four limbs, and three tails. All 24 routines use the new artwork across 56 composable clips, with shared connection poses and short activity loops.</li>
@@ -10,19 +10,27 @@
 <li>Hover over a Japanese word for 600 ms, or choose Highlight in settings. The bubble closes automatically when the pointer leaves a hovered word. It follows Kōくん while his animation and movement continue.</li>
 <li>Immediately starts his open-scroll reading animation when a word reading appears, taking priority over idle, sleep, travel, and activities. The animation keeps running with the bubble open and finishes its normal exit after one cycle.</li>
 <li>Dialogue adapts to word length, wraps within the viewport, and uses a muted, dithered JRPG frame with a bundled Japanese pixel font. No runtime font service is used.</li>
-<li>Definitions start off. English meanings now use the complete bundled JMdict dictionary; missing English meanings and Japanese definitions use Wiktionary online. Readings remain available if definitions fail.</li>
+<li>Definitions start off. English meanings use complete bundled JMdict and Japanese definitions use a bundled Japanese Wiktionary snapshot. Missing meanings use Wiktionary online. Readings remain available if definitions fail.</li>
 <li>Supports ordinary webpage text, exposed Google Docs text geometry, and words in Kō’s reading view. Use Reading view when Docs cannot expose a reliable editor target. Embedded-frame lookup, arbitrary canvas/image text, browser-protected pages, and browser PDF viewers are excluded.</li>
 <li>His switch works independently of automatic page furigana. Pause on this site hides him. Hidden tabs pause animations; reduced motion shows a still character. Printing and fullscreen hide him.</li>
 <li>About easter egg: activate the version number five times to open a small offline animation gallery. Thirty tiles automatically play all 24 routines and six transitions, including every one of the 56 clips. There are no controls; system reduced motion shows still previews.</li>
 </ul>
 <h3>Local-first word definitions</h3>
 <ul>
-<li>The complete English JMdict dictionary works offline in word details and Kōくん. Japanese definitions and missing English meanings automatically fall back to Wiktionary. Local English appears immediately while Japanese loads.</li>
+<li>English JMdict and Japanese Wiktionary definitions work offline in word details and Kōくん. The Japanese snapshot covers 124,195 headwords, including 11,252 resolved spelling references. Missing entries automatically fall back to the corresponding Wiktionary edition. Each language appears independently.</li>
 <li>Follow recognized spelling-reference entries, including 飲む → のむ. Unsupported page layouts offer retry instead of reporting a missing word. Retry only reloads failed languages.</li>
-<li>Each result identifies its source. JMdict data remains under CC BY-SA 4.0 with EDRDG attribution and bundled documentation. No accounts or API keys are required.</li>
+<li>Each result identifies its source and whether it was looked up locally. JMdict and Japanese Wiktionary data remain under CC BY-SA 4.0 with separate attribution, source metadata, and bundled notices. No accounts or API keys are required.</li>
 </ul>
-<h3>Development and updating</h3>
-<p>This is work in progress on the repository's primary branch, <strong>master</strong>, not a published 1.3 release. The manifest displays <strong>1.3.0 WIP</strong> while retaining numeric version <strong>1.3.0</strong>. No 1.3 tag, GitHub release, store submission, or launch date is set. Load the rebuilt <strong>dist</strong> folder or a locally generated development ZIP, then reload the extension and existing tabs. Existing settings and corrections remain; Kōくん stays off until enabled.</p>
+<h3>Reading reliability and invitation</h3>
+<ul>
+<li>Dictionary-backed kanji noun compounds remain complete in readings and reading-panel word buttons.</li>
+<li>Kōくん Highlight lookup follows supported Google Docs painted selection geometry, including selection changes without native browser selection events. Ambiguous and multi-line selections are declined.</li>
+<li>Content scripts safely skip direct SVG/XML documents.</li>
+<li>A compact popup invitation opens Kōくん settings and focuses his switch. He remains off until you enable him. Close the announcement once to keep it dismissed for this version on this device.</li>
+</ul>
+<h3>Downloads and updating</h3>
+<p>Download the manual-install ZIP, store-layout ZIP, and SHA256SUMS from the <a href="https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.3.0" target="_blank" rel="noopener noreferrer">1.3.0 release</a>. The manual ZIP contains <strong>dist/</strong>; the store ZIP has <strong>manifest.json</strong> at its root. Reload the existing extension and open tabs to retain settings and corrections. Kōくん stays off until enabled. Chrome Web Store submission and publication are managed separately.</p>
+<p>See the <a href="https://github.com/gonzalocibeira/ko-japanese-reading-companion/blob/master/docs/release-1.3-audit.md" target="_blank" rel="noopener noreferrer">1.3 release audit</a> for validation, dictionary attribution, package parity, and compatibility limits.</p>
 <h2>1.2.0 · 28 October 2026</h2>
 <p>Explore adjective forms offline, discover 30 more mimetic expressions, and see how Japanese word forms are built.</p>
 <p>Full release <strong>1.2.0</strong>, published on GitHub on <strong>18 October 2026</strong> with tag <strong>v1.2.0</strong> and an announced launch date of <strong>28 October 2026</strong>. Chrome Web Store availability depends on review and publication. Kō-kun character animations are excluded from the 1.2 release assets; the RC1 mimetic animations remain included.</p>

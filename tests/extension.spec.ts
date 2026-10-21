@@ -478,17 +478,17 @@ test('Docs word activation automatically shows bilingual definitions, uses lemma
     const url=new URL(route.request().url()),word=url.searchParams.get('page')!,ja=url.hostname.startsWith('ja.');
     lookups.push(`${ja?'ja':'en'}:${word}`);
     if(word==='未知') {await route.fulfill({json:{error:{code:'missingtitle'}}});return;}
-    if(word==='図書館' && ja && libraryFails) {await route.abort();return;}
-    if(word==='食べる')await new Promise(resolve=>setTimeout(resolve,1500));
+    if(word==='学校生活' && ja && libraryFails) {await route.abort();return;}
+    if(word==='学生生活')await new Promise(resolve=>setTimeout(resolve,1500));
     const language=ja?'日本語':'Japanese',pos=ja?'名詞':'Noun';
     // Include other languages, nested examples, references, and untrusted markup.
     const html=`<h2>Chinese</h2><h3>Noun</h3><ol><li>Wrong language</li></ol><div class="mw-heading mw-heading2"><h2 id="${language}">${language}</h2></div><div class="mw-heading mw-heading3"><h3>${pos}<span class="mw-editsection">[edit]</span></h3></div><ol><li>${ja?'学ぶための施設。':'A place for learning &amp; study.'}<a href="javascript:alert(1)"> safe text</a><img src="https://untrusted.example/tracker" onerror="alert(1)"><script>alert(1)</script><dl><dd>Hidden example</dd></dl><ul><li>Hidden quotation</li></ul></li></ol><h4>References</h4><ol><li>Wrong reference</li></ol><h2>Korean</h2><h3>Noun</h3><ol><li>Wrong language</li></ol>`;
     await route.fulfill({json:{parse:{title:word,text:html}}});
   });
-  await settings({docsReadingView:{enabled:true,spacing:2.8}});
+  await settings({docsReadingView:{enabled:true,spacing:2.8},readingOverrides:{'学生生活':'がくせいせいかつ','学校生活':'がっこうせいかつ'}});
   const page=await context.newPage();
   try {
-    await page.route('https://docs.google.com/document/d/definitions/edit',route=>route.fulfill({contentType:'text/html',body:`<!doctype html><meta charset="utf-8"><style>body{margin:0}.kix-appview-editor{position:absolute;top:100px;width:900px;height:600px}</style><div class="kix-appview-editor"><svg width="900" height="600"><g data-font-css="24px system-ui" fill="none"><rect x="40" y="60" width="540" height="28" aria-label="学校で食べました。図書館。未知。"/><rect x="40" y="120" width="540" height="28" aria-label="ありがとう。"/></g></svg></div>`}));
+    await page.route('https://docs.google.com/document/d/definitions/edit',route=>route.fulfill({contentType:'text/html',body:`<!doctype html><meta charset="utf-8"><style>body{margin:0}.kix-appview-editor{position:absolute;top:100px;width:900px;height:600px}</style><div class="kix-appview-editor"><svg width="900" height="600"><g data-font-css="24px system-ui" fill="none"><rect x="40" y="60" width="540" height="28" aria-label="学校で食べました。図書館。未知。"/><rect x="40" y="120" width="540" height="28" aria-label="ありがとう。学生生活。学校生活。"/></g></svg></div>`}));
     await page.goto('https://docs.google.com/document/d/definitions/edit');
     await expect.poll(()=>readerEval(page,`function(){return this.querySelectorAll('.word').length}`),{timeout:30000}).toBeGreaterThan(0);
     const before=await page.locator('.kix-appview-editor').innerHTML();
@@ -501,19 +501,19 @@ test('Docs word activation automatically shows bilingual definitions, uses lemma
     const snapshot=`function(){return {hidden:this.querySelector('.definition').hidden,text:this.querySelector('.definition').textContent,busy:this.querySelector('.definition-body')?.getAttribute('aria-busy'),selected:this.querySelector('.word[aria-pressed="true"]')?.dataset.surface,links:Array.from(this.querySelectorAll('.definition a'),a=>a.href),unsafe:this.querySelectorAll('.definition script,.definition img,.definition iframe').length}}`;
     await expect.poll(async()=> (await readerEval(page,snapshot))?.busy).toBe('false');
     const result=await readerEval(page,snapshot);
-    expect(result.text).toContain('school');expect(result.text).toContain('学ぶための施設。 safe text');expect(result.text).toContain('English');expect(result.text).toContain('日本語');
+    expect(result.text).toContain('school');expect(result.text).toContain('教育が体系的');expect(result.text).toContain('English');expect(result.text).toContain('日本語');
     expect(result.text).not.toMatch(/Wrong|Hidden|alert/);expect(result.unsafe).toBe(0);expect(result.busy).toBe('false');expect(result.selected).toBe('学校');
     expect(result.links).toEqual(['https://www.edrdg.org/jmdict/j_jmdict.html',`https://ja.wiktionary.org/wiki/${encodeURIComponent('学校')}#${encodeURIComponent('日本語')}`]);
-    expect(lookups.sort()).toEqual(['ja:学校']);
+    expect(lookups).toEqual([]);
     expect(await readerEval(page,`function(){return !!this.querySelector('.online-lookup,.definition-retry') || this.querySelector('.definition').textContent.includes('Look up definitions online')}`)).toBe(false);
     await page.screenshot({path:test.info().outputPath('docs-word-definitions.png')});
     await page.keyboard.press('Escape');expect((await readerEval(page,snapshot)).hidden).toBe(true);
     expect(await readerEval(page,`function(){return this.activeElement?.dataset.surface}`)).toBe('学校');
     const click=async(surface:string)=>readerEval(page,`function(){this.querySelector('[data-surface="${surface}"]').click()}`);
-    await click('学校');await expect.poll(async()=>(await readerEval(page,snapshot)).text).toContain('school');expect(lookups).toHaveLength(1);
-    await click('食べ');await expect.poll(()=>lookups.includes('ja:食べる')).toBe(true);
+    await click('学校');await expect.poll(async()=>(await readerEval(page,snapshot)).text).toContain('school');expect(lookups).toHaveLength(0);
+    await click('学生生活');await expect.poll(()=>lookups.includes('ja:学生生活')).toBe(true);
     expect((await readerEval(page,snapshot)).busy).toBe('true');
-    await expect.poll(async()=>(await readerEval(page,snapshot)).text).toContain('to eat');
+    await expect.poll(async()=>(await readerEval(page,snapshot)).text).toContain('student (college) life');
     expect((await readerEval(page,snapshot)).busy).toBe('true');
     expect((await readerEval(page,snapshot)).text).toContain('日本語の定義を検索中');
     expect(lookups.some(term=>term.startsWith('en:'))).toBe(false);
@@ -523,13 +523,13 @@ test('Docs word activation automatically shows bilingual definitions, uses lemma
     await page.keyboard.press('Space');
     await expect.poll(async()=> (await readerEval(page,snapshot))?.busy).toBe('false');
     expect((await readerEval(page,snapshot)).selected).toBe('ありがとう');
-    expect(lookups.filter(word=>word.endsWith(':ありがとう')).sort()).toEqual(['ja:ありがとう']);
+    expect(lookups.filter(word=>word.endsWith(':ありがとう')).sort()).toEqual([]);
     await click('未知');await expect.poll(async()=> (await readerEval(page,snapshot))?.busy).toBe('false');
     expect((await readerEval(page,snapshot)).text).toContain('unknown');
-    expect((await readerEval(page,snapshot)).text).toContain('日本語の定義が見つかりません');
+    expect((await readerEval(page,snapshot)).text).toContain('未だ知らない');
     expect(await readerEval(page,`function(){return !!this.querySelector('.definition-retry')}`)).toBe(false);
-    await click('図書館');await expect.poll(async()=> (await readerEval(page,snapshot))?.text).toContain('接続を確認');
-    expect((await readerEval(page,snapshot)).text).toContain('library');
+    await click('学校生活');await expect.poll(async()=> (await readerEval(page,snapshot))?.text).toContain('接続を確認');
+    expect((await readerEval(page,snapshot)).text).toContain('school life');
     const requestsBeforeRetry=lookups.length;
     libraryFails=false;
     await readerEval(page,`function(){this.querySelector('.definition-retry').click()}`);
@@ -537,7 +537,7 @@ test('Docs word activation automatically shows bilingual definitions, uses lemma
     await expect.poll(async()=> (await readerEval(page,snapshot))?.busy).toBe('false');
     expect((await readerEval(page,snapshot)).text).toContain('学ぶための施設。');
     expect(await readerEval(page,`function(){return !!this.querySelector('.online-lookup,.definition-retry')}`)).toBe(false);
-    await click('学校');await click('図書館');expect(lookups).toHaveLength(requestsBeforeRetry+1);
+    await click('学校');await click('学校生活');expect(lookups).toHaveLength(requestsBeforeRetry+1);
     expect(await page.locator('.kix-appview-editor').innerHTML()).toBe(before);
     await click('食べ');
     await page.locator('rect').first().evaluate(el=>el.setAttribute('aria-label','先生です。'));
@@ -547,7 +547,7 @@ test('Docs word activation automatically shows bilingual definitions, uses lemma
     await expect(page.locator('ko-reading-view')).toHaveCount(0);
   } finally {
     await context.unroute('https://*.wiktionary.org/w/api.php*');
-    await settings({docsReadingView:{enabled:false,spacing:2.8}});await page.close();
+    await settings({docsReadingView:{enabled:false,spacing:2.8},readingOverrides:{}});await page.close();
   }
 });
 
@@ -643,10 +643,10 @@ test('web panel definitions and offline corrections update effective readings an
   await expect.poll(async()=> (await readerEval(page,readerSnapshot))?.readings,{timeout:30000}).toContain('にほんご');
   const open=`function(){this.querySelector('[data-surface="日本語"]').click();Array.from(this.querySelectorAll('.definition button')).find(b=>b.textContent==='Correct reading').click();return Array.from(this.querySelectorAll('.correction-form input'),i=>i.value)}`;
   expect(await readerEval(page,open)).toEqual(['日本語','にほんご']);
-  await expect.poll(()=>requested.length).toBe(1);
+  await expect.poll(()=>requested.length).toBe(0);
   await expect.poll(()=>readerEval(page,`function(){return this.querySelector('.definition-body')?.getAttribute('aria-busy')}`)).toBe('false');
-  expect(await readerEval(page,`function(){return this.querySelector('.definition-body').textContent}`)).toContain('接続を確認');
-  expect(requested.every(url=>new URL(url).hostname==='ja.wiktionary.org')).toBe(true);
+  expect(await readerEval(page,`function(){return this.querySelector('.definition-body').textContent}`)).toContain('オフライン');
+  expect(requested).toEqual([]);
   await readerEval(page,`function(){const inputs=this.querySelectorAll('.correction-form input');inputs[1].value='abc';this.querySelector('.correction-form').requestSubmit();}`);
   await expect.poll(()=>readerEval(page,`function(){return this.querySelector('.correction-form .feedback').textContent}`)).toContain('hiragana or katakana');
   await readerEval(page,`function(){const inputs=this.querySelectorAll('.correction-form input');inputs[1].value='ニッポンゴ';inputs[1].dispatchEvent(new Event('input',{bubbles:true,composed:true}));this.querySelector('.correction-form').requestSubmit();}`);

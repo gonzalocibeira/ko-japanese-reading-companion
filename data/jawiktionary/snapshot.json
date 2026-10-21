@@ -1,0 +1,14 @@
+{
+  "source": "https://kaikki.org/dictionary/downloads/ja/ja-extract.jsonl.gz",
+  "retrieved": "2026-10-22",
+  "lastModified": "Sat, 03 Oct 2026 08:24:52 GMT",
+  "rawSha256": "92b85a0c09e2013e9bad4258de9e0226d23e0a20011cb66c3ba7fed33d39ee90",
+  "rawBytes": 64974760,
+  "dump": "2026-10-01",
+  "sha256": "5ca3f3c93ec9c089f407723d2f6ae0c4db0bbbd3eedc3005861ad480437658dd",
+  "filter": {
+    "lang_code": "ja"
+  },
+  "sourceEntries": 150505,
+  "bytes": 19578391
+}

@@ -11,6 +11,29 @@ test.beforeAll(async()=>{
 });
 test.afterAll(async()=>{await browser?.close();});
 
+for(const [contentType,body] of [
+  ['image/svg+xml','<svg xmlns="http://www.w3.org/2000/svg"><text>日本語</text></svg>'],
+  ['application/xml','<page>日本語</page>'],
+  ['application/xhtml+xml','<html xmlns="http://www.w3.org/1999/xhtml"><body>日本語</body></html>'],
+  ['text/plain','日本語']
+]) {
+  test(`content script skips ${contentType} without initializing`,async()=>{
+    const page=await browser.newPage();
+    const errors:string[]=[];
+    page.on('pageerror',error=>errors.push(error.message));
+    try {
+      await page.route('https://example.com/document',route=>route.fulfill({contentType,body}));
+      await page.goto('https://example.com/document');
+      expect(await page.evaluate(()=>document.contentType)).toBe(contentType);
+      // SVG/XML documents have no HTML head/body for addScriptTag. Evaluate the
+      // actual bundle directly; no chrome mock should be needed when skipped.
+      await page.evaluate(source=>(0,eval)(source),source);
+      await expect(page.locator('ko-overlay,ko-reading-view,ko-mascot')).toHaveCount(0);
+      expect(errors).toEqual([]);
+    } finally {await page.close();}
+  });
+}
+
 for(const failure of ['sync-toolbar','async-toolbar','sync-tokenize','async-tokenize','sync-cancel','missing-id','transient-toolbar'] as const) {
   test(`content script handles ${failure} without uncaught errors or stale retries`,async()=>{
     const page=await browser.newPage();

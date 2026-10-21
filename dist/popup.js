@@ -143,6 +143,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     if (!banner) return;
     const version = chrome.runtime.getManifest().version;
     const key = `dismissedUpdate:${version}`;
+    banner.querySelector("#try-mascot")?.addEventListener("click", () => {
+      const settings = document.querySelector("#mascot-panel");
+      if (settings) settings.open = true;
+      document.querySelector("#mascot-enabled")?.focus();
+    });
     const close = banner.querySelector("#dismiss-update");
     const error = banner.querySelector("#update-error");
     const sync = (changes, area) => {

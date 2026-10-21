@@ -1,0 +1,25 @@
+{
+  "entries": 120219,
+  "language": "ja",
+  "license": "CC BY-SA 4.0",
+  "resolvedSpellings": 11252,
+  "schema": 1,
+  "shards": 256,
+  "snapshot": {
+    "bytes": 19578391,
+    "dump": "2026-10-01",
+    "filter": {
+      "lang_code": "ja"
+    },
+    "lastModified": "Sat, 03 Oct 2026 08:24:52 GMT",
+    "rawBytes": 64974760,
+    "rawSha256": "92b85a0c09e2013e9bad4258de9e0226d23e0a20011cb66c3ba7fed33d39ee90",
+    "retrieved": "2026-10-22",
+    "sha256": "5ca3f3c93ec9c089f407723d2f6ae0c4db0bbbd3eedc3005861ad480437658dd",
+    "source": "https://kaikki.org/dictionary/downloads/ja/ja-extract.jsonl.gz",
+    "sourceEntries": 150505
+  },
+  "sourceRows": 150505,
+  "unresolvedWords": 1535,
+  "words": 124195
+}

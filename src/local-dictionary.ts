@@ -9,33 +9,34 @@ export function dictionaryBucket(term:string) {
   for(const char of term)hash=Math.imul(hash ^ char.codePointAt(0)!,16777619)>>>0;
   return (hash & 255).toString(16).padStart(2,'0');
 }
-const shards=new Map<string,{value:Shard;bytes:number}>();
-const loading=new Map<string,Promise<Shard>>();
+const shards=new Map<string,{value:unknown;bytes:number}>();
+const loading=new Map<string,Promise<unknown>>();
 let retainedBytes=0;
-async function load(bucket:string):Promise<Shard> {
-  const cached=shards.get(bucket);
-  if(cached) {shards.delete(bucket);shards.set(bucket,cached);return cached.value;}
-  let job=loading.get(bucket);
+export async function loadDictionaryShard<T>(dictionary:'jmdict'|'jawiktionary',bucket:string):Promise<T> {
+  const key=`${dictionary}/${bucket}`;
+  const cached=shards.get(key);
+  if(cached) {shards.delete(key);shards.set(key,cached);return cached.value as T;}
+  let job=loading.get(key);
   if(!job) {
     job=(async()=>{
-      const response=await fetch(chrome.runtime.getURL(`dictionaries/jmdict/${bucket}.json.gz`));
+      const response=await fetch(chrome.runtime.getURL(`dictionaries/${dictionary}/${bucket}.json.gz`));
       if(!response.ok || !response.body)throw new Error('Local dictionary unavailable');
-      const text=await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).text(),value:Shard=JSON.parse(text);
+      const text=await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).text(),value=JSON.parse(text);
       if(!value.terms || !value.entries)throw new Error('Invalid dictionary shard');
       // UTF-16 source size is a conservative cache weight, not a heap measurement.
       const bytes=text.length*2;
-      shards.set(bucket,{value,bytes});retainedBytes+=bytes;
+      shards.set(key,{value,bytes});retainedBytes+=bytes;
       while(shards.size>16 || retainedBytes>8*1024*1024) {
         const key=shards.keys().next().value!;retainedBytes-=shards.get(key)!.bytes;shards.delete(key);
       }
       return value;
-    })().finally(()=>loading.delete(bucket));
-    loading.set(bucket,job);
+    })().finally(()=>loading.delete(key));
+    loading.set(key,job);
   }
-  return job;
+  return job as Promise<T>;
 }
 export async function localDefinition(raw:string):Promise<DictionaryPage|undefined> {
-  const word=raw.normalize('NFC'),shard=await load(dictionaryBucket(word));
+  const word=raw.normalize('NFC'),shard=await loadDictionaryShard<Shard>('jmdict',dictionaryBucket(word));
   const entries=(shard.terms[word] ?? []).map(id=>shard.entries[id]).filter((entry):entry is Entry=>!!entry);
   // Keep exact headwords before reading-only matches, then prefer common entries.
   const rank=(entry:Entry)=>[entry.spellings.some(k=>k.text===word)?0:1,

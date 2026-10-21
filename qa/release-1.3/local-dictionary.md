@@ -81,5 +81,4 @@ messaging and the companion's hover delay; they are not browser UI benchmarks.
 | Chrome Web Store (manifest at root) | 91,890,041 | 87.63 |
 
 Hashes are recorded in `SHA256SUMS` and `qa/release-1.3/packages.json`.
-This remains a 1.3.0 WIP build. Source synchronization does not publish a release
-or submit the extension to the store.
+These measurements describe the earlier English-dictionary integration stage. Stable 1.3.0 package sizes and checksums are recorded in `packages.json`; see the [final release audit](../../docs/release-1.3-audit.md).

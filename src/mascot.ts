@@ -129,6 +129,7 @@ ${mascotBubbleStyles}
   readerLeave() {this.lookup?.leave();}
   invalidateLookup() {this.lookup?.close();}
   readerSelection(target:MascotTextTarget) {this.lookup?.selection(target);}
+  selectionChanged(target:()=>MascotTextTarget|undefined) {this.lookup?.selectionChanged(target);}
   private showWord(word:MascotWord) {
     this.bubble.show(word,this.settings.definitions);this.positionBubble();
     this.startReading();this.syncPlayback();

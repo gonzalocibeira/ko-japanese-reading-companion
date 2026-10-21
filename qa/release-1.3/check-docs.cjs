@@ -24,7 +24,7 @@ const {tmpdir}=require('node:os');
      await page.getByRole('switch',{name:'Show legacy animations',exact:true}).waitFor({state:'visible'});
      if(!await page.locator('#current-release-notes').evaluate(el=>el.open))throw new Error('Current changelog must open by default');
      if(!await page.locator('#current-release-notes').textContent().then(s=>s.includes('Kōくん')))throw new Error('Current release notes missing');
-     if(!await page.locator('.release-version').textContent().then(s=>s.includes('Development build')))throw new Error('Wrong development release label');
+     if(!await page.locator('.release-version').textContent().then(s=>s.includes('22 October 2026')))throw new Error('Wrong stable release label');
      if(!await page.locator('#version').textContent().then(s=>s.includes('1.3.0')))throw new Error('Wrong version');
      const href=await page.getByRole('link',{name:'Suggest a feature or improvement'}).getAttribute('href');
      if(!href.startsWith('https://github.com/gonzalocibeira/ko-japanese-reading-companion/issues/new?'))throw new Error('Wrong suggestion URL');

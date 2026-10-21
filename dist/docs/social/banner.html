@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Kō repository social preview</title>
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1280px; height: 640px; overflow: hidden; }
+body { font-family: Arial, Helvetica, sans-serif; color: #102f3d; background: #f4ecd8 url('background.jpg') center / cover; }
+main { position: relative; width: 1280px; height: 640px; }
+.copy { position: absolute; left: 52px; top: 105px; width: 395px; }
+.brand { display: flex; align-items: center; gap: 19px; margin-bottom: 34px; }
+.brand img { width: 103px; height: 103px; }
+.wordmark { font-size: 110px; font-weight: 800; line-height: 1; letter-spacing: -7px; }
+h1 { font-size: 43px; line-height: 1.08; letter-spacing: -1.5px; margin: 0 0 22px; }
+p { font-size: 25px; line-height: 1.35; margin: 0; max-width: 350px; }
+.rule { width: 54px; height: 4px; background: #9f3e2d; margin: 25px 0; }
+.mascot { position: absolute; left: 570px; top: 16px; width: 640px; height: 580px; margin: 0; }
+.mascot img { width: 580px; height: 580px; image-rendering: pixelated; filter: drop-shadow(0 14px 10px #102f3d24); }
+</style>
+<main aria-label="Kō — Japanese reading companion. Furigana for webpages and Google Docs.">
+  <section class="copy">
+    <div class="brand"><img src="../../public/icons/logo.svg" alt="考 seal"><span class="wordmark">Kō</span></div>
+    <h1>Japanese reading<br>companion.</h1>
+    <div class="rule"></div>
+    <p>Furigana for webpages<br>&amp; Google Docs.</p>
+  </section>
+  <figure class="mascot">
+    <img src="../../public/art/ko-kun/static-fallback.png" alt="Kōくん, the cream and vermilion three-tailed fox, in his original PS1-style artwork">
+  </figure>
+</main>
+</html>

@@ -1,14 +1,14 @@
 [
   {
     "name": "ko-japanese-reading-companion-1.3.0.zip",
-    "bytes": 91894811,
-    "files": 467,
-    "sha256": "55d2e9756af3ef371d611bb99e9ac04ce9893fb58ff256bb41f7773ebb6e3ae7"
+    "bytes": 102625021,
+    "files": 728,
+    "sha256": "ca8d0e87a6389217a8084908d5a47a19f42063a92e1d1aec01bc9303a2338a6e"
   },
   {
     "name": "ko-japanese-reading-companion-1.3.0-chrome-web-store.zip",
-    "bytes": 91890041,
-    "files": 467,
-    "sha256": "cb94a40a16605fd62661c6aa7acb4b6b38777fd25259558c5536806ad712acc8"
+    "bytes": 102617621,
+    "files": 728,
+    "sha256": "ceb32122cb7f36ecf1244cc1d64490adbe7903bfe97ece58f06ed0cd68fe0ce2"
   }
 ]

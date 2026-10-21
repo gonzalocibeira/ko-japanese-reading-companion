@@ -18,7 +18,7 @@ for name in re.findall(r"'([^']+)'", allowlist):
 assert sum(name.startswith('art/mimetics/') and name.endswith('.webp') for name in expected) == 90
 assert {'animations.html', 'animations.js'} <= expected.keys(), 'Animation gallery missing from packages'
 assert b'animations.js' in expected['animations.html']
-assert json.loads(expected['manifest.json'])['version_name'] == '1.3.0 WIP'
+assert json.loads(expected['manifest.json'])['version_name'] == '1.3.0'
 mascot = json.loads(expected['art/ko-kun/manifest.json'])
 assert len(mascot['clips']) == 56 and len(mascot['routines']) == 24
 assert sum(name.startswith('art/ko-kun/') and name.endswith('.webp') for name in expected) == 56
@@ -46,6 +46,16 @@ assert hashlib.sha256((root / 'data/jmdict/JMdict_e.gz').read_bytes()).hexdigest
 assert 'licenses/jmdict/JMdict_e.gz' not in expected, 'Source archive must not ship twice'
 for notice in ['README.md', 'snapshot.json', 'CC-BY-SA-4.0.txt', 'edrdg-licence.html', 'jmdict-documentation.html']:
     assert expected['licenses/jmdict/' + notice] == (root / 'data/jmdict' / notice).read_bytes()
+japanese = json.loads(expected['dictionaries/jawiktionary/manifest.json'])
+assert japanese['schema'] == 1 and japanese['shards'] == 256 and japanese['language'] == 'ja'
+assert japanese['words'] >= 100_000 and japanese['resolvedSpellings'] >= 10_000
+assert sum(path.startswith('dictionaries/jawiktionary/') and path.endswith('.json.gz') for path in expected) == 256
+jp_snapshot = json.loads((root / 'data/jawiktionary/snapshot.json').read_text())
+assert japanese['snapshot'] == jp_snapshot
+assert hashlib.sha256((root / 'data/jawiktionary/source.jsonl.gz').read_bytes()).hexdigest() == jp_snapshot['sha256']
+assert 'licenses/jawiktionary/source.jsonl.gz' not in expected
+for notice in ['README.md', 'snapshot.json', 'CC-BY-SA-4.0.txt']:
+    assert expected['licenses/jawiktionary/' + notice] == (root / 'data/jawiktionary' / notice).read_bytes()
 checksums = dict(line.split()[::-1] for line in (root / 'SHA256SUMS').read_text().splitlines())
 report = []
 for suffix, prefix in [('', 'dist/'), ('-chrome-web-store', '')]:

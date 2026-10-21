@@ -1,6 +1,6 @@
 # Kō 1.2.0 release audit
 
-Announced launch date: **28 October 2026**. Prepared on **18 October 2026** from RC1 and published on GitHub that day under **v1.2.0**. The 1.2 release assets retain manifest and npm versions **1.2.0**. The primary branch now contains **1.3 WIP**; this audit and its hashes describe the historical 1.2 artifacts. Chrome Web Store upload and review are tracked separately below.
+Announced launch date: **28 October 2026**. Prepared on **18 October 2026** from RC1 and published on GitHub that day under **v1.2.0**. The 1.2 release assets retain manifest and npm versions **1.2.0**. The primary branch now contains **1.3.0**; this audit and its hashes describe the historical 1.2 artifacts. Chrome Web Store upload and review are tracked separately below.
 
 ## Scope
 
@@ -26,7 +26,7 @@ Final archive sizes and SHA-256 digests:
 
 ## Publication status
 
-- GitHub: published as the stable **v1.2.0** release on **18 October 2026**, verified again on 19 October. This source-only 1.3 WIP update does not change that tag or its assets.
+- GitHub: published as the stable **v1.2.0** release on **18 October 2026**, verified again on 19 October. The 1.3.0 release does not change the 1.2 tag or its assets.
 - Chrome Web Store: **1.2.0 uploaded and submitted for review on 18 October 2026**, revision `00003`. The dashboard confirms **Pending review**, with published version **1.1.0**. Automatic publication after review was explicitly unchecked. The listing was updated for adjective forms, 90 mimetics, and current license terms. No launch date has been scheduled in the console; its pending-review state exposes no date picker.
 - Both ZIPs must match the same built runtime byte-for-byte; the store layout has `manifest.json` at its root, and the manual layout has a `dist/` prefix. No Kō-kun files, source maps, development docs, tests, or QA files may appear.
 

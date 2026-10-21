@@ -130,36 +130,37 @@
     for (const char of term) hash = Math.imul(hash ^ char.codePointAt(0), 16777619) >>> 0;
     return (hash & 255).toString(16).padStart(2, "0");
   }
-  async function load(bucket) {
-    const cached = shards.get(bucket);
+  async function loadDictionaryShard(dictionary, bucket) {
+    const key = `${dictionary}/${bucket}`;
+    const cached = shards.get(key);
     if (cached) {
-      shards.delete(bucket);
-      shards.set(bucket, cached);
+      shards.delete(key);
+      shards.set(key, cached);
       return cached.value;
     }
-    let job = loading.get(bucket);
+    let job = loading.get(key);
     if (!job) {
       job = (async () => {
-        const response = await fetch(chrome.runtime.getURL(`dictionaries/jmdict/${bucket}.json.gz`));
+        const response = await fetch(chrome.runtime.getURL(`dictionaries/${dictionary}/${bucket}.json.gz`));
         if (!response.ok || !response.body) throw new Error("Local dictionary unavailable");
         const text = await new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).text(), value = JSON.parse(text);
         if (!value.terms || !value.entries) throw new Error("Invalid dictionary shard");
         const bytes = text.length * 2;
-        shards.set(bucket, { value, bytes });
+        shards.set(key, { value, bytes });
         retainedBytes += bytes;
         while (shards.size > 16 || retainedBytes > 8 * 1024 * 1024) {
-          const key = shards.keys().next().value;
-          retainedBytes -= shards.get(key).bytes;
-          shards.delete(key);
+          const key2 = shards.keys().next().value;
+          retainedBytes -= shards.get(key2).bytes;
+          shards.delete(key2);
         }
         return value;
-      })().finally(() => loading.delete(bucket));
-      loading.set(bucket, job);
+      })().finally(() => loading.delete(key));
+      loading.set(key, job);
     }
     return job;
   }
   async function localDefinition(raw) {
-    const word = raw.normalize("NFC"), shard = await load(dictionaryBucket(word));
+    const word = raw.normalize("NFC"), shard = await loadDictionaryShard("jmdict", dictionaryBucket(word));
     const entries = (shard.terms[word] ?? []).map((id) => shard.entries[id]).filter((entry) => !!entry);
     const rank = (entry) => [
       entry.spellings.some((k) => k.text === word) ? 0 : 1,
@@ -200,6 +201,34 @@
       shards = /* @__PURE__ */ new Map();
       loading = /* @__PURE__ */ new Map();
       retainedBytes = 0;
+    }
+  });
+
+  // src/local-japanese-dictionary.ts
+  async function localJapaneseDefinition(raw) {
+    const word = raw.normalize("NFC"), shard = await loadDictionaryShard("jawiktionary", dictionaryBucket(word));
+    const definitions = [], entryIds = [];
+    let title;
+    for (const id of shard.terms[word] ?? []) {
+      const entry = shard.entries[id];
+      if (!entry) continue;
+      for (const sense of entry.senses) {
+        const text = sense.text.slice(0, 600);
+        if (text && !definitions.includes(text)) {
+          definitions.push(text);
+          if (!entryIds.includes(id)) entryIds.push(id);
+          title ??= entry.title;
+        }
+        if (definitions.length === 4) break;
+      }
+      if (definitions.length === 4) break;
+    }
+    return definitions.length ? { status: "ok", definitions, title, source: "jawiktionary", entryIds } : void 0;
+  }
+  var init_local_japanese_dictionary = __esm({
+    "src/local-japanese-dictionary.ts"() {
+      "use strict";
+      init_local_dictionary();
     }
   });
 
@@ -299,11 +328,9 @@
     if (pending.size >= 8) return Promise.resolve(failure("busy"));
     const job = (async () => {
       let page;
-      if (language === "en") {
-        try {
-          page = await localDefinition(word);
-        } catch {
-        }
+      try {
+        page = await (language === "en" ? localDefinition(word) : localJapaneseDefinition(word));
+      } catch {
       }
       page ??= await onlineDefinition(language, word);
       if (page.status !== "error") {
@@ -320,6 +347,7 @@
     "src/dictionary.ts"() {
       "use strict";
       init_local_dictionary();
+      init_local_japanese_dictionary();
       init_offscreen_client();
       pending = /* @__PURE__ */ new Map();
       cache = /* @__PURE__ */ new Map();

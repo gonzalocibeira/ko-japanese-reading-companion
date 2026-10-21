@@ -41,7 +41,7 @@ const policyBody=policy.trim().split(/\n\n+/).map(block=>{
 }).join('\n');
 await writeFile('dist/privacy.html',`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kō Privacy Policy</title><style>body{max-width:760px;margin:40px auto;padding:0 24px;font:17px/1.65 system-ui;color:#242b2d;background:#f4ecd8}h1{line-height:1.2}h2{margin-top:32px}a{color:#294c66}</style><main>${policyBody}</main></html>`);
 await buildIcons('dist/icons');
-await writeFile('dist/README.md',(await readFile('README.md','utf8')).replaceAll('public/icons/logo.svg','icons/logo.svg').replaceAll('](public/art/fonts/','](art/fonts/').replaceAll('](data/jmdict/README.md)','](licenses/jmdict/README.md)').replaceAll('](dist/)','](.)').replaceAll('](dist/','](').replaceAll('**`dist` folder**','**extension folder**'));
+await writeFile('dist/README.md',(await readFile('README.md','utf8')).replaceAll('public/icons/logo.svg','icons/logo.svg').replaceAll('](public/art/fonts/','](art/fonts/').replaceAll('](data/jmdict/README.md)','](licenses/jmdict/README.md)').replaceAll('](data/jawiktionary/README.md)','](licenses/jawiktionary/README.md)').replaceAll('](dist/)','](.)').replaceAll('](dist/','](').replaceAll('**`dist` folder**','**extension folder**'));
 await cp('docs','dist/docs',{recursive:true});
 await writeFile(`dist/docs/github-release-${version}.md`,releaseNotes.github);
 await cp('LICENSE','dist/LICENSE');
@@ -55,5 +55,7 @@ await cp('node_modules/kamiya-codec/UNLICENSE','dist/licenses/kamiya-codec-UNLIC
 // Pinned local source: ordinary builds never fetch dictionaries or licence files.
 execFileSync('python3',['scripts/import-jmdict.py'],{stdio:'inherit'});
 await cp('data/jmdict','dist/licenses/jmdict',{recursive:true,filter:source=>!source.endsWith('JMdict_e.gz')});
+execFileSync('python3',['scripts/import-jawiktionary.py'],{stdio:'inherit'});
+await cp('data/jawiktionary','dist/licenses/jawiktionary',{recursive:true,filter:source=>!source.endsWith('source.jsonl.gz')});
 // The bridge and isolated initialization run at document_start, before Docs initializes.
 console.log('Built load-unpacked extension in dist/');

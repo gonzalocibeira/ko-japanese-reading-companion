@@ -106,7 +106,7 @@ test('verb controls explore the full chain locally, preserve source, reset, and 
   try {
     await page.goto(base);const before=await page.locator('main').innerHTML();
     await open(page,'読ん');
-    expect(requests.map(url=>new URL(url).searchParams.get('page'))).toEqual(['読む']);
+    expect(requests.map(url=>new URL(url).searchParams.get('page'))).toEqual([]);
     const wordRequests=requests.slice();
     expect(await reader(page,`function(){return this.querySelector('.explore-toggle').textContent}`)).toBe('Try word forms');
     await expect.poll(()=>reader(page,plainResult)).toBe('読んでいませんでした');
@@ -372,7 +372,7 @@ for(const [command,lemma,reading] of [['受け取れ','受け取る','うけと�
         const requestStart=requests.length;await page.goto(base+'/command');const before=await page.locator('main').innerHTML();await open(page,command);
         expect(await reader(page,`function(){return this.querySelector('.explore-toggle').textContent}`)).toBe('Try word forms');
         expect(await reader(page,`function(){return this.querySelector('.pronunciation').textContent}`)).toContain('辞書形: '+lemma);
-        expect(requests.slice(requestStart).map(url=>new URL(url).searchParams.get('page'))).toEqual([lemma]);
+        expect(requests.slice(requestStart).map(url=>new URL(url).searchParams.get('page'))).toEqual([]);
         expect(requests.slice(requestStart).every(url=>new URL(url).hostname==='ja.wiktionary.org')).toBe(true);
         expect(await reader(page,`function(){return this.querySelector('.definition-body').textContent}`)).toContain('JMdict');
         expect(await reader(page,`function(){const s=this.querySelector('.verb-family');return [s.value,s.selectedOptions[0].textContent]}`)).toEqual(['imperative','Direct command']);

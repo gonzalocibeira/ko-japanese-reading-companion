@@ -1,0 +1,4 @@
+Use case: text-localization. Edit only the supporting copy in this Kō promotional tile. Preserve the existing 11:7 canvas, exact PS1-style fox design, pose, three tails, four limbs, scenic composition, Kō wordmark, 考 seal, headline "Read Japanese.", pixel lettering style, palette, lighting, mountains, cliffs, blossoms, sun and sea. Do not redraw or redesign the scene. Replace the two small lines "Offline furigana" and "Webpages & Google Docs" with exactly these two lines:
+"Readings & definitions"
+"Word forms & more"
+Keep the new text aligned left in the same area, same muted dark sage pixel font, readable at 440x280 pixels. Adjust supporting type size only slightly if required to fit neatly. No old supporting wording remains. No extra text. Opaque solid background. This corrects the product scope: Kō offers readings, definitions and word-form tools, rather than furigana alone. Output one finished card, same proportions as input.

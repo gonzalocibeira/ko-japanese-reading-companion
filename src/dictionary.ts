@@ -1,6 +1,7 @@
 import type {DictionaryPage,DictionaryReply,DefinitionLanguage} from './definitions';
 import type {ParsedDefinition} from './wiktionary-parser';
 import {localDefinition} from './local-dictionary';
+import {localJapaneseDefinition} from './local-japanese-dictionary';
 import {ensureOffscreen} from './offscreen-client';
 const pending=new Map<string,Promise<DictionaryPage>>();
 const cache=new Map<string,{page:DictionaryPage;expires:number}>();
@@ -60,9 +61,8 @@ export function lookupDefinition(language:DefinitionLanguage,word:string):Promis
   if(pending.size>=8)return Promise.resolve(failure('busy'));
   const job=(async()=>{
     let page:DictionaryPage|undefined;
-    if(language==='en') {
-      try {page=await localDefinition(word);}catch { /* A broken local asset must not prevent online lookup. */ }
-    }
+    try {page=await (language==='en'?localDefinition(word):localJapaneseDefinition(word));}
+    catch { /* A broken local asset must not prevent online lookup. */ }
     page ??= await onlineDefinition(language,word);
     if(page.status!=='error') {
       cache.set(key,{page,expires:page.status==='missing'?Date.now()+5*60_000:Infinity});

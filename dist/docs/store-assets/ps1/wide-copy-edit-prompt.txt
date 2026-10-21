@@ -1,0 +1,4 @@
+Use case: text-localization. Edit only the supporting copy in this Kō wide promotional banner. Preserve the existing 5:2 canvas, exact PS1-style fox design, pose, three tails, four limbs, scenic composition, Kō wordmark, 考 seal, headline "Japanese reading companion", pixel lettering style, palette, lighting, mountains, cliffs, blossoms, sun and sea. Do not redraw or redesign the scene. Replace the smaller line "Furigana for webpages & Google Docs" with exactly two lines:
+"Readings, definitions & word forms"
+"Webpages & Google Docs"
+Place the second line slightly smaller underneath the first, keep both left aligned with the existing copy. Use the same muted dark sage pixel font, readable and balanced, without touching the mountain or other elements. No old subtitle remains. No other added copy. Opaque solid background. Output one finished panoramic banner, same proportions as input, composed for 1400x560 pixels.

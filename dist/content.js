@@ -159,6 +159,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       label: "JMdict \xB7 offline \u2197",
       notice: "JMdict \xB7 EDRDG \xB7 CC BY-SA 4.0 \xB7 Looked up on this device."
     };
+    if (page.source === "jawiktionary") return {
+      url: dictionaryURL("ja", page.title ?? word),
+      label: "\u30A6\u30A3\u30AF\u30B7\u30E7\u30CA\u30EA\u30FC \xB7 \u30AA\u30D5\u30E9\u30A4\u30F3 \u2197",
+      notice: "\u65E5\u672C\u8A9E\u7248\u30A6\u30A3\u30AF\u30B7\u30E7\u30CA\u30EA\u30FC \xB7 Kaikki/Wiktextract \xB7 CC BY-SA 4.0 \xB7 \u7AEF\u672B\u5185\u3067\u691C\u7D22\u3002"
+    };
     return {
       url: dictionaryURL(language, page.title ?? word),
       label: language === "en" ? "English Wiktionary \u2197" : "\u30A6\u30A3\u30AF\u30B7\u30E7\u30CA\u30EA\u30FC\u65E5\u672C\u8A9E\u7248 \u2197",
@@ -276,7 +281,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     }
   });
 
-  // ../../../Users/turco/Documents/ChatGPT/FOB/node_modules/kamiya-codec/dist/kamiya.min.mjs
+  // node_modules/kamiya-codec/dist/kamiya.min.mjs
   function N(r, e) {
     if (e < 0 || e > 4) throw new Error("vowel must be between 0 and 4");
     let n = k.get(r);
@@ -452,7 +457,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   }
   var f, A, k, T, V, j, C, P, K, W, U;
   var init_kamiya_min = __esm({
-    "../../../Users/turco/Documents/ChatGPT/FOB/node_modules/kamiya-codec/dist/kamiya.min.mjs"() {
+    "node_modules/kamiya-codec/dist/kamiya.min.mjs"() {
       f = (r) => r.split("");
       A = [f("\u3042\u3044\u3046\u3048\u304A"), f("\u304B\u304D\u304F\u3051\u3053"), f("\u304C\u304E\u3050\u3052\u3054"), f("\u3055\u3057\u3059\u305B\u305D"), f("\u3056\u3058\u305A\u305C\u305E"), f("\u305F\u3061\u3064\u3066\u3068"), f("\u3060\u3062\u3065\u3067\u3069"), f("\u306A\u306B\u306C\u306D\u306E"), f("\u306F\u3072\u3075\u3078\u307B"), f("\u3070\u3073\u3076\u3079\u307C"), f("\u3071\u3074\u3077\u307A\u307D"), f("\u307E\u307F\u3080\u3081\u3082"), ["\u3084", "", "\u3086", "", "\u3088"], f("\u3089\u308A\u308B\u308C\u308D"), ["\u308F", "", "", "", "\u3092"], ["\u3093", "", "", "", ""]];
       k = /* @__PURE__ */ new Map([]);
@@ -3522,12 +3527,7 @@ ${playgroundBrowserStyles}
           listen("compositionstart", () => this.close());
           listen("input", () => this.close());
           listen("selectionchange", () => {
-            if (options.settings().trigger !== "highlight" || options.paused()) return;
-            this.cancel();
-            this.timer = window.setTimeout(() => {
-              const target = selectedTarget();
-              if (target) void this.analyze(target);
-            }, 180);
+            this.selectionChanged(selectedTarget);
           });
         }
         options;
@@ -3539,6 +3539,14 @@ ${playgroundBrowserStyles}
         last = "";
         sourceContains;
         cache = /* @__PURE__ */ new Map();
+        selectionChanged(target) {
+          if (this.options.settings().trigger !== "highlight" || this.options.paused()) return;
+          this.close();
+          this.timer = window.setTimeout(() => {
+            const selected = target();
+            if (selected) void this.analyze(selected);
+          }, 180);
+        }
         hoverWord(word, contains) {
           if (this.options.settings().trigger !== "hover" || this.options.paused()) return;
           this.close();
@@ -3823,6 +3831,9 @@ ${mascotBubbleStyles}
         }
         readerSelection(target) {
           this.lookup?.selection(target);
+        }
+        selectionChanged(target) {
+          this.lookup?.selectionChanged(target);
         }
         showWord(word) {
           this.bubble.show(word, this.settings.definitions);
@@ -4186,6 +4197,54 @@ ${mascotBubbleStyles}
     }
   });
 
+  // src/docs-selection.ts
+  function docsSelectedTarget(source) {
+    const editor = document.querySelector(".kix-appview-editor");
+    if (!editor) return;
+    const clip = editor.getBoundingClientRect();
+    const boxes = [...editor.querySelectorAll(".kix-canvas-tile-selection svg rect,.kix-selection-overlay,.kix-selection-overlay-content")].filter((el) => !el.querySelector(".kix-selection-overlay-content,svg rect")).filter((el) => el.checkVisibility({ checkVisibilityCSS: true })).map((el) => el.getBoundingClientRect()).filter((r) => r.width > 1 && r.height > 0);
+    if (!boxes.length || boxes.length > 32) return;
+    const row = boxes[0];
+    if (boxes.some((r) => r.top >= row.bottom || r.bottom <= row.top || r.top < Math.max(0, clip.top) || r.bottom > Math.min(innerHeight, clip.bottom) || r.left < clip.left || r.right > clip.right)) return;
+    const glyphs = /* @__PURE__ */ new Map();
+    let inspected = 0;
+    for (const element4 of editor.querySelectorAll("svg rect[aria-label]")) {
+      if (++inspected > 4096) return;
+      const bounds = element4.getBoundingClientRect();
+      if (!boxes.some((r) => bounds.left < r.right && bounds.right > r.left && bounds.top < r.bottom && bounds.bottom > r.top)) continue;
+      const run = source(element4, clip);
+      if (!run) return;
+      let offset = 0;
+      for (const char of run.text) {
+        const rect = run.rect(offset, offset + char.length);
+        offset += char.length;
+        if (!rect || !boxes.some((r) => rect.left + rect.width / 2 >= r.left && rect.left + rect.width / 2 < r.right && rect.top < r.bottom && rect.bottom > r.top)) continue;
+        const key = [rect.left, rect.top, rect.right, rect.bottom].map((n) => Math.round(n * 10)).join(",");
+        const previous = glyphs.get(key);
+        if (previous && previous.text !== char) return;
+        glyphs.set(key, { text: char, rect });
+        if (glyphs.size > 80) return;
+      }
+    }
+    const ordered = [...glyphs.values()].sort((a, b) => a.rect.left - b.rect.left);
+    if (!ordered.length) return;
+    for (let i = 1; i < ordered.length; i++) {
+      const gap = ordered[i].rect.left - ordered[i - 1].rect.right;
+      if (Math.abs(gap) > 2) return;
+    }
+    if (boxes.some((r) => r.left < ordered[0].rect.left - 2 || r.right > ordered.at(-1).rect.right + 2)) return;
+    const text = ordered.map((g) => g.text).join("");
+    if (/\s/u.test(text) || !/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々〆]/u.test(text)) return;
+    return { text, offset: 0, selection: true };
+  }
+  var docsSelectionSelector;
+  var init_docs_selection = __esm({
+    "src/docs-selection.ts"() {
+      "use strict";
+      docsSelectionSelector = ".kix-canvas-tile-selection,.kix-selection-overlay,.kix-selection-overlay-content";
+    }
+  });
+
   // src/content.ts
   var require_content = __commonJS({
     "src/content.ts"() {
@@ -4198,877 +4257,880 @@ ${mascotBubbleStyles}
       init_mascot_preferences();
       init_preferences();
       init_mascot_target();
-      var hostname = location.hostname || (location.ancestorOrigins[0] ? new URL(location.ancestorOrigins[0]).hostname : "");
-      var docs = location.hostname === "docs.google.com" && location.pathname.startsWith("/document/");
-      if (docs) {
-        const init = () => window.dispatchEvent(new CustomEvent("ko-docs-init", { detail: chrome.runtime.id }));
-        init();
-        setTimeout(init, 0);
-      }
-      var host = document.createElement("ko-overlay");
-      var shadow = host.attachShadow({ mode: "closed" });
-      shadow.innerHTML = `<style>:host{all:initial!important;position:fixed!important;inset:0!important;pointer-events:none!important;z-index:2147483646!important;overflow:hidden!important;contain:strict!important}span{position:absolute;white-space:nowrap;line-height:1;font-family:system-ui,sans-serif;color:var(--ko-color,#15232b);text-shadow:0 0 2px var(--ko-bg,white);pointer-events:none;user-select:none}@media print{:host{display:none!important}}</style><div aria-hidden="true"></div>`;
-      var layer = shadow.querySelector("div");
-      var mutationObserver;
-      var watchedShadows = /* @__PURE__ */ new WeakSet();
-      var observerOptions = { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["style", "class", "hidden", "open", "aria-label", "data-font-css", "width", "height", "transform"] };
-      function observeShadow(root) {
-        if (mutationObserver && !watchedShadows.has(root)) {
-          watchedShadows.add(root);
-          mutationObserver.observe(root, observerOptions);
+      init_docs_selection();
+      function initializeContentScript() {
+        if (document.contentType !== "text/html") return;
+        const hostname = location.hostname || (location.ancestorOrigins[0] ? new URL(location.ancestorOrigins[0]).hostname : "");
+        const docs = location.hostname === "docs.google.com" && location.pathname.startsWith("/document/");
+        if (docs) {
+          const init = () => window.dispatchEvent(new CustomEvent("ko-docs-init", { detail: chrome.runtime.id }));
+          init();
+          setTimeout(init, 0);
         }
-      }
-      var enabled = true;
-      var excluded = [];
-      var revision = 0;
-      var timer = 0;
-      var running = false;
-      var composing = false;
-      var message = "Starting offline furigana\u2026";
-      var statusState = "loading";
-      var toolbarAvailability = "unavailable";
-      var contextInvalidated = false;
-      function invalidateContext() {
-        if (contextInvalidated) return;
-        contextInvalidated = true;
-        revision++;
-        window.clearTimeout(timer);
-        activeRequest = void 0;
-        mutationObserver?.disconnect();
-        pageObserver.disconnect();
-        clear();
-        host.remove();
-        reader?.loading(false, "");
-        mascot?.destroy();
-        mascot = void 0;
-        message = "Extension updated or reloaded. Reload this page to restore readings.";
-        statusState = "unavailable";
-        toolbarAvailability = "unavailable";
-      }
-      function extensionAvailable() {
-        if (contextInvalidated) return false;
-        try {
-          if (chrome.runtime.id) return true;
-        } catch {
+        const host = document.createElement("ko-overlay");
+        const shadow = host.attachShadow({ mode: "closed" });
+        shadow.innerHTML = `<style>:host{all:initial!important;position:fixed!important;inset:0!important;pointer-events:none!important;z-index:2147483646!important;overflow:hidden!important;contain:strict!important}span{position:absolute;white-space:nowrap;line-height:1;font-family:system-ui,sans-serif;color:var(--ko-color,#15232b);text-shadow:0 0 2px var(--ko-bg,white);pointer-events:none;user-select:none}@media print{:host{display:none!important}}</style><div aria-hidden="true"></div>`;
+        const layer = shadow.querySelector("div");
+        let mutationObserver;
+        const watchedShadows = /* @__PURE__ */ new WeakSet();
+        const observerOptions = { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["style", "class", "hidden", "open", "aria-label", "data-font-css", "width", "height", "transform", "x", "y"] };
+        function observeShadow(root) {
+          if (mutationObserver && !watchedShadows.has(root)) {
+            watchedShadows.add(root);
+            mutationObserver.observe(root, observerOptions);
+          }
         }
-        invalidateContext();
-        return false;
-      }
-      async function sendToExtension(request) {
-        if (!extensionAvailable()) throw new Error("Extension context invalidated.");
-        try {
-          return await chrome.runtime.sendMessage(request);
-        } catch (error) {
-          if (/extension context invalidated/i.test(String(error))) invalidateContext();
-          throw error;
-        }
-      }
-      function setToolbarAvailability(value) {
-        if (!extensionAvailable()) return;
-        if (toolbarAvailability === value) return;
-        toolbarAvailability = value;
-        if (window === window.top) void sendToExtension({ type: "toolbar-status-changed" }).catch(() => {
-        });
-      }
-      var readingAppearance = appearance(void 0);
-      var overrides = {};
-      var legacyView;
-      var rawView;
-      var viewSettings = readingViewPreferences(void 0);
-      var topFrame = window === window.top;
-      var readingModeEnabled = () => topFrame && panelEnabled(viewSettings, hostname);
-      var reader;
-      var mascot;
-      var mascotSettings = mascotPreferences(void 0);
-      function syncMascot() {
-        if (!topFrame || contextInvalidated) return;
-        if (!mascotSettings.enabled) {
+        let enabled = true, excluded = [], revision = 0, timer = 0, running = false, composing = false;
+        let message = "Starting offline furigana\u2026";
+        let statusState = "loading";
+        let toolbarAvailability = "unavailable";
+        let contextInvalidated = false;
+        function invalidateContext() {
+          if (contextInvalidated) return;
+          contextInvalidated = true;
+          revision++;
+          window.clearTimeout(timer);
+          activeRequest = void 0;
+          mutationObserver?.disconnect();
+          pageObserver.disconnect();
+          clear();
+          host.remove();
+          reader?.loading(false, "");
           mascot?.destroy();
           mascot = void 0;
-          return;
+          message = "Extension updated or reloaded. Reload this page to restore readings.";
+          statusState = "unavailable";
+          toolbarAvailability = "unavailable";
         }
-        mascot ??= new Mascot({ send: sendToExtension, savePosition: (position) => updateMascotPosition(hostname, position), overrides: () => overrides, target: mascotTarget, obstacle: () => reader?.bounds() });
-        mascot.update(mascotSettings, excluded.includes(hostname), hostname);
-      }
-      function mascotTarget(x, y2) {
-        if (!docs) return webTarget(x, y2);
-        const editor = document.querySelector(".kix-appview-editor")?.getBoundingClientRect();
-        if (editor && (x < editor.left || x > editor.right || y2 < editor.top || y2 > editor.bottom)) return;
-        const page = [...visiblePages].find((element4) => {
-          const box = element4.getBoundingClientRect();
-          return x >= box.left && x <= box.right && y2 >= box.top && y2 <= box.bottom;
-        });
-        const root = page ?? document.querySelector(".kix-appview-editor") ?? document;
-        let inspected = 0;
-        for (const element4 of root.querySelectorAll("svg rect[aria-label]")) {
-          if (++inspected > 4096) break;
-          const box = element4.getBoundingClientRect();
-          if (x < box.left || x > box.right || y2 < box.top || y2 > box.bottom) continue;
-          const source = docsSource(element4, editor);
-          if (!source || source.text.length > 1e3) continue;
-          for (let offset = 0; offset < source.text.length; offset++) {
-            const rect = source.rect(offset, offset + 1);
-            if (rect && x >= rect.left && x <= rect.right && y2 >= rect.top && y2 <= rect.bottom) return { text: source.text, offset, rects: (start2, end) => {
-              const rect2 = source.rect(start2, end);
-              return rect2 ? [rect2] : [];
-            } };
+        function extensionAvailable() {
+          if (contextInvalidated) return false;
+          try {
+            if (chrome.runtime.id) return true;
+          } catch {
+          }
+          invalidateContext();
+          return false;
+        }
+        async function sendToExtension(request) {
+          if (!extensionAvailable()) throw new Error("Extension context invalidated.");
+          try {
+            return await chrome.runtime.sendMessage(request);
+          } catch (error) {
+            if (/extension context invalidated/i.test(String(error))) invalidateContext();
+            throw error;
           }
         }
-      }
-      function ensureReader() {
-        if (reader || !readingModeEnabled()) return;
-        reader = new ReadingPanel(() => {
-          void updateReadingView({}, { hostname, enabled: false }).catch(() => reader?.unavailable("Could not close the reading view. Try again."));
-        }, (width) => updateReadingView({ width }));
-        reader.setOverrides(overrides);
-        reader.appearance(viewSettings, readingAppearance);
-        reader.mascotHooks = { hover: (word, contains) => mascot?.readerHover(word, contains), leave: () => mascot?.readerLeave(), selection: (text) => {
-          if (text && text.length <= 80 && !/\s/u.test(text)) mascot?.readerSelection({ text, offset: 0, selection: true });
-        } };
-      }
-      var activeRequest;
-      var pacer = new AdaptivePacer();
-      var nextScanAt = 0;
-      var activePage;
-      var inputDocuments = /* @__PURE__ */ new WeakSet();
-      function watchInput(target) {
-        if (inputDocuments.has(target)) return;
-        inputDocuments.add(target);
-        target.addEventListener("compositionstart", (event) => {
-          if (reader?.owns(event)) return;
-          composing = true;
-          schedule();
-        }, true);
-        target.addEventListener("compositionend", (event) => {
-          if (reader?.owns(event)) return;
-          composing = false;
-          schedule();
-        }, true);
-        target.addEventListener("input", (event) => {
-          if (!reader?.owns(event)) schedule(150, "edit");
-        }, true);
-      }
-      function watchDocsInputs(root) {
-        const frames = [...root.querySelectorAll("iframe.docs-texteventtarget-iframe")];
-        if (root instanceof HTMLIFrameElement && root.matches(".docs-texteventtarget-iframe")) frames.push(root);
-        for (const frame2 of frames) {
-          const attach = () => {
-            try {
-              if (frame2.contentDocument) watchInput(frame2.contentDocument);
-            } catch {
-            }
-          };
-          attach();
-          frame2.addEventListener("load", attach, { once: true });
-        }
-      }
-      var pages = /* @__PURE__ */ new Set();
-      var visiblePages = /* @__PURE__ */ new Set();
-      var pageObserver = new IntersectionObserver((entries) => {
-        for (const entry of entries) entry.isIntersecting ? visiblePages.add(entry.target) : visiblePages.delete(entry.target);
-        schedule(100);
-      });
-      var editorClip;
-      var visible = (r) => r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
-      function allowed() {
-        return extensionAvailable() && enabled && !excluded.includes(hostname) && !document.hidden && !composing;
-      }
-      function clear() {
-        layer.replaceChildren();
-      }
-      function schedule(delay = 150, activity) {
-        if (!extensionAvailable()) return;
-        ensureReader();
-        syncMascot();
-        revision++;
-        clear();
-        window.clearTimeout(timer);
-        if (activeRequest) {
-          void sendToExtension({ type: "cancel-tokenize", requestId: activeRequest }).catch(() => {
+        function setToolbarAvailability(value) {
+          if (!extensionAvailable()) return;
+          if (toolbarAvailability === value) return;
+          toolbarAvailability = value;
+          if (window === window.top) void sendToExtension({ type: "toolbar-status-changed" }).catch(() => {
           });
-          activeRequest = void 0;
         }
-        if (contextInvalidated) return;
-        if (activity) delay = pacer.mark(activity);
-        if (readingModeEnabled() && delay > 0) delay = Math.max(400, delay);
-        statusState = allowed() ? "loading" : "paused";
-        message = !enabled || excluded.includes(hostname) ? "Readings are paused for this page." : document.hidden ? "Paused while this tab is in the background." : composing ? "Waiting for text composition to finish." : activity === "scroll" ? "Waiting for scrolling to settle\u2026" : activity === "edit" ? "Waiting for editing to settle\u2026" : "Updating visible readings\u2026";
-        reader?.loading(readingModeEnabled() && enabled && !excluded.includes(hostname) && !document.hidden, message, allowed());
-        if (allowed()) {
-          nextScanAt = performance.now() + delay;
-          timer = window.setTimeout(() => {
-            if (!running) void scan();
-          }, delay);
-        }
-      }
-      function registerPages(root) {
-        const found = [...root.querySelectorAll(".kix-page")];
-        if (root instanceof Element && root.matches(".kix-page")) found.push(root);
-        for (const page of found) if (!pages.has(page)) {
-          pages.add(page);
-          pageObserver.observe(page);
-        }
-      }
-      function region() {
-        if (!docs) return document.body;
-        for (const page of pages) if (!page.isConnected) {
-          pages.delete(page);
-          visiblePages.delete(page);
-          pageObserver.unobserve(page);
-        }
-        let best = activePage && visiblePages.has(activePage) ? activePage : void 0;
-        let area = 0;
-        const candidates = best ? [best, ...[...visiblePages].filter((p) => p !== best)] : [...visiblePages];
-        for (const page of candidates) {
-          const r = page.getBoundingClientRect();
-          const current = Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) * Math.max(0, Math.min(r.right, innerWidth) - Math.max(r.left, 0));
-          if (current > area) {
-            best = page;
-            area = current;
-          }
-        }
-        activePage = best;
-        if (pages.size) return best;
-        return document.querySelector(".kix-appview-editor") ?? void 0;
-      }
-      function textSource(node) {
-        const parent = node.parentElement;
-        let block = parent;
-        while (block.parentElement && ["inline", "contents"].includes(getComputedStyle(block).display)) block = block.parentElement;
-        const style = getComputedStyle(parent);
-        if (style.visibility !== "visible" || style.display === "none" || style.writingMode !== "horizontal-tb") return;
-        let offset = 0;
-        if (node.length > 2e3) {
-          const doc = document;
-          let first = Infinity;
-          for (let y2 = 8; y2 < innerHeight; y2 += Math.max(32, Math.ceil(innerHeight / 64))) {
-            const range = doc.caretRangeFromPoint?.(Math.max(1, parent.getBoundingClientRect().left + 2), y2);
-            if (range?.startContainer === node) first = Math.min(first, range.startOffset);
-          }
-          if (first === Infinity) return;
-          offset = Math.max(0, first - 64);
-        }
-        const text = node.data.slice(offset, offset + 2e3);
-        if (!text.trim()) return;
-        return {
-          text,
-          block,
-          identity: node,
-          sourceOffset: offset,
-          fontSize: parseFloat(style.fontSize),
-          color: style.color,
-          background: style.backgroundColor,
-          rect(start2, end) {
-            if (!node.isConnected) return;
-            const range = document.createRange();
-            range.setStart(node, offset + start2);
-            range.setEnd(node, offset + end);
-            const rects = [...range.getClientRects()].filter((r) => r.width > 0);
-            return rects.length === 1 && visible(rects[0]) ? rects[0] : void 0;
-          }
-        };
-      }
-      function* visibleTextSources(node) {
-        const base = textSource(node);
-        if (!base) return;
-        const origin = base.sourceOffset ?? 0, range = document.createRange();
-        const pending = [[0, base.text.length]], parts = [];
-        while (pending.length) {
-          const [start2, end] = pending.pop();
-          range.setStart(node, origin + start2);
-          range.setEnd(node, origin + end);
-          const rects = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0);
-          yield void 0;
-          const shown = rects.filter(visible);
-          if (!shown.length) continue;
-          if (shown.length === rects.length || end - start2 <= 1) {
-            parts.push({ start: start2, end, box: range.getBoundingClientRect() });
-            continue;
-          }
-          let mid = start2 + Math.floor((end - start2) / 2);
-          if (mid > start2 && /[\uDC00-\uDFFF]/.test(base.text[mid])) mid--;
-          if (mid === start2) mid = Math.min(end, start2 + 2);
-          if (mid === end) {
-            parts.push({ start: start2, end, box: range.getBoundingClientRect() });
-            continue;
-          }
-          pending.push([mid, end], [start2, mid]);
-        }
-        const merged = [];
-        for (const part of parts) {
-          const previous = merged.at(-1);
-          if (previous?.end === part.start) previous.end = part.end;
-          else merged.push({ ...part });
-        }
-        for (const part of merged) {
-          const text = base.text.slice(part.start, part.end);
-          if (!text.trim()) continue;
-          yield { ...base, text, sourceOffset: origin + part.start, orderBox: part.box, rect: () => part.box };
-        }
-      }
-      var measure = document.createElement("canvas").getContext("2d");
-      function docsSource(element4, clip = editorClip) {
-        const text = element4.getAttribute("aria-label") ?? "";
-        if (!text || text.length > 2e3) return;
-        const box = element4.getBoundingClientRect();
-        if (!visible(box)) return;
-        const font = element4.closest("[data-font-css]")?.getAttribute("data-font-css");
-        if (!font) return;
-        measure.font = font;
-        const fullMetrics = measure.measureText(text);
-        const width = fullMetrics.width;
-        if (!width) return;
-        const widths = /* @__PURE__ */ new Map([[0, 0], [text.length, width]]);
-        const ink = /* @__PURE__ */ new Map();
-        const prefixWidth = (offset) => {
-          let value = widths.get(offset);
-          if (value === void 0) {
-            value = measure.measureText(text.slice(0, offset)).width;
-            widths.set(offset, value);
-          }
-          return value;
-        };
-        const size = Number(font.match(/([\d.]+)px/)?.[1]);
-        if (!size) return;
-        const localHeight = element4 instanceof SVGRectElement ? element4.height.baseVal.value : box.height;
-        const scaleY = localHeight > 0 ? box.height / localHeight : 1;
-        const svg = element4.closest("svg")?.getBoundingClientRect();
-        if (clip && (box.bottom <= clip.top || box.top >= clip.bottom || box.right <= clip.left || box.left >= clip.right)) return;
-        if (svg && (box.bottom <= svg.top || box.top >= svg.bottom)) return;
-        return { text, orderBox: box, fontSize: size * scaleY, color: "#15232b", background: "white", rect(start2, end) {
-          if (!element4.isConnected) return;
-          const r = box;
-          measure.font = font;
-          const left = prefixWidth(start2) / width * r.width;
-          const right = prefixWidth(end) / width * r.width;
-          const fragment = text.slice(start2, end);
-          let metrics = ink.get(fragment);
-          if (!metrics) {
-            metrics = measure.measureText(fragment);
-            ink.set(fragment, metrics);
-          }
-          const ascent = metrics.fontBoundingBoxAscent || size * 0.8;
-          const descent = metrics.fontBoundingBoxDescent || size * 0.2;
-          const baseline = r.top + (r.height - (ascent + descent) * scaleY) / 2 + ascent * scaleY;
-          const inkAscent = metrics.actualBoundingBoxAscent;
-          const inkDescent = metrics.actualBoundingBoxDescent;
-          const result = new DOMRect(r.left + left, baseline - inkAscent * scaleY, right - left, (inkAscent + inkDescent) * scaleY);
-          return visible(result) ? result : void 0;
-        } };
-      }
-      function* sources(root, panelMode = false) {
-        let node = root;
-        while (node) {
-          let descend = true;
-          let source;
-          if (node instanceof Element) {
-            if (node === host || mascot?.ownsNode(node) || reader?.ownsNode(node) || node.matches('script,style,noscript,ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) descend = false;
-            else if (node !== root) {
-              const r = node.getBoundingClientRect();
-              const style = getComputedStyle(node);
-              if (style.display === "none" || style.visibility === "hidden" || r.width > 0 && r.height > 0 && !visible(r)) descend = false;
-            }
-            if (descend && !docs && node instanceof HTMLDetailsElement && !node.open) {
-              descend = false;
-              let summary = node.firstElementChild;
-              while (summary && !(summary instanceof HTMLElement && summary.localName === "summary")) {
-                yield void 0;
-                summary = summary.nextElementSibling;
-              }
-              if (summary) yield* sources(summary, panelMode);
-            }
-            if (descend && docs && node.matches("svg rect[aria-label]")) {
-              source = docsSource(node);
-              descend = false;
-            }
-            if (descend && !docs && node.shadowRoot) {
-              observeShadow(node.shadowRoot);
-              yield* sources(node.shadowRoot, panelMode);
-            }
-          } else if (!docs && node instanceof Text && node.parentElement) {
-            if (panelMode) yield* visibleTextSources(node);
-            else source = textSource(node);
-          }
-          yield source;
-          if (descend && node.firstChild) {
-            node = node.firstChild;
-            continue;
-          }
-          while (node && node !== root && !node.nextSibling) node = node.parentNode;
-          if (!node || node === root) break;
-          node = node.nextSibling;
-        }
-      }
-      function* webSources(panelMode = false) {
-        const seeds = /* @__PURE__ */ new Set(), seen = /* @__PURE__ */ new Map();
-        let inspected = 0;
-        const dx = Math.max(64, Math.ceil(innerWidth / 16)), dy = Math.max(16, Math.ceil(innerHeight / 100));
-        for (let y2 = 4; y2 < innerHeight; y2 += dy) for (let x = 4; x < innerWidth; x += dx) {
-          let element4 = panelMode ? document.elementsFromPoint(x, y2).find((element5) => element5 !== host && !reader?.ownsNode(element5)) ?? null : document.elementFromPoint(x, y2);
-          while (element4?.shadowRoot) {
-            observeShadow(element4.shadowRoot);
-            const inner = element4.shadowRoot.elementFromPoint(x, y2);
-            if (!inner || inner === element4) break;
-            element4 = inner;
-          }
-          yield void 0;
-          if (!element4 || element4 === host || seeds.has(element4) || seeds.size >= 512) continue;
-          if (element4.closest('ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) continue;
-          seeds.add(element4);
-          let local = 0;
-          for (const source of sources(element4, panelMode)) {
-            if (++local > 128 || ++inspected > 4096) break;
-            if (source?.identity) {
-              let offsets = seen.get(source.identity);
-              if (!offsets) {
-                offsets = /* @__PURE__ */ new Set();
-                seen.set(source.identity, offsets);
-              }
-              const offset = source.sourceOffset ?? 0;
-              if (offsets.has(offset)) {
-                yield void 0;
-                continue;
-              }
-              offsets.add(offset);
-            }
-            yield source;
-          }
-        }
-      }
-      function* groupedSources(root, prepared) {
-        let group = [], length = 0;
-        function combine() {
-          const parts = group, first = parts[0];
-          return { ...first, text: parts.map((p) => p.text).join(""), rect(start2, end) {
-            const rectangles = [];
-            let offset = 0;
-            for (const part of parts) {
-              const a = Math.max(0, start2 - offset), b = Math.min(part.text.length, end - offset);
-              if (a < b) {
-                const r = part.rect(a, b);
-                if (!r) return;
-                rectangles.push(r);
-              }
-              offset += part.text.length;
-            }
-            if (!rectangles.length || rectangles.some((r) => Math.abs(r.top - rectangles[0].top) > 2)) return;
-            const left = Math.min(...rectangles.map((r) => r.left)), top = Math.min(...rectangles.map((r) => r.top));
-            return new DOMRect(left, top, Math.max(...rectangles.map((r) => r.right)) - left, Math.max(...rectangles.map((r) => r.bottom)) - top);
-          } };
-        }
-        for (const source of docs ? prepared ?? sources(root) : webSources()) {
-          if (!source) {
-            yield void 0;
-            continue;
-          }
-          if (group.length && (docs || group[0].block !== source.block || length + source.text.length > 2e3)) {
-            yield combine();
-            group = [];
-            length = 0;
-          }
-          group.push(source);
-          length += source.text.length;
-          yield void 0;
-        }
-        if (group.length) yield combine();
-      }
-      async function frame() {
-        await new Promise((resolve) => requestAnimationFrame(() => resolve()));
-      }
-      async function scan() {
-        if (!allowed() || !document.body) return;
-        running = true;
-        const version = revision;
-        let count = 0, attempted = 0, found = false, skippedSpace = 0, unknown = 0;
-        const readingMode = readingModeEnabled();
-        const readingRuns = [];
-        const runMap = /* @__PURE__ */ new Map();
-        let panelCharacters = 0, panelLimited = false;
-        const collisions = new CollisionIndex();
-        let glyphCount = 0;
-        try {
-          const root = region();
-          if (!root) {
-            message = docs ? "Waiting for the active Docs page\u2026" : "Waiting for page content\u2026";
-            statusState = "loading";
-            reader?.loading(readingMode, message);
+        let readingAppearance = appearance(void 0);
+        let overrides = {};
+        let legacyView;
+        let rawView;
+        let viewSettings = readingViewPreferences(void 0);
+        const topFrame = window === window.top;
+        const readingModeEnabled = () => topFrame && panelEnabled(viewSettings, hostname);
+        let reader;
+        let mascot;
+        let mascotSettings = mascotPreferences(void 0);
+        function syncMascot() {
+          if (!topFrame || contextInvalidated) return;
+          if (!mascotSettings.enabled) {
+            mascot?.destroy();
+            mascot = void 0;
             return;
           }
-          if (!host.isConnected) document.documentElement.append(host);
-          let prepared;
-          if (docs) {
-            const viewport = document.querySelector(".kix-appview-editor")?.getBoundingClientRect();
-            editorClip = new DOMRect(Math.max(0, viewport?.left ?? 0), Math.max(0, viewport?.top ?? 0), 0, 0);
-            editorClip.width = Math.max(0, Math.min(innerWidth, viewport?.right ?? innerWidth) - editorClip.left);
-            editorClip.height = Math.max(0, Math.min(innerHeight, viewport?.bottom ?? innerHeight) - editorClip.top);
-            prepared = [];
-            const seen = /* @__PURE__ */ new Set();
-            let started = performance.now();
-            for (const source of sources(root)) {
-              if (performance.now() - started >= pacer.budget()) {
-                await frame();
-                started = performance.now();
-                if (version !== revision || !allowed()) return;
+          mascot ??= new Mascot({ send: sendToExtension, savePosition: (position) => updateMascotPosition(hostname, position), overrides: () => overrides, target: mascotTarget, obstacle: () => reader?.bounds() });
+          mascot.update(mascotSettings, excluded.includes(hostname), hostname);
+        }
+        function mascotTarget(x, y2) {
+          if (!docs) return webTarget(x, y2);
+          const editor = document.querySelector(".kix-appview-editor")?.getBoundingClientRect();
+          if (editor && (x < editor.left || x > editor.right || y2 < editor.top || y2 > editor.bottom)) return;
+          const page = [...visiblePages].find((element4) => {
+            const box = element4.getBoundingClientRect();
+            return x >= box.left && x <= box.right && y2 >= box.top && y2 <= box.bottom;
+          });
+          const root = page ?? document.querySelector(".kix-appview-editor") ?? document;
+          let inspected = 0;
+          for (const element4 of root.querySelectorAll("svg rect[aria-label]")) {
+            if (++inspected > 4096) break;
+            const box = element4.getBoundingClientRect();
+            if (x < box.left || x > box.right || y2 < box.top || y2 > box.bottom) continue;
+            const source = docsSource(element4, editor);
+            if (!source || source.text.length > 1e3) continue;
+            for (let offset = 0; offset < source.text.length; offset++) {
+              const rect = source.rect(offset, offset + 1);
+              if (rect && x >= rect.left && x <= rect.right && y2 >= rect.top && y2 <= rect.bottom) return { text: source.text, offset, rects: (start2, end) => {
+                const rect2 = source.rect(start2, end);
+                return rect2 ? [rect2] : [];
+              } };
+            }
+          }
+        }
+        function ensureReader() {
+          if (reader || !readingModeEnabled()) return;
+          reader = new ReadingPanel(() => {
+            void updateReadingView({}, { hostname, enabled: false }).catch(() => reader?.unavailable("Could not close the reading view. Try again."));
+          }, (width) => updateReadingView({ width }));
+          reader.setOverrides(overrides);
+          reader.appearance(viewSettings, readingAppearance);
+          reader.mascotHooks = { hover: (word, contains) => mascot?.readerHover(word, contains), leave: () => mascot?.readerLeave(), selection: (text) => {
+            if (text && text.length <= 80 && !/\s/u.test(text)) mascot?.readerSelection({ text, offset: 0, selection: true });
+          } };
+        }
+        let activeRequest;
+        const pacer = new AdaptivePacer();
+        let nextScanAt = 0;
+        let activePage;
+        const inputDocuments = /* @__PURE__ */ new WeakSet();
+        function watchInput(target) {
+          if (inputDocuments.has(target)) return;
+          inputDocuments.add(target);
+          target.addEventListener("compositionstart", (event) => {
+            if (reader?.owns(event)) return;
+            composing = true;
+            schedule();
+          }, true);
+          target.addEventListener("compositionend", (event) => {
+            if (reader?.owns(event)) return;
+            composing = false;
+            schedule();
+          }, true);
+          target.addEventListener("input", (event) => {
+            if (!reader?.owns(event)) schedule(150, "edit");
+          }, true);
+        }
+        function watchDocsInputs(root) {
+          const frames = [...root.querySelectorAll("iframe.docs-texteventtarget-iframe")];
+          if (root instanceof HTMLIFrameElement && root.matches(".docs-texteventtarget-iframe")) frames.push(root);
+          for (const frame2 of frames) {
+            const attach = () => {
+              try {
+                if (frame2.contentDocument) watchInput(frame2.contentDocument);
+              } catch {
               }
-              if (!source) continue;
-              const base = source.rect(0, source.text.length);
-              if (!base) continue;
-              const key = `${source.text}:${base.left.toFixed(1)}:${base.top.toFixed(1)}`;
-              if (seen.has(key)) continue;
-              seen.add(key);
-              if (readingMode) {
-                if (panelCharacters + source.text.length > 16e3) {
-                  panelLimited = true;
-                  break;
+            };
+            attach();
+            frame2.addEventListener("load", attach, { once: true });
+          }
+        }
+        const pages = /* @__PURE__ */ new Set();
+        const visiblePages = /* @__PURE__ */ new Set();
+        const pageObserver = new IntersectionObserver((entries) => {
+          for (const entry of entries) entry.isIntersecting ? visiblePages.add(entry.target) : visiblePages.delete(entry.target);
+          schedule(100);
+        });
+        let editorClip;
+        const visible = (r) => r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
+        function allowed() {
+          return extensionAvailable() && enabled && !excluded.includes(hostname) && !document.hidden && !composing;
+        }
+        function clear() {
+          layer.replaceChildren();
+        }
+        function schedule(delay = 150, activity) {
+          if (!extensionAvailable()) return;
+          ensureReader();
+          syncMascot();
+          revision++;
+          clear();
+          window.clearTimeout(timer);
+          if (activeRequest) {
+            void sendToExtension({ type: "cancel-tokenize", requestId: activeRequest }).catch(() => {
+            });
+            activeRequest = void 0;
+          }
+          if (contextInvalidated) return;
+          if (activity) delay = pacer.mark(activity);
+          if (readingModeEnabled() && delay > 0) delay = Math.max(400, delay);
+          statusState = allowed() ? "loading" : "paused";
+          message = !enabled || excluded.includes(hostname) ? "Readings are paused for this page." : document.hidden ? "Paused while this tab is in the background." : composing ? "Waiting for text composition to finish." : activity === "scroll" ? "Waiting for scrolling to settle\u2026" : activity === "edit" ? "Waiting for editing to settle\u2026" : "Updating visible readings\u2026";
+          reader?.loading(readingModeEnabled() && enabled && !excluded.includes(hostname) && !document.hidden, message, allowed());
+          if (allowed()) {
+            nextScanAt = performance.now() + delay;
+            timer = window.setTimeout(() => {
+              if (!running) void scan();
+            }, delay);
+          }
+        }
+        function registerPages(root) {
+          const found = [...root.querySelectorAll(".kix-page")];
+          if (root instanceof Element && root.matches(".kix-page")) found.push(root);
+          for (const page of found) if (!pages.has(page)) {
+            pages.add(page);
+            pageObserver.observe(page);
+          }
+        }
+        function region() {
+          if (!docs) return document.body;
+          for (const page of pages) if (!page.isConnected) {
+            pages.delete(page);
+            visiblePages.delete(page);
+            pageObserver.unobserve(page);
+          }
+          let best = activePage && visiblePages.has(activePage) ? activePage : void 0;
+          let area = 0;
+          const candidates = best ? [best, ...[...visiblePages].filter((p) => p !== best)] : [...visiblePages];
+          for (const page of candidates) {
+            const r = page.getBoundingClientRect();
+            const current = Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) * Math.max(0, Math.min(r.right, innerWidth) - Math.max(r.left, 0));
+            if (current > area) {
+              best = page;
+              area = current;
+            }
+          }
+          activePage = best;
+          if (pages.size) return best;
+          return document.querySelector(".kix-appview-editor") ?? void 0;
+        }
+        function textSource(node) {
+          const parent = node.parentElement;
+          let block = parent;
+          while (block.parentElement && ["inline", "contents"].includes(getComputedStyle(block).display)) block = block.parentElement;
+          const style = getComputedStyle(parent);
+          if (style.visibility !== "visible" || style.display === "none" || style.writingMode !== "horizontal-tb") return;
+          let offset = 0;
+          if (node.length > 2e3) {
+            const doc = document;
+            let first = Infinity;
+            for (let y2 = 8; y2 < innerHeight; y2 += Math.max(32, Math.ceil(innerHeight / 64))) {
+              const range = doc.caretRangeFromPoint?.(Math.max(1, parent.getBoundingClientRect().left + 2), y2);
+              if (range?.startContainer === node) first = Math.min(first, range.startOffset);
+            }
+            if (first === Infinity) return;
+            offset = Math.max(0, first - 64);
+          }
+          const text = node.data.slice(offset, offset + 2e3);
+          if (!text.trim()) return;
+          return {
+            text,
+            block,
+            identity: node,
+            sourceOffset: offset,
+            fontSize: parseFloat(style.fontSize),
+            color: style.color,
+            background: style.backgroundColor,
+            rect(start2, end) {
+              if (!node.isConnected) return;
+              const range = document.createRange();
+              range.setStart(node, offset + start2);
+              range.setEnd(node, offset + end);
+              const rects = [...range.getClientRects()].filter((r) => r.width > 0);
+              return rects.length === 1 && visible(rects[0]) ? rects[0] : void 0;
+            }
+          };
+        }
+        function* visibleTextSources(node) {
+          const base = textSource(node);
+          if (!base) return;
+          const origin = base.sourceOffset ?? 0, range = document.createRange();
+          const pending = [[0, base.text.length]], parts = [];
+          while (pending.length) {
+            const [start2, end] = pending.pop();
+            range.setStart(node, origin + start2);
+            range.setEnd(node, origin + end);
+            const rects = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0);
+            yield void 0;
+            const shown = rects.filter(visible);
+            if (!shown.length) continue;
+            if (shown.length === rects.length || end - start2 <= 1) {
+              parts.push({ start: start2, end, box: range.getBoundingClientRect() });
+              continue;
+            }
+            let mid = start2 + Math.floor((end - start2) / 2);
+            if (mid > start2 && /[\uDC00-\uDFFF]/.test(base.text[mid])) mid--;
+            if (mid === start2) mid = Math.min(end, start2 + 2);
+            if (mid === end) {
+              parts.push({ start: start2, end, box: range.getBoundingClientRect() });
+              continue;
+            }
+            pending.push([mid, end], [start2, mid]);
+          }
+          const merged = [];
+          for (const part of parts) {
+            const previous = merged.at(-1);
+            if (previous?.end === part.start) previous.end = part.end;
+            else merged.push({ ...part });
+          }
+          for (const part of merged) {
+            const text = base.text.slice(part.start, part.end);
+            if (!text.trim()) continue;
+            yield { ...base, text, sourceOffset: origin + part.start, orderBox: part.box, rect: () => part.box };
+          }
+        }
+        const measure = document.createElement("canvas").getContext("2d");
+        function docsSource(element4, clip = editorClip) {
+          const text = element4.getAttribute("aria-label") ?? "";
+          if (!text || text.length > 2e3) return;
+          const box = element4.getBoundingClientRect();
+          if (!visible(box)) return;
+          const font = element4.closest("[data-font-css]")?.getAttribute("data-font-css");
+          if (!font) return;
+          measure.font = font;
+          const fullMetrics = measure.measureText(text);
+          const width = fullMetrics.width;
+          if (!width) return;
+          const widths = /* @__PURE__ */ new Map([[0, 0], [text.length, width]]);
+          const ink = /* @__PURE__ */ new Map();
+          const prefixWidth = (offset) => {
+            let value = widths.get(offset);
+            if (value === void 0) {
+              value = measure.measureText(text.slice(0, offset)).width;
+              widths.set(offset, value);
+            }
+            return value;
+          };
+          const size = Number(font.match(/([\d.]+)px/)?.[1]);
+          if (!size) return;
+          const localHeight = element4 instanceof SVGRectElement ? element4.height.baseVal.value : box.height;
+          const scaleY = localHeight > 0 ? box.height / localHeight : 1;
+          const svg = element4.closest("svg")?.getBoundingClientRect();
+          if (clip && (box.bottom <= clip.top || box.top >= clip.bottom || box.right <= clip.left || box.left >= clip.right)) return;
+          if (svg && (box.bottom <= svg.top || box.top >= svg.bottom)) return;
+          return { text, orderBox: box, fontSize: size * scaleY, color: "#15232b", background: "white", rect(start2, end) {
+            if (!element4.isConnected) return;
+            const r = box;
+            measure.font = font;
+            const left = prefixWidth(start2) / width * r.width;
+            const right = prefixWidth(end) / width * r.width;
+            const fragment = text.slice(start2, end);
+            let metrics = ink.get(fragment);
+            if (!metrics) {
+              metrics = measure.measureText(fragment);
+              ink.set(fragment, metrics);
+            }
+            const ascent = metrics.fontBoundingBoxAscent || size * 0.8;
+            const descent = metrics.fontBoundingBoxDescent || size * 0.2;
+            const baseline = r.top + (r.height - (ascent + descent) * scaleY) / 2 + ascent * scaleY;
+            const inkAscent = metrics.actualBoundingBoxAscent;
+            const inkDescent = metrics.actualBoundingBoxDescent;
+            const result = new DOMRect(r.left + left, baseline - inkAscent * scaleY, right - left, (inkAscent + inkDescent) * scaleY);
+            return visible(result) ? result : void 0;
+          } };
+        }
+        function* sources(root, panelMode = false) {
+          let node = root;
+          while (node) {
+            let descend = true;
+            let source;
+            if (node instanceof Element) {
+              if (node === host || mascot?.ownsNode(node) || reader?.ownsNode(node) || node.matches('script,style,noscript,ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) descend = false;
+              else if (node !== root) {
+                const r = node.getBoundingClientRect();
+                const style = getComputedStyle(node);
+                if (style.display === "none" || style.visibility === "hidden" || r.width > 0 && r.height > 0 && !visible(r)) descend = false;
+              }
+              if (descend && !docs && node instanceof HTMLDetailsElement && !node.open) {
+                descend = false;
+                let summary = node.firstElementChild;
+                while (summary && !(summary instanceof HTMLElement && summary.localName === "summary")) {
+                  yield void 0;
+                  summary = summary.nextElementSibling;
                 }
-                panelCharacters += source.text.length;
-                const order = source.orderBox ?? base;
-                const run = { text: source.text, top: order.top, left: order.left, right: order.right, readings: [] };
-                readingRuns.push(run);
-                runMap.set(source, run);
+                if (summary) yield* sources(summary, panelMode);
               }
-              prepared.push(source);
+              if (descend && docs && node.matches("svg rect[aria-label]")) {
+                source = docsSource(node);
+                descend = false;
+              }
+              if (descend && !docs && node.shadowRoot) {
+                observeShadow(node.shadowRoot);
+                yield* sources(node.shadowRoot, panelMode);
+              }
+            } else if (!docs && node instanceof Text && node.parentElement) {
+              if (panelMode) yield* visibleTextSources(node);
+              else source = textSource(node);
+            }
+            yield source;
+            if (descend && node.firstChild) {
+              node = node.firstChild;
+              continue;
+            }
+            while (node && node !== root && !node.nextSibling) node = node.parentNode;
+            if (!node || node === root) break;
+            node = node.nextSibling;
+          }
+        }
+        function* webSources(panelMode = false) {
+          const seeds = /* @__PURE__ */ new Set(), seen = /* @__PURE__ */ new Map();
+          let inspected = 0;
+          const dx = Math.max(64, Math.ceil(innerWidth / 16)), dy = Math.max(16, Math.ceil(innerHeight / 100));
+          for (let y2 = 4; y2 < innerHeight; y2 += dy) for (let x = 4; x < innerWidth; x += dx) {
+            let element4 = panelMode ? document.elementsFromPoint(x, y2).find((element5) => element5 !== host && !reader?.ownsNode(element5)) ?? null : document.elementFromPoint(x, y2);
+            while (element4?.shadowRoot) {
+              observeShadow(element4.shadowRoot);
+              const inner = element4.shadowRoot.elementFromPoint(x, y2);
+              if (!inner || inner === element4) break;
+              element4 = inner;
+            }
+            yield void 0;
+            if (!element4 || element4 === host || seeds.has(element4) || seeds.size >= 512) continue;
+            if (element4.closest('ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) continue;
+            seeds.add(element4);
+            let local = 0;
+            for (const source of sources(element4, panelMode)) {
+              if (++local > 128 || ++inspected > 4096) break;
+              if (source?.identity) {
+                let offsets = seen.get(source.identity);
+                if (!offsets) {
+                  offsets = /* @__PURE__ */ new Set();
+                  seen.set(source.identity, offsets);
+                }
+                const offset = source.sourceOffset ?? 0;
+                if (offsets.has(offset)) {
+                  yield void 0;
+                  continue;
+                }
+                offsets.add(offset);
+              }
+              yield source;
+            }
+          }
+        }
+        function* groupedSources(root, prepared) {
+          let group = [], length = 0;
+          function combine() {
+            const parts = group, first = parts[0];
+            return { ...first, text: parts.map((p) => p.text).join(""), rect(start2, end) {
+              const rectangles = [];
               let offset = 0;
-              for (const glyph of readingMode ? [] : source.text) {
-                if (glyphCount >= 8e3) {
-                  collisions.add(base);
-                  break;
+              for (const part of parts) {
+                const a = Math.max(0, start2 - offset), b = Math.min(part.text.length, end - offset);
+                if (a < b) {
+                  const r = part.rect(a, b);
+                  if (!r) return;
+                  rectangles.push(r);
                 }
-                if (glyph.trim()) {
-                  const ink = source.rect(offset, offset + glyph.length);
-                  if (ink) {
-                    collisions.add(ink);
-                    glyphCount++;
-                  }
-                }
-                offset += glyph.length;
+                offset += part.text.length;
+              }
+              if (!rectangles.length || rectangles.some((r) => Math.abs(r.top - rectangles[0].top) > 2)) return;
+              const left = Math.min(...rectangles.map((r) => r.left)), top = Math.min(...rectangles.map((r) => r.top));
+              return new DOMRect(left, top, Math.max(...rectangles.map((r) => r.right)) - left, Math.max(...rectangles.map((r) => r.bottom)) - top);
+            } };
+          }
+          for (const source of docs ? prepared ?? sources(root) : webSources()) {
+            if (!source) {
+              yield void 0;
+              continue;
+            }
+            if (group.length && (docs || group[0].block !== source.block || length + source.text.length > 2e3)) {
+              yield combine();
+              group = [];
+              length = 0;
+            }
+            group.push(source);
+            length += source.text.length;
+            yield void 0;
+          }
+          if (group.length) yield combine();
+        }
+        async function frame() {
+          await new Promise((resolve) => requestAnimationFrame(() => resolve()));
+        }
+        async function scan() {
+          if (!allowed() || !document.body) return;
+          running = true;
+          const version = revision;
+          let count = 0, attempted = 0, found = false, skippedSpace = 0, unknown = 0;
+          const readingMode = readingModeEnabled();
+          const readingRuns = [];
+          const runMap = /* @__PURE__ */ new Map();
+          let panelCharacters = 0, panelLimited = false;
+          const collisions = new CollisionIndex();
+          let glyphCount = 0;
+          try {
+            const root = region();
+            if (!root) {
+              message = docs ? "Waiting for the active Docs page\u2026" : "Waiting for page content\u2026";
+              statusState = "loading";
+              reader?.loading(readingMode, message);
+              return;
+            }
+            if (!host.isConnected) document.documentElement.append(host);
+            let prepared;
+            if (docs) {
+              const viewport = document.querySelector(".kix-appview-editor")?.getBoundingClientRect();
+              editorClip = new DOMRect(Math.max(0, viewport?.left ?? 0), Math.max(0, viewport?.top ?? 0), 0, 0);
+              editorClip.width = Math.max(0, Math.min(innerWidth, viewport?.right ?? innerWidth) - editorClip.left);
+              editorClip.height = Math.max(0, Math.min(innerHeight, viewport?.bottom ?? innerHeight) - editorClip.top);
+              prepared = [];
+              const seen = /* @__PURE__ */ new Set();
+              let started = performance.now();
+              for (const source of sources(root)) {
                 if (performance.now() - started >= pacer.budget()) {
                   await frame();
                   started = performance.now();
                   if (version !== revision || !allowed()) return;
                 }
-              }
-              if (prepared.length >= 2e3) break;
-            }
-          }
-          if (readingMode && !docs) {
-            prepared = [];
-            let started = performance.now();
-            const discovered = [];
-            for (const source of webSources(true)) {
-              if (performance.now() - started >= pacer.budget()) {
-                await frame();
-                started = performance.now();
-                if (version !== revision || !allowed()) return;
-              }
-              if (!source) continue;
-              discovered.push(source);
-              if (discovered.length >= 2e3) {
-                panelLimited = true;
-                break;
-              }
-            }
-            const paths = /* @__PURE__ */ new Map();
-            const path = (node) => {
-              let result = paths.get(node);
-              if (result) return result;
-              result = [];
-              let current = node;
-              while (current) {
-                result.unshift(current);
-                current = current instanceof ShadowRoot ? current.host : current.parentNode;
-              }
-              paths.set(node, result);
-              return result;
-            };
-            discovered.sort((a, b) => {
-              if (a.identity === b.identity) return (a.sourceOffset ?? 0) - (b.sourceOffset ?? 0);
-              const first = path(a.identity), second = path(b.identity);
-              let i = 0;
-              while (i < first.length && i < second.length && first[i] === second[i]) i++;
-              if (i === first.length) return -1;
-              if (i === second.length) return 1;
-              const order = first[i].compareDocumentPosition(second[i]);
-              return order & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : order & Node.DOCUMENT_POSITION_PRECEDING ? 1 : 0;
-            });
-            let previousSource;
-            for (const source of discovered) {
-              if (panelCharacters + source.text.length > 16e3) {
-                panelLimited = true;
-                break;
-              }
-              panelCharacters += source.text.length;
-              const previous = prepared.at(-1);
-              if (previous && previous.block === source.block && previous.text.length + source.text.length < 2e3) {
-                const contiguous2 = !previousSource || previousSource.identity !== source.identity || (previousSource.sourceOffset ?? 0) + previousSource.text.length === source.sourceOffset;
-                let hardBreak = false, node = previousSource?.identity ?? null, steps = 0;
-                if (node?.getRootNode() === source.identity?.getRootNode() && node !== source.identity) while (node && node !== source.identity && steps++ < 32) {
-                  if (node.firstChild) node = node.firstChild;
-                  else {
-                    while (node && !node.nextSibling && node !== source.block) node = node.parentNode;
-                    node = node === source.block ? null : node?.nextSibling ?? null;
-                  }
-                  if (node instanceof HTMLBRElement) hardBreak = true;
-                }
-                if (!contiguous2 || hardBreak) {
-                  if (++panelCharacters > 16e3) {
+                if (!source) continue;
+                const base = source.rect(0, source.text.length);
+                if (!base) continue;
+                const key = `${source.text}:${base.left.toFixed(1)}:${base.top.toFixed(1)}`;
+                if (seen.has(key)) continue;
+                seen.add(key);
+                if (readingMode) {
+                  if (panelCharacters + source.text.length > 16e3) {
                     panelLimited = true;
                     break;
                   }
-                  previous.text += "\n";
+                  panelCharacters += source.text.length;
+                  const order = source.orderBox ?? base;
+                  const run = { text: source.text, top: order.top, left: order.left, right: order.right, readings: [] };
+                  readingRuns.push(run);
+                  runMap.set(source, run);
                 }
-                previous.text += source.text;
-              } else prepared.push({ ...source });
-              previousSource = source;
-            }
-            for (const source of prepared) {
-              const box = source.orderBox;
-              const run = { text: source.text, top: box.top, left: box.left, right: box.right, readings: [] };
-              readingRuns.push(run);
-              runMap.set(source, run);
-            }
-          }
-          const iterator = readingMode ? prepared[Symbol.iterator]() : groupedSources(root, prepared);
-          let done = false;
-          while (!done && attempted < 500 && version === revision && allowed()) {
-            const batch = [];
-            let length = 0, started = performance.now();
-            while (length < 2e3) {
-              if (performance.now() - started >= pacer.budget()) {
-                await frame();
-                started = performance.now();
-                if (version !== revision || !allowed()) return;
-              }
-              const next = iterator.next();
-              if (next.done) {
-                done = true;
-                break;
-              }
-              if (!next.value) continue;
-              if (!readingMode && !/[\p{Script=Han}々]/u.test(next.value.text)) continue;
-              if (length + next.value.text.length > 2e3) {
-                await process(batch);
-                batch.length = 0;
-                length = 0;
-                if (version !== revision) return;
-                if (attempted >= 500) break;
-              }
-              batch.push(next.value);
-              length += next.value.text.length;
-              found = true;
-            }
-            await process(batch);
-          }
-          if (version !== revision || !allowed()) return;
-          statusState = "active";
-          if (docs && !prepared?.length) {
-            message = "Docs text is unavailable. Reload this document after installation. This editor version may be unsupported.";
-            statusState = "unavailable";
-            if (readingMode) reader?.unavailable(message);
-          } else if (!found) message = "No visible kanji in this view.";
-          else message = `Active \u2014 ${layer.childElementCount} visible readings${docs ? activePage ? " on the active page" : " in the editor viewport" : ""}.${skippedSpace ? ` Tight spacing: ${skippedSpace} omitted.` : ""}${unknown ? ` Unknown words: ${unknown}. Add a local correction in the menu.` : ""}${attempted >= 500 ? " View limit reached; scroll to reveal more." : ""}`;
-          if (readingMode && (!docs || prepared?.length)) {
-            reader?.display(readingRuns, !docs ? "web" : activePage ? String([...pages].indexOf(activePage)) : "pageless", viewSettings, readingAppearance, (docs ? editorClip?.top : 12) ?? 100, panelLimited || attempted >= 500);
-            syncMascot();
-            message = `Reading view \u2014 ${count} readings in ${!docs ? "the visible webpage text" : activePage ? "the active page\u2019s visible text" : "the editor viewport"}.${unknown ? ` Unknown words: ${unknown}. Add a local correction in the menu.` : ""}${panelLimited || attempted >= 500 ? " View limit reached; scroll to reveal more." : ""}`;
-          }
-          async function process(batch) {
-            if (!batch.length || version !== revision || !allowed()) return;
-            const requestId = crypto.randomUUID();
-            activeRequest = requestId;
-            let response;
-            try {
-              response = await sendToExtension({ type: "tokenize", requestId, texts: batch.map((s) => s.text), overrides, includeWords: readingMode });
-            } finally {
-              if (activeRequest === requestId) activeRequest = void 0;
-            }
-            if (version !== revision || !allowed() || response?.cancelled) return;
-            if (response?.error) throw new Error(response.error);
-            if (readingMode) for (let i = 0; i < batch.length; i++) {
-              const run = runMap.get(batch[i]);
-              if (run) run.words = response.words?.[i] ?? [];
-            }
-            let started = performance.now();
-            for (let i = 0; i < batch.length; i++) for (const part of response.results[i]) {
-              if (attempted >= 500) return;
-              attempted++;
-              if (!part.reading) {
-                unknown++;
-                continue;
-              }
-              if (readingMode) {
-                runMap.get(batch[i])?.readings.push(part);
-                count++;
-                continue;
-              }
-              if (performance.now() - started >= pacer.budget()) {
-                await frame();
-                started = performance.now();
-                if (version !== revision || !allowed()) return;
-              }
-              const source = batch[i], rect = source.rect(part.start, part.end);
-              if (!rect) continue;
-              const span = document.createElement("span");
-              span.textContent = part.reading;
-              const minimum = docs ? 6 : 7;
-              let fontSize = Math.max(minimum, Math.min(18, Math.min(12, source.fontSize * 0.5) * readingAppearance.scale));
-              measure.font = `${fontSize}px system-ui`;
-              const natural = measure.measureText(part.reading).width;
-              fontSize *= Math.min(1, (rect.width + 4) / natural);
-              if (fontSize < minimum) {
-                skippedSpace++;
-                continue;
-              }
-              let x = 0, y2 = 0, width = 0, box;
-              while (fontSize >= minimum) {
-                measure.font = `${fontSize}px system-ui`;
-                const metrics = measure.measureText(part.reading);
-                width = metrics.width;
-                x = rect.left + (rect.width - width) / 2;
-                if (docs) {
-                  const ascent = metrics.fontBoundingBoxAscent || fontSize * 0.8;
-                  const descent = metrics.fontBoundingBoxDescent || fontSize * 0.2;
-                  const baseline = (fontSize - ascent - descent) / 2 + ascent;
-                  y2 = rect.top - 0.5 - baseline - metrics.actualBoundingBoxDescent;
-                  box = new DOMRect(x, y2 + baseline - metrics.actualBoundingBoxAscent, width, metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
-                } else {
-                  y2 = rect.top - fontSize - 1;
-                  box = new DOMRect(x, y2, width, fontSize);
-                }
-                const clip = editorClip;
-                const clipped = docs && clip && (box.top < clip.top || box.bottom > clip.bottom || box.left < clip.left || box.right > clip.right);
-                if (!clipped && x >= 0 && x + width <= innerWidth && box.top >= 0 && !collisions.overlaps(box)) break;
-                box = void 0;
-                if (fontSize === minimum) break;
-                fontSize = Math.max(minimum, fontSize - 0.5);
-              }
-              if (!box) {
-                skippedSpace++;
-                continue;
-              }
-              const probe = document.elementFromPoint(x + width / 2, y2 + fontSize / 2);
-              if (!docs && probe) {
-                const doc = document;
-                const caret = doc.caretRangeFromPoint?.(x + width / 2, y2 + fontSize / 2);
-                if (caret?.startContainer instanceof Text && caret.startContainer.length) {
-                  const n = caret.startContainer, start2 = Math.min(caret.startOffset, n.length - 1);
-                  const r = document.createRange();
-                  r.setStart(n, start2);
-                  r.setEnd(n, start2 + 1);
-                  const hit = r.getBoundingClientRect();
-                  if (hit.bottom > box.top && hit.top < box.bottom && hit.top < rect.top - 2) {
-                    skippedSpace++;
-                    continue;
+                prepared.push(source);
+                let offset = 0;
+                for (const glyph of readingMode ? [] : source.text) {
+                  if (glyphCount >= 8e3) {
+                    collisions.add(base);
+                    break;
+                  }
+                  if (glyph.trim()) {
+                    const ink = source.rect(offset, offset + glyph.length);
+                    if (ink) {
+                      collisions.add(ink);
+                      glyphCount++;
+                    }
+                  }
+                  offset += glyph.length;
+                  if (performance.now() - started >= pacer.budget()) {
+                    await frame();
+                    started = performance.now();
+                    if (version !== revision || !allowed()) return;
                   }
                 }
-              }
-              span.style.cssText = `left:${x}px;top:${y2}px;font-size:${fontSize}px;--ko-color:${readingAppearance.contrast === "high" ? "#101010" : source.color};--ko-bg:${readingAppearance.contrast === "high" ? "white" : source.background === "rgba(0, 0, 0, 0)" ? "white" : source.background}${readingAppearance.contrast === "high" ? ";text-shadow:0 0 2px white,1px 0 white,-1px 0 white,0 1px white,0 -1px white" : ""}`;
-              layer.append(span);
-              collisions.add(box);
-              count++;
-            }
-          }
-        } catch (error) {
-          if (version === revision) {
-            message = `Furigana unavailable: ${String(error)}`;
-            statusState = "unavailable";
-            clear();
-            if (readingMode) reader?.unavailable(message);
-          }
-        } finally {
-          if (version === revision && allowed()) setToolbarAvailability(statusState === "unavailable" ? "unavailable" : "ready");
-          running = false;
-          if (revision !== version && allowed()) {
-            window.clearTimeout(timer);
-            timer = window.setTimeout(() => void scan(), Math.max(0, nextScanAt - performance.now()));
-          }
-        }
-      }
-      chrome.runtime.onMessage.addListener((request, _sender, respond) => {
-        if (request?.type === "status") respond({ message, state: statusState, toolbarAvailability });
-      });
-      chrome.storage.onChanged.addListener((changes, area) => {
-        if (area === "local" && changes.mascot) {
-          mascotSettings = mascotPreferences(changes.mascot.newValue);
-          syncMascot();
-        }
-        if (area === "local" && changes.showLegacyAnimations) setMimeticLegacyAnimations(changes.showLegacyAnimations.newValue);
-        if (area !== "local" || !["enabled", "excluded", "siteAppearance", "readingOverrides", "docsReadingView", "readingView"].some((key) => key in changes)) return;
-        const wasReading = readingModeEnabled();
-        if (changes.enabled) enabled = changes.enabled.newValue !== false;
-        if (changes.excluded) excluded = Array.isArray(changes.excluded.newValue) ? changes.excluded.newValue : [];
-        if (changes.excluded) syncMascot();
-        if (changes.siteAppearance) readingAppearance = appearanceForSite(changes.siteAppearance.newValue, hostname);
-        if (changes.readingOverrides) {
-          overrides = validOverrides(changes.readingOverrides.newValue);
-          reader?.setOverrides(overrides);
-          mascot?.invalidateLookup();
-        }
-        if (changes.docsReadingView) legacyView = changes.docsReadingView.newValue;
-        if (changes.readingView) rawView = changes.readingView.newValue;
-        viewSettings = readingViewPreferences(rawView, legacyView);
-        if (wasReading === readingModeEnabled() && !changes.enabled && !changes.excluded && !changes.readingOverrides && (readingModeEnabled() || !changes.siteAppearance)) {
-          reader?.appearance(viewSettings, readingAppearance);
-          syncMascot();
-          return;
-        }
-        schedule(0);
-      });
-      async function start() {
-        const state = await chrome.storage.local.get({ enabled: true, excluded: [], siteAppearance: {}, readingOverrides: {}, docsReadingView: {}, readingView: null, showLegacyAnimations: false, mascot: null });
-        enabled = state.enabled !== false;
-        excluded = Array.isArray(state.excluded) ? state.excluded : [];
-        mascotSettings = mascotPreferences(state.mascot);
-        syncMascot();
-        setMimeticLegacyAnimations(state.showLegacyAnimations);
-        readingAppearance = appearanceForSite(state.siteAppearance, hostname);
-        overrides = validOverrides(state.readingOverrides);
-        legacyView = state.docsReadingView;
-        rawView = state.readingView;
-        viewSettings = readingViewPreferences(rawView, legacyView);
-        reader?.setOverrides(overrides);
-        reader?.appearance(viewSettings, readingAppearance);
-        if (docs) {
-          registerPages(document);
-          watchDocsInputs(document);
-        }
-        watchInput(document);
-        const observer = new MutationObserver((records) => {
-          let relevant = false;
-          for (const record of records) {
-            if (record.target === host || host.contains(record.target) || mascot?.ownsNode(record.target) || reader?.ownsNode(record.target)) continue;
-            if (record.type === "childList" && [...record.addedNodes, ...record.removedNodes].every((node) => node instanceof Element && node.localName === "ko-mascot")) continue;
-            const element4 = record.target instanceof Element ? record.target : record.target.parentElement;
-            if (docs && element4?.closest(".kix-cursor,.kix-selection-overlay,.kix-selection-overlay-content")) continue;
-            if (docs && record.type !== "childList" && element4?.closest(".kix-page") && element4.closest(".kix-page") !== activePage) continue;
-            relevant = true;
-            if (docs) {
-              for (const node of record.addedNodes) if (node instanceof Element) {
-                registerPages(node);
-                watchDocsInputs(node);
+                if (prepared.length >= 2e3) break;
               }
             }
+            if (readingMode && !docs) {
+              prepared = [];
+              let started = performance.now();
+              const discovered = [];
+              for (const source of webSources(true)) {
+                if (performance.now() - started >= pacer.budget()) {
+                  await frame();
+                  started = performance.now();
+                  if (version !== revision || !allowed()) return;
+                }
+                if (!source) continue;
+                discovered.push(source);
+                if (discovered.length >= 2e3) {
+                  panelLimited = true;
+                  break;
+                }
+              }
+              const paths = /* @__PURE__ */ new Map();
+              const path = (node) => {
+                let result = paths.get(node);
+                if (result) return result;
+                result = [];
+                let current = node;
+                while (current) {
+                  result.unshift(current);
+                  current = current instanceof ShadowRoot ? current.host : current.parentNode;
+                }
+                paths.set(node, result);
+                return result;
+              };
+              discovered.sort((a, b) => {
+                if (a.identity === b.identity) return (a.sourceOffset ?? 0) - (b.sourceOffset ?? 0);
+                const first = path(a.identity), second = path(b.identity);
+                let i = 0;
+                while (i < first.length && i < second.length && first[i] === second[i]) i++;
+                if (i === first.length) return -1;
+                if (i === second.length) return 1;
+                const order = first[i].compareDocumentPosition(second[i]);
+                return order & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : order & Node.DOCUMENT_POSITION_PRECEDING ? 1 : 0;
+              });
+              let previousSource;
+              for (const source of discovered) {
+                if (panelCharacters + source.text.length > 16e3) {
+                  panelLimited = true;
+                  break;
+                }
+                panelCharacters += source.text.length;
+                const previous = prepared.at(-1);
+                if (previous && previous.block === source.block && previous.text.length + source.text.length < 2e3) {
+                  const contiguous2 = !previousSource || previousSource.identity !== source.identity || (previousSource.sourceOffset ?? 0) + previousSource.text.length === source.sourceOffset;
+                  let hardBreak = false, node = previousSource?.identity ?? null, steps = 0;
+                  if (node?.getRootNode() === source.identity?.getRootNode() && node !== source.identity) while (node && node !== source.identity && steps++ < 32) {
+                    if (node.firstChild) node = node.firstChild;
+                    else {
+                      while (node && !node.nextSibling && node !== source.block) node = node.parentNode;
+                      node = node === source.block ? null : node?.nextSibling ?? null;
+                    }
+                    if (node instanceof HTMLBRElement) hardBreak = true;
+                  }
+                  if (!contiguous2 || hardBreak) {
+                    if (++panelCharacters > 16e3) {
+                      panelLimited = true;
+                      break;
+                    }
+                    previous.text += "\n";
+                  }
+                  previous.text += source.text;
+                } else prepared.push({ ...source });
+                previousSource = source;
+              }
+              for (const source of prepared) {
+                const box = source.orderBox;
+                const run = { text: source.text, top: box.top, left: box.left, right: box.right, readings: [] };
+                readingRuns.push(run);
+                runMap.set(source, run);
+              }
+            }
+            const iterator = readingMode ? prepared[Symbol.iterator]() : groupedSources(root, prepared);
+            let done = false;
+            while (!done && attempted < 500 && version === revision && allowed()) {
+              const batch = [];
+              let length = 0, started = performance.now();
+              while (length < 2e3) {
+                if (performance.now() - started >= pacer.budget()) {
+                  await frame();
+                  started = performance.now();
+                  if (version !== revision || !allowed()) return;
+                }
+                const next = iterator.next();
+                if (next.done) {
+                  done = true;
+                  break;
+                }
+                if (!next.value) continue;
+                if (!readingMode && !/[\p{Script=Han}々]/u.test(next.value.text)) continue;
+                if (length + next.value.text.length > 2e3) {
+                  await process(batch);
+                  batch.length = 0;
+                  length = 0;
+                  if (version !== revision) return;
+                  if (attempted >= 500) break;
+                }
+                batch.push(next.value);
+                length += next.value.text.length;
+                found = true;
+              }
+              await process(batch);
+            }
+            if (version !== revision || !allowed()) return;
+            statusState = "active";
+            if (docs && !prepared?.length) {
+              message = "Docs text is unavailable. Reload this document after installation. This editor version may be unsupported.";
+              statusState = "unavailable";
+              if (readingMode) reader?.unavailable(message);
+            } else if (!found) message = "No visible kanji in this view.";
+            else message = `Active \u2014 ${layer.childElementCount} visible readings${docs ? activePage ? " on the active page" : " in the editor viewport" : ""}.${skippedSpace ? ` Tight spacing: ${skippedSpace} omitted.` : ""}${unknown ? ` Unknown words: ${unknown}. Add a local correction in the menu.` : ""}${attempted >= 500 ? " View limit reached; scroll to reveal more." : ""}`;
+            if (readingMode && (!docs || prepared?.length)) {
+              reader?.display(readingRuns, !docs ? "web" : activePage ? String([...pages].indexOf(activePage)) : "pageless", viewSettings, readingAppearance, (docs ? editorClip?.top : 12) ?? 100, panelLimited || attempted >= 500);
+              syncMascot();
+              message = `Reading view \u2014 ${count} readings in ${!docs ? "the visible webpage text" : activePage ? "the active page\u2019s visible text" : "the editor viewport"}.${unknown ? ` Unknown words: ${unknown}. Add a local correction in the menu.` : ""}${panelLimited || attempted >= 500 ? " View limit reached; scroll to reveal more." : ""}`;
+            }
+            async function process(batch) {
+              if (!batch.length || version !== revision || !allowed()) return;
+              const requestId = crypto.randomUUID();
+              activeRequest = requestId;
+              let response;
+              try {
+                response = await sendToExtension({ type: "tokenize", requestId, texts: batch.map((s) => s.text), overrides, includeWords: readingMode });
+              } finally {
+                if (activeRequest === requestId) activeRequest = void 0;
+              }
+              if (version !== revision || !allowed() || response?.cancelled) return;
+              if (response?.error) throw new Error(response.error);
+              if (readingMode) for (let i = 0; i < batch.length; i++) {
+                const run = runMap.get(batch[i]);
+                if (run) run.words = response.words?.[i] ?? [];
+              }
+              let started = performance.now();
+              for (let i = 0; i < batch.length; i++) for (const part of response.results[i]) {
+                if (attempted >= 500) return;
+                attempted++;
+                if (!part.reading) {
+                  unknown++;
+                  continue;
+                }
+                if (readingMode) {
+                  runMap.get(batch[i])?.readings.push(part);
+                  count++;
+                  continue;
+                }
+                if (performance.now() - started >= pacer.budget()) {
+                  await frame();
+                  started = performance.now();
+                  if (version !== revision || !allowed()) return;
+                }
+                const source = batch[i], rect = source.rect(part.start, part.end);
+                if (!rect) continue;
+                const span = document.createElement("span");
+                span.textContent = part.reading;
+                const minimum = docs ? 6 : 7;
+                let fontSize = Math.max(minimum, Math.min(18, Math.min(12, source.fontSize * 0.5) * readingAppearance.scale));
+                measure.font = `${fontSize}px system-ui`;
+                const natural = measure.measureText(part.reading).width;
+                fontSize *= Math.min(1, (rect.width + 4) / natural);
+                if (fontSize < minimum) {
+                  skippedSpace++;
+                  continue;
+                }
+                let x = 0, y2 = 0, width = 0, box;
+                while (fontSize >= minimum) {
+                  measure.font = `${fontSize}px system-ui`;
+                  const metrics = measure.measureText(part.reading);
+                  width = metrics.width;
+                  x = rect.left + (rect.width - width) / 2;
+                  if (docs) {
+                    const ascent = metrics.fontBoundingBoxAscent || fontSize * 0.8;
+                    const descent = metrics.fontBoundingBoxDescent || fontSize * 0.2;
+                    const baseline = (fontSize - ascent - descent) / 2 + ascent;
+                    y2 = rect.top - 0.5 - baseline - metrics.actualBoundingBoxDescent;
+                    box = new DOMRect(x, y2 + baseline - metrics.actualBoundingBoxAscent, width, metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
+                  } else {
+                    y2 = rect.top - fontSize - 1;
+                    box = new DOMRect(x, y2, width, fontSize);
+                  }
+                  const clip = editorClip;
+                  const clipped = docs && clip && (box.top < clip.top || box.bottom > clip.bottom || box.left < clip.left || box.right > clip.right);
+                  if (!clipped && x >= 0 && x + width <= innerWidth && box.top >= 0 && !collisions.overlaps(box)) break;
+                  box = void 0;
+                  if (fontSize === minimum) break;
+                  fontSize = Math.max(minimum, fontSize - 0.5);
+                }
+                if (!box) {
+                  skippedSpace++;
+                  continue;
+                }
+                const probe = document.elementFromPoint(x + width / 2, y2 + fontSize / 2);
+                if (!docs && probe) {
+                  const doc = document;
+                  const caret = doc.caretRangeFromPoint?.(x + width / 2, y2 + fontSize / 2);
+                  if (caret?.startContainer instanceof Text && caret.startContainer.length) {
+                    const n = caret.startContainer, start2 = Math.min(caret.startOffset, n.length - 1);
+                    const r = document.createRange();
+                    r.setStart(n, start2);
+                    r.setEnd(n, start2 + 1);
+                    const hit = r.getBoundingClientRect();
+                    if (hit.bottom > box.top && hit.top < box.bottom && hit.top < rect.top - 2) {
+                      skippedSpace++;
+                      continue;
+                    }
+                  }
+                }
+                span.style.cssText = `left:${x}px;top:${y2}px;font-size:${fontSize}px;--ko-color:${readingAppearance.contrast === "high" ? "#101010" : source.color};--ko-bg:${readingAppearance.contrast === "high" ? "white" : source.background === "rgba(0, 0, 0, 0)" ? "white" : source.background}${readingAppearance.contrast === "high" ? ";text-shadow:0 0 2px white,1px 0 white,-1px 0 white,0 1px white,0 -1px white" : ""}`;
+                layer.append(span);
+                collisions.add(box);
+                count++;
+              }
+            }
+          } catch (error) {
+            if (version === revision) {
+              message = `Furigana unavailable: ${String(error)}`;
+              statusState = "unavailable";
+              clear();
+              if (readingMode) reader?.unavailable(message);
+            }
+          } finally {
+            if (version === revision && allowed()) setToolbarAvailability(statusState === "unavailable" ? "unavailable" : "ready");
+            running = false;
+            if (revision !== version && allowed()) {
+              window.clearTimeout(timer);
+              timer = window.setTimeout(() => void scan(), Math.max(0, nextScanAt - performance.now()));
+            }
           }
-          if (relevant) schedule(150, "edit");
+        }
+        chrome.runtime.onMessage.addListener((request, _sender, respond) => {
+          if (request?.type === "status") respond({ message, state: statusState, toolbarAvailability });
         });
-        mutationObserver = observer;
-        observer.observe(document.body, observerOptions);
-        document.addEventListener("scroll", (event) => {
-          if (!mascot?.owns(event) && !reader?.owns(event)) schedule(100, "scroll");
-        }, { capture: true, passive: true });
-        document.addEventListener("load", (event) => {
-          if (!mascot?.owns(event) && !reader?.owns(event)) schedule();
-        }, true);
-        window.addEventListener("resize", () => schedule(100));
-        window.visualViewport?.addEventListener("resize", () => schedule(100));
-        document.addEventListener("visibilitychange", () => schedule(0));
-        document.fonts.addEventListener("loadingdone", () => schedule());
-        if (!allowed()) message = "Disabled for this page.";
-        setToolbarAvailability("ready");
-        schedule(0);
+        chrome.storage.onChanged.addListener((changes, area) => {
+          if (area === "local" && changes.mascot) {
+            mascotSettings = mascotPreferences(changes.mascot.newValue);
+            syncMascot();
+          }
+          if (area === "local" && changes.showLegacyAnimations) setMimeticLegacyAnimations(changes.showLegacyAnimations.newValue);
+          if (area !== "local" || !["enabled", "excluded", "siteAppearance", "readingOverrides", "docsReadingView", "readingView"].some((key) => key in changes)) return;
+          const wasReading = readingModeEnabled();
+          if (changes.enabled) enabled = changes.enabled.newValue !== false;
+          if (changes.excluded) excluded = Array.isArray(changes.excluded.newValue) ? changes.excluded.newValue : [];
+          if (changes.excluded) syncMascot();
+          if (changes.siteAppearance) readingAppearance = appearanceForSite(changes.siteAppearance.newValue, hostname);
+          if (changes.readingOverrides) {
+            overrides = validOverrides(changes.readingOverrides.newValue);
+            reader?.setOverrides(overrides);
+            mascot?.invalidateLookup();
+          }
+          if (changes.docsReadingView) legacyView = changes.docsReadingView.newValue;
+          if (changes.readingView) rawView = changes.readingView.newValue;
+          viewSettings = readingViewPreferences(rawView, legacyView);
+          if (wasReading === readingModeEnabled() && !changes.enabled && !changes.excluded && !changes.readingOverrides && (readingModeEnabled() || !changes.siteAppearance)) {
+            reader?.appearance(viewSettings, readingAppearance);
+            syncMascot();
+            return;
+          }
+          schedule(0);
+        });
+        async function start() {
+          const state = await chrome.storage.local.get({ enabled: true, excluded: [], siteAppearance: {}, readingOverrides: {}, docsReadingView: {}, readingView: null, showLegacyAnimations: false, mascot: null });
+          enabled = state.enabled !== false;
+          excluded = Array.isArray(state.excluded) ? state.excluded : [];
+          mascotSettings = mascotPreferences(state.mascot);
+          syncMascot();
+          setMimeticLegacyAnimations(state.showLegacyAnimations);
+          readingAppearance = appearanceForSite(state.siteAppearance, hostname);
+          overrides = validOverrides(state.readingOverrides);
+          legacyView = state.docsReadingView;
+          rawView = state.readingView;
+          viewSettings = readingViewPreferences(rawView, legacyView);
+          reader?.setOverrides(overrides);
+          reader?.appearance(viewSettings, readingAppearance);
+          if (docs) {
+            registerPages(document);
+            watchDocsInputs(document);
+          }
+          watchInput(document);
+          const observer = new MutationObserver((records) => {
+            let relevant = false;
+            let selectionChanged = false;
+            for (const record of records) {
+              if (record.target === host || host.contains(record.target) || mascot?.ownsNode(record.target) || reader?.ownsNode(record.target)) continue;
+              if (record.type === "childList" && [...record.addedNodes, ...record.removedNodes].every((node) => node instanceof Element && node.localName === "ko-mascot")) continue;
+              const element4 = record.target instanceof Element ? record.target : record.target.parentElement;
+              if (docs && (element4?.closest(docsSelectionSelector) || record.type === "childList" && [...record.addedNodes, ...record.removedNodes].some((node) => node instanceof Element && (node.matches(docsSelectionSelector) || node.querySelector(docsSelectionSelector))))) selectionChanged = true;
+              if (docs && element4?.closest(`.kix-cursor,${docsSelectionSelector}`)) continue;
+              if (docs && record.type !== "childList" && element4?.closest(".kix-page") && element4.closest(".kix-page") !== activePage) continue;
+              relevant = true;
+              if (docs) {
+                for (const node of record.addedNodes) if (node instanceof Element) {
+                  registerPages(node);
+                  watchDocsInputs(node);
+                }
+              }
+            }
+            if (relevant) schedule(150, "edit");
+            if (selectionChanged) mascot?.selectionChanged(() => docsSelectedTarget(docsSource));
+          });
+          mutationObserver = observer;
+          observer.observe(document.body, observerOptions);
+          document.addEventListener("scroll", (event) => {
+            if (!mascot?.owns(event) && !reader?.owns(event)) schedule(100, "scroll");
+          }, { capture: true, passive: true });
+          document.addEventListener("load", (event) => {
+            if (!mascot?.owns(event) && !reader?.owns(event)) schedule();
+          }, true);
+          window.addEventListener("resize", () => schedule(100));
+          window.visualViewport?.addEventListener("resize", () => schedule(100));
+          document.addEventListener("visibilitychange", () => schedule(0));
+          document.fonts.addEventListener("loadingdone", () => schedule());
+          if (!allowed()) message = "Disabled for this page.";
+          setToolbarAvailability("ready");
+          schedule(0);
+        }
+        if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => void start(), { once: true });
+        else void start();
       }
-      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => void start(), { once: true });
-      else void start();
+      initializeContentScript();
     }
   });
   require_content();

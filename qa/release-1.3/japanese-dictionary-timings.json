@@ -1,0 +1,42 @@
+{
+  "environment": "Node resolver harness with real compressed shards; excludes browser messaging and hover delay",
+  "externalRequests": 0,
+  "timings": [
+    {
+      "word": "飲む",
+      "coldMs": 4.61,
+      "cachedMs": 0.01,
+      "title": "のむ"
+    },
+    {
+      "word": "のむ",
+      "coldMs": 1.33,
+      "cachedMs": 0,
+      "title": "のむ"
+    },
+    {
+      "word": "食べる",
+      "coldMs": 1.38,
+      "cachedMs": 0,
+      "title": "たべる"
+    },
+    {
+      "word": "学校",
+      "coldMs": 0.98,
+      "cachedMs": 0,
+      "title": "学校"
+    },
+    {
+      "word": "ありがとう",
+      "coldMs": 1.43,
+      "cachedMs": 0,
+      "title": "ありがとう"
+    },
+    {
+      "word": "近代化",
+      "coldMs": 1.2,
+      "cachedMs": 0.01,
+      "title": "近代化"
+    }
+  ]
+}

@@ -29,6 +29,12 @@ test('release announcement stays dismissed across reopen and browser restart, wi
   await expect(banner).toBeVisible();
   await expect(banner).toContainText(`What’s new in Kō ${version}`);
   await expect(banner).toContainText('Meet Kōくん');
+  await popup.screenshot({path:'qa/release-1.3/ko-kun-invitation.png',fullPage:true});
+  await banner.getByRole('button',{name:'Try Kōくん',exact:true}).click();
+  await expect(popup.locator('#mascot-panel')).toHaveAttribute('open','');
+  await expect(popup.locator('#mascot-enabled')).toBeFocused();
+  await expect(popup.locator('#mascot-enabled')).not.toBeChecked();
+  await expect(banner).toBeVisible();
   // Following the changelog doesn't count as dismissing it.
   const opened=context.waitForEvent('page');
   await popup.getByRole('link',{name:'Read the changelog',exact:true}).click();

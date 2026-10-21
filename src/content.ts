@@ -9,6 +9,11 @@ import {Mascot} from './mascot';
 import {mascotPreferences} from './mascot-preferences';
 import {updateMascotPosition} from './preferences';
 import {webTarget,type MascotTextTarget} from './mascot-target';
+import {docsSelectedTarget,docsSelectionSelector} from './docs-selection';
+function initializeContentScript() {
+// SVG/XML documents cannot host the HTML UI created below. Content scripts
+// also run on direct image URLs, so stop before creating overlays or listeners.
+if (document.contentType !== 'text/html') return;
 const hostname = location.hostname || (location.ancestorOrigins[0] ? new URL(location.ancestorOrigins[0]).hostname : '');
 const docs = location.hostname === 'docs.google.com' && location.pathname.startsWith('/document/');
 if (docs) {
@@ -21,7 +26,7 @@ shadow.innerHTML = `<style>:host{all:initial!important;position:fixed!important;
 const layer = shadow.querySelector('div')!;
 let mutationObserver: MutationObserver | undefined;
 const watchedShadows = new WeakSet<ShadowRoot>();
-const observerOptions: MutationObserverInit = {subtree:true, childList:true, characterData:true, attributes:true, attributeFilter:['style','class','hidden','open','aria-label','data-font-css','width','height','transform']};
+const observerOptions: MutationObserverInit = {subtree:true, childList:true, characterData:true, attributes:true, attributeFilter:['style','class','hidden','open','aria-label','data-font-css','width','height','transform','x','y']};
 function observeShadow(root: ShadowRoot) {
   if (mutationObserver && !watchedShadows.has(root)) { watchedShadows.add(root); mutationObserver.observe(root,observerOptions); }
 }
@@ -589,16 +594,21 @@ async function start() {
   watchInput(document);
   const observer = new MutationObserver(records => {
     let relevant = false;
+    let selectionChanged=false;
     for (const record of records) {
       if (record.target === host || host.contains(record.target) || mascot?.ownsNode(record.target) || reader?.ownsNode(record.target)) continue;
       if(record.type==='childList' && [...record.addedNodes,...record.removedNodes].every(node=>node instanceof Element && node.localName==='ko-mascot'))continue;
       const element = record.target instanceof Element ? record.target : record.target.parentElement;
-      if (docs && element?.closest('.kix-cursor,.kix-selection-overlay,.kix-selection-overlay-content')) continue;
+      if(docs && (element?.closest(docsSelectionSelector) || record.type==='childList' && [...record.addedNodes,...record.removedNodes].some(node=>node instanceof Element && (node.matches(docsSelectionSelector) || node.querySelector(docsSelectionSelector)))))selectionChanged=true;
+      if (docs && element?.closest(`.kix-cursor,${docsSelectionSelector}`)) continue;
       if (docs && record.type !== 'childList' && element?.closest('.kix-page') && element.closest('.kix-page') !== activePage) continue;
       relevant = true;
       if (docs) for (const node of record.addedNodes) if (node instanceof Element) { registerPages(node); watchDocsInputs(node); }
     }
     if (relevant) schedule(150,'edit');
+    // Refreshing content can suspend playback and cancel pending lookups.
+    // Queue the selection only after that refresh has updated the companion.
+    if(selectionChanged)mascot?.selectionChanged(()=>docsSelectedTarget(docsSource));
   });
   mutationObserver = observer;
   observer.observe(document.body, observerOptions);
@@ -613,3 +623,5 @@ async function start() {
   schedule(0);
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => void start(), {once:true}); else void start();
+}
+initializeContentScript();

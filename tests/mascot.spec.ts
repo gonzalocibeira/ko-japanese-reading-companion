@@ -87,8 +87,8 @@ test('chosen-language definitions use local English lemmas without requests and 
   const page=await openPage();await mascot({enabled:true,definitions:'en'});await hoverText(page,'#other');await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain('to eat');
   expect(requested).toEqual([]);expect((await shadow(page,snapshot))?.text).toContain('JMdict');
   expect(await shadow(page,`function(){return this.querySelector('.bubble').querySelectorAll('img,script').length}`)).toBe(0);
-  await context.unroute('https://*.wiktionary.org/w/api.php*');await context.route('https://*.wiktionary.org/w/api.php*',route=>route.abort());await mascot({definitions:'ja'});await page.mouse.move(800,50);await hoverText(page,'#word');
-  await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain('Definition unavailable');expect((await shadow(page,snapshot))?.reading).toBe('にほんご');
+  await context.unroute('https://*.wiktionary.org/w/api.php*');await context.route('https://*.wiktionary.org/w/api.php*',route=>route.abort());await page.locator('#word').evaluate(el=>{el.textContent='辞書試験語';});await settings({readingOverrides:{'辞書試験語':'じしょしけんご'}});await mascot({definitions:'ja'});await page.mouse.move(800,50);await hoverText(page,'#word');
+  await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain('Definition unavailable');expect((await shadow(page,snapshot))?.reading).toBe('じしょしけんご');
 });
 test('飲む and its inflected text show offline English definitions in the real companion',async()=>{
   const requested:string[]=[];await context.route('https://*.wiktionary.org/w/api.php*',route=>{requested.push(route.request().url());return route.abort();});
@@ -114,6 +114,50 @@ test('Google Docs geometry and reading-view word hooks work with their independe
   await page.screenshot({path:'qa/release-1.3/docs-mascot.png'});
   await page.mouse.move(point.x+200,point.y+80);await expect.poll(async()=>(await shadow(page,snapshot))?.open,{timeout:500}).toBe(false);
 });
+test('Google Docs highlight follows canvas selection geometry without native selection events',async()=>{
+  const page=await context.newPage();
+  await page.route('https://docs.google.com/document/d/highlight/edit',route=>route.fulfill({contentType:'text/html; charset=utf-8',body:`<!doctype html><meta charset="utf-8">
+    <style>body{margin:0}.kix-appview-editor{position:absolute;top:100px;width:900px;height:600px}.kix-canvas-tile-selection{position:absolute;inset:0}</style>
+    <div class="kix-appview-editor"><svg width="900" height="600"><g data-font-css="24px system-ui">
+    <rect x="40" y="60" width="120" height="28" aria-label="猫日本語猫"/>
+    <rect x="40" y="100" width="48" height="28" aria-label="学校"/>
+    </g></svg><div class="kix-canvas-tile-selection"><svg width="900" height="600"></svg></div></div>
+    <iframe class="docs-texteventtarget-iframe" srcdoc="<div contenteditable=true></div>"></iframe>`}));
+  await page.goto('https://docs.google.com/document/d/highlight/edit');
+  await mascot({enabled:true,trigger:'highlight',motion:'reduced'});await expect(page.locator('ko-mascot')).toBeVisible();
+  const select=async(x:number,y:number,width:number)=>page.locator('.kix-canvas-tile-selection svg').evaluate((svg,r)=>{
+    let rect=svg.querySelector('rect');if(!rect){rect=document.createElementNS('http://www.w3.org/2000/svg','rect');svg.append(rect);}
+    for(const [key,value] of Object.entries({...r,height:28}))rect.setAttribute(key,String(value));
+  },{x,y,width});
+  expect(await page.evaluate(()=>window.getSelection()?.toString())).toBe('');
+  await select(64,60,72);await expect.poll(async()=>(await shadow(page,snapshot))?.reading).toBe('にほんご');
+  // Keyboard selection in Docs' input iframe only updates the painted rect.
+  await page.frameLocator('iframe').locator('[contenteditable]').focus();await page.keyboard.press('Shift+ArrowRight');
+  await select(40,100,48);await expect.poll(async()=>(await shadow(page,snapshot))?.reading).toBe('がっこう');
+  await page.locator('.kix-canvas-tile-selection svg').evaluate(svg=>svg.replaceChildren());
+  await expect.poll(async()=>(await shadow(page,snapshot))?.open).toBe(false);
+  await select(40,60,120);await page.waitForTimeout(400);expect((await shadow(page,snapshot))?.open).toBe(false);
+  await select(64,60,72);await expect.poll(async()=>(await shadow(page,snapshot))?.reading).toBe('にほんご');
+  await page.locator('.kix-canvas-tile-selection svg').evaluate(svg=>{const rect=svg.firstElementChild!.cloneNode(true) as Element;rect.setAttribute('y','100');svg.append(rect);});
+  await expect.poll(async()=>(await shadow(page,snapshot))?.open).toBe(false);
+  // Separate annotated runs and duplicate canvas tiles must preserve one word.
+  await page.locator('.kix-appview-editor > svg g').evaluate(g=>{
+    g.innerHTML='<rect x="64" y="60" width="24" height="28" aria-label="日"/><rect x="88" y="60" width="48" height="28" aria-label="本語"/><rect x="88" y="60" width="48" height="28" aria-label="本語"/>';
+  });
+  await page.locator('.kix-canvas-tile-selection svg').evaluate(svg=>svg.replaceChildren());
+  await select(64,60,72);await expect.poll(async()=>(await shadow(page,snapshot))?.reading).toBe('にほんご');
+  await page.locator('.kix-canvas-tile-selection').evaluate(el=>el.remove());
+  await expect.poll(async()=>(await shadow(page,snapshot))?.open).toBe(false);
+  await page.locator('.kix-appview-editor').evaluate(editor=>{
+    const overlay=document.createElement('div');overlay.className='kix-selection-overlay';
+    overlay.innerHTML='<div class="kix-selection-overlay-content" style="position:absolute;left:64px;top:60px;width:72px;height:28px"></div>';editor.append(overlay);
+  });
+  await expect.poll(async()=>(await shadow(page,snapshot))?.reading).toBe('にほんご');
+  await page.locator('.kix-selection-overlay').evaluate(el=>el.remove());
+  await expect.poll(async()=>(await shadow(page,snapshot))?.open).toBe(false);
+  await page.locator('.kix-appview-editor').evaluate(editor=>{const selection=document.createElement('div');selection.className='kix-canvas-tile-selection';selection.innerHTML='<svg width="900" height="600"></svg>';editor.append(selection);});
+  await mascot({trigger:'hover'});await select(64,60,72);await page.waitForTimeout(400);expect((await shadow(page,snapshot))?.open).toBe(false);
+});
 test('popup saves companion settings across reopen',async()=>{
   const page=await openPage();await page.bringToFront();const popup=await context.newPage();await popup.goto(origin+'/popup.html');await popup.locator('#mascot-panel summary').click();
   await expect(popup.locator('#mascot-enabled')).not.toBeChecked();await expect(popup.locator('#mascot-trigger')).toBeDisabled();
@@ -138,12 +182,24 @@ test('open-shadow text works under restrictive page CSP, and stale definition re
   let finish:(()=>void)|undefined;
   await context.route('https://*.wiktionary.org/w/api.php*',async route=>{
     const word=new URL(route.request().url()).searchParams.get('page');
-    if(word==='学校')await new Promise<void>(resolve=>{finish=resolve;});
+    if(word==='辞書待機語')await new Promise<void>(resolve=>{finish=resolve;});
     await route.fulfill({json:{parse:{title:word,text:`<h2>日本語</h2><h3>名詞</h3><ol><li>Definition for ${word}</li></ol>`}}});
   });
   const page=await context.newPage();await page.route('https://mascot.test/csp',route=>route.fulfill({contentType:'text/html',headers:{'Content-Security-Policy':"img-src 'none'; connect-src 'none'"},body:fixture}));
   await page.goto('https://mascot.test/csp');await page.locator('#shadow').evaluate(el=>{el.attachShadow({mode:'open'}).innerHTML='<span id="shadow-word">日本語</span>';});
+  await page.locator('#ruby').evaluate(el=>{el.textContent='辞書待機語';});await settings({readingOverrides:{'辞書待機語':'じしょたいきご'}});
   await mascot({enabled:true,definitions:'ja'});await expect.poll(async()=>(await shadow(page,snapshot))?.pixels).toBeGreaterThan(0);
-  await hoverText(page,'#ruby');await expect.poll(()=>!!finish).toBe(true);await hoverText(page,'#shadow-word');await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain('Definition for 日本語');
-  finish!();await page.waitForTimeout(150);expect((await shadow(page,snapshot))?.text).not.toContain('Definition for 学校');
+  await hoverText(page,'#ruby');await expect.poll(()=>!!finish).toBe(true);await hoverText(page,'#shadow-word');await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain('日本の事実上');
+  finish!();await page.waitForTimeout(150);expect((await shadow(page,snapshot))?.text).not.toContain('Definition for 辞書待機語');
+});
+
+
+test('Japanese companion definitions work offline for a spelling reference and an inflected verb',async()=>{
+  const requested:string[]=[];await context.route('https://*.wiktionary.org/w/api.php*',route=>{requested.push(route.request().url());return route.abort();});
+  const page=await openPage();await page.locator('#word').evaluate(el=>{el.textContent='飲む';});await page.locator('#other').evaluate(el=>{el.textContent='食べました。';});
+  await mascot({enabled:true,definitions:'ja'});await expect.poll(async()=>(await shadow(page,snapshot))?.pixels).toBeGreaterThan(0);
+  await hoverText(page,'#word');await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain('液体');
+  expect((await shadow(page,snapshot))?.text).toContain('オフライン');await page.mouse.move(800,50);
+  await hoverText(page,'#other');await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain('口から');
+  expect(requested).toEqual([]);
 });

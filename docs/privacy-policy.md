@@ -14,7 +14,7 @@ The Google Docs bridge sets Google's canvas annotation flag using the extension'
 
 ## Word definitions and online fallback
 
-English meanings are looked up first in the complete English JMdict dictionary bundled with Kō. A local English hit makes no external request. Clicking a reading-panel word, or activating it with Enter or Space, starts English and Japanese lookups independently: English Wiktionary is contacted only if the local English lookup misses or cannot load, while Japanese definitions use Japanese Wiktionary. The English meaning can appear while Japanese is still loading. Japanese definitions are not bundled offline.
+English meanings are looked up first in the complete English JMdict dictionary bundled with Kō; Japanese definitions are looked up in a bundled Japanese Wiktionary snapshot extracted by Kaikki/Wiktextract. A local hit in either language makes no external request. Clicking a reading-panel word, or activating it with Enter or Space, starts both lookups independently. Each language contacts only its corresponding Wiktionary edition when its local lookup misses or cannot load. Japanese coverage is incomplete; spelling references are resolved locally where unambiguous. No page text or lookup terms are sent to Kaikki. English and Japanese definitions can both work without an internet connection when entries are available locally.
 
 Kōくん is off by default, and its definitions are separately off by default. When both are enabled, hovering over a Japanese word for 600 ms or highlighting a word (depending on the chosen trigger) looks up only the selected language, following the same local-first rule. Definitions set to Off perform no definition lookup.
 

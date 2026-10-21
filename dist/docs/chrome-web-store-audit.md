@@ -1,8 +1,8 @@
 # Chrome Web Store audit and release records
 
-## 1.3.0 · Work in progress
+## 1.3.0 · GitHub release · 22 October 2026
 
-The primary branch contains **1.3.0 WIP**, including the optional Kōくん companion, offline animation gallery, updated privacy disclosures and compiled runtime. This is a development snapshot, with no 1.3 tag, GitHub release, store submission, or launch date. See the [1.3 verification notes](release-1.3-audit.md). The published GitHub **v1.2.0** assets remain separate; the store records below describe their dated submissions rather than live dashboard state.
+The stable GitHub release includes the optional Kōくん companion, offline animation gallery, bundled English and Japanese definitions, updated privacy disclosures, and compiled runtime. See the [1.3 release audit](release-1.3-audit.md). The store-layout ZIP is prepared for submission; no Chrome Web Store submission or publication is part of this release. Records below describe dated earlier submissions, not live dashboard state.
 
 ## 1.2.0 · GitHub publication 18 October; announced launch 28 October 2026
 

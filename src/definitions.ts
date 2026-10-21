@@ -3,7 +3,7 @@ export interface DictionaryPage {
   status:'ok'|'missing'|'error';
   definitions:string[];
   title?:string;
-  source?:'jmdict'|'wiktionary';
+  source?:'jmdict'|'jawiktionary'|'wiktionary';
   entryIds?:string[];
   reason?:'network'|'structure'|'busy';
 }
@@ -15,6 +15,10 @@ export function definitionSource(page:DictionaryPage,language:DefinitionLanguage
   if(page.source==='jmdict')return {
     url:'https://www.edrdg.org/jmdict/j_jmdict.html',label:'JMdict · offline ↗',
     notice:'JMdict · EDRDG · CC BY-SA 4.0 · Looked up on this device.'
+  };
+  if(page.source==='jawiktionary')return {
+    url:dictionaryURL('ja',page.title ?? word),label:'ウィクショナリー · オフライン ↗',
+    notice:'日本語版ウィクショナリー · Kaikki/Wiktextract · CC BY-SA 4.0 · 端末内で検索。'
   };
   return {url:dictionaryURL(language,page.title ?? word),label:language==='en'?'English Wiktionary ↗':'ウィクショナリー日本語版 ↗',
     notice:'Wiktionary · CC BY-SA · Only the lookup term and any spelling-reference terms are sent.'};

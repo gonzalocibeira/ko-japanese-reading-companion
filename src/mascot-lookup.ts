@@ -44,9 +44,12 @@ export class MascotLookup {
     listen('keydown',(e:KeyboardEvent)=>{if(e.key==='Escape' || !options.owns(e))this.close();});
     listen('compositionstart',()=>this.close());listen('input',()=>this.close());
     listen('selectionchange',()=>{
-      if(options.settings().trigger!=='highlight' || options.paused())return;
-      this.cancel();this.timer=window.setTimeout(()=>{const target=selectedTarget();if(target)void this.analyze(target);},180);
+      this.selectionChanged(selectedTarget);
     });
+  }
+  selectionChanged(target:()=>MascotTextTarget|undefined) {
+    if(this.options.settings().trigger!=='highlight' || this.options.paused())return;
+    this.close();this.timer=window.setTimeout(()=>{const selected=target();if(selected)void this.analyze(selected);},180);
   }
   hoverWord(word:MascotWord,contains?:(x:number,y:number)=>boolean) {
     if(this.options.settings().trigger!=='hover' || this.options.paused())return;

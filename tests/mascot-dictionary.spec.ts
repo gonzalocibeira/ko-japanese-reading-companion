@@ -126,3 +126,14 @@ test('pending lookups deduplicate, concurrency is bounded, and shared results ev
     expect(bounded.requests).toHaveLength(257);await bounded.lookup('ja','欠落0');expect(bounded.requests).toHaveLength(258);
   } finally {await bounded.close();}
 });
+
+
+test('Japanese definitions and spelling-reference meanings are served locally with no network requests',async()=>{
+  const h=await harness({respond:()=>new Error('Offline')});try {
+    for(const [word,meaning] of [['飲む','液体'],['のむ','液体'],['食べる','口から'],['学校','教育'],['ありがとう','感謝'],['図書館','収集'],['近代化','社会']]) {
+      const result=await h.lookup('ja',word);expect(result).toMatchObject({status:'ok',source:'jawiktionary'});expect(result.definitions.join(' ')).toContain(meaning);
+    }
+    expect((await h.lookup('ja','飲む')).title).toBe('のむ');expect(h.requests).toEqual([]);expect(h.created()).toBe(0);
+    expect((await h.lookup('ja','学校生活')).status).toBe('error');expect(h.requests).toEqual(['ja:学校生活']);
+  } finally {await h.close();}
+});
