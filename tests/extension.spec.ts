@@ -72,6 +72,22 @@ test('vocabulary noun readings reach Docs overlays and word metadata without cha
     await page.close();
   }
 });
+test('full kanji compounds reach reading-panel word buttons through the bundled worker',async()=>{
+  const page=await context.newPage();
+  try {
+    await settings({readingView:{sites:{'127.0.0.1':true},spacing:2.8,fontSize:20,width:420},readingOverrides:{}});
+    await page.route(`${base}/compounds`,route=>route.fulfill({contentType:'text/html',body:'<!doctype html><meta charset="utf-8"><p>近代化が進む。国際化する。少子高齢化。経済成長。</p>'}));
+    await page.goto(`${base}/compounds`);
+    const words=`function(){return Array.from(this.querySelectorAll('.word'),el=>({surface:el.dataset.surface,reading:el.dataset.reading}))}`;
+    await expect.poll(()=>readerEval(page,words),{timeout:30000}).toEqual(expect.arrayContaining([
+      {surface:'近代化',reading:'きんだいか'},{surface:'国際化',reading:'こくさいか'},
+      {surface:'少子高齢化',reading:'しょうしこうれいか'},{surface:'経済成長',reading:'けいざいせいちょう'}
+    ]));
+  } finally {
+    await settings({readingView:{sites:{},spacing:2.8,fontSize:20,width:420}});
+    await page.close();
+  }
+});
 test('automatic offline readings preserve source, react to changes, and disable cleanly',async()=>{
   const page=await context.newPage(); const remote:string[]=[];
   page.on('request',request=>{if(!request.url().startsWith(base)&&!request.url().startsWith('chrome-extension:'))remote.push(request.url());});

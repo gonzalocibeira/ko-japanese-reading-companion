@@ -24,12 +24,19 @@ def texts(element, tag):
     return [unicodedata.normalize('NFC', node.text or '') for node in element.findall(tag)]
 
 
+def kanji_compound(term):
+    return 3 <= len(term) <= 24 and all(
+        char in '々〆' or 'CJK UNIFIED IDEOGRAPH' in unicodedata.name(char, '')
+        for char in term)
+
+
 def generate(source, output, metadata):
     digest = hashlib.sha256(source.read_bytes()).hexdigest()
     if digest != metadata['sha256']:
         raise ValueError('JMdict snapshot checksum mismatch')
     shards = [{ 'terms': {}, 'entries': {} } for _ in range(256)]
     count = 0
+    compounds = {}
     with gzip.open(source, 'rb') as stream:
         # iterparse expands the file's internal DTD entities; no external entities
         # or network access are supported by ElementTree.
@@ -50,6 +57,19 @@ def generate(source, output, metadata):
                     senses.append(dict(glosses=glosses, spellings=texts(sense, 'stagk'), readings=texts(sense, 'stagr'),
                                        pos=pos, field=texts(sense, 'field'), misc=texts(sense, 'misc'), dialect=texts(sense, 'dial'), info=texts(sense, 's_inf')))
             if senses:
+                # Only retain spelling/reading pairs licensed by a noun sense.
+                # Tokenization also checks the original POS and reading before merging.
+                for spelling in spellings:
+                    term = spelling['text']
+                    if not kanji_compound(term):
+                        continue
+                    for reading in readings:
+                        if reading['noKanji'] or reading['restrict'] and term not in reading['restrict']:
+                            continue
+                        if any('noun (common) (futsuumeishi)' in sense['pos']
+                               and (not sense['spellings'] or term in sense['spellings'])
+                               and (not sense['readings'] or reading['text'] in sense['readings']) for sense in senses):
+                            compounds.setdefault(term, set()).add(reading['text'])
                 identifier = node.findtext('ent_seq')
                 entry = dict(id=identifier, spellings=spellings, readings=readings, senses=senses)
                 terms = {unicodedata.normalize('NFC', item['text']) for item in spellings + readings}
@@ -60,6 +80,11 @@ def generate(source, output, metadata):
                 count += 1
             root.clear()
     output.mkdir(parents=True, exist_ok=True)
+    compound_text = json.dumps({term: sorted(values) for term, values in compounds.items()},
+                               ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n'
+    with (output / 'compounds.json.gz').open('wb') as file:
+        with gzip.GzipFile(filename='', mode='wb', fileobj=file, mtime=0) as stream:
+            stream.write(compound_text.encode('utf-8'))
     for index, shard in enumerate(shards):
         text = json.dumps(shard, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n'
         compressed = io.BytesIO()

@@ -1,12 +1,40 @@
 import {test,expect} from '@playwright/test';
 import kuromoji from 'kuromoji';
-import {tokenizeVocabulary,vocabularyHeadwords} from '../src/vocabulary';
+import {joinNounCompounds,tokenizeVocabulary,vocabularyHeadwords,type CompoundLexicon} from '../src/vocabulary';
+import {readFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {resolveWord} from '../src/mascot-target';
 import {readWithOverrides} from '../src/preferences';
 import {align} from '../src/shared';
 
 let tokenizer:kuromoji.Tokenizer<kuromoji.IpadicFeatures>;
+let compounds:CompoundLexicon;
 test.beforeAll(async()=>{
   tokenizer=await new Promise((resolve,reject)=>kuromoji.builder({dicPath:'dist/dict/'}).build((error,value)=>error?reject(error):resolve(value)));
+  compounds=JSON.parse(gunzipSync(readFileSync('dist/dictionaries/jmdict/compounds.json.gz')).toString('utf8'));
+});
+
+test('dictionary compounds select the full noun from every kanji, including in sentences',()=>{
+  for(const [surface,reading] of [['近代化','きんだいか'],['国際化','こくさいか'],['少子高齢化','しょうしこうれいか'],['経済成長','けいざいせいちょう']]) {
+    for(const text of [surface,`${surface}が進む。`,`${surface}する`,`${surface}された`,`${surface} = example`]) {
+      const tokens=joinNounCompounds(tokenizeVocabulary(tokenizer,text),text,compounds);
+      expect(tokens[0].surface_form,text).toBe(surface);
+      expect(tokens[0].basic_form,text).toBe(surface);
+      expect(tokens[0].reading,text).toBe(reading.replace(/[ぁ-ゖ]/g,c=>String.fromCharCode(c.charCodeAt(0)+0x60)));
+      const word={start:0,end:surface.length,lemma:tokens[0].basic_form,reading,pos:tokens[0].pos};
+      for(let offset=0;offset<surface.length;offset++)expect(resolveWord({text,offset},[word],[{start:0,end:surface.length,reading}],{})?.word).toEqual({surface,lemma:surface,reading});
+    }
+  }
+});
+
+test('compound joining preserves names, gaps, grammar and unverified noun sequences',()=>{
+  for(const text of ['出口太郎','東京都','佐藤さん','近代 化','近代\n化','近代の化学','猫犬','近代化学']) {
+    const original=tokenizeVocabulary(tokenizer,text);
+    expect(joinNounCompounds(original,text,compounds),text).toEqual(original);
+  }
+  const original=tokenizeVocabulary(tokenizer,'近代化');
+  expect(joinNounCompounds(original,'近代化',{})).toEqual(original);
+  expect(joinNounCompounds(original,'近代化',{'近代化':['まちがい']})).toEqual(original);
 });
 
 test('bundled dictionary prefers common nouns for isolated vocabulary and translation lines',()=>{
