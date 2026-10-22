@@ -14,9 +14,9 @@
   <a href="#release-notes">Release notes</a>
 </p>
 
-![Furigana above Japanese text on Wikipedia, with the extension menu showing automatic readings enabled](docs/screenshots/webpage-live.png)
+![Kō 1.3 adding furigana above Japanese text in a live Google Doc](docs/screenshots/google-docs-furigana-1.3.png)
 
-<p align="center"><em>Read Japanese where you already browse. Readings appear automatically above the kanji.</em></p>
+<p align="center"><em>Read Japanese in Google Docs with furigana above the kanji. Webpages use the same automatic readings.</em></p>
 
 | Read as you browse | Keep your work intact | Stay in control |
 | --- | --- | --- |
@@ -130,25 +130,29 @@ Scrolling, typing, and background-tab suspension do not change an otherwise acti
 
 ### On the web
 
-The Wikipedia example above shows furigana added directly above Japanese text. Open the extension menu to pause a site, customize readings, or check the page status.
+Furigana appears directly above Japanese text on webpages too. Open the extension menu to pause a site, customize readings, or check the page status.
 
 ### Kōくん word lookups · 1.3.0
 
-![Kōくん beside Japanese text, with a pixel-style speech bubble showing 海賊, its reading かいぞく, and the English Wiktionary definition of pirate](docs/screenshots/ko-kun-word-lookup.png)
+![Kōくん beside Google Docs Reading view, showing 海賊王, its reading かいぞくおう, and the offline JMdict definition pirate king](docs/screenshots/ko-kun-kaizokuou-1.3.png)
 
-Kōくん shows a word’s reading in a speech bubble. Enable optional English or Japanese definitions to see its meaning. English now uses bundled JMdict and Japanese uses bundled Japanese Wiktionary, with online fallback; the screenshot shows the earlier Wiktionary view of **海賊** (かいぞく, pirate).
+Kōくん shows a word’s reading in a speech bubble. Enable optional English or Japanese definitions to see its meaning. English uses bundled JMdict and Japanese uses bundled Japanese Wiktionary, with online fallback. Here, **海賊王** (かいぞくおう) means **pirate king**, looked up offline from Reading view.
+
+Kōくん also performs occasional special routines, including a samurai sword routine. This screenshot captures a staged frame of that existing animation.
+
+![Kōくん holding a katana during his samurai animation beside a Google Doc with furigana](docs/screenshots/ko-kun-samurai-1.3.png)
 
 ### In Google Docs
 
 Readings appear over the visible document text while you keep working in the original editor.
 
-![A live Google Doc with furigana above Japanese sentences and the extension menu open](docs/screenshots/google-docs-live.png)
+The opening screenshot shows these overlay readings on the reference document.
 
 ### More room to read
 
 Open the optional **Extra-space reading view** for a separate, selectable panel with roomier spacing. Your document keeps its original layout.
 
-![Google Docs beside the extension's reading panel, showing larger Japanese text and furigana with extra line spacing](docs/screenshots/google-docs-reading-view-live.png)
+![Google Docs beside the extension's reading panel, showing larger Japanese text and furigana with extra line spacing](docs/screenshots/google-docs-reading-view-1.3.png)
 
 1. Open a webpage or Google Doc and click the extension icon.
 2. Expand **Reading view** and enable **Extra-space reading view**.
@@ -161,17 +165,31 @@ The panel follows visible webpage text, or the active Docs page, after scrolling
 
 Click a word in the reading panel to automatically see its English and Japanese definitions, reading, and available local tools. For inflected words, the card also shows the dictionary form used for lookup. Supported verbs and adjectives offer **Try word forms** inline; **Open playgrounds** remains available for other local tools, including Mimetic Playground and Meaning Forks; these tools require no internet connection.
 
-Choose **Playgrounds** in the extension menu to open a standalone tab, or use the **Playgrounds** button in Reading view. The standalone tab works with automatic readings off and on browser-protected pages; it does not enable Reading view. Both entry points use the same offline workspace without selecting a page word. In **Word forms**, enter a dictionary-form verb or adjective such as 書く, 高い, or 静か and confirm its local analysis. There is no preset word list. Use **← Change word** to return to input. In **Mimetics**, search 90 expressions by Japanese, reading, or English and filter by category; **← Examples** restores your list position. **← Reading view** returns to your reading position. Experiments and typed words remain in memory; the source page is never rewritten. Preview the [shared input](docs/screenshots/word-forms-input-1.2.png), [Adjective Playground](docs/screenshots/adjective-420-1.2.png), and [new mimetic comparison](docs/screenshots/mimetics-eating-1.2.png). These 1.2 previews use controlled webpage fixtures. Previous 1.1 live previews remain in the screenshots directory.
+Choose **Playgrounds** in the extension menu to open a standalone tab, or use the **Playgrounds** button in Reading view. The standalone tab works with automatic readings off and on browser-protected pages; it does not enable Reading view. Both entry points use the same offline workspace without selecting a page word. In **Word forms**, enter a dictionary-form verb or adjective such as 書く, 高い, or 静か and confirm its local analysis. There is no preset word list. Use **← Change word** to return to input. In **Mimetics**, search 90 expressions by Japanese, reading, or English and filter by category; **← Examples** restores your list position. **← Reading view** returns to your reading position. Experiments and typed words remain in memory; the source page is never rewritten.
 
-![Google Docs beside the reading panel, with 海賊 selected and its reading かいぞく, English and Japanese definitions, and Wiktionary source links visible](docs/screenshots/google-docs-dictionary-live.png)
+![Google Docs beside Reading view with 平和 selected and its English and Japanese definitions and offline dictionary sources visible](docs/screenshots/google-docs-dictionary-1.3.png)
 
-Here, **海賊** has the reading **かいぞく** and the meaning **pirate**, with definitions in both languages loaded automatically when clicked. The original Google Doc stays visible beside the panel. The screenshot shows the earlier Wiktionary-only view; current results identify JMdict or Wiktionary as their source.
+Here, **平和** has the reading **へいわ** and the meaning **peace; harmony**, with English and Japanese definitions loaded from the bundled dictionaries when clicked. The original Google Doc stays visible beside the panel, and each definition identifies its source.
 
 English meanings use complete bundled JMdict; Japanese definitions use a bundled Japanese Wiktionary snapshot. Both work offline for locally covered words. Missing meanings automatically use the corresponding Wiktionary edition online, sending only the lookup term and any recognized spelling-reference terms. Each language appears independently; cached results can avoid another request. Opening the Playgrounds browser and using exploration controls makes no definition requests. Each language shows its own unavailable or missing-entry message when necessary. Failed lookups offer **Retry definitions online**.
 
 You can also focus a word with Tab and open it with Enter or Space. Exploration switches and comparison buttons work with the keyboard. Mimetic scenes loop automatically. Press Escape or the word card's **×** button to dismiss it and return to reading.
 
-These screenshots show Kō 1.0 in use on Japanese Wikipedia and in Google Docs. The reading panel is text-only: tables and formatting may be simplified, and images are omitted.
+### Explore word forms and mimetics
+
+Open **Try word forms** on **受け取れ** to see its **Direct command** form and dictionary form **受け取る**, with an explanation of how the ending is built.
+
+![The Verb Playground showing 受け取れ as a direct command built from 受け取る](docs/screenshots/google-docs-verb-forms-1.3.png)
+
+The **Adjective Playground** lets you adjust tense, negation, and politeness. Here, **高い** becomes **高くなかった** with **Past** and **Negative** selected. This word was entered in Playgrounds; it was not added to the document.
+
+![The Adjective Playground showing 高い changed to 高くなかった with Past and Negative selected](docs/screenshots/google-docs-adjective-forms-1.3.png)
+
+**Mimetics** compares related expressions with illustrated animations and example sentences. Here, **ぱくぱく** and **もぐもぐ** contrast taking bites with chewing.
+
+![The Mimetic Playground comparing ぱくぱく and もぐもぐ with an illustrated rice-ball scene and an example sentence](docs/screenshots/google-docs-mimetics-1.3.png)
+
+These screenshots show Kō 1.3 on the same live Google Doc. The adjective and mimetic examples are separate Playgrounds inputs. The reading panel is text-only: tables and formatting may be simplified, and images are omitted.
 
 ## Make it yours
 
@@ -283,7 +301,7 @@ For release downloads, run `npm run package:release`. It rebuilds `dist`, create
 
 The test suite also covers per-version announcement dismissal across browser restarts, failure/retry behavior, offline changelog access, and the GitHub suggestion link. It covers automatic annotations, unchanged source/layout, a 100,000-node webpage, a 100-page Docs fixture, cancellation, IME handling, settings, corrections, vocabulary/name disambiguation, local exploration and real-dictionary form round trips, keyboard and reduced-motion behavior, the reading panel, debounced refreshes, automatic bilingual word definitions on word activation, toolbar state and lifecycle, and expanded popup forms. Browser integration tests use a temporary profile and localhost server. The native toolbar-popup regression opens a temporary visible browser window to verify Chrome’s popup sizing and wheel scrolling. They default to Brave's standard macOS executable; set `CHROMIUM_PATH` to an extension-capable Chromium executable elsewhere. Chrome distributions that disable command-line extension loading cannot run these integration tests. Your normal browser profile and Google account are not used.
 
-The four inline 1.0 screenshots supplied by the project owner cover webpage overlays, Google Docs overlays, the reading panel, and bilingual word definitions. The Kōくん word-lookup capture was supplied by the project owner for the 1.3 development build. Linked 1.1 playground previews were captured during a live public read-only Google Docs smoke test. Earlier fixture captures remain in [`docs/screenshots/`](docs/screenshots/). Regenerated browser captures are written to `test-results/` during tests.
+The eight current screenshots were captured on 22 October 2026 with Kō 1.3 using the owner-provided live Google Doc and approved before inclusion. They cover furigana, Reading view, bilingual definitions, verb and adjective forms, mimetics, Kōくん word lookup, and a staged samurai animation frame. The source document was not edited. See [screenshot provenance](docs/screenshots/README.md) for the reference and capture details. Earlier live and fixture captures remain in [`docs/screenshots/`](docs/screenshots/). Regenerated browser captures are written to `test-results/` during tests.
 
 </details>
 

@@ -17,7 +17,7 @@ The current JPEGs use the `-v2.png` sources. Their copy describes readings, defi
 
 - `ko-small-promo-440x280.png` is the promotional tile. `small-promo.html` is its authoring preview and resolves artwork from the repository's `public/` folder.
 - `screenshots/01-*` through `04-*` are 1280 × 800 images of the 1.0 webpage readings, Google Docs readings, reading panel, and word definitions. They show existing features, not the new 1.1 playgrounds.
-- The current 1.1 playground previews are in `docs/screenshots/playgrounds-verb-input-1.1.png`, `playgrounds-verb-1.1.png`, and `playgrounds-mimetic-1.1.png` and are linked from the main README.
+- The main README now uses the approved 1.3 captures documented in [`../screenshots/README.md`](../screenshots/README.md), covering Google Docs readings, Reading view, definitions, word forms, mimetics, and Kōくん. These 1440 × 1000 documentation captures have not replaced the store listing images. Earlier 1.1 and 1.2 previews remain in `docs/screenshots/`.
 - `screenshots/render.html` is an authoring canvas for fitting a selected image; it intentionally has no source image until configured.
 
 Open authoring HTML from the source checkout. Copies under `dist/docs/` are documentation artifacts; repository-relative authoring paths are not a standalone installed-extension preview. Check that listing text, screenshots, privacy disclosures, and the submitted version agree when updating the store.
