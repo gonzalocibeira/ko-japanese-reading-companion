@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-24",
+  "status": "Unreleased WIP",
+  "node": "26.12.1",
+  "build": "passed",
+  "typecheck": "passed",
+  "dependencyAudit": {"knownVulnerabilities": 0, "reportedDependencies": 63},
+  "tests": {
+    "uniqueTestsCovered": 273,
+    "initialSandboxRun": {"passed": 89, "setupFailures": 13, "notRun": 171},
+    "permittedBrowserRun": {"passed": 190, "failed": 0, "skipped": 0, "repeatedFromInitialRun": 6, "durationSeconds": 151.529},
+    "nativePopup": "passed",
+    "finalWipDocumentationSmoke": {"passed": 3, "failed": 0, "coverage": "Native popup sizing and both update-announcement tests after regenerating WIP notes."},
+    "note": "Initial browser-launch and localhost-listen failures were sandbox restrictions. Affected suites passed with permitted temporary-browser and localhost access."
+  },
+  "publication": "Source merge only; no release, tag, release-asset replacement, or Chrome Web Store submission."
+}

@@ -94,7 +94,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       document.addEventListener("visibilitychange", syncPlayback);
       reducedMotion.addEventListener("change", syncPlayback);
       async function openGallery() {
-        const response = await fetch(asset("manifest.json"));
+        const response = await fetch(asset("index.json"));
         if (!response.ok) throw new Error("Gallery unavailable");
         const manifest = await response.json();
         const routines = manifest.routines;

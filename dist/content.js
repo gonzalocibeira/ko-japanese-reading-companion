@@ -207,14 +207,14 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const irregular = i && (base.reading === "\u3044\u3044" || base.goodCompound) && !["prenominal"].includes(state.family) && !(state.family === "simple" && !state.past && !state.negative);
     return `${base.lemma} \u2192 ${render(base.lemma, base, state)}. ${irregular ? `\u3044\u3044 changes to the \u3088\u3044 stem (${root}). ` : ""}${rules[state.family]}`;
   }
-  function createAdjectivePlayground(base, source) {
+  function createAdjectivePlayground(base, source2) {
     if (!valid(base)) throw new Error("Unsupported dictionary adjective");
     const forms = [];
     for (const family of adjectiveFamilies) for (const past of family.controls.includes("past") ? [false, true] : [false]) for (const negative of family.controls.includes("negative") ? [false, true] : [false]) for (const polite of family.controls.includes("polite") ? [false, true] : [false]) {
       const state = { family: family.id, past, negative, polite, spoken: false };
       forms.push({ ...state, id: [family.id, +past, +negative, +polite].join(":"), text: render(base.lemma, base, state), reading: render(base.reading, { ...base, lemma: base.reading }, state) });
     }
-    const text = source?.text ?? base.lemma, reading = source?.reading ?? base.reading;
+    const text = source2?.text ?? base.lemma, reading = source2?.reading ?? base.reading;
     const aliases = [];
     for (const form of forms) {
       if (base.kind === "na" && form.text.includes("\u3067\u306F")) aliases.push({ ...form, text: form.text.replace("\u3067\u306F", "\u3058\u3083"), reading: form.reading.replace("\u3067\u306F", "\u3058\u3083") });
@@ -223,7 +223,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const matches2 = text === base.lemma && reading === base.reading ? [forms[0]] : [...forms, ...aliases].filter((form) => form.text === text && form.reading === reading);
     if (!matches2.length) throw new Error("Unsupported adjective source form");
     const initial = matches2.find((x) => x.family === "simple") ?? matches2[0];
-    return { start: source?.start ?? 0, end: source?.end ?? text.length, source: text, sourceReading: reading, lemma: base.lemma, base, forms, initial: { ...initial }, sourceMatches: matches2, requiresChoice: false };
+    return { start: source2?.start ?? 0, end: source2?.end ?? text.length, source: text, sourceReading: reading, lemma: base.lemma, base, forms, initial: { ...initial }, sourceMatches: matches2, requiresChoice: false };
   }
   function bases(word) {
     if (word.adjectiveBases?.length) return word.adjectiveBases.filter(valid);
@@ -604,16 +604,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     }
     return aliases;
   }
-  function model(base, forms, source, sourceReading, matches2, start = 0, end = source.length) {
+  function model(base, forms, source2, sourceReading, matches2, start = 0, end = source2.length) {
     const first = matches2[0];
     const initial = { family: first.family, past: first.past, negative: first.negative, polite: first.polite, spoken: first.spoken };
-    return { start, end, source, sourceReading, lemma: verbBaseText(base), base, forms, initial, sourceMatches: matches2, requiresChoice: new Set(matches2.map((match) => match.family)).size > 1 };
+    return { start, end, source: source2, sourceReading, lemma: verbBaseText(base), base, forms, initial, sourceMatches: matches2, requiresChoice: new Set(matches2.map((match) => match.family)).size > 1 };
   }
-  function createVerbPlayground(base, source) {
-    const forms = formsFor(base), text = source?.text ?? verbBaseText(base), reading = source?.reading ?? verbBaseReading(base);
-    const matches2 = source ? [...forms, ...sourceAliases(base, forms)].filter((form) => form.text === text && form.reading === reading) : forms.filter((form) => form.family === "simple" && !form.past && !form.negative && !form.polite && !form.spoken);
+  function createVerbPlayground(base, source2) {
+    const forms = formsFor(base), text = source2?.text ?? verbBaseText(base), reading = source2?.reading ?? verbBaseReading(base);
+    const matches2 = source2 ? [...forms, ...sourceAliases(base, forms)].filter((form) => form.text === text && form.reading === reading) : forms.filter((form) => form.family === "simple" && !form.past && !form.negative && !form.polite && !form.spoken);
     if (!matches2.length) throw new Error("Unsupported dictionary verb or source form");
-    return model(base, forms, text, reading, matches2, source?.start, source?.end);
+    return model(base, forms, text, reading, matches2, source2?.start, source2?.end);
   }
   function contiguous(words, left, right) {
     return left >= 0 && right < words.length && words[left].end === words[right].start;
@@ -676,9 +676,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         if (endWord.end > text.length || endWord.end <= endWord.start || endWord.end - word.start > 80) break;
         sourceReading += hiragana(endWord.reading);
         if (endIndex < wordIndex) continue;
-        const source = text.slice(word.start, endWord.end);
-        const matches2 = (index.get(source + "\0" + sourceReading) ?? []).filter((form) => terminal(endWord, form.family) && !unsupportedContinuation(text, words, endIndex, form.family));
-        if (matches2.length && (!best || word.start < best.start || word.start === best.start && endWord.end > best.end)) best = model(base, forms, source, sourceReading, matches2, word.start, endWord.end);
+        const source2 = text.slice(word.start, endWord.end);
+        const matches2 = (index.get(source2 + "\0" + sourceReading) ?? []).filter((form) => terminal(endWord, form.family) && !unsupportedContinuation(text, words, endIndex, form.family));
+        if (matches2.length && (!best || word.start < best.start || word.start === best.start && endWord.end > best.end)) best = model(base, forms, source2, sourceReading, matches2, word.start, endWord.end);
       }
     }
     return best;
@@ -718,23 +718,23 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     if (base.lemma === "\u3053\u308C\u308B") queries.push("\u304F\u308B");
     return queries;
   }
-  function isRaDroppedPotential(source, query, words) {
-    if (!potentialBaseQueries(source).includes(query)) return false;
-    if (source.lemma === "\u3044\u308C\u308B" && source.reading === "\u3044\u308C\u308B") return false;
+  function isRaDroppedPotential(source2, query, words) {
+    if (!potentialBaseQueries(source2).includes(query)) return false;
+    if (source2.lemma === "\u3044\u308C\u308B" && source2.reading === "\u3044\u308C\u308B") return false;
     for (const candidate of dictionaryVerbCandidates(query, words)) {
       if (candidate.prefix || candidate.verbClass !== "\u4E00\u6BB5" && !isKuru(candidate)) continue;
       const stem2 = elementary(candidate, "Negative");
-      if (stem2.text + "\u308C\u308B" === source.lemma && stem2.reading + "\u308C\u308B" === source.reading) return true;
-      if (isKuru(candidate) && source.lemma === "\u3053\u308C\u308B" && source.reading === "\u3053\u308C\u308B") return true;
+      if (stem2.text + "\u308C\u308B" === source2.lemma && stem2.reading + "\u308C\u308B" === source2.reading) return true;
+      if (isKuru(candidate) && source2.lemma === "\u3053\u308C\u308B" && source2.reading === "\u3053\u308C\u308B") return true;
     }
     return false;
   }
-  function resolvePotentialBase(source, query, words) {
-    if (!potentialBaseQueries(source).includes(query)) return;
+  function resolvePotentialBase(source2, query, words) {
+    if (!potentialBaseQueries(source2).includes(query)) return;
     for (const candidate of dictionaryVerbCandidates(query, words)) {
       if (candidate.prefix || !godan.has(candidate.verbClass)) continue;
       const potential = formsFor(candidate).find((form) => form.family === "potential" && !form.past && !form.negative && !form.polite && !form.spoken);
-      if (potential?.text === source.lemma && potential.reading === source.reading) return candidate;
+      if (potential?.text === source2.lemma && potential.reading === source2.reading) return candidate;
     }
   }
   function verbConstruction(base, state) {
@@ -1012,10 +1012,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     return best;
   }
   function svgNode(tag, attrs = {}, children = []) {
-    const node = document.createElementNS(svgNS, tag);
-    for (const [name, value] of Object.entries(attrs)) node.setAttribute(name, String(value));
-    node.append(...children);
-    return node;
+    const node2 = document.createElementNS(svgNS, tag);
+    for (const [name, value] of Object.entries(attrs)) node2.setAttribute(name, String(value));
+    node2.append(...children);
+    return node2;
   }
   function setMimeticLegacyAnimations(value) {
     const next = value === true;
@@ -1053,16 +1053,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const group = (className, children) => svgNode("g", { class: className }, children);
     const box = (x, y2, width, height, attrs = {}) => svgNode("rect", { ...stroke, x, y: y2, width, height, rx: 3, fill: "var(--surface)", ...attrs });
     const at = (className, x, y2, children) => {
-      const node = group(className, children);
-      node.setAttribute("transform", `translate(${x} ${y2})`);
-      return node;
+      const node2 = group(className, children);
+      node2.setAttribute("transform", `translate(${x} ${y2})`);
+      return node2;
     };
     const face = (x, y2, r, mood = "neutral") => {
       const eyes = mood === "happy" ? "M-14-4q4-5 8 0M6-4q4-5 8 0" : mood === "angry" ? "M-14-8-6-4M6-4 14-8" : "M-13-5h4M9-5h4";
       const mouth = mood === "happy" ? "M-9 7q9 10 18 0" : mood === "worried" || mood === "sad" || mood === "angry" ? "M-8 13q8-9 16 0" : "M-7 9H7";
-      const node = group("mimetic-face", [circle(0, 0, 24, { fill: "var(--surface)" }), line(eyes), line(mouth, { stroke: "var(--accent)" })]);
-      node.setAttribute("transform", `translate(${x} ${y2}) scale(${r / 24})`);
-      return node;
+      const node2 = group("mimetic-face", [circle(0, 0, 24, { fill: "var(--surface)" }), line(eyes), line(mouth, { stroke: "var(--accent)" })]);
+      node2.setAttribute("transform", `translate(${x} ${y2}) scale(${r / 24})`);
+      return node2;
     };
     const person = (x, y2, mood = "neutral", seated = false) => at("mimetic-person", x, y2, [
       face(0, 0, 14, mood),
@@ -1317,10 +1317,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     return svg;
   }
   function element(tag, className, text) {
-    const node = document.createElement(tag);
-    node.className = className;
-    if (text !== void 0) node.textContent = text;
-    return node;
+    const node2 = document.createElement(tag);
+    node2.className = className;
+    if (text !== void 0) node2.textContent = text;
+    return node2;
   }
   function renderMimeticPlayground(entry) {
     const root = element("section", "mimetic-playground");
@@ -1354,17 +1354,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     reference.rel = "noopener noreferrer";
     let selected = entry.initialVariant;
     const buttons = entry.variants.map((variant, index) => {
-      const button = element("button", "mimetic-choice", variant.term);
-      button.type = "button";
-      button.lang = "ja";
-      button.addEventListener("click", () => update(index));
-      controls.append(button);
-      return button;
+      const button2 = element("button", "mimetic-choice", variant.term);
+      button2.type = "button";
+      button2.lang = "ja";
+      button2.addEventListener("click", () => update(index));
+      controls.append(button2);
+      return button2;
     });
     function update(index) {
       selected = index;
       const variant = entry.variants[index];
-      for (const [i, button] of buttons.entries()) button.setAttribute("aria-pressed", String(i === index));
+      for (const [i, button2] of buttons.entries()) button2.setAttribute("aria-pressed", String(i === index));
       term.textContent = variant.term;
       gloss.textContent = variant.gloss;
       example.textContent = variant.example;
@@ -1584,10 +1584,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     }
   }
   function element2(tag, className, text) {
-    const node = document.createElement(tag);
-    node.className = className;
-    if (text !== void 0) node.textContent = text;
-    return node;
+    const node2 = document.createElement(tag);
+    node2.className = className;
+    if (text !== void 0) node2.textContent = text;
+    return node2;
   }
   function renderMeaningForks(forks) {
     const root = element2("section", "meaning-forks");
@@ -1605,7 +1605,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const buttons = [];
     const select = (choice) => {
       const description = descriptions[choice];
-      for (const button of buttons) button.setAttribute("aria-pressed", String(button.dataset.function === choice));
+      for (const button2 of buttons) button2.setAttribute("aria-pressed", String(button2.dataset.function === choice));
       const label = element2("h4", "meaning-selected", description.label);
       const diagram = element2("div", "meaning-diagram");
       diagram.setAttribute("aria-hidden", "true");
@@ -1614,13 +1614,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       detail.replaceChildren(label, diagram, explanation);
     };
     for (const choice of forks.possibilities) {
-      const button = element2("button", "meaning-choice", descriptions[choice].label);
-      button.type = "button";
-      button.dataset.function = choice;
-      button.setAttribute("aria-controls", detail.id);
-      button.addEventListener("click", () => select(choice));
-      buttons.push(button);
-      controls.append(button);
+      const button2 = element2("button", "meaning-choice", descriptions[choice].label);
+      button2.type = "button";
+      button2.dataset.function = choice;
+      button2.setAttribute("aria-controls", detail.id);
+      button2.addEventListener("click", () => select(choice));
+      buttons.push(button2);
+      controls.append(button2);
     }
     root.append(controls, detail);
     root.append(element2("p", "meaning-note", "The diagram shows roles only. The source ending controls tense and negation. Context determines which function fits; other uses may exist."));
@@ -1787,10 +1787,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       for (const match of model2.sourceMatches) {
         if (seen.has(match.family)) continue;
         seen.add(match.family);
-        const button = document.createElement("button");
-        button.type = "button";
-        button.textContent = familyList.find((family) => family.id === match.family)?.label ?? match.family;
-        button.addEventListener("click", () => {
+        const button2 = document.createElement("button");
+        button2.type = "button";
+        button2.textContent = familyList.find((family) => family.id === match.family)?.label ?? match.family;
+        button2.addEventListener("click", () => {
           Object.assign(state, match);
           chosen = true;
           pristine = true;
@@ -1798,7 +1798,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
           render2();
           select.focus();
         });
-        choices.append(button);
+        choices.append(button2);
       }
     }
     const result = document.createElement("div");
@@ -1808,8 +1808,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const render2 = () => {
       const family = families.find((family2) => family2.id === state.family);
       const variant = model2.forms.find((form) => form.family === state.family && form.past === state.past && form.negative === state.negative && form.polite === state.polite && form.spoken === state.spoken);
-      const japanese4 = annotated(pristine ? model2.source : variant?.text ?? model2.source, pristine ? model2.sourceReading : variant?.reading ?? model2.sourceReading, model2.source);
-      japanese4.className = "verb-japanese";
+      const japanese5 = annotated(pristine ? model2.source : variant?.text ?? model2.source, pristine ? model2.sourceReading : variant?.reading ?? model2.sourceReading, model2.source);
+      japanese5.className = "verb-japanese";
       const caption = document.createElement("p");
       caption.className = "verb-state";
       const traits = [];
@@ -1821,7 +1821,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         if (state.spoken) traits.push("Spoken shortening");
       } else traits.push("Original spelling \xB7 Choose an interpretation above");
       caption.textContent = traits.join(" \xB7 ");
-      result.replaceChildren(japanese4, caption);
+      result.replaceChildren(japanese5, caption);
       familyLabel.hidden = controls.hidden = explanation.hidden = !chosen;
       choices.hidden = chosen;
       select.value = state.family;
@@ -1977,14 +1977,14 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
           prompt.textContent = "This word may be a potential form or its own dictionary entry. Choose which to explore.";
           choices.append(prompt);
           for (const interpretation of interpretations) {
-            const button = document.createElement("button");
-            button.type = "button";
-            button.textContent = interpretation.label;
-            button.addEventListener("click", () => {
+            const button2 = document.createElement("button");
+            button2.type = "button";
+            button2.textContent = interpretation.label;
+            button2.addEventListener("click", () => {
               wrapper.replaceChildren(renderVerbPlayground(interpretation.model));
               wrapper.querySelector("select,button")?.focus();
             });
-            choices.append(button);
+            choices.append(button2);
           }
           wrapper.replaceChildren(choices);
         }).catch(() => {
@@ -2013,27 +2013,27 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const buttons = [];
     const choose = (index) => {
       cancel();
-      buttons.forEach((button, i) => button.setAttribute("aria-pressed", String(i === index)));
+      buttons.forEach((button2, i) => button2.setAttribute("aria-pressed", String(i === index)));
       const option = options[index];
       body.replaceChildren();
       if (option.source) {
         const label = document.createElement("p");
         label.className = "explore-source-label";
         label.textContent = "Original phrase";
-        const source = document.createElement("p");
-        source.className = "explore-source";
-        source.append(annotated(option.source, option.reading ?? ""));
-        body.append(label, source);
+        const source2 = document.createElement("p");
+        source2.className = "explore-source";
+        source2.append(annotated(option.source, option.reading ?? ""));
+        body.append(label, source2);
       }
       body.append(option.render());
     };
     for (let i = 0; i < options.length; i++) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.textContent = options[i].label;
-      button.addEventListener("click", () => choose(i));
-      buttons.push(button);
-      tools.append(button);
+      const button2 = document.createElement("button");
+      button2.type = "button";
+      button2.textContent = options[i].label;
+      button2.addEventListener("click", () => choose(i));
+      buttons.push(button2);
+      tools.append(button2);
     }
     if (options.length > 1) panel.append(tools);
     panel.append(body);
@@ -2085,12 +2085,694 @@ ${meaningForkStyles}
     }
   });
 
+  // src/playground-data.ts
+  var grammarGroups, playgroundData;
+  var init_playground_data = __esm({
+    "src/playground-data.ts"() {
+      "use strict";
+      grammarGroups = ["time", "reasons", "conditions", "comparison", "certainty", "wishes and obligations", "connecting ideas", "social tone"];
+      playgroundData = async (query, signal) => {
+        if (signal?.aborted) throw new DOMException("Cancelled", "AbortError");
+        const reply = await chrome.runtime.sendMessage({ type: "playground-data", query });
+        if (signal?.aborted) throw new DOMException("Cancelled", "AbortError");
+        if (!reply || reply.error) throw new Error(reply?.error ?? "Local playground data is unavailable.");
+        return reply.value;
+      };
+    }
+  });
+
+  // src/playground-tools.ts
+  function node(tag, className = "", text) {
+    const el = document.createElement(tag);
+    el.className = className;
+    if (text !== void 0) el.textContent = text;
+    return el;
+  }
+  function button(label, action, className = "") {
+    const el = node("button", className, label);
+    el.type = "button";
+    el.addEventListener("click", action);
+    return el;
+  }
+  function labelInput(label, placeholder) {
+    const wrap = node("label", "tool-label", label), input = node("input");
+    input.type = "search";
+    input.maxLength = 80;
+    input.placeholder = placeholder;
+    input.autocomplete = "off";
+    input.spellcheck = false;
+    wrap.append(input);
+    return { wrap, input };
+  }
+  function workspace(name) {
+    const root = node("section", "playground-workspace");
+    root.setAttribute("aria-label", name);
+    const scroller = node("div", "tool-scroll"), layout = node("div", "tool-layout"), catalog = node("div", "tool-catalog"), detail = node("section", "tool-detail");
+    detail.hidden = true;
+    detail.tabIndex = -1;
+    detail.setAttribute("aria-label", `${name} details`);
+    const status = node("p", "tool-status");
+    status.setAttribute("role", "status");
+    const results = node("div", "tool-results");
+    catalog.append(status, results);
+    layout.append(catalog, detail);
+    scroller.append(layout);
+    root.append(scroller);
+    let origin, scroll = 0;
+    function back(restoreFocus = true) {
+      detail.hidden = true;
+      root.classList.remove("has-detail");
+      scroller.scrollTop = scroll;
+      if (restoreFocus) origin?.focus({ preventScroll: true });
+      root.dispatchEvent(new Event("tool-results"));
+    }
+    const backButton = button("\u2190 Results", () => back(), "tool-back");
+    backButton.setAttribute("aria-label", "Results");
+    root.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !detail.hidden) {
+        e.preventDefault();
+        e.stopPropagation();
+        back();
+      }
+    });
+    function show(content, from) {
+      if (detail.hidden) scroll = scroller.scrollTop;
+      else if (from && catalog.contains(from)) scroll = catalog.scrollTop;
+      if (from && catalog.contains(from)) origin = from;
+      detail.replaceChildren(backButton, content);
+      detail.hidden = false;
+      root.classList.add("has-detail");
+      scroller.scrollTop = 0;
+      catalog.scrollTop = scroll;
+      detail.scrollTop = 0;
+      detail.focus({ preventScroll: true });
+    }
+    function error(target, error2, retry) {
+      const p = node("p", "tool-error", error2 instanceof Error ? error2.message : "Could not load local data.");
+      p.setAttribute("role", "status");
+      target.replaceChildren(p, button("Try again", retry));
+    }
+    return { root, scroller, backButton, catalog, status, results, detail, show, back, error };
+  }
+  function source(target, page, language, word) {
+    const attribution = definitionSource(page, language, word), link = node("a", "tool-source", attribution.label);
+    link.href = attribution.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    target.append(link, node("p", "tool-source", attribution.notice));
+  }
+  function onlineButton(options, target, word, language, alive) {
+    const action = button(`Look up ${language === "en" ? "English" : "Japanese"} online`, () => {
+      action.disabled = true;
+      target.setAttribute("aria-busy", "true");
+      void options.data({ op: "online", word, language }).then((page) => {
+        if (!alive()) return;
+        const content = node("div");
+        content.append(node("p", "", page.status === "ok" ? "Online definitions" : page.status === "missing" ? "No Japanese entry was found in this Wiktionary edition." : "Online lookup could not finish. Try again."));
+        for (const definition of page.definitions) content.append(node("p", "", definition));
+        if (page.status === "ok") source(content, page, language, word);
+        target.replaceChildren(content);
+        if (page.status === "error") onlineButton(options, target, word, language, alive);
+      }).catch((error) => {
+        if (alive()) {
+          target.replaceChildren(node("p", "tool-error", String(error)));
+          onlineButton(options, target, word, language, alive);
+        }
+      }).finally(() => {
+        target.removeAttribute("aria-busy");
+      });
+    });
+    target.append(node("p", "tool-source", `Sends \u201C${word}\u201D to ${language === "en" ? "English" : "Japanese"} Wiktionary only when selected.`), action);
+  }
+  function renderDictionaryTool(options, initialWord = "") {
+    const view = workspace("Dictionary"), { wrap, input } = labelInput("Search dictionary", "Japanese, reading, or English meaning");
+    const form = node("form", "tool-search");
+    form.append(wrap, button("Search locally", () => void search()));
+    view.catalog.prepend(node("p", "playground-intro", "Search the bundled dictionaries. Online lookup is optional."), form);
+    input.value = initialWord;
+    let disposed = false, composing = false, timer, sequence = 0, detailVersion = 0, total = 0, hits = [], query = "", controller;
+    let formProbe, completedSequence = -1, suggestedSequence = -1;
+    const active = () => !disposed;
+    const more = button("Show more", () => void search(true));
+    more.hidden = true;
+    async function open(hit, origin) {
+      const version = ++detailVersion, content = node("article");
+      formProbe = void 0;
+      content.append(node("p", "", "Loading local entry\u2026"));
+      view.show(content, origin);
+      try {
+        const entry = await options.data({ op: "entry", id: hit.id, bucket: hit.bucket });
+        if (disposed || version !== detailVersion) return;
+        content.replaceChildren(node("h2", "tool-heading", hit.headword), node("p", "tool-reading", hit.reading));
+        const spellings2 = node("details");
+        spellings2.append(node("summary", "", "Spellings and readings"));
+        for (const reading of entry.readings) {
+          const allowed = reading.noKanji ? [] : entry.spellings.filter((s) => !reading.restrict.length || reading.restrict.includes(s.text));
+          spellings2.append(node("p", "", `${allowed.map((s) => s.text).join(" / ") || "Kana only"} \u2014 ${reading.text}${reading.info.length ? ` \xB7 ${reading.info.join("; ")}` : ""}`));
+        }
+        for (const spelling of entry.spellings) if (spelling.info.length) spellings2.append(node("p", "", `${spelling.text}: ${spelling.info.join("; ")}`));
+        content.append(spellings2);
+        content.append(node("h3", "", "English senses"));
+        const senses = node("ol", "dictionary-senses");
+        entry.senses.forEach((sense, index) => {
+          const li = node("li");
+          li.append(node("p", "tool-sense-label", sense.pos.join(" \xB7 ")), node("p", "", sense.glosses.join("; ")));
+          const labels = [...sense.field, ...sense.misc, ...sense.dialect, ...sense.info];
+          if (labels.length) li.append(node("p", "tool-source", labels.join(" \xB7 ")));
+          if (sense.spellings.length || sense.readings.length) li.append(node("p", "tool-source", `Applies to: ${[...sense.spellings, ...sense.readings].join(" / ")}`));
+          if (index < 4) senses.append(li);
+          else {
+            let extra = content.querySelector(".dictionary-more");
+            if (!extra) {
+              extra = node("details", "dictionary-more");
+              extra.append(node("summary", "", "More senses"), node("ol"));
+              content.append(extra);
+            }
+            extra.querySelector("ol").append(li);
+          }
+        });
+        content.insertBefore(senses, content.querySelector(".dictionary-more"));
+        source(content, { status: "ok", definitions: [], source: "jmdict" }, "en", hit.headword);
+        if (hit.headword.length <= 40 && entry.senses.some((s) => s.pos.some((p) => /\bverb\b|adjectiv/.test(p)))) {
+          let probed = false;
+          formProbe = () => {
+            if (view.root.hidden || probed || disposed || version !== detailVersion) return;
+            probed = true;
+            void options.tokenize([hit.headword], new AbortController().signal).then((words) => {
+              if (disposed || version !== detailVersion) return;
+              if (dictionaryVerbCandidates(hit.headword, words[0] ?? []).length || dictionaryAdjectiveCandidates(hit.headword, words[0] ?? []).length) content.append(button("Try word forms", () => options.forms(hit.headword)));
+            }).catch(() => {
+            });
+          };
+          formProbe();
+        }
+        const ja = node("section", "dictionary-japanese");
+        ja.append(node("h3", "", "Japanese definitions"), node("p", "", "Checking the local Japanese dictionary\u2026"));
+        content.append(ja);
+        const showJapanese = async () => {
+          try {
+            const page = await options.data({ op: "japanese", word: hit.headword });
+            if (disposed || version !== detailVersion) return;
+            ja.replaceChildren(node("h3", "", "Japanese definitions"));
+            if (page.status === "ok") {
+              for (const definition of page.definitions) ja.append(node("p", "", definition));
+              source(ja, page, "ja", hit.headword);
+            } else {
+              ja.append(node("p", "", "No bundled Japanese definition for this word."));
+              onlineButton(options, ja, hit.headword, "ja", () => active() && version === detailVersion);
+            }
+          } catch (error) {
+            if (active() && version === detailVersion) view.error(ja, error, () => void showJapanese());
+          }
+        };
+        void showJapanese();
+      } catch (error) {
+        if (active() && version === detailVersion) view.error(content, error, () => void open(hit, origin));
+      }
+    }
+    function render2() {
+      view.results.replaceChildren();
+      for (const hit of hits) {
+        const item = button("", () => void open(hit, item), "tool-result");
+        item.append(annotated(hit.headword, hit.reading), node("span", "tool-sense-label", hit.pos.join(" \xB7 ")), node("span", "", hit.meaning));
+        view.results.append(item);
+      }
+      more.hidden = hits.length >= total;
+      view.results.append(more);
+    }
+    async function suggestions(value, id) {
+      if (view.root.hidden || suggestedSequence === id || !japanese3(value) || value.length > 40 || !/^[\p{L}々ー]+$/u.test(value)) return;
+      suggestedSequence = id;
+      const signal = controller.signal;
+      try {
+        const words = (await options.tokenize([value], signal))[0] ?? [];
+        if (disposed || id !== sequence) return;
+        const candidates = /* @__PURE__ */ new Set();
+        for (const [i] of words.entries()) {
+          const verb = buildVerbPlayground(value, words, i), adjective = buildAdjectivePlayground(value, words, i);
+          if (verb && verb.start === 0 && verb.end === value.length) candidates.add((verb.base.prefix ?? "") + verb.base.lemma);
+          if (adjective && adjective.start === 0 && adjective.end === value.length) candidates.add(adjective.base.lemma);
+        }
+        for (const candidate of candidates) {
+          const result = await options.data({ op: "search", query: candidate, offset: 0 }, signal);
+          if (disposed || id !== sequence) return;
+          if (result.hits.some((h) => h.headword === candidate)) view.results.append(button(`Look up dictionary form: ${candidate}`, () => {
+            input.value = candidate;
+            void search();
+          }));
+        }
+      } catch {
+      }
+    }
+    async function search(append = false) {
+      clearTimeout(timer);
+      if (disposed || composing) return;
+      const value = input.value.normalize("NFKC").trim();
+      if (append && value !== query) return;
+      const id = ++sequence;
+      controller?.abort();
+      controller = new AbortController();
+      if (!append) {
+        detailVersion++;
+        view.back(false);
+        hits = [];
+        total = 0;
+        view.results.replaceChildren();
+      }
+      query = value;
+      if (!value) {
+        view.status.textContent = "Enter a Japanese word, reading, or English meaning.";
+        return;
+      }
+      view.status.textContent = "Searching on this device\u2026";
+      more.disabled = true;
+      try {
+        const result = await options.data({ op: "search", query: value, offset: append ? hits.length : 0 }, controller.signal);
+        if (disposed || id !== sequence) return;
+        hits = append ? [...hits, ...result.hits] : result.hits;
+        total = result.total;
+        view.status.textContent = `${total} entries \xB7 offline`;
+        render2();
+        if (!total) {
+          view.status.textContent = japanese3(value) ? "No matching English dictionary entry in the bundled data." : "No matching English meaning. Try a shorter or different word.";
+          if (japanese3(value)) {
+            const local = node("section");
+            view.results.append(local);
+            const page = await options.data({ op: "japanese", word: value }, controller.signal);
+            if (disposed || id !== sequence) return;
+            if (page.status === "ok") {
+              for (const definition of page.definitions) local.append(node("p", "", definition));
+              source(local, page, "ja", value);
+            } else onlineButton(options, local, value, "ja", () => active() && id === sequence);
+            onlineButton(options, local, value, "en", () => active() && id === sequence);
+          }
+        }
+        completedSequence = id;
+        if (!append) void suggestions(value, id);
+      } catch (error) {
+        if (active() && id === sequence) view.error(view.results, error, () => void search());
+      } finally {
+        if (id === sequence) more.disabled = false;
+      }
+    }
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      void search();
+    });
+    input.addEventListener("compositionstart", () => {
+      composing = true;
+      clearTimeout(timer);
+      controller?.abort();
+      sequence++;
+    });
+    input.addEventListener("compositionend", () => {
+      composing = false;
+      void search();
+    });
+    input.addEventListener("input", () => {
+      clearTimeout(timer);
+      controller?.abort();
+      sequence++;
+      if (!composing) timer = setTimeout(() => void search(), 180);
+    });
+    if (initialWord) void search();
+    else view.status.textContent = "Enter a Japanese word, reading, or English meaning.";
+    return { element: view.root, focus: () => {
+      formProbe?.();
+      if (completedSequence === sequence) void suggestions(query, sequence);
+      input.focus();
+    }, dispose: () => {
+      disposed = true;
+      sequence++;
+      detailVersion++;
+      clearTimeout(timer);
+      controller?.abort();
+    } };
+  }
+  function renderGrammarExample(example, options, lens) {
+    const wrap = node("div", "grammar-example"), sentence = node("p", "grammar-sentence");
+    for (const segment of example.segments) {
+      const text = segment.reading ? annotated(segment.text, segment.reading) : document.createTextNode(segment.text);
+      if (segment.role) {
+        const part = button("", () => {
+          lens.textContent = segment.role;
+          if (options.presentation === "panel") {
+            wrap.querySelectorAll(".grammar-highlight").forEach((el) => el.setAttribute("aria-pressed", String(el === part)));
+          }
+        }, "grammar-highlight");
+        if (options.presentation === "panel") part.setAttribute("aria-pressed", "false");
+        part.setAttribute("aria-label", `${segment.text}: explain construction`);
+        part.append(text);
+        sentence.append(part);
+      } else if (segment.lemma) {
+        const word = button("", () => options.dictionary(segment.lemma), "grammar-word");
+        word.setAttribute("aria-label", `Look up ${segment.lemma}`);
+        word.append(text);
+        sentence.append(word);
+      } else sentence.append(text);
+    }
+    wrap.append(sentence, node("p", "grammar-translation", example.translation), node("p", "tool-source", example.note));
+    return wrap;
+  }
+  function renderGrammarTool(options) {
+    const panel = options.presentation === "panel";
+    const view = workspace("Grammar"), { wrap, input } = labelInput("Search grammar", "Pattern, reading, romaji, or what you want to express");
+    const filters = node("div", "grammar-filters"), levelLabel = node("label", "tool-label", "Level"), level = node("select");
+    level.setAttribute("aria-label", "Grammar level");
+    for (const value of ["All", "N5", "N4", "N3", "N2", "N1"]) {
+      const opt = node("option", "", value === "All" ? "All levels" : value);
+      opt.value = value;
+      level.append(opt);
+    }
+    level.value = "N5";
+    levelLabel.append(level);
+    const groupLabel = node("label", "tool-label", "Meaning group"), group = node("select");
+    group.setAttribute("aria-label", "Grammar meaning group");
+    const all = node("option", "", "All meanings");
+    all.value = "";
+    group.append(all);
+    for (const value of grammarGroups) {
+      const opt = node("option", "", value);
+      opt.value = value;
+      group.append(opt);
+    }
+    groupLabel.append(group);
+    filters.append(levelLabel, groupLabel);
+    view.catalog.prepend(node("p", "playground-intro", "Sentence Lens \xB7 explore what grammar changes in a sentence."), wrap, filters);
+    const filterSummary = node("summary");
+    if (panel) {
+      view.root.classList.add("panel-grammar");
+      const controls = node("div", "grammar-controls"), disclosure = node("details", "grammar-filter-disclosure");
+      disclosure.append(filterSummary, filters);
+      controls.append(wrap, disclosure, view.status);
+      view.catalog.querySelector(".playground-intro")?.remove();
+      view.catalog.prepend(controls);
+      view.backButton.textContent = "\u2190 Back to results";
+      view.backButton.setAttribute("aria-label", "Back to results");
+    }
+    let disposed = false, index = [], version = 0, composing = false, limit = 30;
+    view.root.addEventListener("tool-results", () => {
+      version++;
+    });
+    let matches2 = [], rendered = 0;
+    const sentinel = node("p", "grammar-list-end");
+    function appendBatch() {
+      if (disposed || !panel || !view.detail.hidden || view.root.getClientRects().length === 0) return;
+      const end = Math.min(rendered + 30, matches2.length), fragment = document.createDocumentFragment();
+      for (const summary of matches2.slice(rendered, end)) fragment.append(result(summary));
+      view.results.append(fragment);
+      rendered = end;
+      view.status.textContent = `${rendered} of ${matches2.length} grammar points \xB7 offline`;
+      sentinel.textContent = rendered === matches2.length && matches2.length ? "End of results" : "";
+      observer?.unobserve(sentinel);
+      if (rendered < matches2.length) observer?.observe(sentinel);
+    }
+    const observer = panel ? new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting) && sentinel.getBoundingClientRect().top <= view.scroller.getBoundingClientRect().bottom + 300) appendBatch();
+    }, { root: view.scroller, rootMargin: "0px 0px 300px 0px" }) : void 0;
+    function result(summary) {
+      const b = button("", () => void open(summary, b), "tool-result");
+      b.append(node("span", "tool-pattern", summary.pattern), node("span", "tool-source", summary.level), node("span", "", summary.purpose));
+      return b;
+    }
+    const normalize2 = (s) => s.normalize("NFKC").toLocaleLowerCase("en").replace(/[ァ-ヶ]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 96));
+    async function open(summary, origin) {
+      const id = ++version, content = node("article");
+      content.append(node("p", "", "Opening local grammar\u2026"));
+      view.show(content, origin);
+      try {
+        const point = await options.data({ op: "grammar", id: summary.id });
+        if (disposed || id !== version) return;
+        const lens = node("p", "grammar-lens", panel ? "Select an underlined construction to see its role." : "Select an outlined construction to see its role.");
+        lens.setAttribute("role", "status");
+        content.replaceChildren(node("p", "tool-source", `${point.level} \xB7 study reference`), node("h2", "tool-heading", point.pattern), node("p", "grammar-purpose", point.purpose));
+        content.append(renderGrammarExample(point.examples[0], options, lens), lens);
+        const extra = node("details", "grammar-examples");
+        extra.append(node("summary", "", "More examples"));
+        for (const example of point.examples.slice(1)) extra.append(renderGrammarExample(example, options, lens));
+        content.append(extra);
+        const details = node("details", "grammar-notes");
+        details.append(node("summary", "", "Formation and usage"));
+        details.append(node("h3", "", "How it is formed"));
+        for (const rule of point.formation) details.append(node("p", "", rule));
+        details.append(node("h3", "", "Register"), node("p", "", point.register), node("h3", "", "Usage limits"), node("p", "", point.restrictions), node("h3", "", "Watch out"), node("p", "", point.mistake));
+        content.append(details);
+        for (const comparisonId of point.comparisons) {
+          const comparison = node("section", "grammar-comparison");
+          content.append(comparison);
+          const loadComparison = async () => {
+            try {
+              const data = await options.data({ op: "comparison", id: comparisonId });
+              if (disposed || id !== version) return;
+              const output = node("div"), explanation = node("p", "grammar-change"), choices = node("div", "grammar-switches"), clens = node("p", "grammar-lens");
+              clens.setAttribute("role", "status");
+              explanation.setAttribute("aria-live", "polite");
+              const familyOption = content.querySelector(`select[aria-label="Comparison family"] option[value="${point.comparisons.indexOf(comparisonId)}"]`);
+              if (familyOption) familyOption.textContent = data.title;
+              comparison.setAttribute("aria-label", data.title);
+              choices.setAttribute("role", "group");
+              choices.setAttribute("aria-label", `Compare: ${data.title}`);
+              comparison.replaceChildren(node("h3", "", `Compare: ${data.title}`), choices, output, explanation, clens);
+              const buttons = [];
+              const choose = (n) => {
+                output.replaceChildren(renderGrammarExample(data.variants[n].example, options, clens));
+                explanation.textContent = `What changed? ${data.variants[n].change}`;
+                clens.textContent = "Select the construction to inspect it.";
+                buttons.forEach((b, i) => b.setAttribute("aria-pressed", String(i === n)));
+              };
+              data.variants.forEach((variant, n) => {
+                const b = button(variant.label, () => choose(n));
+                buttons.push(b);
+                choices.append(b);
+              });
+              choose(0);
+              const activity = node("details", "grammar-activity"), feedback = node("p");
+              feedback.setAttribute("role", "status");
+              activity.append(node("summary", "", "Choose the meaning"), node("p", "", data.question));
+              data.answers.forEach((answer, n) => activity.append(button(answer, () => {
+                feedback.textContent = `${n === data.correct ? "Yes." : "Try another interpretation."} ${data.feedback}`;
+              })));
+              activity.append(feedback);
+              comparison.append(activity);
+            } catch (error) {
+              if (!disposed && id === version) view.error(comparison, error, () => void loadComparison());
+            }
+          };
+          void loadComparison();
+        }
+        const related = node("nav", "grammar-related");
+        related.setAttribute("aria-label", "Related grammar");
+        for (const relatedId of point.related) {
+          const summary2 = index.find((p) => p.id === relatedId);
+          if (summary2) {
+            const b = button(summary2.pattern, () => void open(summary2, b));
+            related.append(b);
+          }
+        }
+        if (related.childElementCount) content.append(node("h3", "", "Related grammar"), related);
+        content.append(node("p", "tool-source", "Original K\u014D explanations and examples. JLPT levels are study references, not an official syllabus."));
+        if (panel) panelDetails(content, point, lens);
+      } catch (error) {
+        if (!disposed && id === version) view.error(content, error, () => void open(summary, origin));
+      }
+    }
+    function panelDetails(content, point, lens) {
+      const toolbar = node("div", "grammar-detail-toolbar"), tabs = node("div", "grammar-section-tabs");
+      tabs.setAttribute("role", "tablist");
+      tabs.setAttribute("aria-label", "Grammar sections");
+      const heading = content.querySelector(".tool-heading"), levelInfo = content.querySelector(".tool-source");
+      toolbar.append(view.backButton, heading, levelInfo, tabs);
+      const example = node("section"), usage = node("section"), compare = node("section");
+      const purpose = content.querySelector(".grammar-purpose");
+      const exampleHost = node("div"), exampleNav = node("div", "grammar-example-nav"), count = node("span");
+      count.setAttribute("role", "status");
+      let selected = 0;
+      const previous = button("Previous", () => showExample(selected - 1)), next = button("Next", () => showExample(selected + 1));
+      function showExample(n) {
+        selected = n;
+        exampleHost.replaceChildren(renderGrammarExample(point.examples[n], options, lens));
+        lens.textContent = "Select an underlined construction to see its role.";
+        count.textContent = `${n + 1} / ${point.examples.length}`;
+        previous.disabled = n === 0;
+        next.disabled = n === point.examples.length - 1;
+      }
+      exampleNav.append(previous, count, next);
+      example.append(purpose, exampleHost, lens, exampleNav);
+      showExample(0);
+      const notes = content.querySelector(".grammar-notes");
+      notes.querySelector("summary")?.remove();
+      usage.append(...Array.from(notes.childNodes));
+      const related = content.querySelector(".grammar-related");
+      if (related) usage.append(node("h3", "", "Related grammar"), related);
+      const families = Array.from(content.querySelectorAll(".grammar-comparison"));
+      if (families.length > 1) {
+        const label = node("label", "tool-label", "Comparison"), select = node("select");
+        select.setAttribute("aria-label", "Comparison family");
+        point.comparisons.forEach((_, i) => {
+          const option = node("option", "", `Comparison ${i + 1}`);
+          option.value = String(i);
+          select.append(option);
+        });
+        select.onchange = () => families.forEach((family, i) => {
+          family.hidden = i !== Number(select.value);
+        });
+        label.append(select);
+        compare.append(label);
+      }
+      families.forEach((family, i) => {
+        family.hidden = i !== 0;
+        compare.append(family);
+      });
+      const sections = [["Example", example], ["Usage", usage], ...families.length ? [["Compare", compare]] : []];
+      const buttons = [], positions = /* @__PURE__ */ new Map();
+      let active = example;
+      function choose(n, focus = false) {
+        positions.set(active, view.scroller.scrollTop);
+        active = sections[n][1];
+        sections.forEach(([, section], i) => {
+          section.hidden = i !== n;
+          buttons[i].setAttribute("aria-selected", String(i === n));
+          buttons[i].tabIndex = i === n ? 0 : -1;
+        });
+        view.scroller.scrollTop = positions.get(active) ?? 0;
+        if (focus) buttons[n].focus();
+      }
+      const prefix = `grammar-section-${++grammarSectionSequence}`;
+      sections.forEach(([name, section], i) => {
+        const b = button(name, () => choose(i));
+        b.setAttribute("role", "tab");
+        b.id = `${prefix}-${i}`;
+        section.id = `${prefix}-${i}-pane`;
+        b.setAttribute("aria-controls", section.id);
+        section.setAttribute("role", "tabpanel");
+        section.setAttribute("aria-labelledby", b.id);
+        b.onkeydown = (e) => {
+          if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
+          e.preventDefault();
+          choose(e.key === "Home" ? 0 : e.key === "End" ? sections.length - 1 : (i + (e.key === "ArrowRight" ? 1 : -1) + sections.length) % sections.length, true);
+        };
+        buttons.push(b);
+        tabs.append(b);
+      });
+      const attribution = content.lastElementChild;
+      content.replaceChildren(toolbar, ...sections.map(([, section]) => section), attribution);
+      choose(0);
+    }
+    function render2(reset = true) {
+      if (composing || disposed) return;
+      if (reset) limit = 30;
+      const tokens = normalize2(input.value).trim().split(/\s+/u).filter((token) => token && !["a", "an", "the", "to", "of"].includes(token));
+      matches2 = index.filter((p) => (level.value === "All" || p.level === level.value) && (!group.value || p.groups.includes(group.value)) && tokens.every((t) => normalize2([p.pattern, ...p.aliases, p.purpose, ...p.keywords].join(" ")).includes(t)));
+      view.status.textContent = `${matches2.length} grammar points \xB7 offline`;
+      view.results.replaceChildren();
+      if (panel) {
+        observer?.disconnect();
+        rendered = 0;
+        view.scroller.scrollTop = 0;
+        filterSummary.textContent = `Filters \xB7 ${level.value === "All" ? "All levels" : level.value} \xB7 ${group.value || "All meanings"}`;
+        appendBatch();
+        view.catalog.append(sentinel);
+      } else {
+        for (const summary of matches2.slice(0, limit)) view.results.append(result(summary));
+        if (matches2.length > limit) view.results.append(button("Show more", () => {
+          limit += 30;
+          render2(false);
+        }));
+      }
+      if (!matches2.length) view.results.append(node("p", "", "No matches. Try All levels, another spelling, or a meaning such as \u201Creason\u201D."));
+    }
+    async function load() {
+      view.status.textContent = "Opening the local grammar collection\u2026";
+      try {
+        index = await options.data({ op: "grammar-index" });
+        if (!disposed) render2();
+      } catch (error) {
+        if (!disposed) view.error(view.results, error, () => void load());
+      }
+    }
+    input.addEventListener("input", () => render2());
+    input.addEventListener("compositionstart", () => {
+      composing = true;
+    });
+    input.addEventListener("compositionend", () => {
+      composing = false;
+      render2();
+    });
+    level.addEventListener("change", () => {
+      version++;
+      view.back(false);
+      render2();
+    });
+    group.addEventListener("change", () => {
+      version++;
+      view.back(false);
+      render2();
+    });
+    void load();
+    return { element: view.root, focus: () => {
+      if (panel && !view.detail.hidden) view.detail.focus({ preventScroll: true });
+      else input.focus({ preventScroll: true });
+    }, dispose: () => {
+      disposed = true;
+      version++;
+      observer?.disconnect();
+    } };
+  }
+  var japanese3, grammarSectionSequence, playgroundToolStyles;
+  var init_playground_tools = __esm({
+    "src/playground-tools.ts"() {
+      "use strict";
+      init_exploration();
+      init_verb_playground();
+      init_adjective_playground();
+      init_definitions();
+      init_playground_data();
+      japanese3 = (q) => /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(q);
+      grammarSectionSequence = 0;
+      playgroundToolStyles = `
+.playground-workspaces,.legacy-playground{display:flex;flex-direction:column;flex:1;min-height:0;height:100%}
+.playground-workspace{display:flex;flex:1;min-height:0;min-width:0;container-type:inline-size}.tool-scroll{overflow:auto;overscroll-behavior:contain;width:100%;padding:16px;min-height:0}
+.tool-layout{display:grid;gap:20px;min-width:0}.tool-catalog,.tool-detail{min-width:0}.has-detail .tool-catalog{display:none}.tool-detail:focus{outline:none}
+.tool-label{display:grid;gap:6px;font-size:12px;font-weight:600;margin-bottom:12px}.tool-label input,.tool-label select{font:13px/1.5 var(--body);padding:10px;background:var(--paper);color:var(--ink);border:1px solid var(--line);width:100%;min-width:0}
+.tool-search>button{margin:0}.tool-status{font-size:12px;color:var(--muted)}.tool-results{display:grid;gap:8px}.tool-result{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:12px!important;white-space:normal;overflow-wrap:anywhere;margin:0!important}
+.tool-result ruby,.tool-pattern{font-size:20px;font-weight:500;color:var(--accent)}.tool-sense-label,.tool-source{font-size:11px;color:var(--muted);font-weight:400}.tool-heading{font:700 25px/1.6 var(--body);margin:12px 0}.tool-reading{font-size:16px}.tool-back{margin:0!important;padding:5px 0!important;border:0!important;color:var(--accent);background:transparent!important}
+.tool-detail p{overflow-wrap:anywhere}.tool-detail details{margin:14px 0;padding:10px 0;border-block:1px solid var(--surface)}.tool-detail summary{cursor:pointer;font-weight:600}.dictionary-senses{padding-left:22px}.dictionary-senses li{padding-bottom:8px}.dictionary-senses p{margin:4px 0}.dictionary-japanese{border-top:1px solid var(--line);margin-top:18px}.dictionary-more ol{padding-left:22px}
+.grammar-filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grammar-purpose{font-size:15px}.grammar-sentence{font:22px/2.5 var(--body);overflow-wrap:anywhere}.grammar-sentence button{display:inline!important;font:inherit!important;padding:1px 2px!important;margin:0!important;white-space:normal!important;border:0;background:transparent;color:inherit}
+.grammar-sentence .grammar-highlight{outline:1px solid var(--seal);outline-offset:-1px;border-bottom:3px solid var(--seal);text-decoration:underline;text-underline-offset:5px;background:var(--surface)}.grammar-word{text-decoration:underline dotted;text-underline-offset:5px}.grammar-translation{font-size:14px}.grammar-lens{padding:10px;border-left:3px solid var(--accent);background:var(--surface);font-size:12px}.grammar-comparison{margin-top:24px;border-top:2px solid var(--line)}
+.grammar-switches,.grammar-related{display:flex;gap:6px;flex-wrap:wrap}.grammar-switches button,.grammar-related button{margin:0!important}.grammar-switches [aria-pressed=true]{background:var(--accent);color:var(--paper)}.grammar-change{font-size:12px}.grammar-activity button{display:block;margin:8px 0!important;text-align:left}.playground-route-back{margin:0!important;padding:8px 16px!important;text-align:left;font-size:12px}
+.panel-playground-picker{display:flex;align-items:center;gap:10px;padding:6px 12px;border-bottom:1px solid var(--line);font-size:12px;flex:none}
+.panel-playground-picker select{flex:1;min-width:0;padding:6px;font:inherit;background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+.panel-grammar .tool-scroll{padding:0 12px 12px;scroll-padding-top:160px}
+.panel-grammar .tool-layout{display:block}.panel-grammar .grammar-controls{position:sticky;top:0;z-index:2;background:var(--paper);padding:10px 0 6px;border-bottom:1px solid var(--surface)}
+.panel-grammar .tool-label{margin-bottom:6px}.panel-grammar .tool-label input,.panel-grammar .tool-label select{padding:6px}
+.panel-grammar .grammar-filter-disclosure{font-size:12px}.panel-grammar summary{cursor:pointer;min-height:32px;padding:6px 0}
+.panel-grammar .tool-status{margin:6px 0}.panel-grammar .tool-results{gap:0}
+.panel-grammar .tool-result{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;padding:9px 2px!important;background:transparent;border:0;border-bottom:1px solid var(--surface);width:100%;font:14px/1.5 var(--body)}
+.panel-grammar .tool-result>:last-child{grid-column:1/-1}.panel-grammar .tool-pattern{font-size:18px}.panel-grammar .tool-result:hover{background:var(--surface)}
+.panel-grammar .grammar-list-end{font-size:12px;color:var(--muted);min-height:1px}
+.panel-grammar .grammar-detail-toolbar{position:sticky;top:0;z-index:2;background:var(--paper);padding:6px 0;border-bottom:1px solid var(--line)}
+.panel-grammar .tool-heading{font-size:22px;line-height:1.4;margin:2px 0}.panel-grammar .grammar-detail-toolbar>.tool-source{margin:2px 0 6px}
+.panel-grammar .grammar-section-tabs,.panel-grammar .grammar-example-nav{display:flex;align-items:center;gap:6px}
+.panel-grammar .grammar-section-tabs button{flex:1;margin:0}.panel-grammar .grammar-section-tabs [aria-selected=true]{background:var(--accent);color:var(--paper)}
+.panel-grammar button{min-height:32px}.panel-grammar .grammar-sentence button{min-height:0}
+.panel-grammar .grammar-example-nav{justify-content:space-between}.panel-grammar .grammar-example-nav button{margin:0}
+.panel-grammar .tool-detail{font-size:14px}.panel-grammar .grammar-sentence{font-size:20px;line-height:2.5;overflow-wrap:normal;line-break:strict;word-break:normal}
+.panel-grammar .grammar-sentence .grammar-highlight{outline:none;border-bottom:1px solid var(--seal);text-decoration:none;background:var(--surface)}
+.panel-grammar .grammar-sentence .grammar-highlight[aria-pressed=true]{background:var(--surface);box-shadow:inset 0 -3px var(--seal)}
+.panel-grammar .grammar-lens{font-size:14px}.panel-grammar .grammar-comparison{margin-top:12px;border-top:0}
+@container(min-width:740px){.has-detail .tool-scroll{overflow:hidden}.has-detail .tool-catalog{display:block;overflow:auto;overscroll-behavior:contain}.has-detail .tool-layout{height:100%;grid-template-columns:minmax(230px,1fr) minmax(0,1.8fr)}.has-detail .tool-detail{overflow:auto;overscroll-behavior:contain;border-left:1px solid var(--line);padding-left:20px}}
+@container(max-width:440px){.playground-tabs{display:grid;grid-template-columns:1fr 1fr}.grammar-filters{grid-template-columns:1fr}.grammar-sentence{font-size:20px}}
+@media(max-width:440px){.playground-tabs{display:grid;grid-template-columns:1fr 1fr}.grammar-filters{grid-template-columns:1fr}.grammar-sentence{font-size:20px}}
+`;
+    }
+  });
+
   // src/playground-browser.ts
   function element3(tag, className, text) {
-    const node = document.createElement(tag);
-    node.className = className;
-    if (text !== void 0) node.textContent = text;
-    return node;
+    const node2 = document.createElement(tag);
+    node2.className = className;
+    if (text !== void 0) node2.textContent = text;
+    return node2;
   }
   function classLabel(base) {
     if (base.verbClass === "\u4E00\u6BB5") return "Ichidan";
@@ -2099,7 +2781,7 @@ ${meaningForkStyles}
     if (base.verbClass.startsWith("\u30AB\u5909")) return "\u6765\u308B irregular";
     return base.verbClass;
   }
-  function renderPlaygroundBrowser(options) {
+  function renderLegacyPlaygroundBrowser(options, initial = "verbs") {
     const root = element3("section", "playground-browser");
     root.setAttribute("aria-label", "Playgrounds");
     const panelId = `ko-playground-pane-${++browserSequence}`;
@@ -2206,7 +2888,7 @@ ${meaningForkStyles}
       catalog.hidden = true;
       detailNav.hidden = false;
       scroller.scrollTop = 0;
-      Array.from(panel.querySelectorAll("select,button")).find((node) => node.getClientRects().length)?.focus({ preventScroll: true });
+      Array.from(panel.querySelectorAll("select,button")).find((node2) => node2.getClientRects().length)?.focus({ preventScroll: true });
     };
     const pane = element3("div", "playground-pane");
     pane.id = panelId;
@@ -2215,25 +2897,25 @@ ${meaningForkStyles}
     const showVerb = (interpretation, origin) => {
       const panel = element3("div", "explore-panel");
       const label = element3("p", "explore-source-label", "Original phrase");
-      const source = element3("p", "explore-source");
-      source.append(annotated(interpretation.model.source, interpretation.model.sourceReading));
+      const source2 = element3("p", "explore-source");
+      source2.append(annotated(interpretation.model.source, interpretation.model.sourceReading));
       const original = element3("div", "playground-original");
-      original.append(label, source);
+      original.append(label, source2);
       panel.append(original, renderVerbPlayground(interpretation.model));
       showSelection(panel, origin);
     };
     const confirm = (choices) => {
       confirmation.replaceChildren();
       for (const choice of choices) {
-        const button = element3("button", "", `Use ${choice.label}`);
-        button.type = "button";
-        button.addEventListener("click", () => {
+        const button2 = element3("button", "", `Use ${choice.label}`);
+        button2.type = "button";
+        button2.addEventListener("click", () => {
           if (disposed) return;
           cancel();
           feedback.textContent = "";
-          showVerb(choice, button);
+          showVerb(choice, button2);
         });
-        confirmation.append(button);
+        confirmation.append(button2);
       }
     };
     const check = async (value) => {
@@ -2272,9 +2954,9 @@ ${meaningForkStyles}
         feedback.textContent = !choices.length ? "That derived construction is outside the supported forms. Try its original dictionary verb." : choices.length > 1 ? "Choose the dictionary entry or interpretation you intend." : "Confirm the dictionary form, reading, and class to begin.";
         confirm(choices);
         for (const base of adjectives) {
-          const button = element3("button", "", `Use ${base.lemma} \xB7 ${base.reading} \xB7 ${base.kind === "i" ? "\u3044-adjective" : "\u306A-adjective"}`);
-          button.type = "button";
-          button.addEventListener("click", () => {
+          const button2 = element3("button", "", `Use ${base.lemma} \xB7 ${base.reading} \xB7 ${base.kind === "i" ? "\u3044-adjective" : "\u306A-adjective"}`);
+          button2.type = "button";
+          button2.addEventListener("click", () => {
             if (disposed) return;
             cancel();
             feedback.textContent = "";
@@ -2282,9 +2964,9 @@ ${meaningForkStyles}
             const original = element3("div", "playground-original");
             original.append(element3("p", "explore-source-label", "Original word"), annotated(model2.source, model2.sourceReading));
             panel.append(original, renderAdjectivePlayground(model2));
-            showSelection(panel, button);
+            showSelection(panel, button2);
           });
-          confirmation.append(button);
+          confirmation.append(button2);
         }
         if (adjectives.length) feedback.textContent = "Confirm the dictionary form, reading, and class to begin.";
       } catch {
@@ -2312,19 +2994,19 @@ ${meaningForkStyles}
         const values = [variant.term, ...variant.aliases, entry.sceneUse, variant.gloss, ...entry.keywords];
         if (!matches(normalizeMimetic(query), values)) continue;
         total++;
-        const button = element3("button", "playground-entry");
-        button.type = "button";
-        button.append(element3("span", "playground-term", variant.term), element3("span", "playground-gloss", variant.gloss));
-        button.addEventListener("click", () => {
+        const button2 = element3("button", "playground-entry");
+        button2.type = "button";
+        button2.append(element3("span", "playground-term", variant.term), element3("span", "playground-gloss", variant.gloss));
+        button2.addEventListener("click", () => {
           if (disposed) return;
           cancel();
           confirmation.replaceChildren();
           feedback.textContent = "";
           const panel = element3("div", "explore-panel");
           panel.append(renderMimeticPlayground({ ...entry, initialVariant: index }));
-          showSelection(panel, button);
+          showSelection(panel, button2);
         });
-        results.append(button);
+        results.append(button2);
       }
       count.textContent = `${total} expressions`;
       if (!total) results.append(element3("p", "", "No matching expressions. Try another spelling, reading, or English word."));
@@ -2344,30 +3026,30 @@ ${meaningForkStyles}
       filters.hidden = count.hidden = results.hidden = next !== "mimetics";
       intro.textContent = next === "verbs" ? verbIntro : "Choose an expression to compare. Everything works offline.";
       pane.setAttribute("aria-labelledby", `${panelId}-${next}`);
-      for (const [key, button] of tabButtons) {
-        button.setAttribute("aria-selected", String(key === next));
-        button.tabIndex = key === next ? 0 : -1;
+      for (const [key, button2] of tabButtons) {
+        button2.setAttribute("aria-selected", String(key === next));
+        button2.tabIndex = key === next ? 0 : -1;
       }
       renderResults();
     };
     for (const [id, label] of [["verbs", "Word forms"], ["mimetics", "Mimetics"]]) {
-      const button = element3("button", "", label);
-      button.type = "button";
-      button.setAttribute("role", "tab");
-      button.setAttribute("aria-selected", String(id === tab));
-      button.tabIndex = id === tab ? 0 : -1;
-      button.id = `${panelId}-${id}`;
-      button.setAttribute("aria-controls", panelId);
-      button.addEventListener("click", () => changeTab(id));
-      button.addEventListener("keydown", (event) => {
+      const button2 = element3("button", "", label);
+      button2.type = "button";
+      button2.setAttribute("role", "tab");
+      button2.setAttribute("aria-selected", String(id === tab));
+      button2.tabIndex = id === tab ? 0 : -1;
+      button2.id = `${panelId}-${id}`;
+      button2.setAttribute("aria-controls", panelId);
+      button2.addEventListener("click", () => changeTab(id));
+      button2.addEventListener("keydown", (event) => {
         if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
         event.preventDefault();
         const next = event.key === "Home" ? "verbs" : event.key === "End" ? "mimetics" : tab === "verbs" ? "mimetics" : "verbs";
         changeTab(next);
         tabButtons.get(next)?.focus();
       });
-      tabButtons.set(id, button);
-      tabs.append(button);
+      tabButtons.set(id, button2);
+      tabs.append(button2);
     }
     search.addEventListener("input", renderResults);
     category.addEventListener("change", renderResults);
@@ -2385,8 +3067,128 @@ ${meaningForkStyles}
     scroller.append(pane);
     root.append(tabs, detailNav, scroller);
     renderResults();
-    return { element: root, dispose, focus: () => {
+    if (initial === "mimetics") changeTab(initial);
+    tabs.remove();
+    if (initial === "verbs") {
+      filters.remove();
+      count.remove();
+      results.remove();
+    } else form.remove();
+    root.classList.remove("playground-browser");
+    root.classList.add("legacy-playground");
+    return { element: root, dispose, suspend: () => {
+      cancel();
+      if (feedback.textContent === "Checking the bundled dictionary\u2026") feedback.textContent = "Check the word again to continue.";
+    }, focus: () => {
       if (!disposed) (tab === "verbs" ? input : search).focus();
+    } };
+  }
+  function renderPlaygroundBrowser(options) {
+    const root = node("section", "playground-browser");
+    root.setAttribute("aria-label", "Playgrounds");
+    const tabs = node("div", "playground-tabs");
+    tabs.setAttribute("role", "tablist");
+    tabs.setAttribute("aria-label", "Playground type");
+    const host = node("div", "playground-workspaces"), routeBack = button("\u2190 Return to previous playground", () => goBack(), "playground-route-back");
+    routeBack.hidden = true;
+    const pickerLabel = node("label", "panel-playground-picker", "Playground"), picker = node("select");
+    picker.setAttribute("aria-label", "Playground");
+    pickerLabel.hidden = true;
+    pickerLabel.append(picker);
+    const registry = /* @__PURE__ */ new Map(), buttons = /* @__PURE__ */ new Map(), history = [];
+    let current, tab = "verbs", disposed = false;
+    const id = `ko-tools-${++browserSequence}`;
+    const toolOptions = { presentation: options.presentation, tokenize: options.tokenize, data: options.data ?? playgroundData, dictionary: (word) => navigate(renderDictionaryTool(toolOptions, word)), forms: (word) => {
+      const tool = renderLegacyPlaygroundBrowser(options);
+      navigate(tool);
+      const input = tool.element.querySelector(".playground-verb-input input");
+      input.value = word;
+      tool.element.querySelector("form").requestSubmit();
+    } };
+    function create(name) {
+      const tool = name === "dictionary" ? renderDictionaryTool(toolOptions) : name === "grammar" ? renderGrammarTool(toolOptions) : renderLegacyPlaygroundBrowser(options, name);
+      tool.element.querySelector(".playground-pane")?.removeAttribute("role");
+      return tool;
+    }
+    function navigate(tool) {
+      if (disposed) {
+        tool.dispose();
+        return;
+      }
+      history.push({ tool: current, focus: root.getRootNode().activeElement });
+      current.element.hidden = true;
+      current = tool;
+      tool.element.setAttribute("role", "tabpanel");
+      tool.element.setAttribute("aria-label", "Linked playground");
+      tool.element.querySelector(".playground-pane")?.removeAttribute("role");
+      host.append(tool.element);
+      routeBack.hidden = false;
+      tool.focus();
+    }
+    function goBack() {
+      const previous = history.pop();
+      if (!previous) return;
+      current.dispose();
+      current.element.remove();
+      current = previous.tool;
+      current.element.hidden = false;
+      routeBack.hidden = history.length === 0;
+      if (previous.focus instanceof HTMLElement && previous.focus.isConnected) previous.focus.focus({ preventScroll: true });
+      else current.focus();
+    }
+    function change(next, focus = true) {
+      if (disposed) return;
+      while (history.length) goBack();
+      if (current) {
+        current.suspend?.();
+        current.element.hidden = true;
+      }
+      tab = next;
+      picker.value = next;
+      pickerLabel.hidden = options.presentation !== "panel" || next !== "grammar";
+      tabs.hidden = !pickerLabel.hidden;
+      root.classList.toggle("panel-grammar-active", !pickerLabel.hidden);
+      current = registry.get(next) ?? create(next);
+      if (!registry.has(next)) {
+        registry.set(next, current);
+        current.element.id = `${id}-${next}-pane`;
+        current.element.setAttribute("role", "tabpanel");
+        current.element.setAttribute("aria-labelledby", `${id}-${next}`);
+        host.append(current.element);
+      }
+      current.element.hidden = false;
+      for (const [name, b] of buttons) {
+        b.setAttribute("aria-selected", String(name === next));
+        b.tabIndex = name === next ? 0 : -1;
+      }
+      if (focus) current.focus();
+    }
+    const tools = [["dictionary", "Dictionary"], ["verbs", "Word forms"], ["grammar", "Grammar"], ["mimetics", "Mimetics"]];
+    for (const [name, label] of tools) {
+      const option = node("option", "", label);
+      option.value = name;
+      picker.append(option);
+      const b = button(label, () => change(name));
+      b.setAttribute("role", "tab");
+      b.id = `${id}-${name}`;
+      b.setAttribute("aria-controls", `${id}-${name}-pane`);
+      buttons.set(name, b);
+      tabs.append(b);
+      b.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        const position = tools.findIndex(([name2]) => name2 === tab), next = tools[event.key === "Home" ? 0 : event.key === "End" ? tools.length - 1 : (position + (event.key === "ArrowRight" ? 1 : -1) + tools.length) % tools.length][0];
+        change(next, false);
+        buttons.get(next).focus();
+      });
+    }
+    picker.onchange = () => change(picker.value);
+    root.append(tabs, pickerLabel, routeBack, host);
+    change("verbs", false);
+    return { element: root, focus: () => current.focus(), dispose: () => {
+      if (disposed) return;
+      disposed = true;
+      for (const tool of /* @__PURE__ */ new Set([...registry.values(), ...history.map((entry) => entry.tool), current])) tool.dispose();
     } };
   }
   var playgroundBrowserStyles, categories, normalize, browserSequence, matches;
@@ -2398,8 +3200,10 @@ ${meaningForkStyles}
       init_verb_playground();
       init_mimetic_playground();
       init_exploration();
+      init_playground_data();
+      init_playground_tools();
       playgroundBrowserStyles = `
-.playground-browser{display:flex;flex-direction:column;height:100%;min-height:0;min-width:0;font:13px/1.5 var(--body);overflow-wrap:break-word}
+.playground-browser{display:flex;flex-direction:column;height:100%;min-height:0;min-width:0;container-type:inline-size;font:13px/1.5 var(--body);overflow-wrap:break-word}
 .playground-tabs{display:flex;flex:none;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--paper)}
 .playground-tabs button{flex:1;min-width:0;margin:0;padding:9px;font:700 12px/1.4 var(--mono)}
 .playground-tabs [aria-selected=true]{background:var(--accent);color:var(--paper)}
@@ -2429,7 +3233,7 @@ ${meaningForkStyles}
 .playground-selection .mimetic-playground{border:0;margin:0;padding:0}
 .playground-browser button:focus-visible,.playground-browser input:focus-visible,.playground-browser select:focus-visible,.playground-browser summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .playground-browser [hidden]{display:none}
-`;
+` + playgroundToolStyles;
       categories = [["feelings", "Feelings"], ["body", "Body"], ["movement", "Movement"], ["people", "People"], ["texture", "Texture"], ["sounds", "Sound"], ["nature", "Light & Weather"]];
       normalize = (value) => hiragana(value.normalize("NFKC")).toLocaleLowerCase("en").trim();
       browserSequence = 0;
@@ -2450,7 +3254,7 @@ ${meaningForkStyles}
     if (!token && !corrected) return;
     const start = corrected?.start ?? token.start, end = corrected?.end ?? token.end;
     const surface = target.text.slice(start, end);
-    if (!japanese3.test(surface) || surface.length > 80) return;
+    if (!japanese4.test(surface) || surface.length > 80) return;
     if (target.selection && (start !== 0 || end !== target.text.length)) return;
     let reading = corrected?.reading;
     if (reading === void 0) {
@@ -2467,8 +3271,8 @@ ${meaningForkStyles}
     if (!reading || reading === "*" || !/^[\p{Script=Hiragana}\p{Script=Katakana}ー\s]+$/u.test(reading)) reading = "";
     return { word: { surface, lemma: corrected ? surface : token?.lemma || surface, reading: hiragana(reading) }, start, end };
   }
-  function blocked(node) {
-    let element4 = node instanceof Element ? node : node.parentElement;
+  function blocked(node2) {
+    let element4 = node2 instanceof Element ? node2 : node2.parentElement;
     while (element4) {
       if (element4.closest(ignored)) return true;
       const root = element4.getRootNode();
@@ -2476,21 +3280,21 @@ ${meaningForkStyles}
     }
     return false;
   }
-  function textTarget(node, offset) {
-    if (!(node instanceof Text) || blocked(node) || !node.parentElement) return;
-    let root = node.parentElement;
+  function textTarget(node2, offset) {
+    if (!(node2 instanceof Text) || blocked(node2) || !node2.parentElement) return;
+    let root = node2.parentElement;
     while (root.parentElement && ["inline", "contents"].includes(getComputedStyle(root).display)) root = root.parentElement;
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: (n) => blocked(n) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
     let text = "", position = -1, count = 0, current;
     const parts = [];
     while ((current = walker.nextNode()) && ++count <= 256) {
-      if (current === node) position = text.length + offset;
+      if (current === node2) position = text.length + offset;
       const start2 = text.length;
       text += current.textContent ?? "";
       parts.push({ node: current, start: start2, end: text.length });
       if (text.length > 1e4) break;
     }
-    if (position < 0 || !japanese3.test(text)) return;
+    if (position < 0 || !japanese4.test(text)) return;
     const start = Math.max(0, position - 450), end = Math.min(text.length, start + 1e3);
     return { text: text.slice(start, end), offset: position - start, rects: (a, b) => {
       const boxes = [];
@@ -2519,34 +3323,34 @@ ${meaningForkStyles}
     if (!element4 || blocked(element4)) return;
     const doc = document;
     const caret = doc.caretPositionFromPoint?.(x, y2, { shadowRoots: shadows }), range = caret ? void 0 : doc.caretRangeFromPoint?.(x, y2);
-    const node = caret?.offsetNode ?? range?.startContainer, offset = caret?.offset ?? range?.startOffset;
-    if (!(node instanceof Text) || offset === void 0) return;
+    const node2 = caret?.offsetNode ?? range?.startContainer, offset = caret?.offset ?? range?.startOffset;
+    if (!(node2 instanceof Text) || offset === void 0) return;
     for (const index of [offset, offset - 1]) {
-      if (index < 0 || index >= node.length) continue;
+      if (index < 0 || index >= node2.length) continue;
       const r = document.createRange();
-      r.setStart(node, index);
-      r.setEnd(node, index + 1);
-      if ([...r.getClientRects()].some((b) => x >= b.left && x <= b.right && y2 >= b.top && y2 <= b.bottom)) return textTarget(node, index);
+      r.setStart(node2, index);
+      r.setEnd(node2, index + 1);
+      if ([...r.getClientRects()].some((b) => x >= b.left && x <= b.right && y2 >= b.top && y2 <= b.bottom)) return textTarget(node2, index);
     }
   }
   function selectedTarget(selection = window.getSelection()) {
     if (!selection || selection.isCollapsed || selection.rangeCount !== 1 || !selection.anchorNode || !selection.focusNode || blocked(selection.anchorNode) || blocked(selection.focusNode)) return;
     const text = selectionText(selection);
-    if (!text || text.length > 80 || /\s/u.test(text) || !japanese3.test(text)) return;
+    if (!text || text.length > 80 || /\s/u.test(text) || !japanese4.test(text)) return;
     return { text, offset: 0, selection: true };
   }
   function selectionText(selection) {
     if (!selection.rangeCount) return "";
     const fragment = selection.getRangeAt(0).cloneContents();
-    fragment.querySelectorAll("rt,rp").forEach((node) => node.remove());
+    fragment.querySelectorAll("rt,rp").forEach((node2) => node2.remove());
     return (fragment.textContent ?? "").trim();
   }
-  var japanese3, ignored;
+  var japanese4, ignored;
   var init_mascot_target = __esm({
     "src/mascot-target.ts"() {
       "use strict";
       init_shared();
-      japanese3 = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々〆]/u;
+      japanese4 = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}々〆]/u;
       ignored = 'script,style,noscript,rt,rp,input,textarea,select,[contenteditable]:not([contenteditable="false"]),ko-mascot,ko-overlay,ko-reading-view';
     }
   });
@@ -2618,6 +3422,10 @@ ${meaningForkStyles}
 .pronunciation-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 12px}.pronunciation-row .pronunciation{min-width:0;flex:1 1 auto}.definition .correction-toggle{margin:0;padding:3px 7px;border:1px solid var(--muted);background:transparent;color:var(--muted);font:500 11px/1.4 var(--body)}.definition .correction-toggle:hover,.definition .correction-toggle[aria-expanded=true]{border-color:var(--ink);background:var(--paper);color:var(--ink)}
 .resize{position:absolute;left:-6px;top:16px;bottom:16px;width:12px;cursor:ew-resize;touch-action:none}.resize:after{content:"";position:absolute;left:5px;top:0;bottom:0;width:3px;background:var(--line)}.resize:hover:after,.resize:focus-visible:after{background:var(--accent)}.resize:focus-visible{outline:3px solid var(--accent);outline-offset:0}.correction-form{margin-top:12px;padding-top:12px;border-top:2px solid var(--line)}.correction-form label{display:block;font-size:11px;font-weight:700;margin:8px 0}.correction-form input{display:block;width:100%;font:14px var(--body);color:var(--ink);background:var(--paper);padding:8px;border:2px solid var(--line);margin-top:6px}.correction-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.correction-actions button{margin:0;font-size:11px}.feedback[data-error=true]{color:var(--ink);font-weight:700;border-left:3px solid var(--line);padding-left:8px}.feedback[data-error=true]:before{content:"! "}
 .definition.exploring{max-height:70%}.definition.browsing{flex:1;min-height:0;max-height:none;padding:0;border-top:0;overflow:hidden;background:var(--paper)}.definition>header{position:sticky;top:-16px;z-index:1;padding:8px 0;background:var(--surface)}
+.reader:has(.panel-grammar-active)>.header{grid-template-columns:1fr 28px;padding:6px 12px;gap:0}
+.reader:has(.panel-grammar-active)>.header .heading{display:none}
+.reader:has(.panel-grammar-active)>.header .playgrounds-open{grid-column:1;grid-row:1;min-height:32px}
+.reader:has(.panel-grammar-active)>.header .panel-close{grid-column:2}
 ${explorationStyles}
 ${playgroundBrowserStyles}
 
@@ -2654,12 +3462,12 @@ ${playgroundBrowserStyles}
           this.content = this.root.querySelector(".content");
           this.status = this.root.querySelector(".status");
           this.content.addEventListener("pointerover", (event) => {
-            const button = event.target.closest(".word");
-            if (button && !(event.relatedTarget instanceof Node && button.contains(event.relatedTarget))) this.mascotHooks?.hover({ surface: button.dataset.surface, lemma: button.dataset.word, reading: button.dataset.reading }, (x, y2) => button.isConnected && [...button.getClientRects()].some((r) => x >= r.left && x <= r.right && y2 >= r.top && y2 <= r.bottom));
+            const button2 = event.target.closest(".word");
+            if (button2 && !(event.relatedTarget instanceof Node && button2.contains(event.relatedTarget))) this.mascotHooks?.hover({ surface: button2.dataset.surface, lemma: button2.dataset.word, reading: button2.dataset.reading }, (x, y2) => button2.isConnected && [...button2.getClientRects()].some((r) => x >= r.left && x <= r.right && y2 >= r.top && y2 <= r.bottom));
           });
           this.content.addEventListener("pointerout", (event) => {
-            const button = event.target.closest(".word");
-            if (button && !(event.relatedTarget instanceof Node && button.contains(event.relatedTarget))) this.mascotHooks?.leave();
+            const button2 = event.target.closest(".word");
+            if (button2 && !(event.relatedTarget instanceof Node && button2.contains(event.relatedTarget))) this.mascotHooks?.leave();
           });
           document.addEventListener("selectionchange", () => {
             if (!this.mascotHooks || !this.host.isConnected) return;
@@ -2674,9 +3482,9 @@ ${playgroundBrowserStyles}
             else this.openPlaygrounds();
           });
           this.content.addEventListener("click", (event) => {
-            const button = event.target.closest(".word");
+            const button2 = event.target.closest(".word");
             const selection = this.root.getSelection?.() ?? window.getSelection();
-            if (button && (selection?.isCollapsed ?? true)) void this.define(button);
+            if (button2 && (selection?.isCollapsed ?? true)) void this.define(button2);
           });
           this.root.addEventListener("keydown", (event) => {
             if (event.key === "Escape" && !this.definition.hidden) {
@@ -2706,8 +3514,8 @@ ${playgroundBrowserStyles}
           this.host.style.setProperty("--reader-ruby", `${0.5 * appearance2.scale}em`);
           this.root.querySelector(".reader").classList.toggle("high", appearance2.contrast === "high");
         }
-        ownsNode(node) {
-          return node === this.host || this.host.contains(node);
+        ownsNode(node2) {
+          return node2 === this.host || this.host.contains(node2);
         }
         owns(event) {
           return event.composedPath().includes(this.host);
@@ -2780,9 +3588,9 @@ ${playgroundBrowserStyles}
             for (const word of words) {
               if (word.start < cursor || word.end > line.text.length) continue;
               append(p, cursor, word.start);
-              const button = document.createElement("button");
-              button.type = "button";
-              button.className = "word";
+              const button2 = document.createElement("button");
+              button2.type = "button";
+              button2.className = "word";
               const surface = line.text.slice(word.start, word.end);
               let pronunciation = "", position = word.start, unknown = false;
               for (const part of line.readings) {
@@ -2793,16 +3601,16 @@ ${playgroundBrowserStyles}
               }
               pronunciation += line.text.slice(position, word.end);
               if (unknown || /[\p{Script=Han}々]/u.test(pronunciation)) pronunciation = word.reading === "*" ? "" : word.reading;
-              button.dataset.word = word.lemma;
-              button.dataset.surface = surface;
-              button.dataset.reading = pronunciation;
+              button2.dataset.word = word.lemma;
+              button2.dataset.surface = surface;
+              button2.dataset.reading = pronunciation;
               const originalIndex = (line.words ?? []).findIndex((entry) => entry.start === word.start);
-              if (originalIndex >= 0) this.wordContexts.set(button, { text: line.text, words: line.words, index: originalIndex });
-              button.setAttribute("aria-label", `Open details for ${surface}`);
-              button.setAttribute("aria-pressed", "false");
-              button.title = `${surface} \xB7 Word details`;
-              append(button, word.start, word.end);
-              p.append(button);
+              if (originalIndex >= 0) this.wordContexts.set(button2, { text: line.text, words: line.words, index: originalIndex });
+              button2.setAttribute("aria-label", `Open details for ${surface}`);
+              button2.setAttribute("aria-pressed", "false");
+              button2.title = `${surface} \xB7 Word details`;
+              append(button2, word.start, word.end);
+              p.append(button2);
               cursor = word.end;
             }
             append(p, cursor, line.text.length);
@@ -2887,7 +3695,7 @@ ${playgroundBrowserStyles}
           this.host.classList.add("playground-active");
           this.root.querySelector(".reader").classList.add("playground-mode");
           this.root.querySelector("h2").textContent = "Playgrounds";
-          this.playground = renderPlaygroundBrowser({ tokenize: (texts, signal) => this.tokenizePlayground(texts, signal) });
+          this.playground = renderPlaygroundBrowser({ presentation: "panel", tokenize: (texts, signal) => this.tokenizePlayground(texts, signal) });
           this.definition.append(this.playground.element);
           this.playground.focus();
         }
@@ -2980,12 +3788,12 @@ ${playgroundBrowserStyles}
           row.append(toggle);
           this.definition.append(form);
         }
-        define(button) {
+        define(button2) {
           this.dismissDefinition();
           const version = this.lookupVersion;
-          this.selected = button;
-          button.setAttribute("aria-pressed", "true");
-          const word = button.dataset.word, surface = button.dataset.surface;
+          this.selected = button2;
+          button2.setAttribute("aria-pressed", "true");
+          const word = button2.dataset.word, surface = button2.dataset.surface;
           this.definition.hidden = false;
           this.definition.scrollTop = 0;
           const header = document.createElement("header"), title = document.createElement("h3");
@@ -3001,12 +3809,12 @@ ${playgroundBrowserStyles}
           const pronunciation = document.createElement("p");
           pronunciation.className = "pronunciation";
           pronunciation.lang = "ja";
-          pronunciation.textContent = [button.dataset.reading, word !== surface ? `\u8F9E\u66F8\u5F62: ${word}` : ""].filter(Boolean).join(" \xB7 ");
+          pronunciation.textContent = [button2.dataset.reading, word !== surface ? `\u8F9E\u66F8\u5F62: ${word}` : ""].filter(Boolean).join(" \xB7 ");
           const pronunciationRow = document.createElement("div");
           pronunciationRow.className = "pronunciation-row";
           pronunciationRow.append(pronunciation);
           this.definition.append(pronunciationRow);
-          const context = this.wordContexts.get(button);
+          const context = this.wordContexts.get(button2);
           if (context) {
             const models = wordExplorations(context.text, context.words, context.index, surface, this.overrides);
             if (models.verb || models.adjective || models.mimetic || models.meaning) {
@@ -3026,7 +3834,7 @@ ${playgroundBrowserStyles}
               this.definition.append(explore, panel);
             }
           }
-          if (/[\p{Script=Han}々]/u.test(surface)) this.correctionControls(surface, button.dataset.reading ?? "", pronunciationRow);
+          if (/[\p{Script=Han}々]/u.test(surface)) this.correctionControls(surface, button2.dataset.reading ?? "", pronunciationRow);
           const body = document.createElement("div");
           body.className = "definition-body";
           this.definition.append(body);
@@ -3081,13 +3889,13 @@ ${playgroundBrowserStyles}
               section.append(retry);
             }
             const attribution = definitionSource(page, language, word);
-            const source = document.createElement("a");
-            source.className = "source";
-            source.textContent = attribution.label;
-            source.href = attribution.url;
-            source.target = "_blank";
-            source.rel = "noopener noreferrer";
-            section.append(source);
+            const source2 = document.createElement("a");
+            source2.className = "source";
+            source2.textContent = attribution.label;
+            source2.href = attribution.url;
+            source2.target = "_blank";
+            source2.rel = "noopener noreferrer";
+            section.append(source2);
             const notice = document.createElement("p");
             notice.className = "source";
             notice.textContent = attribution.notice;
@@ -3466,14 +4274,14 @@ ${playgroundBrowserStyles}
               body.append(retry);
             }
             const attribution = definitionSource(page, language, word.lemma);
-            const source = document.createElement("a");
-            source.href = attribution.url;
-            source.target = "_blank";
-            source.rel = "noopener noreferrer";
-            source.textContent = attribution.label;
+            const source2 = document.createElement("a");
+            source2.href = attribution.url;
+            source2.target = "_blank";
+            source2.rel = "noopener noreferrer";
+            source2.textContent = attribution.label;
             const notice = document.createElement("small");
             notice.textContent = attribution.notice;
-            body.append(source, notice);
+            body.append(source2, notice);
           };
           void lookup();
         }
@@ -3497,7 +4305,7 @@ ${playgroundBrowserStyles}
               if (this.sourceContains?.(e.clientX, e.clientY) && !options.paused() && !e.buttons) return;
               this.close();
             }
-            if (e.composedPath().some((node) => node instanceof Element && node.localName === "ko-reading-view")) return;
+            if (e.composedPath().some((node2) => node2 instanceof Element && node2.localName === "ko-reading-view")) return;
             if (options.owns(e) || options.paused()) {
               this.cancel();
               return;
@@ -3782,8 +4590,8 @@ ${mascotBubbleStyles}
         ignoreClick = false;
         drag;
         painting = "";
-        ownsNode(node) {
-          return node === this.host || this.host.contains(node);
+        ownsNode(node2) {
+          return node2 === this.host || this.host.contains(node2);
         }
         owns(event) {
           return event.composedPath().includes(this.host);
@@ -3927,7 +4735,7 @@ ${mascotBubbleStyles}
           if (this.loading || this.manifest || this.failed) return this.loading;
           this.loading = (async () => {
             try {
-              const response = await fetch(asset("manifest.json"));
+              const response = await fetch(asset("index.json"));
               if (!response.ok) throw new Error("Mascot assets unavailable");
               const manifest = await response.json();
               if (!Array.isArray(manifest.clips) || manifest.clips.length !== 56 || manifest.clips.some((c) => !/^[-a-z]+\.webp$/.test(c.file) || c.frameRectangles.length !== c.frameCount)) throw new Error("Invalid mascot assets");
@@ -4198,7 +5006,7 @@ ${mascotBubbleStyles}
   });
 
   // src/docs-selection.ts
-  function docsSelectedTarget(source) {
+  function docsSelectedTarget(source2) {
     const editor = document.querySelector(".kix-appview-editor");
     if (!editor) return;
     const clip = editor.getBoundingClientRect();
@@ -4212,7 +5020,7 @@ ${mascotBubbleStyles}
       if (++inspected > 4096) return;
       const bounds = element4.getBoundingClientRect();
       if (!boxes.some((r) => bounds.left < r.right && bounds.right > r.left && bounds.top < r.bottom && bounds.bottom > r.top)) continue;
-      const run = source(element4, clip);
+      const run = source2(element4, clip);
       if (!run) return;
       let offset = 0;
       for (const char of run.text) {
@@ -4361,12 +5169,12 @@ ${mascotBubbleStyles}
             if (++inspected > 4096) break;
             const box = element4.getBoundingClientRect();
             if (x < box.left || x > box.right || y2 < box.top || y2 > box.bottom) continue;
-            const source = docsSource(element4, editor);
-            if (!source || source.text.length > 1e3) continue;
-            for (let offset = 0; offset < source.text.length; offset++) {
-              const rect = source.rect(offset, offset + 1);
-              if (rect && x >= rect.left && x <= rect.right && y2 >= rect.top && y2 <= rect.bottom) return { text: source.text, offset, rects: (start2, end) => {
-                const rect2 = source.rect(start2, end);
+            const source2 = docsSource(element4, editor);
+            if (!source2 || source2.text.length > 1e3) continue;
+            for (let offset = 0; offset < source2.text.length; offset++) {
+              const rect = source2.rect(offset, offset + 1);
+              if (rect && x >= rect.left && x <= rect.right && y2 >= rect.top && y2 <= rect.bottom) return { text: source2.text, offset, rects: (start2, end) => {
+                const rect2 = source2.rect(start2, end);
                 return rect2 ? [rect2] : [];
               } };
             }
@@ -4488,52 +5296,52 @@ ${mascotBubbleStyles}
           if (pages.size) return best;
           return document.querySelector(".kix-appview-editor") ?? void 0;
         }
-        function textSource(node) {
-          const parent = node.parentElement;
+        function textSource(node2) {
+          const parent = node2.parentElement;
           let block = parent;
           while (block.parentElement && ["inline", "contents"].includes(getComputedStyle(block).display)) block = block.parentElement;
           const style = getComputedStyle(parent);
           if (style.visibility !== "visible" || style.display === "none" || style.writingMode !== "horizontal-tb") return;
           let offset = 0;
-          if (node.length > 2e3) {
+          if (node2.length > 2e3) {
             const doc = document;
             let first = Infinity;
             for (let y2 = 8; y2 < innerHeight; y2 += Math.max(32, Math.ceil(innerHeight / 64))) {
               const range = doc.caretRangeFromPoint?.(Math.max(1, parent.getBoundingClientRect().left + 2), y2);
-              if (range?.startContainer === node) first = Math.min(first, range.startOffset);
+              if (range?.startContainer === node2) first = Math.min(first, range.startOffset);
             }
             if (first === Infinity) return;
             offset = Math.max(0, first - 64);
           }
-          const text = node.data.slice(offset, offset + 2e3);
+          const text = node2.data.slice(offset, offset + 2e3);
           if (!text.trim()) return;
           return {
             text,
             block,
-            identity: node,
+            identity: node2,
             sourceOffset: offset,
             fontSize: parseFloat(style.fontSize),
             color: style.color,
             background: style.backgroundColor,
             rect(start2, end) {
-              if (!node.isConnected) return;
+              if (!node2.isConnected) return;
               const range = document.createRange();
-              range.setStart(node, offset + start2);
-              range.setEnd(node, offset + end);
+              range.setStart(node2, offset + start2);
+              range.setEnd(node2, offset + end);
               const rects = [...range.getClientRects()].filter((r) => r.width > 0);
               return rects.length === 1 && visible(rects[0]) ? rects[0] : void 0;
             }
           };
         }
-        function* visibleTextSources(node) {
-          const base = textSource(node);
+        function* visibleTextSources(node2) {
+          const base = textSource(node2);
           if (!base) return;
           const origin = base.sourceOffset ?? 0, range = document.createRange();
           const pending = [[0, base.text.length]], parts = [];
           while (pending.length) {
             const [start2, end] = pending.pop();
-            range.setStart(node, origin + start2);
-            range.setEnd(node, origin + end);
+            range.setStart(node2, origin + start2);
+            range.setEnd(node2, origin + end);
             const rects = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0);
             yield void 0;
             const shown = rects.filter(visible);
@@ -4614,46 +5422,46 @@ ${mascotBubbleStyles}
           } };
         }
         function* sources(root, panelMode = false) {
-          let node = root;
-          while (node) {
+          let node2 = root;
+          while (node2) {
             let descend = true;
-            let source;
-            if (node instanceof Element) {
-              if (node === host || mascot?.ownsNode(node) || reader?.ownsNode(node) || node.matches('script,style,noscript,ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) descend = false;
-              else if (node !== root) {
-                const r = node.getBoundingClientRect();
-                const style = getComputedStyle(node);
+            let source2;
+            if (node2 instanceof Element) {
+              if (node2 === host || mascot?.ownsNode(node2) || reader?.ownsNode(node2) || node2.matches('script,style,noscript,ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) descend = false;
+              else if (node2 !== root) {
+                const r = node2.getBoundingClientRect();
+                const style = getComputedStyle(node2);
                 if (style.display === "none" || style.visibility === "hidden" || r.width > 0 && r.height > 0 && !visible(r)) descend = false;
               }
-              if (descend && !docs && node instanceof HTMLDetailsElement && !node.open) {
+              if (descend && !docs && node2 instanceof HTMLDetailsElement && !node2.open) {
                 descend = false;
-                let summary = node.firstElementChild;
+                let summary = node2.firstElementChild;
                 while (summary && !(summary instanceof HTMLElement && summary.localName === "summary")) {
                   yield void 0;
                   summary = summary.nextElementSibling;
                 }
                 if (summary) yield* sources(summary, panelMode);
               }
-              if (descend && docs && node.matches("svg rect[aria-label]")) {
-                source = docsSource(node);
+              if (descend && docs && node2.matches("svg rect[aria-label]")) {
+                source2 = docsSource(node2);
                 descend = false;
               }
-              if (descend && !docs && node.shadowRoot) {
-                observeShadow(node.shadowRoot);
-                yield* sources(node.shadowRoot, panelMode);
+              if (descend && !docs && node2.shadowRoot) {
+                observeShadow(node2.shadowRoot);
+                yield* sources(node2.shadowRoot, panelMode);
               }
-            } else if (!docs && node instanceof Text && node.parentElement) {
-              if (panelMode) yield* visibleTextSources(node);
-              else source = textSource(node);
+            } else if (!docs && node2 instanceof Text && node2.parentElement) {
+              if (panelMode) yield* visibleTextSources(node2);
+              else source2 = textSource(node2);
             }
-            yield source;
-            if (descend && node.firstChild) {
-              node = node.firstChild;
+            yield source2;
+            if (descend && node2.firstChild) {
+              node2 = node2.firstChild;
               continue;
             }
-            while (node && node !== root && !node.nextSibling) node = node.parentNode;
-            if (!node || node === root) break;
-            node = node.nextSibling;
+            while (node2 && node2 !== root && !node2.nextSibling) node2 = node2.parentNode;
+            if (!node2 || node2 === root) break;
+            node2 = node2.nextSibling;
           }
         }
         function* webSources(panelMode = false) {
@@ -4673,22 +5481,22 @@ ${mascotBubbleStyles}
             if (element4.closest('ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) continue;
             seeds.add(element4);
             let local = 0;
-            for (const source of sources(element4, panelMode)) {
+            for (const source2 of sources(element4, panelMode)) {
               if (++local > 128 || ++inspected > 4096) break;
-              if (source?.identity) {
-                let offsets = seen.get(source.identity);
+              if (source2?.identity) {
+                let offsets = seen.get(source2.identity);
                 if (!offsets) {
                   offsets = /* @__PURE__ */ new Set();
-                  seen.set(source.identity, offsets);
+                  seen.set(source2.identity, offsets);
                 }
-                const offset = source.sourceOffset ?? 0;
+                const offset = source2.sourceOffset ?? 0;
                 if (offsets.has(offset)) {
                   yield void 0;
                   continue;
                 }
                 offsets.add(offset);
               }
-              yield source;
+              yield source2;
             }
           }
         }
@@ -4713,18 +5521,18 @@ ${mascotBubbleStyles}
               return new DOMRect(left, top, Math.max(...rectangles.map((r) => r.right)) - left, Math.max(...rectangles.map((r) => r.bottom)) - top);
             } };
           }
-          for (const source of docs ? prepared ?? sources(root) : webSources()) {
-            if (!source) {
+          for (const source2 of docs ? prepared ?? sources(root) : webSources()) {
+            if (!source2) {
               yield void 0;
               continue;
             }
-            if (group.length && (docs || group[0].block !== source.block || length + source.text.length > 2e3)) {
+            if (group.length && (docs || group[0].block !== source2.block || length + source2.text.length > 2e3)) {
               yield combine();
               group = [];
               length = 0;
             }
-            group.push(source);
-            length += source.text.length;
+            group.push(source2);
+            length += source2.text.length;
             yield void 0;
           }
           if (group.length) yield combine();
@@ -4761,38 +5569,38 @@ ${mascotBubbleStyles}
               prepared = [];
               const seen = /* @__PURE__ */ new Set();
               let started = performance.now();
-              for (const source of sources(root)) {
+              for (const source2 of sources(root)) {
                 if (performance.now() - started >= pacer.budget()) {
                   await frame();
                   started = performance.now();
                   if (version !== revision || !allowed()) return;
                 }
-                if (!source) continue;
-                const base = source.rect(0, source.text.length);
+                if (!source2) continue;
+                const base = source2.rect(0, source2.text.length);
                 if (!base) continue;
-                const key = `${source.text}:${base.left.toFixed(1)}:${base.top.toFixed(1)}`;
+                const key = `${source2.text}:${base.left.toFixed(1)}:${base.top.toFixed(1)}`;
                 if (seen.has(key)) continue;
                 seen.add(key);
                 if (readingMode) {
-                  if (panelCharacters + source.text.length > 16e3) {
+                  if (panelCharacters + source2.text.length > 16e3) {
                     panelLimited = true;
                     break;
                   }
-                  panelCharacters += source.text.length;
-                  const order = source.orderBox ?? base;
-                  const run = { text: source.text, top: order.top, left: order.left, right: order.right, readings: [] };
+                  panelCharacters += source2.text.length;
+                  const order = source2.orderBox ?? base;
+                  const run = { text: source2.text, top: order.top, left: order.left, right: order.right, readings: [] };
                   readingRuns.push(run);
-                  runMap.set(source, run);
+                  runMap.set(source2, run);
                 }
-                prepared.push(source);
+                prepared.push(source2);
                 let offset = 0;
-                for (const glyph of readingMode ? [] : source.text) {
+                for (const glyph of readingMode ? [] : source2.text) {
                   if (glyphCount >= 8e3) {
                     collisions.add(base);
                     break;
                   }
                   if (glyph.trim()) {
-                    const ink = source.rect(offset, offset + glyph.length);
+                    const ink = source2.rect(offset, offset + glyph.length);
                     if (ink) {
                       collisions.add(ink);
                       glyphCount++;
@@ -4812,30 +5620,30 @@ ${mascotBubbleStyles}
               prepared = [];
               let started = performance.now();
               const discovered = [];
-              for (const source of webSources(true)) {
+              for (const source2 of webSources(true)) {
                 if (performance.now() - started >= pacer.budget()) {
                   await frame();
                   started = performance.now();
                   if (version !== revision || !allowed()) return;
                 }
-                if (!source) continue;
-                discovered.push(source);
+                if (!source2) continue;
+                discovered.push(source2);
                 if (discovered.length >= 2e3) {
                   panelLimited = true;
                   break;
                 }
               }
               const paths = /* @__PURE__ */ new Map();
-              const path = (node) => {
-                let result = paths.get(node);
+              const path = (node2) => {
+                let result = paths.get(node2);
                 if (result) return result;
                 result = [];
-                let current = node;
+                let current = node2;
                 while (current) {
                   result.unshift(current);
                   current = current instanceof ShadowRoot ? current.host : current.parentNode;
                 }
-                paths.set(node, result);
+                paths.set(node2, result);
                 return result;
               };
               discovered.sort((a, b) => {
@@ -4849,23 +5657,23 @@ ${mascotBubbleStyles}
                 return order & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : order & Node.DOCUMENT_POSITION_PRECEDING ? 1 : 0;
               });
               let previousSource;
-              for (const source of discovered) {
-                if (panelCharacters + source.text.length > 16e3) {
+              for (const source2 of discovered) {
+                if (panelCharacters + source2.text.length > 16e3) {
                   panelLimited = true;
                   break;
                 }
-                panelCharacters += source.text.length;
+                panelCharacters += source2.text.length;
                 const previous = prepared.at(-1);
-                if (previous && previous.block === source.block && previous.text.length + source.text.length < 2e3) {
-                  const contiguous2 = !previousSource || previousSource.identity !== source.identity || (previousSource.sourceOffset ?? 0) + previousSource.text.length === source.sourceOffset;
-                  let hardBreak = false, node = previousSource?.identity ?? null, steps = 0;
-                  if (node?.getRootNode() === source.identity?.getRootNode() && node !== source.identity) while (node && node !== source.identity && steps++ < 32) {
-                    if (node.firstChild) node = node.firstChild;
+                if (previous && previous.block === source2.block && previous.text.length + source2.text.length < 2e3) {
+                  const contiguous2 = !previousSource || previousSource.identity !== source2.identity || (previousSource.sourceOffset ?? 0) + previousSource.text.length === source2.sourceOffset;
+                  let hardBreak = false, node2 = previousSource?.identity ?? null, steps = 0;
+                  if (node2?.getRootNode() === source2.identity?.getRootNode() && node2 !== source2.identity) while (node2 && node2 !== source2.identity && steps++ < 32) {
+                    if (node2.firstChild) node2 = node2.firstChild;
                     else {
-                      while (node && !node.nextSibling && node !== source.block) node = node.parentNode;
-                      node = node === source.block ? null : node?.nextSibling ?? null;
+                      while (node2 && !node2.nextSibling && node2 !== source2.block) node2 = node2.parentNode;
+                      node2 = node2 === source2.block ? null : node2?.nextSibling ?? null;
                     }
-                    if (node instanceof HTMLBRElement) hardBreak = true;
+                    if (node2 instanceof HTMLBRElement) hardBreak = true;
                   }
                   if (!contiguous2 || hardBreak) {
                     if (++panelCharacters > 16e3) {
@@ -4874,15 +5682,15 @@ ${mascotBubbleStyles}
                     }
                     previous.text += "\n";
                   }
-                  previous.text += source.text;
-                } else prepared.push({ ...source });
-                previousSource = source;
+                  previous.text += source2.text;
+                } else prepared.push({ ...source2 });
+                previousSource = source2;
               }
-              for (const source of prepared) {
-                const box = source.orderBox;
-                const run = { text: source.text, top: box.top, left: box.left, right: box.right, readings: [] };
+              for (const source2 of prepared) {
+                const box = source2.orderBox;
+                const run = { text: source2.text, top: box.top, left: box.left, right: box.right, readings: [] };
                 readingRuns.push(run);
-                runMap.set(source, run);
+                runMap.set(source2, run);
               }
             }
             const iterator = readingMode ? prepared[Symbol.iterator]() : groupedSources(root, prepared);
@@ -4963,12 +5771,12 @@ ${mascotBubbleStyles}
                   started = performance.now();
                   if (version !== revision || !allowed()) return;
                 }
-                const source = batch[i], rect = source.rect(part.start, part.end);
+                const source2 = batch[i], rect = source2.rect(part.start, part.end);
                 if (!rect) continue;
                 const span = document.createElement("span");
                 span.textContent = part.reading;
                 const minimum = docs ? 6 : 7;
-                let fontSize = Math.max(minimum, Math.min(18, Math.min(12, source.fontSize * 0.5) * readingAppearance.scale));
+                let fontSize = Math.max(minimum, Math.min(18, Math.min(12, source2.fontSize * 0.5) * readingAppearance.scale));
                 measure.font = `${fontSize}px system-ui`;
                 const natural = measure.measureText(part.reading).width;
                 fontSize *= Math.min(1, (rect.width + 4) / natural);
@@ -5019,7 +5827,7 @@ ${mascotBubbleStyles}
                     }
                   }
                 }
-                span.style.cssText = `left:${x}px;top:${y2}px;font-size:${fontSize}px;--ko-color:${readingAppearance.contrast === "high" ? "#101010" : source.color};--ko-bg:${readingAppearance.contrast === "high" ? "white" : source.background === "rgba(0, 0, 0, 0)" ? "white" : source.background}${readingAppearance.contrast === "high" ? ";text-shadow:0 0 2px white,1px 0 white,-1px 0 white,0 1px white,0 -1px white" : ""}`;
+                span.style.cssText = `left:${x}px;top:${y2}px;font-size:${fontSize}px;--ko-color:${readingAppearance.contrast === "high" ? "#101010" : source2.color};--ko-bg:${readingAppearance.contrast === "high" ? "white" : source2.background === "rgba(0, 0, 0, 0)" ? "white" : source2.background}${readingAppearance.contrast === "high" ? ";text-shadow:0 0 2px white,1px 0 white,-1px 0 white,0 1px white,0 -1px white" : ""}`;
                 layer.append(span);
                 collisions.add(box);
                 count++;
@@ -5095,16 +5903,16 @@ ${mascotBubbleStyles}
             let selectionChanged = false;
             for (const record of records) {
               if (record.target === host || host.contains(record.target) || mascot?.ownsNode(record.target) || reader?.ownsNode(record.target)) continue;
-              if (record.type === "childList" && [...record.addedNodes, ...record.removedNodes].every((node) => node instanceof Element && node.localName === "ko-mascot")) continue;
+              if (record.type === "childList" && [...record.addedNodes, ...record.removedNodes].every((node2) => node2 instanceof Element && node2.localName === "ko-mascot")) continue;
               const element4 = record.target instanceof Element ? record.target : record.target.parentElement;
-              if (docs && (element4?.closest(docsSelectionSelector) || record.type === "childList" && [...record.addedNodes, ...record.removedNodes].some((node) => node instanceof Element && (node.matches(docsSelectionSelector) || node.querySelector(docsSelectionSelector))))) selectionChanged = true;
+              if (docs && (element4?.closest(docsSelectionSelector) || record.type === "childList" && [...record.addedNodes, ...record.removedNodes].some((node2) => node2 instanceof Element && (node2.matches(docsSelectionSelector) || node2.querySelector(docsSelectionSelector))))) selectionChanged = true;
               if (docs && element4?.closest(`.kix-cursor,${docsSelectionSelector}`)) continue;
               if (docs && record.type !== "childList" && element4?.closest(".kix-page") && element4.closest(".kix-page") !== activePage) continue;
               relevant = true;
               if (docs) {
-                for (const node of record.addedNodes) if (node instanceof Element) {
-                  registerPages(node);
-                  watchDocsInputs(node);
+                for (const node2 of record.addedNodes) if (node2 instanceof Element) {
+                  registerPages(node2);
+                  watchDocsInputs(node2);
                 }
               }
             }

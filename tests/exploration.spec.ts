@@ -257,6 +257,34 @@ test('Docs fixture carries morphology into local tools without changing its sour
   } finally {await page.close();}
 });
 
+test('Grammar and Dictionary share the real Reading-view transport without external requests',async()=>{
+ const page=await context.newPage();
+ try {
+  await page.setViewportSize({width:1280,height:900});await page.goto(base);await browse(page);
+  await reader(page,`function(){this.host.style.setProperty('--reader-width','320px');Array.from(this.querySelectorAll('[role=tab]')).find(b=>b.textContent==='Grammar').click()}`);
+  await expect.poll(()=>reader(page,`function(){return this.querySelector('.playground-workspace:not([hidden]) .tool-status')?.textContent}`)).toContain('grammar points · offline');
+  await reader(page,`function(){const input=this.querySelector('.playground-workspace:not([hidden]) input');input.value='dake';input.dispatchEvent(new Event('input'));this.querySelector('.playground-workspace:not([hidden]) .tool-result').click()}`);
+  await expect.poll(()=>reader(page,`function(){return this.querySelector('.playground-workspace:not([hidden]) .tool-heading')?.textContent}`)).toBe('だけ');
+  await expect.poll(()=>reader(page,`function(){return this.querySelector('.playground-workspace:not([hidden]) .grammar-switches')?.children.length}`)).toBe(2);
+  await reader(page,`function(){this.querySelector('.playground-workspace:not([hidden]) .grammar-switches').children[1].click();this.querySelector('.playground-workspace:not([hidden]) .grammar-word').click()}`);
+  await expect.poll(()=>reader(page,`function(){return this.querySelector('.playground-workspace:not([hidden]) input')?.value}`)).toBe('朝');
+  await expect.poll(()=>reader(page,`function(){return this.querySelector('.playground-workspace:not([hidden]) .tool-results')?.textContent}`)).toContain('morning');
+  await reader(page,`function(){this.querySelector('.playground-route-back').click()}`);
+  expect(await reader(page,`function(){return this.querySelector('.playground-workspace:not([hidden]) .grammar-switches [aria-pressed=true]').textContent}`)).toBe('しか～ない');
+  expect(requests).toEqual([]);await page.screenshot({path:test.info().outputPath('grammar-reading-panel.png')});
+  await reader(page,`function(){const root=this.querySelector('.playground-workspace:not([hidden])');root.querySelector('.tool-back').click();const input=root.querySelector('input');input.value='te iru';input.dispatchEvent(new Event('input'));Array.from(root.querySelectorAll('.tool-result')).find(b=>b.querySelector('.tool-pattern').textContent==='ている').click()}`);
+  await expect.poll(()=>reader(page,`function(){return this.querySelector('.playground-workspace:not([hidden]) .grammar-switches')?.children.length}`)).toBe(3);
+  await reader(page,`function(){const root=this.querySelector('.playground-workspace:not([hidden])');root.querySelector('.grammar-switches').children[2].click();root.querySelector('.grammar-activity summary').click();root.querySelectorAll('.grammar-activity button')[1].click();root.querySelector('.grammar-comparison [aria-label="Look up 窓"]').click()}`);
+  await expect.poll(()=>reader(page,`function(){return this.querySelector('.playground-workspace:not([hidden]) input')?.value}`)).toBe('窓');
+  await expect.poll(()=>reader(page,`function(){return this.querySelector('.playground-workspace:not([hidden]) .tool-results')?.textContent}`)).toContain('window');
+  await reader(page,`function(){this.querySelector('.playground-route-back').click()}`);
+  expect(await reader(page,`function(){return this.querySelector('.playground-workspace:not([hidden]) .grammar-switches [aria-pressed=true]').textContent}`)).toBe('ておく · advance action');
+  expect(await reader(page,`function(){return this.querySelector('.playground-workspace:not([hidden]) .grammar-activity [role=status]').textContent}`)).toContain('Yes.');
+  expect(await reader(page,`function(){const root=this.querySelector('.playground-browser');return root.scrollWidth<=root.clientWidth}`)).toBe(true);
+  expect(requests).toEqual([]);await page.screenshot({path:test.info().outputPath('comparison-expansion-reading-panel.png')});
+ }finally{await page.close();}
+});
+
 for(const [width,height] of [[280,760],[320,600],[420,760],[720,850]] as const) {
   test(`playground workspace at ${width}px has readable controls, one scroller, and reliable back navigation`,async()=>{
     const page=await context.newPage();
@@ -271,7 +299,7 @@ for(const [width,height] of [[280,760],[320,600],[420,760],[720,850]] as const) 
         const region=this.querySelector('.definition'),scroller=this.querySelector('.playground-scroll');
         return {width:this.host.getBoundingClientRect().width,region:rect(region),header:rect(this.querySelector('.header')),scroll:rect(scroller),
           catalog:getComputedStyle(this.querySelector('.playground-catalog')).display,reading:getComputedStyle(this.querySelector('.content')).display,
-          horizontal:scroller.scrollWidth>scroller.clientWidth,resultsOverflow:getComputedStyle(this.querySelector('.playground-results')).overflowY,
+          horizontal:scroller.scrollWidth>scroller.clientWidth,scrollers:Array.from(this.querySelectorAll('.playground-scroll,.tool-scroll')).filter(node=>node.getClientRects().length).length,
           controls:Array.from(this.querySelectorAll('.verb-controls label'),label=>{
             const range=document.createRange();range.selectNodeContents(label.lastChild);
             const input=label.querySelector('input');return {label:label.textContent,width:rect(input).width,height:rect(label).height,lines:range.getClientRects().length};
@@ -279,7 +307,7 @@ for(const [width,height] of [[280,760],[320,600],[420,760],[720,850]] as const) 
       }`);
       expect(layout.width).toBe(width);expect(layout.catalog).toBe('none');expect(layout.reading).toBe('none');expect(layout.horizontal).toBe(false);
       expect(layout.region.top).toBe(layout.header.bottom);expect(layout.region.bottom).toBeGreaterThan(height-20);
-      expect(layout.resultsOverflow).toBe('visible');expect(layout.controls.map((c:any)=>c.label)).toEqual(['Past','Negative','Polite']);
+      expect(layout.scrollers).toBe(1);expect(layout.controls.map((c:any)=>c.label)).toEqual(['Past','Negative','Polite']);
       for(const control of layout.controls){expect(control.width).toBe(16);expect(control.height).toBeGreaterThanOrEqual(36);expect(control.lines).toBe(1);}
       // The result is reachable in the same scroll region, without moving a nested card.
       await reader(page,`function(){this.querySelector('.verb-family').value='teIru';this.querySelector('.verb-family').dispatchEvent(new Event('change'));this.querySelector('.verb-output').scrollIntoView({block:'nearest'})}`);
@@ -289,11 +317,11 @@ for(const [width,height] of [[280,760],[320,600],[420,760],[720,850]] as const) 
       await page.screenshot({path:test.info().outputPath(`verb-${width}.png`)});
       await page.keyboard.press('Escape');
       expect(await reader(page,`function(){return this.activeElement===this.querySelector('.playground-verb-input input')}`)).toBe(true);
-      await reader(page,`function(){Array.from(this.querySelectorAll('[role=tab]')).find(button=>button.textContent==='Mimetics').click();const scroll=this.querySelector('.playground-scroll');scroll.scrollTop=180;this.querySelectorAll('.playground-entry')[10].focus({preventScroll:true});this.querySelectorAll('.playground-entry')[10].click()}`);
+      await reader(page,`function(){Array.from(this.querySelectorAll('[role=tab]')).find(button=>button.textContent==='Mimetics').click();const scroll=this.querySelector('.legacy-playground:not([hidden]) .playground-scroll');scroll.scrollTop=180;this.querySelectorAll('.playground-entry')[10].focus({preventScroll:true});this.querySelectorAll('.playground-entry')[10].click()}`);
       await page.keyboard.press('Escape');
-      expect(await reader(page,`function(){return this.querySelector('.playground-scroll').scrollTop}`)).toBe(180);
+      expect(await reader(page,`function(){return this.querySelector('.legacy-playground:not([hidden]) .playground-scroll').scrollTop}`)).toBe(180);
       await reader(page,`function(){Array.from(this.querySelectorAll('[role=tab]')).find(button=>button.textContent==='Mimetics').click();this.querySelector('.playground-entry').click()}`);
-      expect(await reader(page,`function(){const scroll=this.querySelector('.playground-scroll'),art=this.querySelector('.mimetic-art');return scroll.scrollWidth<=scroll.clientWidth && art.getBoundingClientRect().width<=scroll.clientWidth}`)).toBe(true);
+      expect(await reader(page,`function(){const scroll=this.querySelector('.legacy-playground:not([hidden]) .playground-scroll'),art=this.querySelector('.mimetic-art');return scroll.scrollWidth<=scroll.clientWidth && art.getBoundingClientRect().width<=scroll.clientWidth}`)).toBe(true);
       await page.screenshot({path:test.info().outputPath(`mimetic-${width}.png`)});
       await page.keyboard.press('Escape');await page.keyboard.press('Escape');
       expect(await reader(page,`function(){return this.activeElement?.className}`)).toBe('playgrounds-open');

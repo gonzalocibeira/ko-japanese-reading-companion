@@ -54,7 +54,7 @@ test('verbs open with free input only, while mimetic search, categories, keyboar
     await expect.poll(()=>plain(page)).toBe('食べる');await expect(page.locator('.explore-source rt')).toHaveText('た');
     await page.getByRole('button',{name:'Change word',exact:true}).click();await expect(page.getByLabel('Dictionary-form word',{exact:true})).toBeFocused();
     await expect(page.getByLabel('Dictionary-form word',{exact:true})).toHaveValue('食べる');await expect(page.locator('.playground-entry')).toHaveCount(0);
-    await page.getByRole('tab',{name:'Word forms',exact:true}).focus();await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Mimetics',exact:true})).toBeFocused();
+    await page.getByRole('tab',{name:'Word forms',exact:true}).focus();await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Grammar',exact:true})).toBeFocused();await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Mimetics',exact:true})).toBeFocused();
     await page.getByLabel('Search mimetic expressions').fill('');await expect(page.locator('.playground-count')).toHaveText('90 expressions');
     await page.getByLabel('Mimetic category').selectOption('people');expect(await page.locator('.playground-entry').count()).toBeGreaterThan(0);
     await page.getByLabel('Mimetic category').selectOption('');await page.getByLabel('Search mimetic expressions').fill('ｻﾞｰｻﾞｰ');await expect(page.locator('.playground-entry')).toHaveCount(1);
@@ -64,8 +64,8 @@ test('verbs open with free input only, while mimetic search, categories, keyboar
     await page.locator('.playground-entry').first().click();
     const navigationVisible=await page.evaluate(()=>{
       const root=document.querySelector<HTMLElement>('.playground-browser')!;root.style.height='300px';
-      const scroller=root.querySelector('.playground-scroll')!;scroller.scrollTop=scroller.scrollHeight;
-      const button=root.querySelector('.playground-back')!.getBoundingClientRect(),bounds=root.getBoundingClientRect();return button.top>=bounds.top && button.bottom<=bounds.bottom;
+      const active=root.querySelector('.legacy-playground:not([hidden])')!;const scroller=active.querySelector('.playground-scroll')!;scroller.scrollTop=scroller.scrollHeight;
+      const button=active.querySelector('.playground-back')!.getBoundingClientRect(),bounds=root.getBoundingClientRect();return button.top>=bounds.top && button.bottom<=bounds.bottom;
     });expect(navigationVisible).toBe(true);
   } finally {await page.close();}
 });
@@ -245,7 +245,7 @@ test('shared Word forms accepts adjectives, explains endings, and preserves cont
   const page=await browser.newPage({viewport:{width:280,height:500}});const requests:string[]=[];page.on('request',r=>requests.push(r.url()));
   try {
     await setup(page);await page.context().setOffline(true);
-    await expect(page.getByRole('tab')).toHaveCount(2);
+    await expect(page.getByRole('tab')).toHaveCount(4);
     for(const [word,kind] of [['高い','い-adjective'],['きれい','な-adjective'],['嫌い','な-adjective'],['かっこいい','い-adjective']]) {
       await checkVerb(page,word);await expect(page.locator('.playground-confirmation')).toContainText(kind);await page.locator('.playground-confirmation button').first().click();
       await expect(page.getByLabel('Adjective Playground',{exact:true})).toBeVisible();await expect.poll(()=>plain(page)).toBe(word);

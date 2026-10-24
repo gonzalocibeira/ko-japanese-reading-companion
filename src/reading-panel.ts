@@ -60,6 +60,10 @@ export class ReadingPanel {
 .pronunciation-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 12px}.pronunciation-row .pronunciation{min-width:0;flex:1 1 auto}.definition .correction-toggle{margin:0;padding:3px 7px;border:1px solid var(--muted);background:transparent;color:var(--muted);font:500 11px/1.4 var(--body)}.definition .correction-toggle:hover,.definition .correction-toggle[aria-expanded=true]{border-color:var(--ink);background:var(--paper);color:var(--ink)}
 .resize{position:absolute;left:-6px;top:16px;bottom:16px;width:12px;cursor:ew-resize;touch-action:none}.resize:after{content:"";position:absolute;left:5px;top:0;bottom:0;width:3px;background:var(--line)}.resize:hover:after,.resize:focus-visible:after{background:var(--accent)}.resize:focus-visible{outline:3px solid var(--accent);outline-offset:0}.correction-form{margin-top:12px;padding-top:12px;border-top:2px solid var(--line)}.correction-form label{display:block;font-size:11px;font-weight:700;margin:8px 0}.correction-form input{display:block;width:100%;font:14px var(--body);color:var(--ink);background:var(--paper);padding:8px;border:2px solid var(--line);margin-top:6px}.correction-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.correction-actions button{margin:0;font-size:11px}.feedback[data-error=true]{color:var(--ink);font-weight:700;border-left:3px solid var(--line);padding-left:8px}.feedback[data-error=true]:before{content:"! "}
 .definition.exploring{max-height:70%}.definition.browsing{flex:1;min-height:0;max-height:none;padding:0;border-top:0;overflow:hidden;background:var(--paper)}.definition>header{position:sticky;top:-16px;z-index:1;padding:8px 0;background:var(--surface)}
+.reader:has(.panel-grammar-active)>.header{grid-template-columns:1fr 28px;padding:6px 12px;gap:0}
+.reader:has(.panel-grammar-active)>.header .heading{display:none}
+.reader:has(.panel-grammar-active)>.header .playgrounds-open{grid-column:1;grid-row:1;min-height:32px}
+.reader:has(.panel-grammar-active)>.header .panel-close{grid-column:2}
 ${explorationStyles}
 ${playgroundBrowserStyles}
 
@@ -229,7 +233,7 @@ ${playgroundBrowserStyles}
     this.definition.setAttribute('aria-label','Learning playground browser');this.definition.setAttribute('aria-live','off');
     this.playgroundLauncher.setAttribute('aria-expanded','true');this.playgroundLauncher.querySelector('span')!.textContent='← Reading view';this.playgroundLauncher.title='Back to reading view';this.playgroundLauncher.setAttribute('aria-label','Back to reading view');
     this.host.classList.add('playground-active');this.root.querySelector('.reader')!.classList.add('playground-mode');this.root.querySelector('h2')!.textContent='Playgrounds';
-    this.playground=renderPlaygroundBrowser({tokenize:(texts,signal)=>this.tokenizePlayground(texts,signal)});
+    this.playground=renderPlaygroundBrowser({presentation:'panel',tokenize:(texts,signal)=>this.tokenizePlayground(texts,signal)});
     this.definition.append(this.playground.element);this.playground.focus();
   }
   private correctionControls(surface:string,reading:string,row:HTMLElement) {

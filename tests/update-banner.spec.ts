@@ -28,12 +28,16 @@ test('release announcement stays dismissed across reopen and browser restart, wi
   const banner=popup.locator('#update-banner');
   await expect(banner).toBeVisible();
   await expect(banner).toContainText(`What’s new in Kō ${version}`);
-  await expect(banner).toContainText('Meet Kōくん');
-  await popup.screenshot({path:'qa/release-1.3/ko-kun-invitation.png',fullPage:true});
-  await banner.getByRole('button',{name:'Try Kōくん',exact:true}).click();
-  await expect(popup.locator('#mascot-panel')).toHaveAttribute('open','');
-  await expect(popup.locator('#mascot-enabled')).toBeFocused();
-  await expect(popup.locator('#mascot-enabled')).not.toBeChecked();
+  if(version==='1.3.0') {
+    await expect(banner).toContainText('Meet Kōくん');
+    await banner.getByRole('button',{name:'Try Kōくん',exact:true}).click();
+    await expect(popup.locator('#mascot-panel')).toHaveAttribute('open','');
+    await expect(popup.locator('#mascot-enabled')).toBeFocused();
+    await expect(popup.locator('#mascot-enabled')).not.toBeChecked();
+  } else {
+    await expect(banner).toContainText('Sentence Lens');
+    await expect(banner.getByRole('button',{name:'Try Kōくん',exact:true})).toHaveCount(0);
+  }
   await expect(banner).toBeVisible();
   // Following the changelog doesn't count as dismissing it.
   const opened=context.waitForEvent('page');

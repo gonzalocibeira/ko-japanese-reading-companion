@@ -95,6 +95,31 @@
     "src/offscreen.ts"() {
       init_wiktionary_parser();
       var worker = new Worker(chrome.runtime.getURL("tokenizer.js"));
+      var dataWorker;
+      var dataSequence = 0;
+      var dataPending = /* @__PURE__ */ new Map();
+      function playgroundWorker() {
+        if (dataWorker) return dataWorker;
+        const current = new Worker(chrome.runtime.getURL("playground-data-worker.js"));
+        dataWorker = current;
+        current.onmessage = ({ data }) => {
+          const job = dataPending.get(data.id);
+          if (!job) return;
+          clearTimeout(job.timer);
+          dataPending.delete(data.id);
+          job.resolve(data);
+        };
+        current.onerror = () => {
+          current.terminate();
+          dataWorker = void 0;
+          for (const job of dataPending.values()) {
+            clearTimeout(job.timer);
+            job.resolve({ error: "Local playground worker failed. Try again." });
+          }
+          dataPending.clear();
+        };
+        return current;
+      }
       var next = 0;
       var pending = /* @__PURE__ */ new Map();
       worker.onmessage = (event) => {
@@ -107,6 +132,16 @@
       };
       chrome.runtime.onMessage.addListener((message, sender, respond) => {
         if (sender.id !== chrome.runtime.id || sender.tab || sender.url !== chrome.runtime.getURL("background.js")) return;
+        if (message?.type === "playground-data-job") {
+          const current = playgroundWorker(), id2 = ++dataSequence;
+          const timer = setTimeout(() => {
+            dataPending.delete(id2);
+            respond({ error: "Local playground request timed out. Try again." });
+          }, 2e4);
+          dataPending.set(id2, { resolve: respond, timer });
+          current.postMessage({ id: id2, query: message.query });
+          return true;
+        }
         if (message?.type === "dictionary-parse") {
           if (typeof message.html !== "string" || message.html.length > 1e6 || !["en", "ja"].includes(message.language)) {
             respond({ status: "unsupported", definitions: [] });

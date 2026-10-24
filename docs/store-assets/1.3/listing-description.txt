@@ -1,0 +1,36 @@
+Kō helps you read and understand Japanese on webpages and in Google Docs. It adds furigana—small pronunciation guides above kanji—and offers word meanings and interactive word forms. Readings and bundled English and Japanese definitions work on your device, even offline.
+
+READ JAPANESE WHERE YOU ALREADY BROWSE
+• Automatic furigana on visible Japanese text.
+• Dedicated Google Docs support that preserves your original text and formatting.
+• An optional reading panel with extra spacing, adjustable text size, and a resizable width.
+• Click a word in Reading view for English meanings from bundled JMdict and Japanese definitions from a bundled Japanese Wiktionary snapshot. Missing entries use Wiktionary online.
+
+MEET KŌくん, YOUR OPTIONAL READING COMPANION
+• A small PS1-inspired fox with three tails, gentle activities, and occasional special animations.
+• Hover over a Japanese word or choose Highlight to see its reading in a speech bubble.
+• Optionally enable English or Japanese meanings, using the same local dictionaries with online fallback.
+• Click to wake him for a minute, drag to reposition him, or use arrow keys when focused.
+• He starts off. Choose his size or a still character in the popup; system reduced-motion preferences are respected. Pause on this site hides him.
+
+EXPLORE JAPANESE OFFLINE
+• Word forms: enter a dictionary-form verb or an い／な adjective, or select a supported word in Reading view. Explore endings with furigana, tense, negative and polite controls where applicable, exact Reset, and explanations of how each form is built.
+• Mimetic Playground: browse 90 expressions in 45 illustrated comparisons, with Japanese examples, translations, usage notes, and bundled looping pixel animations. Reduced-motion mode shows a still pose.
+• Meaning Forks: compare possible meanings of supported ambiguous verb forms. The passage determines the interpretation.
+• Open Playgrounds from the popup as a standalone tab or from Reading view. Experiments never rewrite the original webpage or document.
+
+MAKE IT YOURS
+• Pause automatic readings globally or for individual websites.
+• Adjust reading size, spacing, panel width, and contrast.
+• Save preferred pronunciations for words and names.
+• Search, edit, import, and export your local reading corrections.
+
+PRIVACY
+Furigana, playground processing, and bundled dictionary lookups happen locally. Settings, site preferences, companion preferences, and reading corrections are stored on your device. Typed words and playground searches remain in memory. Kō has no analytics, advertising, or extension account requirement.
+
+For missing dictionary entries, activating a word in Reading view—or using Kōくん with definitions enabled—can send the lookup term and recognized spelling-reference terms to the corresponding Wiktionary edition. Wikimedia also receives normal connection information, including your IP address. Kō does not send the surrounding sentence, full document, or page URL. External reference links require an internet connection.
+
+WEBSITE ACCESS
+Kō needs website access to display readings automatically as you browse. You can restrict permitted websites through Chrome's extension site-access controls. Google Docs features depend on text exposed by its editor; arbitrary image or canvas text is not supported.
+
+Kō is a source-available project by Gonzalo Cibeira. Free use, modification, and free sharing are permitted under the Kō No-Resale License 1.0; paid distribution requires written permission.

@@ -1,0 +1,311 @@
+
+Running 262 tests using 1 worker
+
+(node:33155) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/262] tests/action.spec.ts:7:5 › toolbar stays active without kanji and during processing or background suspension
+[2/262] tests/action.spec.ts:12:5 › toolbar distinguishes preference pauses from unsupported pages and processing failures
+[3/262] tests/action.spec.ts:43:5 › toolbar controller restores icons on worker startup and responds only to top-frame notifications
+[4/262] tests/action.spec.ts:65:5 › newer tab updates win over stale probes and closed tabs cannot receive late results
+[5/262] tests/adjective-playground.spec.ts:21:5 › dictionary evidence distinguishes adjective classes and lexical alternatives
+[6/262] tests/adjective-playground.spec.ts:27:5 › canonical adjective matrices use only applicable switches and correct readings
+[7/262] tests/adjective-playground.spec.ts:41:5 › いい and lexical compounds use よ while original nonpast spelling remains intact
+[8/262] tests/adjective-playground.spec.ts:46:5 › ordinary adjectives ending in いい do not receive the good-compound alternation
+[9/262] tests/adjective-playground.spec.ts:49:5 › real dictionary inflected phrases recover exact complete spans on every constituent
+[10/262] tests/adjective-playground.spec.ts:55:5 › unsupported chains and verb auxiliaries do not expose partial adjective transformations
+[11/262] tests/adjective-playground.spec.ts:62:5 › every generated adjective spelling and reading round-trips through the real dictionary
+[12/262] tests/cancellation.spec.ts:4:5 › cancelled queued jobs never reach the worker; active cancellation stays isolated by document
+[13/262] tests/cancellation.spec.ts:38:5 › mascot analysis and replacement never cancel a pending reading or playground request
+[14/262] tests/content-lifecycle.spec.ts:20:7 › content script skips image/svg+xml without initializing
+[15/262] tests/content-lifecycle.spec.ts:20:7 › content script skips application/xml without initializing
+[16/262] tests/content-lifecycle.spec.ts:20:7 › content script skips application/xhtml+xml without initializing
+[17/262] tests/content-lifecycle.spec.ts:20:7 › content script skips text/plain without initializing
+[18/262] tests/content-lifecycle.spec.ts:38:7 › content script handles sync-toolbar without uncaught errors or stale retries
+[19/262] tests/content-lifecycle.spec.ts:38:7 › content script handles async-toolbar without uncaught errors or stale retries
+[20/262] tests/content-lifecycle.spec.ts:38:7 › content script handles sync-tokenize without uncaught errors or stale retries
+[21/262] tests/content-lifecycle.spec.ts:38:7 › content script handles async-tokenize without uncaught errors or stale retries
+[22/262] tests/content-lifecycle.spec.ts:38:7 › content script handles sync-cancel without uncaught errors or stale retries
+[23/262] tests/content-lifecycle.spec.ts:38:7 › content script handles missing-id without uncaught errors or stale retries
+[24/262] tests/content-lifecycle.spec.ts:38:7 › content script handles transient-toolbar without uncaught errors or stale retries
+[25/262] tests/exploration.spec.ts:48:5 › About defaults to new animations, persists legacy choice, and updates open cards offline
+[26/262] tests/exploration.spec.ts:81:5 › new mimetic images also load on pages with restrictive image CSP
+[27/262] tests/exploration.spec.ts:90:5 › every new mimetic animation ships locally and decodes offline
+[28/262] tests/exploration.spec.ts:104:5 › verb controls explore the full chain locally, preserve source, reset, and survive unchanged redraws
+[29/262] tests/exploration.spec.ts:130:5 › all local tools work offline and an edit clears the old exploration
+[30/262] tests/exploration.spec.ts:169:5 › local browser checks an arbitrary verb offline through the real worker and exposes expanded forms
+[31/262] tests/exploration.spec.ts:191:5 › mimetic catalog, new page expressions, and attested rain alias stay local
+[32/262] tests/exploration.spec.ts:211:5 › typed fused potential offers a verified base choice and a page edit dismisses browsing
+[33/262] tests/exploration.spec.ts:228:5 › exploration fits a narrow panel, honors reduced motion, and keeps manual corrections authoritative
+[34/262] tests/exploration.spec.ts:246:5 › Docs fixture carries morphology into local tools without changing its source geometry
+[35/262] tests/exploration.spec.ts:260:5 › Grammar and Dictionary share the real Reading-view transport without external requests
+[36/262] tests/exploration.spec.ts:289:7 › playground workspace at 280px has readable controls, one scroller, and reliable back navigation
+[37/262] tests/exploration.spec.ts:289:7 › playground workspace at 320px has readable controls, one scroller, and reliable back navigation
+[38/262] tests/exploration.spec.ts:289:7 › playground workspace at 420px has readable controls, one scroller, and reliable back navigation
+[39/262] tests/exploration.spec.ts:289:7 › playground workspace at 720px has readable controls, one scroller, and reliable back navigation
+[40/262] tests/exploration.spec.ts:333:5 › browser preserves reading scroll and has no clipped or overlapping controls at a short zoom-sized viewport
+[41/262] tests/exploration.spec.ts:348:7 › adjectives work inline and through the real offline worker at 280px
+[42/262] tests/exploration.spec.ts:348:7 › adjectives work inline and through the real offline worker at 420px
+[43/262] tests/exploration.spec.ts:348:7 › adjectives work inline and through the real offline worker at 720px
+[44/262] tests/exploration.spec.ts:381:5 › overlapping adjective corrections suppress exploration and page edits dismiss it
+[45/262] tests/exploration.spec.ts:394:7 › contextual 受け取れ initializes Direct command and uses the recovered lemma for definitions
+[46/262] tests/exploration.spec.ts:394:7 › contextual 知れ initializes Direct command and uses the recovered lemma for definitions
+[47/262] tests/extension.spec.ts:44:5 › vocabulary noun readings reach Docs overlays and word metadata without changing names or saved corrections
+[48/262] tests/extension.spec.ts:75:5 › full kanji compounds reach reading-panel word buttons through the bundled worker
+[49/262] tests/extension.spec.ts:91:5 › automatic offline readings preserve source, react to changes, and disable cleanly
+[50/262] tests/extension.spec.ts:116:5 › large webpage remains bounded and annotates newly visible content
+[51/262] tests/extension.spec.ts:126:5 › Docs fixture initializes bridge and switches between 100 pages
+[52/262] tests/extension.spec.ts:137:5 › IME composition hides stale overlays until input settles
+[53/262] tests/extension.spec.ts:148:5 › open shadow DOM updates are live and nested editable text is skipped
+[54/262] tests/extension.spec.ts:164:5 › Docs pageless dense lines use glyph ink, deduplicate tiles, and clip toolbar
+[55/262] tests/extension.spec.ts:190:5 › popup shows page status, persists switches, and loads packaged branding
+[56/262] tests/extension.spec.ts:214:5 › popup opens standalone playgrounds offline without readings or a supported webpage
+[57/262] tests/extension.spec.ts:261:5 › toolbar follows tab preferences and navigation, stays active without kanji, and recovers Docs availability
+[58/262] tests/extension.spec.ts:294:5 › popup handles long hostnames and expanded forms without horizontal overflow
+[59/262] tests/extension.spec.ts:328:5 › site appearance and local corrections update automatically, persist, and preserve source
+[60/262] tests/extension.spec.ts:363:5 › rapid edits settle on current text and diagnostics distinguish unknown words from missing Docs geometry
+[61/262] tests/extension.spec.ts:407:5 › optional Docs reading view spaces ruby, follows active page and edits, preserves source, and closes
+[62/262] tests/extension.spec.ts:454:5 › Docs pageless reading view starts automatically, ignores offscreen text, and waits during IME
+[63/262] tests/extension.spec.ts:474:5 › Docs word activation automatically shows bilingual definitions, uses lemmas, caches results, and handles failures and stale lookups
+[64/262] tests/extension.spec.ts:554:5 › Docs panel debounces edits and preserves text, scroll, focus, and definitions during unchanged redraws
+[65/262] tests/extension.spec.ts:611:5 › web reading panel handles wrapped inline text, kana, viewport changes and its own occlusion
+[66/262] tests/extension.spec.ts:637:5 › web panel definitions and offline corrections update effective readings and support restoration
+[67/262] tests/extension.spec.ts:664:5 › panel appearance and resizing preserve content, selection and definition; sites stay independent
+[68/262] tests/extension.spec.ts:692:5 › popup searches, exports and imports correction backups without losing existing readings
+[69/262] tests/extension.spec.ts:717:5 › legacy Docs preferences migrate through popup without enabling other websites
+[70/262] tests/extension.spec.ts:729:5 › web panel clips offscreen wrapped text, preserves hard breaks and shadow order, and stays out of frames
+[71/262] tests/extension.spec.ts:745:37 › overlays follow hidden attributes and nested native disclosure visibility
+[72/262] tests/extension.spec.ts:745:37 › reading panel follow hidden attributes and nested native disclosure visibility
+[73/262] tests/geometry.spec.ts:3:5 › spatial collisions match exhaustive checks across cells and negative coordinates
+[74/262] tests/local-dictionary.spec.ts:11:5 › importer preserves dictionary restrictions and metadata, is deterministic, and rejects changed snapshots
+tests/local-dictionary.spec.ts:11:5 › importer preserves dictionary restrictions and metadata, is deterministic, and rejects changed snapshots
+
+
+
+
+[75/262] tests/local-japanese-dictionary.spec.ts:11:5 › Japanese importer resolves unique spelling references, preserves sense context, and rejects ambiguous or cyclic aliases
+tests/local-japanese-dictionary.spec.ts:11:5 › Japanese importer resolves unique spelling references, preserves sense context, and rejects ambiguous or cyclic aliases
+
+
+
+
+[76/262] tests/mascot-dictionary.spec.ts:43:5 › language selection remains compatible and invalid requests perform no I/O
+[77/262] tests/mascot-dictionary.spec.ts:55:5 › complete bundled dictionary serves common spellings and kana offline; warm lookups share results
+tests/mascot-dictionary.spec.ts:55:5 › complete bundled dictionary serves common spellings and kana offline; warm lookups share results
+Local dictionary timings (Node harness, filesystem fetch): [{"word":"飲む","coldMs":4.87,"warmMs":0.09},{"word":"のむ","coldMs":4.5,"warmMs":0.08},{"word":"食べる","coldMs":5.44,"warmMs":0.07},{"word":"学校","coldMs":3.79,"warmMs":0.06},{"word":"ありがとう","coldMs":4.16,"warmMs":0.07}]
+
+[78/262] tests/mascot-dictionary.spec.ts:69:5 › English and Japanese 飲む resolve recognized spelling-reference pages to のむ
+[79/262] tests/mascot-dictionary.spec.ts:79:5 › parser removes unsafe markup and excludes other languages, nested examples and references
+[80/262] tests/mascot-dictionary.spec.ts:85:5 › ambiguous, external, cyclic and excessively long references are retryable structure failures
+[81/262] tests/mascot-dictionary.spec.ts:96:5 › genuine misses expire after five minutes and transient failures are never cached
+[82/262] tests/mascot-dictionary.spec.ts:108:5 › a single deadline covers offscreen parsing and oversized replies are rejected
+[83/262] tests/mascot-dictionary.spec.ts:115:5 › pending lookups deduplicate, concurrency is bounded, and shared results evict at 256 entries
+[84/262] tests/mascot-dictionary.spec.ts:131:5 › Japanese definitions and spelling-reference meanings are served locally with no network requests
+[85/262] tests/mascot-motion.spec.ts:8:5 › every routine connects from every delivered pose and exits without skipping a costume phase
+[86/262] tests/mascot-motion.spec.ts:24:5 › ambient scheduler favors local walks, separates actions, and rotates rare specials
+[87/262] tests/mascot-motion.spec.ts:45:5 › sleep requires three minutes of active time and at least three walks, even with sleep-favoring randomness
+[88/262] tests/mascot-motion.spec.ts:54:5 › click wake lasts one wall-clock minute, refreshes without stacking and preserves rests
+[89/262] tests/mascot-motion.spec.ts:64:5 › malformed and legacy preferences stay off and retain only finite bounded site positions
+[90/262] tests/mascot-motion.spec.ts:71:5 › lookup resolves surface and lemma, corrections, kana, unknown readings, and rejects partial selections
+[91/262] tests/mascot-motion.spec.ts:80:5 › every activity exits after at most two iterations even when a long hold is requested
+[92/262] tests/mascot-motion.spec.ts:87:5 › nearby journeys explore the drop area and stay reachable after viewport or reading-panel changes
+[93/262] tests/mascot-motion.spec.ts:96:5 › loop seam smoothing applies only between repeats and preserves the final exit pose
+[94/262] tests/mascot-motion.spec.ts:104:5 › every airborne routine completes its landing before the next routine, without changing ground height
+[95/262] tests/mascot-motion.spec.ts:117:5 › physical routines have bounded, continuous motion and quiet routines stay planted
+[96/262] tests/mascot-motion.spec.ts:133:5 › travel ramps preserve whole loops, endpoints, continuity and the scaled maximum speed
+[97/262] tests/mascot-playback.spec.ts:38:5 › production canvas player renders all 672 frames and mirrored anchors exactly; all routine poses are visible
+[98/262] tests/mascot-playback.spec.ts:64:5 › real playback travels at scaled speed, immediately animates reading with a bubble, exits after a drop, and handles missing strips
+[99/262] tests/mascot-playback.spec.ts:82:5 › pixel dialogue grows with word length, wraps long words, and remains within a narrow viewport
+[100/262] tests/mascot-playback.spec.ts:96:5 › visibility and fullscreen suspend the companion without accumulating a return jump
+[101/262] tests/mascot-playback.spec.ts:107:5 › all 24 routines move continuously at all three sizes and return through authored exits
+[102/262] tests/mascot-playback.spec.ts:147:5 › flight lands exactly and a reading starts immediately while settling to the same ground
+[103/262] tests/mascot-playback.spec.ts:166:5 › dragging and keyboard placement rebase flight at its visible location without residual movement
+[104/262] tests/mascot-playback.spec.ts:179:5 › movement respects viewport and panel changes, print suspension, reduced motion and asset fallback
+[105/262] tests/mascot-playback.spec.ts:202:5 › the active playback clock carries flight height across phases and freezes during suspension or decoding
+[106/262] tests/mascot-playback.spec.ts:223:5 › mirrored physical routines respect local bounds and facing before their first movement
+[107/262] tests/mascot-playback.spec.ts:241:5 › awake standing and seated rests animate subtly, while sleep holds its pose on a low-frequency timer
+[108/262] tests/mascot-playback.spec.ts:260:5 › word reading immediately preempts every routine with a visible scroll, preserves its location and finishes one cycle
+[109/262] tests/mascot-playback.spec.ts:285:5 › resting and sleeping companions read immediately, further words do not freeze the scroll, and reduced motion stays still
+[110/262] tests/mascot-playback.spec.ts:306:5 › click and keyboard activation wake a resting companion for one minute, then restore ambient timing
+[111/262] tests/mascot.spec.ts:37:5 › off by default makes no asset requests; independent switch, live pause, and subframes have one mascot
+[112/262] tests/mascot.spec.ts:47:5 › hover resolves inline text, existing ruby, kana, and corrections without changing page content or contacting dictionaries
+[113/262] tests/mascot.spec.ts:58:5 › hover dwell cancels on departure, inputs never trigger, and highlight mode rejects sentences
+[114/262] tests/mascot.spec.ts:67:5 › hover bubble stays on the same inline word and closes immediately when the pointer leaves it
+[115/262] tests/mascot.spec.ts:75:5 › drag and keyboard reposition persist per site, survive reload, clamp resize, and honor print/reduced motion
+[116/262] tests/mascot.spec.ts:85:5 › chosen-language definitions use local English lemmas without requests and preserve readings on online failure
+[117/262] tests/mascot.spec.ts:93:5 › 飲む and its inflected text show offline English definitions in the real companion
+[118/262] tests/mascot.spec.ts:103:5 › Google Docs geometry and reading-view word hooks work with their independent settings
+[119/262] tests/mascot.spec.ts:117:5 › Google Docs highlight follows canvas selection geometry without native selection events
+[120/262] tests/mascot.spec.ts:161:5 › popup saves companion settings across reopen
+[121/262] tests/mascot.spec.ts:169:5 › popup at its native preferred size stays readable and scrolls with Kōくん settings expanded
+[122/262] tests/mascot.spec.ts:181:5 › open-shadow text works under restrictive page CSP, and stale definition replies cannot replace the new word
+[123/262] tests/mascot.spec.ts:197:5 › Japanese companion definitions work offline for a spelling reference and an inflected verb
+[124/262] tests/meaning-forks.spec.ts:27:5 › ichidan rareru offers common functions for all supported endings
+[125/262] tests/meaning-forks.spec.ts:44:5 › causative make and let uses explicit ichidan, godan and suru chains
+[126/262] tests/meaning-forks.spec.ts:51:5 › selected ending keeps the complete phrase and exact sentence offsets
+[127/262] tests/meaning-forks.spec.ts:59:5 › isolated lexemes, noun suffixes and unsupported compound forms never trigger
+[128/262] tests/meaning-forks.spec.ts:66:5 › missing morphology, discontinuous spans and invalid selections are rejected
+[129/262] tests/meaning-forks.spec.ts:78:5 › dictionary ambiguity is preserved rather than silently normalized
+[130/262] tests/meaning-forks.spec.ts:86:5 › native buttons support keyboard exploration, offline references and a narrow panel
+[131/262] tests/mimetic-playground.spec.ts:24:5 › only complete curated mimetics match, with the encountered variant selected
+[132/262] tests/mimetic-playground.spec.ts:81:5 › joined recognition works for every expression and alias with actual dictionary tokenization
+[133/262] tests/mimetic-playground.spec.ts:101:5 › joined recognition preserves boundaries, gaps, offsets and the longest complete expression
+[134/262] tests/mimetic-playground.spec.ts:126:7 › rolling switches the complete explanation and scene offline at minimum panel width
+[135/262] tests/mimetic-playground.spec.ts:126:7 › rotation switches the complete explanation and scene offline at minimum panel width
+[136/262] tests/mimetic-playground.spec.ts:126:7 › light switches the complete explanation and scene offline at minimum panel width
+[137/262] tests/mimetic-playground.spec.ts:126:7 › rain switches the complete explanation and scene offline at minimum panel width
+[138/262] tests/mimetic-playground.spec.ts:126:7 › texture switches the complete explanation and scene offline at minimum panel width
+[139/262] tests/mimetic-playground.spec.ts:126:7 › smile switches the complete explanation and scene offline at minimum panel width
+[140/262] tests/mimetic-playground.spec.ts:126:7 › anticipation switches the complete explanation and scene offline at minimum panel width
+[141/262] tests/mimetic-playground.spec.ts:126:7 › irritation switches the complete explanation and scene offline at minimum panel width
+[142/262] tests/mimetic-playground.spec.ts:126:7 › relief switches the complete explanation and scene offline at minimum panel width
+[143/262] tests/mimetic-playground.spec.ts:126:7 › worry switches the complete explanation and scene offline at minimum panel width
+[144/262] tests/mimetic-playground.spec.ts:126:7 › sleep switches the complete explanation and scene offline at minimum panel width
+[145/262] tests/mimetic-playground.spec.ts:126:7 › exhaustion switches the complete explanation and scene offline at minimum panel width
+[146/262] tests/mimetic-playground.spec.ts:126:7 › pain switches the complete explanation and scene offline at minimum panel width
+[147/262] tests/mimetic-playground.spec.ts:126:7 › stomach switches the complete explanation and scene offline at minimum panel width
+[148/262] tests/mimetic-playground.spec.ts:126:7 › balance switches the complete explanation and scene offline at minimum panel width
+[149/262] tests/mimetic-playground.spec.ts:126:7 › temperature switches the complete explanation and scene offline at minimum panel width
+[150/262] tests/mimetic-playground.spec.ts:126:7 › walking switches the complete explanation and scene offline at minimum panel width
+[151/262] tests/mimetic-playground.spec.ts:126:7 › busy switches the complete explanation and scene offline at minimum panel width
+[152/262] tests/mimetic-playground.spec.ts:126:7 › wandering switches the complete explanation and scene offline at minimum panel width
+[153/262] tests/mimetic-playground.spec.ts:126:7 › looking switches the complete explanation and scene offline at minimum panel width
+[154/262] tests/mimetic-playground.spec.ts:126:7 › laughter switches the complete explanation and scene offline at minimum panel width
+[155/262] tests/mimetic-playground.spec.ts:126:7 › crying switches the complete explanation and scene offline at minimum panel width
+[156/262] tests/mimetic-playground.spec.ts:126:7 › softness switches the complete explanation and scene offline at minimum panel width
+[157/262] tests/mimetic-playground.spec.ts:126:7 › moisture switches the complete explanation and scene offline at minimum panel width
+[158/262] tests/mimetic-playground.spec.ts:126:7 › stickiness switches the complete explanation and scene offline at minimum panel width
+[159/262] tests/mimetic-playground.spec.ts:126:7 › slipperiness switches the complete explanation and scene offline at minimum panel width
+[160/262] tests/mimetic-playground.spec.ts:126:7 › crispness switches the complete explanation and scene offline at minimum panel width
+[161/262] tests/mimetic-playground.spec.ts:126:7 › dryness switches the complete explanation and scene offline at minimum panel width
+[162/262] tests/mimetic-playground.spec.ts:126:7 › crowd switches the complete explanation and scene offline at minimum panel width
+[163/262] tests/mimetic-playground.spec.ts:126:7 › knocking switches the complete explanation and scene offline at minimum panel width
+[164/262] tests/mimetic-playground.spec.ts:126:7 › eating switches the complete explanation and scene offline at minimum panel width
+[165/262] tests/mimetic-playground.spec.ts:126:7 › thinCrunch switches the complete explanation and scene offline at minimum panel width
+[166/262] tests/mimetic-playground.spec.ts:126:7 › viscosity switches the complete explanation and scene offline at minimum panel width
+[167/262] tests/mimetic-playground.spec.ts:126:7 › flavor switches the complete explanation and scene offline at minimum panel width
+[168/262] tests/mimetic-playground.spec.ts:126:7 › elasticFood switches the complete explanation and scene offline at minimum panel width
+[169/262] tests/mimetic-playground.spec.ts:126:7 › freshCrunch switches the complete explanation and scene offline at minimum panel width
+[170/262] tests/mimetic-playground.spec.ts:126:7 › rattling switches the complete explanation and scene offline at minimum panel width
+[171/262] tests/mimetic-playground.spec.ts:126:7 › metalSounds switches the complete explanation and scene offline at minimum panel width
+[172/262] tests/mimetic-playground.spec.ts:126:7 › quietVoices switches the complete explanation and scene offline at minimum panel width
+[173/262] tests/mimetic-playground.spec.ts:126:7 › smallDrops switches the complete explanation and scene offline at minimum panel width
+[174/262] tests/mimetic-playground.spec.ts:126:7 › conversation switches the complete explanation and scene offline at minimum panel width
+[175/262] tests/mimetic-playground.spec.ts:126:7 › discretion switches the complete explanation and scene offline at minimum panel width
+[176/262] tests/mimetic-playground.spec.ts:126:7 › unhurried switches the complete explanation and scene offline at minimum panel width
+[177/262] tests/mimetic-playground.spec.ts:126:7 › neatness switches the complete explanation and scene offline at minimum panel width
+[178/262] tests/mimetic-playground.spec.ts:126:7 › smoothWork switches the complete explanation and scene offline at minimum panel width
+[179/262] tests/mimetic-playground.spec.ts:155:5 › scenes start looping immediately without a replay button and keep the final pose
+[180/262] tests/mimetic-playground.spec.ts:176:5 › new artwork is the default and live legacy changes preserve the selected word and focus
+[181/262] tests/mimetic-playground.spec.ts:196:5 › all ninety scenes in both styles loop automatically and honor reduced motion
+[182/262] tests/mimetic-playground.spec.ts:229:5 › reduced motion keeps scenes static while expression comparisons remain usable
+[183/262] tests/mimetic-playground.spec.ts:247:5 › authored text is rendered as text and unsafe reference links are suppressed
+[184/262] tests/native-popup.spec.ts:6:5 › native toolbar popup opens at full height and wheel-scrolls to footer links
+  1) tests/native-popup.spec.ts:6:5 › native toolbar popup opens at full height and wheel-scrolls to footer links
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      22 |     await expect.poll(()=>worker.evaluate(async()=>{
+      23 |       const [window]=await chrome.windows.getAll({windowTypes:['normal']});return window.focused;
+    > 24 |     })).toBe(true);
+         |         ^
+      25 |     await worker.evaluate(async()=>{
+      26 |       const [window]=await chrome.windows.getAll({windowTypes:['normal']});await chrome.action.openPopup({windowId:window.id});
+      27 |     });
+        at /Users/turco/Documents/ChatGPT/FOB/tests/native-popup.spec.ts:24:9
+
+    Error Context: test-results/native-popup-native-toolba-2c61c-eel-scrolls-to-footer-links/error-context.md
+
+
+(node:33707) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[185/262] tests/playground-browser.spec.ts:47:5 › verbs open with free input only, while mimetic search, categories, keyboard and narrow layout work offline
+[186/262] tests/playground-browser.spec.ts:73:5 › applicable switches preserve compatible values, clear incompatible values, and shorten spoken constructions
+[187/262] tests/playground-browser.spec.ts:92:5 › Reset preserves original imperative and polite desire aliases exactly
+[188/262] tests/playground-browser.spec.ts:106:5 › typed verbs require confirmation of reading and class, accept compounds and reject sentences or conjugated input
+[189/262] tests/playground-browser.spec.ts:120:5 › typed いる and verified fused potential bases require explicit choices without double potential
+[190/262] tests/playground-browser.spec.ts:131:5 › lexical kana homographs open typed and page-selected playgrounds
+[191/262] tests/playground-browser.spec.ts:158:5 › ambiguous られる has no assigned interpretation until chosen, and Reset restores the choice gate
+[192/262] tests/playground-browser.spec.ts:170:5 › typing, tab changes and disposal cancel pending analysis and ignore late replies
+[193/262] tests/playground-browser.spec.ts:187:5 › page-selected fused potentials verify bases before offering transformations, and disposal cancels probes
+[194/262] tests/playground-browser.spec.ts:205:5 › verified potential chains stay restricted and failed probes never restore unsupported source controls
+[195/262] tests/playground-browser.spec.ts:221:5 › opening Playgrounds during initial reading analysis preserves the workspace and typed verb
+[196/262] tests/playground-browser.spec.ts:244:5 › shared Word forms accepts adjectives, explains endings, and preserves control and focus behavior
+[197/262] tests/playground-channel.spec.ts:24:5 › playground analysis and page readings cannot replace or cancel one another
+[198/262] tests/playground-channel.spec.ts:45:5 › only stale requests in the same document and purpose are replaced
+[199/262] tests/playground-channel.spec.ts:61:5 › malformed playground batches are rejected before they can cancel valid work
+[200/262] tests/playground-channel.spec.ts:74:5 › closing the tab cancels both purposes and releases their local caches
+[201/262] tests/playground-data.spec.ts:14:5 › bundled search finds spellings, readings, English tokens, prefixes and stable pages
+[202/262] tests/playground-data.spec.ts:27:5 › entry details retain homographs, spelling/reading restrictions and sense metadata
+[203/262] tests/playground-data.spec.ts:34:5 › all coverage refs resolve to complete grammar and eighteen reachable comparison activities
+[204/262] tests/playground-data.spec.ts:74:5 › comparison authoring rejects duplicate asset IDs, broken links, bad spans and invalid activities
+[205/262] tests/playground-data.spec.ts:91:5 › playground request validation bounds queries and prevents paths or arbitrary online text
+[206/262] tests/playground-v14.spec.ts:16:5 › all ten new comparison families switch complete sentences and explain activities offline
+[207/262] tests/playground-v14.spec.ts:42:5 › three-variant comparison retains keyboard choice, activity, focus and scroll after dictionary return at 280px
+[208/262] tests/playground-v14.spec.ts:58:5 › comparison asset retry works and a late comparison cannot replace a newly opened point
+[209/262] tests/playground-v14.spec.ts:78:5 › offline dictionary, all grammar levels, comparison activity and linked returns work in a real extension
+[210/262] tests/playground-v14.spec.ts:95:5 › dictionary misses request external data only after the explicit language button
+[211/262] tests/playground-v14.spec.ts:104:5 › four-tab keyboard navigation and narrow grammar details fit at 280px
+[212/262] tests/playground-v14.spec.ts:112:5 › narrow playground container uses two tab rows inside a desktop viewport
+[213/262] tests/playground-v14.spec.ts:120:5 › dictionary composition waits and late searches cannot replace fresh results
+[214/262] tests/playground-v14.spec.ts:142:5 › recognized inflections offer verified dictionary forms
+[215/262] tests/playground-v14.spec.ts:148:5 › late hidden dictionary work cannot start analysis in the active Word forms tool
+[216/262] tests/playground-v14.spec.ts:164:5 › unavailable grammar assets offer retry and a failed load is not cached
+[217/262] tests/preference-writer.spec.ts:23:5 › independent popup and webpage clients retain concurrent corrections and panel changes
+[218/262] tests/preference-writer.spec.ts:34:5 › imports, deletions, and saves share the same correction transaction queue
+[219/262] tests/preference-writer.spec.ts:44:5 › concurrent corrections enforce the shared capacity and recover after rejected writes
+[220/262] tests/preference-writer.spec.ts:55:5 › failed validation and storage writes do not block later queued changes
+[221/262] tests/preference-writer.spec.ts:66:5 › site pauses and appearance patches preserve changes from other clients
+[222/262] tests/preference-writer.spec.ts:74:5 › the preference writer rejects unknown senders and malformed operations without changing storage
+[223/262] tests/preference-writer.spec.ts:88:5 › mascot patches and per-site drops serialize without overwriting settings or other sites
+[224/262] tests/preferences.spec.ts:4:5 › preferences validate local readings, bounds and per-site isolation
+[225/262] tests/preferences.spec.ts:14:5 › longest corrections span tokens and preserve readings around partial matches
+[226/262] tests/preferences.spec.ts:21:5 › adaptive pacing waits for bursts to settle and recovers its normal budget
+[227/262] tests/preferences.spec.ts:28:5 › Docs reading view defaults off and bounds spacing
+[228/262] tests/preferences.spec.ts:35:5 › reading panel preferences migrate Docs only, isolate sites, and bound appearance
+[229/262] tests/preferences.spec.ts:45:5 › correction backup merge validates atomically, normalizes readings, and keeps existing values
+[230/262] tests/preferences.spec.ts:57:5 › correction backups reject capacity and normalized conflicts without truncating
+[231/262] tests/reading-panel.spec.ts:3:5 › reading view sorts geometry, joins inline runs, and offsets ruby without interpreting text
+[232/262] tests/readings.spec.ts:3:5 › hiragana conversion and okurigana alignment
+[233/262] tests/readings.spec.ts:11:5 › cache evicts by recency and total retained characters
+[234/262] tests/security.spec.ts:5:5 › internal tokenizer commands accept only the extension service worker
+[235/262] tests/security.spec.ts:25:5 › Docs initialization rejects malformed IDs and stops accepting page events after initialization
+[236/262] tests/security.spec.ts:36:5 › packaged executable JavaScript contains no string compilation or remote script loaders
+[237/262] tests/update-banner.spec.ts:19:5 › release announcement stays dismissed across reopen and browser restart, with a fresh announcement for a later version
+[238/262] tests/update-banner.spec.ts:71:5 › failed dismissal can be retried without hiding the announcement or disrupting preferences
+[239/262] tests/verb-playground.spec.ts:32:5 › reviewed dictionary-verb fixtures cover all classes with bounded capabilities
+[240/262] tests/verb-playground.spec.ts:48:5 › ichidan golden matrix includes eight finite states, standard voice and distinct connections
+[241/262] tests/verb-playground.spec.ts:62:5 › all nine godan endings and 行く have independent golden forms
+[242/262] tests/verb-playground.spec.ts:81:5 › する and 来る use correct standard forms and changing readings
+[243/262] tests/verb-playground.spec.ts:92:5 › spoken variants cover all eight finite states and voiced で boundaries
+[244/262] tests/verb-playground.spec.ts:103:5 › recognizes complete source from every token across the expanded family inventory
+[245/262] tests/verb-playground.spec.ts:117:5 › all eight states of everyday constructions recognize with real dictionary segmentation
+[246/262] tests/verb-playground.spec.ts:129:5 › source ambiguity requires a choice and aliases preserve exact Reset state
+[247/262] tests/verb-playground.spec.ts:146:5 › typed dictionary verbs require trustworthy exact input and preserve noun + する
+[248/262] tests/verb-playground.spec.ts:158:5 › bounded potential probes validate dictionary class and exact reading without assuming semantics
+[249/262] tests/verb-playground.spec.ts:172:5 › semantic exceptions restrict derived forms and ambiguous いる gets explicit curated choices
+[250/262] tests/verb-playground.spec.ts:185:5 › unsupported chains, lexical exceptions and untrusted metadata never expose a partial helper
+[251/262] tests/verb-playground.spec.ts:199:5 › godan readings くる and する keep their class across all derived families
+[252/262] tests/verb-playground.spec.ts:222:5 › verified ら抜き dictionary entries are rejected as potential bases without inventing an interpretation
+[253/262] tests/verb-playground.spec.ts:235:5 › lexical kana homographs retain their forms without unsupported potential interpretations
+[254/262] tests/verb-playground.spec.ts:267:5 › contextual commands recover dictionary bases and initialize the existing imperative family
+[255/262] tests/verb-playground.spec.ts:275:5 › contextual command recovery retains continuations, clause boundaries, and unsupported stems
+[256/262] tests/verb-playground.spec.ts:285:5 › command dictionary recovery requires exact spelling and reading and leaves source tokens intact
+[257/262] tests/vocabulary.spec.ts:17:5 › dictionary compounds select the full noun from every kanji, including in sentences
+[258/262] tests/vocabulary.spec.ts:30:5 › compound joining preserves names, gaps, grammar and unverified noun sequences
+[259/262] tests/vocabulary.spec.ts:40:5 › bundled dictionary prefers common nouns for isolated vocabulary and translation lines
+[260/262] tests/vocabulary.spec.ts:53:5 › sentences, names, Japanese glosses and words without a noun alternative keep dictionary analysis
+[261/262] tests/vocabulary.spec.ts:59:5 › multiline vocabulary rules use exact source spans and preserve adjacent names
+[262/262] tests/vocabulary.spec.ts:64:5 › saved corrections take precedence without losing vocabulary or name context
+  1 failed
+    tests/native-popup.spec.ts:6:5 › native toolbar popup opens at full height and wheel-scrolls to footer links
+  261 passed (2.9m)

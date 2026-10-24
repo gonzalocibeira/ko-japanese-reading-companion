@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "referenceDate": "2026-10-22",
+  "referenceEntries": 848,
+  "points": 847,
+  "examples": 2541,
+  "comparisons": 18,
+  "comparisonExamples": 41,
+  "sha256": "d8b3ccfc93aa9019d61f2d3876ee4d0f2446218dc93dd18190beb0c21d5e447b",
+  "comparisonSha256": "eaa05dc7dafb4b64a92d309d22d4b56668c7ce73bcff87afe3823d86aec13491",
+  "comparisonExpansion": {
+    "addedFamilies": 10,
+    "addedVariants": 23,
+    "addedActivities": 10,
+    "independentEditorialReviewsPerNewFamily": 2
+  },
+  "tests": {
+    "total": 262,
+    "passed": 261,
+    "failed": 1,
+    "durationMinutes": 2.9,
+    "environmentFailures": [
+      {
+        "test": "tests/native-popup.spec.ts",
+        "reason": "macOS did not focus the temporary Brave window; chrome.windows reports focused=false before the popup opens.",
+        "isolatedRetry": "Same environment failure; assertion was retained."
+      }
+    ],
+    "grammarAndPlaygroundChecks": "All passed in the final full run."
+  },
+  "packages": [
+    {
+      "name": "ko-japanese-reading-companion-1.4.0.zip",
+      "bytes": 122179807,
+      "files": 1599,
+      "sha256": "22c441b3badf794704a1a23fd0d2fde69760783ddb3c1480ff14af600da7f695"
+    },
+    {
+      "name": "ko-japanese-reading-companion-1.4.0-chrome-web-store.zip",
+      "bytes": 122163667,
+      "files": 1599,
+      "sha256": "041d3838d3483d11d3817b0364dafe2597dbf50369e8df1910a10ce672bf21e5"
+    }
+  ],
+  "publication": "Local artifacts only; no commit, GitHub release or store submission."
+}

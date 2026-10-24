@@ -1,6 +1,6 @@
 # Kō — Japanese Reading Companion: Privacy Policy
 
-Effective date: 21 October 2026. Developer: Gonzalo Cibeira.
+Effective date: 22 October 2026. Developer: Gonzalo Cibeira.
 
 Kō adds Japanese readings to webpages and Google Docs, with an optional reading panel, local exploration tools, and local-first word definitions. It has no account system, advertising, analytics, telemetry, or developer-operated data server.
 
@@ -11,6 +11,12 @@ Kō reads text and layout information from permitted HTTP/HTTPS pages, including
 Page URLs and hostnames are used locally to determine compatibility, toolbar status, and site preferences. Kō does not record a browsing history. Hostnames for sites where you save preferences are stored on your device.
 
 The Google Docs bridge sets Google's canvas annotation flag using the extension's public ID so Docs can expose text geometry in the page DOM. This surface is accessible to scripts already running on that document page; it is not a private channel. The bridge does not grant those scripts access to extension APIs, local preferences, or reading corrections. Kō does not request Google account authorization or use the Google Docs API. Google Docs and other websites continue their own normal data processing.
+
+## Playground searches and grammar
+
+Dictionary Playground searches Japanese words/readings and English meanings locally in bundled data. It does not automatically contact an online service. Only selecting a language-specific Look up online action sends the displayed Japanese lookup term to that Wiktionary edition. English search phrases and surrounding examples are not sent. These explicit lookups use the same credential-free, referrer-free requests described below.
+
+Grammar Playground uses bundled original lessons, examples, readings, and comparisons. Opening grammar, filtering, comparing, and using its activities makes no external requests. Following a vocabulary link performs a local Dictionary Playground search. Playground state remains in memory for the current session; no search history, scores, schedules, or study progress is stored.
 
 ## Word definitions and online fallback
 

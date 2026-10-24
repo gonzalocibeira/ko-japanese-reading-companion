@@ -97,7 +97,11 @@ Enabled/excluded-site preferences, per-hostname appearance, reading-view setting
 
 ## Develop and test
 
+Use Node.js 26.12.1 from `.nvmrc`, or a patched version in the 22.x (22.23.4+), 24.x (24.22.1+), or 26.x (26.12.1+) lines. The engine requirement is enforced during npm installation, builds (including packaging), typechecks, and tests. See the [October 2026 security review](security-review-2026-10.md).
+
 ```sh
+nvm install
+nvm use
 npm ci
 npm run build
 npm run typecheck
@@ -129,3 +133,14 @@ Release date: **28 October 2026**. The full release retains RC1 mimetic artwork.
 ## 1.3 selection and invitation
 
 `src/docs-selection.ts` resolves a single Japanese word from supported painted Google Docs selection rectangles and exposed glyph geometry. Selection changes refresh Highlight lookup even without a native selection event; missing, ambiguous and multi-line geometry is declined. Direct non-HTML documents are skipped before overlays or listeners are created. The popup invitation opens the Kōくん settings disclosure and focuses its existing opt-in switch. Dismissal uses `dismissedUpdate:1.3.0` in local storage, synchronized across open popups and retained across restarts.
+
+
+## v1.4 playground data
+
+Standalone and embedded playgrounds use the same validated playground-data transport. Only the extension playgrounds.html document and top-level HTTP/HTTPS content-script senders may request public local data. The service worker routes bounded requests through offscreen.html to a lazily created playground-data-worker.js, independently of reading-tokenization queues. Online definitions use a separate explicit operation; local operations never invoke automatic fallback.
+
+The deterministic dictionary search builder indexes the verified JMdict shards into search.json.gz: normalized Japanese prefix terms, English inverted postings, and compact result summaries retaining entry IDs and locator buckets. Detail requests load original structured entries and preserve spelling/reading/sense restrictions. Existing compact definition APIs remain unchanged.
+
+Original grammar modules under data/grammar compile into a searchable index, lazy per-point assets, 18 comparisons with 41 complete sentence variants, and a reconciled coverage ledger. Build validation requires all 848 reference IDs, three distinct annotated examples per canonical point, complete notes, and valid links. One explanatory-form alias merges into 847 canonical points. Tokenizer readings are supplemented by contextual authored overrides, including compound numerals. Comparison modules declare their canonical links; lessons retain all linked families and a deduplicated set of related points. Build validation rejects duplicate asset IDs, broken canonical links, incomplete variants, invalid highlights/readings, and malformed activity answers. Metadata includes a separate comparison-content digest. The build never fetches remote grammar content.
+
+Each tool stays mounted during a playground session. Linked vocabulary/form exploration uses temporary views and a return stack. Disposal invalidates pending UI work; search composition and stale results are guarded. Grammar examples carry construction spans and vocabulary targets, so browsing them does not require whole-sentence runtime analysis.
