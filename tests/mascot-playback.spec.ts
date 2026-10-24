@@ -12,7 +12,7 @@ async function setup() {
   const page=await browser.newPage({viewport:{width:1100,height:900}});
   await page.route('https://playback.test/**',async route=>{
     const file=new URL(route.request().url()).pathname;
-    if(file.startsWith('/art/ko-kun/') || file.startsWith('/art/fonts/')) {await route.fulfill({body:await readFile(`public${file}`),contentType:file.endsWith('.json')?'application/json':file.endsWith('.png')?'image/png':file.endsWith('.ttf')?'font/ttf':'image/webp'});}
+    if(file.startsWith('/art/ko-kun/') || file.startsWith('/art/fonts/')) {await route.fulfill({body:await readFile(`dist${file}`),contentType:file.endsWith('.json')?'application/json':file.endsWith('.png')?'image/png':file.endsWith('.ttf')?'font/ttf':'image/webp'});}
     else await route.fulfill({contentType:'text/html',body:'<!doctype html><meta charset="utf-8"><style>body{margin:0;background:#eee7d6;font:14px system-ui}</style><h1>Production Kōくん player — browser verification</h1>'});
   });
   await page.goto('https://playback.test/');await page.addScriptTag({content:driver});await expect.poll(()=>page.evaluate(()=>(window as any).h.pet.manifest?.clips.length)).toBe(56);return page;

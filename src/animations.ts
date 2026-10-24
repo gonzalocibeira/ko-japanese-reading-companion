@@ -41,7 +41,7 @@ document.addEventListener('visibilitychange',syncPlayback);
 reducedMotion.addEventListener('change',syncPlayback);
 
 async function openGallery() {
-  const response=await fetch(asset('manifest.json'));
+  const response=await fetch(asset('index.json'));
   if(!response.ok)throw new Error('Gallery unavailable');
   const manifest=await response.json() as MascotManifest;
   const routines=manifest.routines as (MascotRoutine & {name:string})[];

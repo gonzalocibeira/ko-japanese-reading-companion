@@ -16,7 +16,7 @@ test('internal tokenizer commands accept only the extension service worker',asyn
     {id:'b'.repeat(32),url:url+'background.js'},
     {id},
     {id,tab:{id:1},url:url+'background.js'}
-  ])for(const type of ['worker-job','worker-cancel','worker-release','dictionary-parse'])listener({...job,type,html:'<h2>Japanese</h2>',language:'en'},sender,()=>{throw new Error('Untrusted sender received an internal reply');});
+  ])for(const type of ['worker-job','worker-cancel','worker-release','dictionary-parse','playground-data-job'])listener({...job,type,html:'<h2>Japanese</h2>',language:'en',query:{op:'grammar-index'}},sender,()=>{throw new Error('Untrusted sender received an internal reply');});
   expect(forwarded).toEqual([]);
   expect(listener(job,{id,url:url+'background.js'},()=>{})).toBe(true);
   expect(forwarded).toEqual([{id:1,key:'1:readings',texts:['日本語'],overrides:undefined,includeWords:undefined}]);

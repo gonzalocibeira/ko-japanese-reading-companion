@@ -130,6 +130,9 @@
     for (const char of term) hash = Math.imul(hash ^ char.codePointAt(0), 16777619) >>> 0;
     return (hash & 255).toString(16).padStart(2, "0");
   }
+  function bundledResourceURL(path) {
+    return typeof chrome === "object" && chrome.runtime?.getURL ? chrome.runtime.getURL(path) : new URL(path, self.location.href).href;
+  }
   async function loadDictionaryShard(dictionary, bucket) {
     const key = `${dictionary}/${bucket}`;
     const cached = shards.get(key);
@@ -141,7 +144,7 @@
     let job = loading.get(key);
     if (!job) {
       job = (async () => {
-        const response = await fetch(chrome.runtime.getURL(`dictionaries/${dictionary}/${bucket}.json.gz`));
+        const response = await fetch(bundledResourceURL(`dictionaries/${dictionary}/${bucket}.json.gz`));
         if (!response.ok || !response.body) throw new Error("Local dictionary unavailable");
         const text = await new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).text(), value = JSON.parse(text);
         if (!value.terms || !value.entries) throw new Error("Invalid dictionary shard");
@@ -315,6 +318,9 @@
       signal.removeEventListener("abort", abort);
     }
   }
+  function lookupOnlineDefinition(language, word) {
+    return onlineDefinition(language, word);
+  }
   function lookupDefinition(language, word) {
     const key = JSON.stringify([word, language]), stored = cache.get(key);
     if (stored && stored.expires > Date.now()) {
@@ -323,8 +329,8 @@
       return Promise.resolve(stored.page);
     }
     cache.delete(key);
-    const active = pending.get(key);
-    if (active) return active;
+    const active2 = pending.get(key);
+    if (active2) return active2;
     if (pending.size >= 8) return Promise.resolve(failure("busy"));
     const job = (async () => {
       let page;
@@ -369,6 +375,66 @@
         }
         const word = message.word.trim().normalize("NFC"), languages = message.language ? [message.language] : ["en", "ja"];
         void Promise.all(languages.map(async (language) => [language, await lookupDefinition(language, word)])).then((entries) => respond(Object.fromEntries(entries)));
+        return true;
+      });
+    }
+  });
+
+  // src/playground-service.ts
+  function validPlaygroundQuery(query) {
+    if (!query || typeof query !== "object") return false;
+    const q = query;
+    const word = (s) => typeof s === "string" && s.length <= 80 && /^[\p{L}\p{M}\p{N}々〆ー・\s'-]+$/u.test(s) && (/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(s) || !/\s/u.test(s));
+    const id = (s) => typeof s === "string" && /^[a-z0-9-]{1,64}$/.test(s);
+    switch (q.op) {
+      case "search":
+        return typeof q.query === "string" && q.query.length <= 80 && Number.isInteger(q.offset) && Number(q.offset) >= 0 && Number(q.offset) <= 1e6;
+      case "entry":
+        return typeof q.id === "string" && /^\d{1,12}$/.test(q.id) && typeof q.bucket === "string" && /^[a-f0-9]{2}$/.test(q.bucket);
+      case "japanese":
+        return word(q.word);
+      case "online":
+        return word(q.word) && (q.language === "en" || q.language === "ja");
+      case "grammar-index":
+        return true;
+      case "grammar":
+      case "comparison":
+        return id(q.id);
+      default:
+        return false;
+    }
+  }
+  var active;
+  var init_playground_service = __esm({
+    "src/playground-service.ts"() {
+      "use strict";
+      init_offscreen_client();
+      init_dictionary();
+      active = 0;
+      chrome.runtime.onMessage.addListener((message, sender, respond) => {
+        if (message?.type !== "playground-data") return;
+        let url;
+        try {
+          url = sender.url ? new URL(sender.url) : void 0;
+        } catch {
+        }
+        const standalone = sender.url === chrome.runtime.getURL("playgrounds.html");
+        const reading = sender.tab?.id !== void 0 && sender.frameId === 0 && url && ["http:", "https:"].includes(url.protocol);
+        if (sender.id !== chrome.runtime.id || !standalone && !reading || !validPlaygroundQuery(message.query)) {
+          respond({ error: "Invalid playground request" });
+          return;
+        }
+        if (active >= 8) {
+          respond({ error: "Playgrounds are busy. Try again." });
+          return;
+        }
+        active++;
+        const query = message.query;
+        void (async () => {
+          if (query.op === "online") return { value: await lookupOnlineDefinition(query.language, query.word.trim().normalize("NFC")) };
+          await ensureOffscreen();
+          return chrome.runtime.sendMessage({ type: "playground-data-job", query });
+        })().then(respond, (error) => respond({ error: String(error) })).finally(() => active--);
         return true;
       });
     }
@@ -600,6 +666,7 @@
     "src/background.ts"() {
       init_preferences();
       init_dictionary();
+      init_playground_service();
       var import_action = __toESM(require_action());
       var import_preference_writer = __toESM(require_preference_writer());
       init_offscreen_client();

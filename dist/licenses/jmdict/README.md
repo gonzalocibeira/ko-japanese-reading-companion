@@ -12,6 +12,11 @@ English entries to JSON shards. Source entry IDs, restrictions, usage labels,
 and priority metadata are retained. No dictionary content is relicensed under
 Kō's No-Resale License.
 
+The v1.4 Dictionary Playground also includes a derived local Japanese-prefix and
+English-gloss inverted index. Search summaries are built for valid spelling,
+reading, and sense combinations, and retain source entry IDs. This index remains
+under CC BY-SA 4.0 alongside the lookup shards.
+
 `snapshot.json` records the official download URL, retrieval date, HTTP
 Last-Modified value, and SHA-256 of `JMdict_e.gz`. This source archive stays in
 the development repository; runtime packages contain generated shards and these

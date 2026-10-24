@@ -19,7 +19,8 @@ assert sum(name.startswith('art/mimetics/') and name.endswith('.webp') for name 
 assert {'animations.html', 'animations.js'} <= expected.keys(), 'Animation gallery missing from packages'
 assert b'animations.js' in expected['animations.html']
 assert json.loads(expected['manifest.json'])['version_name'] == '1.3.0'
-mascot = json.loads(expected['art/ko-kun/manifest.json'])
+assert [name for name in expected if Path(name).name == 'manifest.json'] == ['manifest.json'], 'Nested extension manifest in package'
+mascot = json.loads(expected['art/ko-kun/index.json'])
 assert len(mascot['clips']) == 56 and len(mascot['routines']) == 24
 assert sum(name.startswith('art/ko-kun/') and name.endswith('.webp') for name in expected) == 56
 assert 'art/ko-kun/' + mascot['staticFallback'] in expected
@@ -28,14 +29,15 @@ assert b'SIL OPEN FONT LICENSE' in expected['art/fonts/OFL.txt']
 inventory = json.loads((root / 'qa/ko-kun-animation/ps1/asset-sha256.json').read_text())
 assert mascot['characterDesign'].startswith('PS1')
 for name, digest in inventory['files'].items():
-    assert hashlib.sha256(expected['art/ko-kun/' + name]).hexdigest() == digest, f'Mascot asset changed: {name}'
+    packaged_name = 'index.json' if name == 'manifest.json' else name
+    assert hashlib.sha256(expected['art/ko-kun/' + packaged_name]).hexdigest() == digest, f'Mascot asset changed: {name}'
 for clip in mascot['clips']:
     path = 'art/ko-kun/' + clip['file']
     assert path in expected
     assert expected[path] == (root / 'public' / path).read_bytes()
 
 assert json.loads(expected['manifest.json']) == json.loads((root / 'public/manifest.json').read_text())
-dictionary = json.loads(expected['dictionaries/jmdict/manifest.json'])
+dictionary = json.loads(expected['dictionaries/jmdict/index.json'])
 assert dictionary['schema'] == 1 and dictionary['shards'] == 256
 assert dictionary['entries'] >= 200_000, 'Complete English JMdict snapshot missing'
 assert sum(path.startswith('dictionaries/jmdict/') and path.endswith('.json.gz') and path != 'dictionaries/jmdict/compounds.json.gz' for path in expected) == 256
@@ -46,7 +48,7 @@ assert hashlib.sha256((root / 'data/jmdict/JMdict_e.gz').read_bytes()).hexdigest
 assert 'licenses/jmdict/JMdict_e.gz' not in expected, 'Source archive must not ship twice'
 for notice in ['README.md', 'snapshot.json', 'CC-BY-SA-4.0.txt', 'edrdg-licence.html', 'jmdict-documentation.html']:
     assert expected['licenses/jmdict/' + notice] == (root / 'data/jmdict' / notice).read_bytes()
-japanese = json.loads(expected['dictionaries/jawiktionary/manifest.json'])
+japanese = json.loads(expected['dictionaries/jawiktionary/index.json'])
 assert japanese['schema'] == 1 and japanese['shards'] == 256 and japanese['language'] == 'ja'
 assert japanese['words'] >= 100_000 and japanese['resolvedSpellings'] >= 10_000
 assert sum(path.startswith('dictionaries/jawiktionary/') and path.endswith('.json.gz') for path in expected) == 256

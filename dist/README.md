@@ -5,7 +5,7 @@
 <h1 align="center">Kō — Japanese Reading Companion</h1>
 <p align="center"><strong>Japanese reading companion.</strong></p>
 <p align="center">Automatic Japanese readings for webpages and Google Docs.<br>Furigana runs on your device. English and Japanese meanings use bundled dictionaries, with Wiktionary as online fallback.</p>
-<p align="center"><strong>1.3.0</strong> · Released 22 October 2026</p>
+<p align="center"><strong>1.4.0 development</strong> · Published stable release: 1.3.0</p>
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok">Install from the Chrome Web Store</a> ·
   <a href="#see-it-in-action">See it in action</a> ·
@@ -22,6 +22,18 @@
 | --- | --- | --- |
 | Furigana appears automatically on visible Japanese text. | Original webpage text and Google Docs formatting stay unchanged. | Pause a site, adjust the appearance, or save your own readings. |
 | **Offline furigana** uses bundled reading dictionaries. | **Reading panel for webpages and Google Docs** adds extra spacing and English and Japanese meanings offline with online fallback. | **No extension account or API key** needed. Settings and corrections are saved on this device. |
+
+## v1.4 playgrounds
+
+Open **Playgrounds** from the extension menu or Reading view. Word forms remains the initial tool; Dictionary, Grammar, and Mimetics keep their state while you explore other tools in the same session.
+
+**Dictionary** searches Japanese spellings/readings and English meanings in bundled JMdict, with 30 results per page. Open a result for distinct senses, reading restrictions, usage labels, and locally available Japanese definitions. Supported verbs/adjectives link to Word forms. Searches stay on this device. A missing definition offers a separate **Look up English/Japanese online** action; only selecting it contacts that Wiktionary edition.
+
+**Grammar — Sentence Lens** covers N5–N1 through 847 original Kō points mapped to 848 reference entries (のです / んです share a canonical point). Every point has three original Japanese examples with furigana, English translations, formation, register, limits, and a common pitfall. Search patterns, kana, romaji aliases, English purposes, or intention keywords; filter by level and meaning. Level labels are study references, not an official JLPT syllabus.
+
+Select an outlined construction to inspect its role. Eighteen authored comparison families update complete sentences, translations, and explanations together; each has an optional Choose the meaning activity. Underlined vocabulary opens Dictionary, and Return restores the exact grammar view. There are no scores, schedules, accounts, audio downloads, or saved learning history. Grammar browsing makes no external requests. Read the [content provenance and authoring guide](grammar/README.md).
+
+The 1.4 source and local packages are prepared here; GitHub and store publication are separate actions.
 
 ## Release notes
 
@@ -289,6 +301,8 @@ I couldn't find a good option for adding furigana in Google Docs. I wanted readi
 Run these commands from the repository root if you want to develop the extension:
 
 ```sh
+nvm install
+nvm use
 npm ci
 npm run build
 npm run typecheck
@@ -296,6 +310,8 @@ npm test
 ```
 
 For release downloads, run `npm run package:release`. It rebuilds `dist`, creates a manual-install ZIP containing `dist/`, creates the store ZIP with `manifest.json` at its root, and writes `SHA256SUMS`. Both ZIPs use the same runtime allowlist and exclude source maps, tests, screenshots, and development documentation. Packaging does not publish to GitHub or the Chrome Web Store.
+
+Use a patched Node.js release: 22.23.4+, 24.22.1+, or 26.12.1+ within those major versions. The `.nvmrc` selects 26.12.1; other version managers can use the same version. Installation, build, typecheck, and test commands reject older runtimes. See the [October 2026 security review](docs/security-review-2026-10.md) for advisory sources and scope.
 
 `npm run build` requires Python 3 (standard library only) as well as Node.js, and regenerates the included `dist/` folder without downloading dictionaries. Development dependency installation requires internet access. The pinned complete English JMdict snapshot is converted to 256 lazy lookup shards; see [dictionary attribution and refresh instructions](licenses/jmdict/README.md). JMdict data and derived shards remain under CC BY-SA 4.0, copyright James William Breen and EDRDG, separately from Kō’s original material. Furigana and local English/Japanese meanings require no external service; Wiktionary fallback requires an internet connection. The Japanese snapshot covers 124,195 headwords including resolved spelling variants. Its extraction has incomplete coverage. See [Japanese dictionary source and refresh instructions](licenses/jawiktionary/README.md); data remains under CC BY-SA 4.0 with Wiktionary contributor and Kaikki/Wiktextract attribution.
 

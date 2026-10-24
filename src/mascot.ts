@@ -198,7 +198,7 @@ ${mascotBubbleStyles}
     if(this.loading || this.manifest || this.failed)return this.loading;
     this.loading=(async()=>{
       try {
-        const response=await fetch(asset('manifest.json'));if(!response.ok)throw new Error('Mascot assets unavailable');
+        const response=await fetch(asset('index.json'));if(!response.ok)throw new Error('Mascot assets unavailable');
         const manifest=await response.json() as MascotManifest;
         if(!Array.isArray(manifest.clips) || manifest.clips.length!==56 || manifest.clips.some(c=>!/^[-a-z]+\.webp$/.test(c.file) || c.frameRectangles.length!==c.frameCount))throw new Error('Invalid mascot assets');
         if(this.disposed)return;this.manifest=manifest;

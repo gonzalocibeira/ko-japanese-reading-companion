@@ -1,5 +1,6 @@
 import {validOverrides} from './preferences';
 import './dictionary';
+import './playground-service';
 import './action';
 import './preference-writer';
 import {ensureOffscreen} from './offscreen-client';

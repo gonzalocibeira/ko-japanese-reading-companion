@@ -1,0 +1,32 @@
+
+Running 1 test using 1 worker
+
+(node:33102) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] tests/native-popup.spec.ts:6:5 › native toolbar popup opens at full height and wheel-scrolls to footer links
+  1) tests/native-popup.spec.ts:6:5 › native toolbar popup opens at full height and wheel-scrolls to footer links
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      22 |     await expect.poll(()=>worker.evaluate(async()=>{
+      23 |       const [window]=await chrome.windows.getAll({windowTypes:['normal']});return window.focused;
+    > 24 |     })).toBe(true);
+         |         ^
+      25 |     await worker.evaluate(async()=>{
+      26 |       const [window]=await chrome.windows.getAll({windowTypes:['normal']});await chrome.action.openPopup({windowId:window.id});
+      27 |     });
+        at /Users/turco/Documents/ChatGPT/FOB/tests/native-popup.spec.ts:24:9
+
+    Error Context: test-results/native-popup-native-toolba-2c61c-eel-scrolls-to-footer-links/error-context.md
+
+
+  1 failed
+    tests/native-popup.spec.ts:6:5 › native toolbar popup opens at full height and wheel-scrolls to footer links

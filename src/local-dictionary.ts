@@ -12,6 +12,9 @@ export function dictionaryBucket(term:string) {
 const shards=new Map<string,{value:unknown;bytes:number}>();
 const loading=new Map<string,Promise<unknown>>();
 let retainedBytes=0;
+export function bundledResourceURL(path:string):string {
+  return typeof chrome==='object' && chrome.runtime?.getURL?chrome.runtime.getURL(path):new URL(path,self.location.href).href;
+}
 export async function loadDictionaryShard<T>(dictionary:'jmdict'|'jawiktionary',bucket:string):Promise<T> {
   const key=`${dictionary}/${bucket}`;
   const cached=shards.get(key);
@@ -19,7 +22,7 @@ export async function loadDictionaryShard<T>(dictionary:'jmdict'|'jawiktionary',
   let job=loading.get(key);
   if(!job) {
     job=(async()=>{
-      const response=await fetch(chrome.runtime.getURL(`dictionaries/${dictionary}/${bucket}.json.gz`));
+      const response=await fetch(bundledResourceURL(`dictionaries/${dictionary}/${bucket}.json.gz`));
       if(!response.ok || !response.body)throw new Error('Local dictionary unavailable');
       const text=await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).text(),value=JSON.parse(text);
       if(!value.terms || !value.entries)throw new Error('Invalid dictionary shard');

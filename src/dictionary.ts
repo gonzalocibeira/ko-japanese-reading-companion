@@ -51,6 +51,11 @@ async function onlineDefinition(language:DefinitionLanguage,word:string):Promise
   finally {signal.removeEventListener('abort',abort);}
 }
 
+// Playground callers deliberately opt in; local searches never call this path.
+export function lookupOnlineDefinition(language:DefinitionLanguage,word:string):Promise<DictionaryPage> {
+  return onlineDefinition(language,word);
+}
+
 export function lookupDefinition(language:DefinitionLanguage,word:string):Promise<DictionaryPage> {
   const key=JSON.stringify([word,language]),stored=cache.get(key);
   if(stored && stored.expires>Date.now()) {

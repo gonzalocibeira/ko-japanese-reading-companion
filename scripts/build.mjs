@@ -1,6 +1,7 @@
+import './check-node.mjs';
 import {build} from 'esbuild';
 import {buildIcons} from './icons.mjs';
-import {mkdir,cp,rm,readFile,writeFile} from 'node:fs/promises';
+import {mkdir,cp,rm,readFile,writeFile,rename} from 'node:fs/promises';
 import {prepareReleaseNotes} from './release-notes.mjs';
 import {execFileSync} from 'node:child_process';
 const {version}=JSON.parse(await readFile('public/manifest.json','utf8'));
@@ -13,7 +14,7 @@ await rm('dist',{recursive:true,force:true});
 await mkdir('dist',{recursive:true});
 // Embed the shared logo in the panel without exposing extension resources to pages.
 const panelLogo=await readFile('public/icons/logo.svg','utf8');
-await build({entryPoints:['src/background.ts','src/content.ts','src/docs-bridge.ts','src/offscreen.ts','src/tokenizer.ts','src/popup.ts','src/about.ts','src/animations.ts','src/playgrounds.ts'],outdir:'dist',bundle:true,platform:'browser',target:'chrome116',format:'iife',sourcemap:true,alias:{path:'./src/path-shim.ts'},define:{__KO_LOGO_SVG__:JSON.stringify(panelLogo)},plugins:[{
+await build({entryPoints:['src/background.ts','src/content.ts','src/docs-bridge.ts','src/offscreen.ts','src/tokenizer.ts','src/popup.ts','src/about.ts','src/animations.ts','src/playgrounds.ts','src/playground-data-worker.ts'],outdir:'dist',bundle:true,platform:'browser',target:'chrome116',format:'iife',sourcemap:true,alias:{path:'./src/path-shim.ts'},define:{__KO_LOGO_SVG__:JSON.stringify(panelLogo)},plugins:[{
   name:'csp-safe-async-global',setup(build) {
     // async 2 embeds a legacy lodash global-object fallback. Chrome 116 has
     // globalThis; remove string compilation without modifying node_modules.
@@ -27,6 +28,9 @@ await build({entryPoints:['src/background.ts','src/content.ts','src/docs-bridge.
 }]});
 // Ship the production mascot strips; QA previews and source artwork stay outside public/.
 await cp('public','dist',{recursive:true});
+// Chrome Web Store treats every manifest.json as an extension manifest.
+// Keep authoring metadata names in source, but ship data indexes as index.json.
+await rename('dist/art/ko-kun/manifest.json','dist/art/ko-kun/index.json');
 await writeFile('dist/popup.html',popupTemplate.replace('<!-- KO_UPDATE_BANNER -->',releaseNotes.banner));
 await writeFile('dist/about.html',aboutTemplate.replace('<!-- KO_RELEASE_NOTES -->',releaseNotes.about));
 await writeFile('dist/release-notes.html',releaseNotes.history);
@@ -41,7 +45,7 @@ const policyBody=policy.trim().split(/\n\n+/).map(block=>{
 }).join('\n');
 await writeFile('dist/privacy.html',`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kō Privacy Policy</title><style>body{max-width:760px;margin:40px auto;padding:0 24px;font:17px/1.65 system-ui;color:#242b2d;background:#f4ecd8}h1{line-height:1.2}h2{margin-top:32px}a{color:#294c66}</style><main>${policyBody}</main></html>`);
 await buildIcons('dist/icons');
-await writeFile('dist/README.md',(await readFile('README.md','utf8')).replaceAll('public/icons/logo.svg','icons/logo.svg').replaceAll('](public/art/fonts/','](art/fonts/').replaceAll('](data/jmdict/README.md)','](licenses/jmdict/README.md)').replaceAll('](data/jawiktionary/README.md)','](licenses/jawiktionary/README.md)').replaceAll('](dist/)','](.)').replaceAll('](dist/','](').replaceAll('**`dist` folder**','**extension folder**'));
+await writeFile('dist/README.md',(await readFile('README.md','utf8')).replaceAll('public/icons/logo.svg','icons/logo.svg').replaceAll('](public/art/fonts/','](art/fonts/').replaceAll('](data/jmdict/README.md)','](licenses/jmdict/README.md)').replaceAll('](data/jawiktionary/README.md)','](licenses/jawiktionary/README.md)').replaceAll('](data/grammar/README.md)','](grammar/README.md)').replaceAll('](dist/)','](.)').replaceAll('](dist/','](').replaceAll('**`dist` folder**','**extension folder**'));
 await cp('docs','dist/docs',{recursive:true});
 await writeFile(`dist/docs/github-release-${version}.md`,releaseNotes.github);
 await cp('LICENSE','dist/LICENSE');
@@ -54,8 +58,12 @@ for (const [pkg,license] of [['async','LICENSE'],['doublearray','LICENSE.txt'],[
 await cp('node_modules/kamiya-codec/UNLICENSE','dist/licenses/kamiya-codec-UNLICENSE');
 // Pinned local source: ordinary builds never fetch dictionaries or licence files.
 execFileSync('python3',['scripts/import-jmdict.py'],{stdio:'inherit'});
+execFileSync('python3',['scripts/build-dictionary-search.py'],{stdio:'inherit'});
+execFileSync(process.execPath,['scripts/build-grammar.mjs'],{stdio:'inherit'});
+await rename('dist/dictionaries/jmdict/manifest.json','dist/dictionaries/jmdict/index.json');
 await cp('data/jmdict','dist/licenses/jmdict',{recursive:true,filter:source=>!source.endsWith('JMdict_e.gz')});
 execFileSync('python3',['scripts/import-jawiktionary.py'],{stdio:'inherit'});
+await rename('dist/dictionaries/jawiktionary/manifest.json','dist/dictionaries/jawiktionary/index.json');
 await cp('data/jawiktionary','dist/licenses/jawiktionary',{recursive:true,filter:source=>!source.endsWith('source.jsonl.gz')});
 // The bridge and isolated initialization run at document_start, before Docs initializes.
 console.log('Built load-unpacked extension in dist/');
