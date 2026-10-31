@@ -5,7 +5,7 @@
 <h1 align="center">Kō — Japanese Reading Companion</h1>
 <p align="center"><strong>Japanese reading companion.</strong></p>
 <p align="center">Automatic Japanese readings for webpages and Google Docs.<br>Furigana runs on your device. English and Japanese meanings use bundled dictionaries, with Wiktionary as online fallback.</p>
-<p align="center"><strong>1.4.0 development</strong> · Published stable release: 1.3.0</p>
+<p align="center"><strong>1.4.0</strong> · Stable GitHub release · 1 November 2026</p>
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok">Install from the Chrome Web Store</a> ·
   <a href="#see-it-in-action">See it in action</a> ·
@@ -31,11 +31,24 @@ Open **Playgrounds** from the extension menu or Reading view. Word forms remains
 
 **Grammar — Sentence Lens** covers N5–N1 through 847 original Kō points mapped to 848 reference entries (のです / んです share a canonical point). Every point has three original Japanese examples with furigana, English translations, formation, register, limits, and a common pitfall. Search patterns, kana, romaji aliases, English purposes, or intention keywords; filter by level and meaning. Level labels are study references, not an official JLPT syllabus.
 
-Select an outlined construction to inspect its role. Eighteen authored comparison families update complete sentences, translations, and explanations together; each has an optional Choose the meaning activity. Underlined vocabulary opens Dictionary, and Return restores the exact grammar view. There are no scores, schedules, accounts, audio downloads, or saved learning history. Grammar browsing makes no external requests. Read the [content provenance and authoring guide](data/grammar/README.md).
+Select highlighted grammar to inspect its role. Eighteen authored comparison families update complete sentences, translations, and explanations together; each has an optional Choose the meaning activity. Dotted vocabulary opens Dictionary, and Return restores the exact grammar view. In Reading view, the list loads more results as you scroll; Example, Usage, and Compare organize each point, and Previous/Next steps through its examples. There are no scores, schedules, accounts, audio downloads, or saved learning history. Grammar browsing makes no external requests. Read the [content provenance and authoring guide](data/grammar/README.md).
 
-The 1.4 source and local packages are prepared here; GitHub and store publication are separate actions.
+Download [Kō 1.4.0 on GitHub](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.4.0). GitHub and Chrome Web Store publication are separate; this release does not submit or publish a store update.
+
+![Kō 1.4 Sentence Lens comparing だけ and しか～ない with complete example sentences and meaning feedback](docs/screenshots/grammar-sentence-lens-1.4.png)
+
+This 1.4 fixture capture shows the offline Grammar comparison. The live Google Docs screenshots elsewhere in this guide were captured with 1.3.
 
 ## Release notes
+
+### 1.4.0 · 1 November 2026
+
+- **Dictionary:** offline Japanese spelling/reading and English meaning search across bundled JMdict, with distinct senses, restrictions, usage labels, Japanese definitions, and links to Word forms. Optional English and Japanese online lookups keep their results independent.
+- **Grammar — Sentence Lens:** 847 N5–N1 points, three annotated examples each, formation and usage notes, 18 sentence comparisons, and optional meaning activities.
+- **Reading-view grammar:** automatic list loading, Example/Usage/Compare sections, example navigation, and highlighted grammar with dotted dictionary links. Returning restores the selected example, comparison, and list position.
+- **Release-pass fixes:** Grammar no longer stays empty when loading finishes while hidden, and keyboard switching into Grammar keeps focus on its visible picker.
+
+All **276 automated tests** pass, including the native popup check. Type checking and package validation pass; both ZIPs contain the same 1,599 runtime files. See the [1.4 release audit](docs/release-1.4-audit.md) and [full changelog](docs/release-notes.md). The approved live-document screenshots below remain labeled as 1.3 captures; current 1.4 Grammar previews are linked in the audit.
 
 ### 1.3.0 · 22 October 2026
 
@@ -49,7 +62,7 @@ Hover over a Japanese word for 600 ms to open his speech bubble, or choose **Hig
 
 Use Reading view when Google Docs does not expose enough editor text. Mascot lookups do not cover embedded frames, browser-protected pages, browser PDF viewers, or arbitrary image/canvas text. No needs, feeding, sound, or progression are included.
 
-Download [Kō 1.3.0](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.3.0), or load [`dist/`](dist/), then reload the extension and existing tabs. Existing settings and corrections remain compatible. The small popup invitation opens Kōくん settings and stays dismissed after closing it on this device. See the [1.3 release audit](docs/release-1.3-audit.md) and [full changelog](docs/release-notes.md).
+The historical [Kō 1.3.0 release](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.3.0) remains available. For the current version, use the 1.4 downloads above and reload the extension and existing tabs. Existing settings and corrections remain compatible. The small popup invitation opens Kōくん settings and stays dismissed after closing it on this device. See the [1.3 release audit](docs/release-1.3-audit.md) and [full changelog](docs/release-notes.md).
 
 English definitions now use 218,942 bundled JMdict entries; Japanese definitions use 124,195 Japanese Wiktionary headwords. Missing meanings fall back online. Dictionary-backed kanji compounds stay together in word details. Google Docs highlight lookup follows supported painted selections, and direct SVG/XML pages are skipped safely.
 
@@ -63,7 +76,7 @@ English definitions now use 218,942 bundled JMdict entries; Japanese definitions
 - **90 mimetic expressions in 45 illustrated comparisons**, with original examples, usage notes, references, and new ukiyo-e-inspired pixel animations. Scenes loop automatically; reduced motion shows a still pose. About → **Show legacy animations** restores the original line style.
 - **Release announcements:** a compact banner summarizes each version, links to the About changelog, and stays dismissed on this device after closing it. About also opens GitHub to **Suggest a feature or improvement**.
 
-Version 1.2.0 was published on GitHub on 18 October 2026 under `v1.2.0`; its announced launch date is 28 October. Chrome Web Store review and publication are managed separately. The 1.2 release remains available as a historical download; current downloads contain 1.3.0.
+Version 1.2.0 was published on GitHub on 18 October 2026 under `v1.2.0`; its announced launch date is 28 October. Chrome Web Store review and publication are managed separately. The 1.2 release remains available as a historical download; current downloads contain 1.4.0.
 
 RC1 verification: all **186 tests** and **3 prior release-audit regressions** passed. Final release preparation checks are recorded in the audit. See the [1.2 audit](docs/release-1.2-audit.md) for scope and limits.
 
@@ -91,7 +104,7 @@ Read the [full release notes](docs/release-notes.md) for details and update inst
 
 **[Install Kō from the Chrome Web Store](https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok).** Click **Add to Chrome**, confirm the installation, then reload your open tabs to start reading. Store installations receive updates automatically.
 
-**1.3.0 is available on GitHub**, including Kōくん and bundled English and Japanese definitions. Chrome Web Store availability is managed separately; this release does not submit or publish a store update.
+**1.4.0 is available on GitHub**, including Dictionary and Grammar playgrounds, Kōくん, and bundled English and Japanese definitions. Chrome Web Store availability is managed separately; this release does not submit or publish a store update.
 
 **Tip:** Pin **Kō — Japanese Reading Companion** from Chrome's puzzle-piece **Extensions** menu. Look for the warm-paper **考** (think) on a vermilion seal.
 
@@ -99,7 +112,7 @@ Read the [full release notes](docs/release-notes.md) for details and update inst
 
 You can also load the ready-to-use extension from [`dist/`](dist/). No Node.js, npm, or build step needed.
 
-1. **Download the [1.3.0 extension ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.3.0/ko-japanese-reading-companion-1.3.0.zip).** It contains the ready-to-load `dist` folder. You can also download the full source from [the repository](https://github.com/gonzalocibeira/ko-japanese-reading-companion) using **Code → Download ZIP**. Release assets include [SHA-256 checksums](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.3.0/SHA256SUMS).
+1. **Download the [1.4.0 extension ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.4.0/ko-japanese-reading-companion-1.4.0.zip).** It contains the ready-to-load `dist` folder. You can also download the full source from [the repository](https://github.com/gonzalocibeira/ko-japanese-reading-companion) using **Code → Download ZIP**. Release assets include [SHA-256 checksums](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.4.0/SHA256SUMS).
 2. **Extract and keep the folder.** Put it somewhere permanent, such as `Documents/Ko`.
 3. **Open Chrome's extensions page.** Enter `chrome://extensions` in the address bar and turn on **Developer mode**.
 4. **Load the extension.** Click **Load unpacked** and select the extracted folder containing `manifest.json`. For a repository/source download, this is the **`dist` folder**. A `chrome-web-store.zip` package has `manifest.json` directly in its extracted root.
@@ -317,7 +330,7 @@ Use a patched Node.js release: 22.23.4+, 24.22.1+, or 26.12.1+ within those majo
 
 The test suite also covers per-version announcement dismissal across browser restarts, failure/retry behavior, offline changelog access, and the GitHub suggestion link. It covers automatic annotations, unchanged source/layout, a 100,000-node webpage, a 100-page Docs fixture, cancellation, IME handling, settings, corrections, vocabulary/name disambiguation, local exploration and real-dictionary form round trips, keyboard and reduced-motion behavior, the reading panel, debounced refreshes, automatic bilingual word definitions on word activation, toolbar state and lifecycle, and expanded popup forms. Browser integration tests use a temporary profile and localhost server. The native toolbar-popup regression opens a temporary visible browser window to verify Chrome’s popup sizing and wheel scrolling. They default to Brave's standard macOS executable; set `CHROMIUM_PATH` to an extension-capable Chromium executable elsewhere. Chrome distributions that disable command-line extension loading cannot run these integration tests. Your normal browser profile and Google account are not used.
 
-The eight current screenshots were captured on 22 October 2026 with Kō 1.3 using the owner-provided live Google Doc and approved before inclusion. They cover furigana, Reading view, bilingual definitions, verb and adjective forms, mimetics, Kōくん word lookup, and a staged samurai animation frame. The source document was not edited. See [screenshot provenance](docs/screenshots/README.md) for the reference and capture details. Earlier live and fixture captures remain in [`docs/screenshots/`](docs/screenshots/). Regenerated browser captures are written to `test-results/` during tests.
+The eight live-document screenshots were captured on 22 October 2026 with Kō 1.3 using the owner-provided live Google Doc and approved before inclusion. They cover furigana, Reading view, bilingual definitions, verb and adjective forms, mimetics, Kōくん word lookup, and a staged samurai animation frame. The source document was not edited. See [screenshot provenance](docs/screenshots/README.md) for the reference and capture details. Earlier live and fixture captures remain in [`docs/screenshots/`](docs/screenshots/). Regenerated browser captures are written to `test-results/` during tests.
 
 </details>
 

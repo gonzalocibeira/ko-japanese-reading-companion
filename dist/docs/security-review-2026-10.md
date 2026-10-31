@@ -25,3 +25,11 @@ The Node.js flaws concern development tooling in this repository. Kō's packaged
 The owner authorized committing and merging the existing Kō 1.4 work together with this security patch, while keeping 1.4 unreleased. The first full run passed 89 tests; sandbox restrictions blocked 13 browser-suite setup checks and left 171 tests unrun. Rerunning the affected suites with temporary Brave profiles and localhost access passed all 190 selected tests, including six repeated checks. This covers all 273 unique tests successfully across the two runs, including the native popup test that previously had a focus failure. No assertions were weakened. See `qa/release-1.4/wip-security-validation.json` for the recorded counts.
 
 After marking and regenerating the 1.4 notes as unreleased WIP, all three native-popup/update-announcement smoke checks passed again.
+
+## Release follow-up · 1 November 2026
+
+Kō 1.4.0 retains the same Node.js baseline and locked dependencies. Its pre-release
+pass completed all 276 automated tests on Node.js 26.12.1, including internal-message
+authentication, query validation, packaged-code CSP checks, and the native popup.
+See the [1.4 audit](release-1.4-audit.md) for current release evidence. This follow-up
+does not refresh the dated vendor-advisory or npm-audit findings above.

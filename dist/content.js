@@ -2356,15 +2356,17 @@ ${meaningForkStyles}
         if (!total) {
           view.status.textContent = japanese3(value) ? "No matching English dictionary entry in the bundled data." : "No matching English meaning. Try a shorter or different word.";
           if (japanese3(value)) {
-            const local = node("section");
-            view.results.append(local);
+            const local = node("section"), english = node("section");
+            local.append(node("h3", "", "Japanese definitions"));
+            english.append(node("h3", "", "English definitions"));
+            view.results.append(local, english);
+            onlineButton(options, english, value, "en", () => active() && id === sequence);
             const page = await options.data({ op: "japanese", word: value }, controller.signal);
             if (disposed || id !== sequence) return;
             if (page.status === "ok") {
               for (const definition of page.definitions) local.append(node("p", "", definition));
               source(local, page, "ja", value);
             } else onlineButton(options, local, value, "ja", () => active() && id === sequence);
-            onlineButton(options, local, value, "en", () => active() && id === sequence);
           }
         }
         completedSequence = id;
@@ -2416,18 +2418,18 @@ ${meaningForkStyles}
       if (segment.role) {
         const part = button("", () => {
           lens.textContent = segment.role;
-          if (options.presentation === "panel") {
-            wrap.querySelectorAll(".grammar-highlight").forEach((el) => el.setAttribute("aria-pressed", String(el === part)));
-          }
-        }, "grammar-highlight");
-        if (options.presentation === "panel") part.setAttribute("aria-pressed", "false");
+          wrap.querySelectorAll(".grammar-highlight").forEach((el) => el.setAttribute("aria-pressed", String(el === part)));
+        }, "grammar-highlight"), mark = node("span", "grammar-mark");
+        part.setAttribute("aria-pressed", "false");
         part.setAttribute("aria-label", `${segment.text}: explain construction`);
-        part.append(text);
+        mark.append(text);
+        part.append(mark);
         sentence.append(part);
       } else if (segment.lemma) {
-        const word = button("", () => options.dictionary(segment.lemma), "grammar-word");
+        const word = button("", () => options.dictionary(segment.lemma), "grammar-word"), mark = node("span", "grammar-mark");
         word.setAttribute("aria-label", `Look up ${segment.lemma}`);
-        word.append(text);
+        mark.append(text);
+        word.append(mark);
         sentence.append(word);
       } else sentence.append(text);
     }
@@ -2503,7 +2505,7 @@ ${meaningForkStyles}
       try {
         const point = await options.data({ op: "grammar", id: summary.id });
         if (disposed || id !== version) return;
-        const lens = node("p", "grammar-lens", panel ? "Select an underlined construction to see its role." : "Select an outlined construction to see its role.");
+        const lens = node("p", "grammar-lens", grammarHint);
         lens.setAttribute("role", "status");
         content.replaceChildren(node("p", "tool-source", `${point.level} \xB7 study reference`), node("h2", "tool-heading", point.pattern), node("p", "grammar-purpose", point.purpose));
         content.append(renderGrammarExample(point.examples[0], options, lens), lens);
@@ -2537,7 +2539,7 @@ ${meaningForkStyles}
               const choose = (n) => {
                 output.replaceChildren(renderGrammarExample(data.variants[n].example, options, clens));
                 explanation.textContent = `What changed? ${data.variants[n].change}`;
-                clens.textContent = "Select the construction to inspect it.";
+                clens.textContent = grammarHint;
                 buttons.forEach((b, i) => b.setAttribute("aria-pressed", String(i === n)));
               };
               data.variants.forEach((variant, n) => {
@@ -2591,7 +2593,7 @@ ${meaningForkStyles}
       function showExample(n) {
         selected = n;
         exampleHost.replaceChildren(renderGrammarExample(point.examples[n], options, lens));
-        lens.textContent = "Select an underlined construction to see its role.";
+        lens.textContent = grammarHint;
         count.textContent = `${n + 1} / ${point.examples.length}`;
         previous.disabled = n === 0;
         next.disabled = n === point.examples.length - 1;
@@ -2670,8 +2672,9 @@ ${meaningForkStyles}
         rendered = 0;
         view.scroller.scrollTop = 0;
         filterSummary.textContent = `Filters \xB7 ${level.value === "All" ? "All levels" : level.value} \xB7 ${group.value || "All meanings"}`;
-        appendBatch();
         view.catalog.append(sentinel);
+        observer?.observe(sentinel);
+        appendBatch();
       } else {
         for (const summary of matches2.slice(0, limit)) view.results.append(result(summary));
         if (matches2.length > limit) view.results.append(button("Show more", () => {
@@ -2718,7 +2721,7 @@ ${meaningForkStyles}
       observer?.disconnect();
     } };
   }
-  var japanese3, grammarSectionSequence, playgroundToolStyles;
+  var japanese3, grammarHint, grammarSectionSequence, playgroundToolStyles;
   var init_playground_tools = __esm({
     "src/playground-tools.ts"() {
       "use strict";
@@ -2728,6 +2731,7 @@ ${meaningForkStyles}
       init_definitions();
       init_playground_data();
       japanese3 = (q) => /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(q);
+      grammarHint = "Select highlighted grammar to see its role. Dotted words open the dictionary.";
       grammarSectionSequence = 0;
       playgroundToolStyles = `
 .playground-workspaces,.legacy-playground{display:flex;flex-direction:column;flex:1;min-height:0;height:100%}
@@ -2737,8 +2741,8 @@ ${meaningForkStyles}
 .tool-search>button{margin:0}.tool-status{font-size:12px;color:var(--muted)}.tool-results{display:grid;gap:8px}.tool-result{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:12px!important;white-space:normal;overflow-wrap:anywhere;margin:0!important}
 .tool-result ruby,.tool-pattern{font-size:20px;font-weight:500;color:var(--accent)}.tool-sense-label,.tool-source{font-size:11px;color:var(--muted);font-weight:400}.tool-heading{font:700 25px/1.6 var(--body);margin:12px 0}.tool-reading{font-size:16px}.tool-back{margin:0!important;padding:5px 0!important;border:0!important;color:var(--accent);background:transparent!important}
 .tool-detail p{overflow-wrap:anywhere}.tool-detail details{margin:14px 0;padding:10px 0;border-block:1px solid var(--surface)}.tool-detail summary{cursor:pointer;font-weight:600}.dictionary-senses{padding-left:22px}.dictionary-senses li{padding-bottom:8px}.dictionary-senses p{margin:4px 0}.dictionary-japanese{border-top:1px solid var(--line);margin-top:18px}.dictionary-more ol{padding-left:22px}
-.grammar-filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grammar-purpose{font-size:15px}.grammar-sentence{font:22px/2.5 var(--body);overflow-wrap:anywhere}.grammar-sentence button{display:inline!important;font:inherit!important;padding:1px 2px!important;margin:0!important;white-space:normal!important;border:0;background:transparent;color:inherit}
-.grammar-sentence .grammar-highlight{outline:1px solid var(--seal);outline-offset:-1px;border-bottom:3px solid var(--seal);text-decoration:underline;text-underline-offset:5px;background:var(--surface)}.grammar-word{text-decoration:underline dotted;text-underline-offset:5px}.grammar-translation{font-size:14px}.grammar-lens{padding:10px;border-left:3px solid var(--accent);background:var(--surface);font-size:12px}.grammar-comparison{margin-top:24px;border-top:2px solid var(--line)}
+.grammar-filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grammar-purpose{font-size:15px}.grammar-sentence{font:22px/2.5 var(--body);overflow-wrap:anywhere}.grammar-sentence button{display:inline!important;font:inherit!important;padding:0!important;margin:0!important;white-space:normal!important;border:0;background:transparent;color:inherit;text-decoration:none}.grammar-mark{padding:1px 2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.grammar-highlight .grammar-mark{background:var(--surface)}.grammar-highlight[aria-pressed=true] .grammar-mark{box-shadow:inset 0 0 0 1px var(--seal)}.grammar-word .grammar-mark{text-decoration:underline dotted;text-decoration-thickness:1px;text-underline-offset:.18em}.grammar-translation{font-size:14px}.grammar-lens{padding:10px;border-left:3px solid var(--accent);background:var(--surface);font-size:12px}.grammar-comparison{margin-top:24px;border-top:2px solid var(--line)}
 .grammar-switches,.grammar-related{display:flex;gap:6px;flex-wrap:wrap}.grammar-switches button,.grammar-related button{margin:0!important}.grammar-switches [aria-pressed=true]{background:var(--accent);color:var(--paper)}.grammar-change{font-size:12px}.grammar-activity button{display:block;margin:8px 0!important;text-align:left}.playground-route-back{margin:0!important;padding:8px 16px!important;text-align:left;font-size:12px}
 .panel-playground-picker{display:flex;align-items:center;gap:10px;padding:6px 12px;border-bottom:1px solid var(--line);font-size:12px;flex:none}
 .panel-playground-picker select{flex:1;min-width:0;padding:6px;font:inherit;background:var(--paper);color:var(--ink);border:1px solid var(--line)}
@@ -2757,8 +2761,6 @@ ${meaningForkStyles}
 .panel-grammar button{min-height:32px}.panel-grammar .grammar-sentence button{min-height:0}
 .panel-grammar .grammar-example-nav{justify-content:space-between}.panel-grammar .grammar-example-nav button{margin:0}
 .panel-grammar .tool-detail{font-size:14px}.panel-grammar .grammar-sentence{font-size:20px;line-height:2.5;overflow-wrap:normal;line-break:strict;word-break:normal}
-.panel-grammar .grammar-sentence .grammar-highlight{outline:none;border-bottom:1px solid var(--seal);text-decoration:none;background:var(--surface)}
-.panel-grammar .grammar-sentence .grammar-highlight[aria-pressed=true]{background:var(--surface);box-shadow:inset 0 -3px var(--seal)}
 .panel-grammar .grammar-lens{font-size:14px}.panel-grammar .grammar-comparison{margin-top:12px;border-top:0}
 @container(min-width:740px){.has-detail .tool-scroll{overflow:hidden}.has-detail .tool-catalog{display:block;overflow:auto;overscroll-behavior:contain}.has-detail .tool-layout{height:100%;grid-template-columns:minmax(230px,1fr) minmax(0,1.8fr)}.has-detail .tool-detail{overflow:auto;overscroll-behavior:contain;border-left:1px solid var(--line);padding-left:20px}}
 @container(max-width:440px){.playground-tabs{display:grid;grid-template-columns:1fr 1fr}.grammar-filters{grid-template-columns:1fr}.grammar-sentence{font-size:20px}}
@@ -3179,7 +3181,8 @@ ${meaningForkStyles}
         event.preventDefault();
         const position = tools.findIndex(([name2]) => name2 === tab), next = tools[event.key === "Home" ? 0 : event.key === "End" ? tools.length - 1 : (position + (event.key === "ArrowRight" ? 1 : -1) + tools.length) % tools.length][0];
         change(next, false);
-        buttons.get(next).focus();
+        if (pickerLabel.hidden) buttons.get(next).focus();
+        else picker.focus();
       });
     }
     picker.onchange = () => change(picker.value);

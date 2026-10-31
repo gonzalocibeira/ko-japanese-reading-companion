@@ -1,5 +1,7 @@
 # Kō 1.3.0 release verification
 
+This is the historical 1.3 audit. See the [1.4 audit](release-1.4-audit.md) for the current release and final verification.
+
 Stable GitHub release dated 22 October 2026, prepared for `master` and tag `v1.3.0`. Both manifest version fields are `1.3.0`. The manual and store-layout ZIPs include the companion, gallery, English JMdict and Japanese Wiktionary dictionaries. Chrome Web Store submission and publication are separate from this release.
 
 ## Behavior

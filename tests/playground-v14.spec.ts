@@ -11,6 +11,28 @@ test.beforeAll(async()=>{
 test.afterAll(async()=>{await context?.close();if(profile)await rm(profile,{recursive:true,force:true});});
 const current=(page:Page)=>page.getByRole('tabpanel').filter({visible:true});
 
+test('dictionary misses keep English and Japanese online lookups independent',async()=>{
+ const page=await context.newPage();try {
+  await page.addInitScript(()=>{
+   const send=chrome.runtime.sendMessage.bind(chrome.runtime);
+   (chrome.runtime as any).sendMessage=(m:any)=>{
+    if(m.type!=='playground-data')return send(m);
+    if(m.query.op==='search')return Promise.resolve({value:{hits:[],total:0}});
+    if(m.query.op==='online')return Promise.resolve({value:{status:'ok',definitions:[`${m.query.language} result`],source:'wiktionary'}});
+    return Promise.resolve({value:{status:'missing',definitions:[],source:'jawiktionary'}});
+   };
+  });
+  await page.goto(`${origin}/playgrounds.html`);
+  await page.getByRole('tab',{name:'Dictionary',exact:true}).click();
+  await page.getByLabel('Search dictionary').fill('ぬぬぬぬ');
+  await current(page).getByRole('button',{name:'Look up English online',exact:true}).click();
+  await expect(current(page)).toContainText('en result');
+  await current(page).getByRole('button',{name:'Look up Japanese online',exact:true}).click({timeout:3000});
+  await expect(current(page)).toContainText('ja result');
+  await expect(current(page)).toContainText('en result');
+ }finally{await page.close();}
+});
+
 const newFamilies=['state-preparation','purpose-goals','decisions-arrangements','expectation-advice','recent-completion','concession','inference','qualified-denial','unexpected-inclusion','opportunity-window'];
 
 test('all ten new comparison families switch complete sentences and explain activities offline',async()=>{

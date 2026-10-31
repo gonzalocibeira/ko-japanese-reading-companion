@@ -224,7 +224,7 @@ export function renderPlaygroundBrowser(options:PlaygroundBrowserOptions):Playgr
  for(const [name,label] of tools) {
   const option=node('option','',label);option.value=name;picker.append(option);
   const b=button(label,()=>change(name));b.setAttribute('role','tab');b.id=`${id}-${name}`;b.setAttribute('aria-controls',`${id}-${name}-pane`);buttons.set(name,b);tabs.append(b);
-  b.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const position=tools.findIndex(([name])=>name===tab),next=tools[event.key==='Home'?0:event.key==='End'?tools.length-1:(position+(event.key==='ArrowRight'?1:-1)+tools.length)%tools.length][0];change(next,false);buttons.get(next)!.focus();});
+  b.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const position=tools.findIndex(([name])=>name===tab),next=tools[event.key==='Home'?0:event.key==='End'?tools.length-1:(position+(event.key==='ArrowRight'?1:-1)+tools.length)%tools.length][0];change(next,false);if(pickerLabel.hidden)buttons.get(next)!.focus();else picker.focus();});
  }
  picker.onchange=()=>change(picker.value as ToolName);
  root.append(tabs,pickerLabel,routeBack,host);change('verbs',false);

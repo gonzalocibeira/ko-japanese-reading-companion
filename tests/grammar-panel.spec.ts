@@ -8,7 +8,7 @@ test.beforeAll(async()=>{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH ?? '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',headless:true});
 });
 test.afterAll(async()=>{await browser?.close();});
-async function setup(page:Page,width=420) {
+async function setup(page:Page,width=420,deferIndex=false) {
  await page.setViewportSize({width:1280,height:900});
  await page.setContent('<!doctype html><meta charset="utf-8"><p>日本語のページ</p>');
  await page.exposeFunction('localData',async(q:any)=>{
@@ -25,13 +25,42 @@ async function setup(page:Page,width=420) {
   panel.loading(true,'Loading…');panel.display([],'web',{sites:{},width,fontSize:20,spacing:2.8},{scale:1,contrast:'auto'},100,false);
   (window as any).panel=panel;
  },width);
+ if(deferIndex)await page.evaluate(()=>{
+  const runtime=(window as any).chrome.runtime,send=runtime.sendMessage;
+  runtime.sendMessage=(m:any)=>m.query?.op==='grammar-index'
+   ?new Promise(resolve=>{(window as any).releaseGrammarIndex=async()=>resolve(await send(m));})
+   :send(m);
+ });
  await page.getByRole('button',{name:'Playgrounds',exact:true}).click();
  await page.getByRole('tab',{name:'Grammar',exact:true}).click();
- await expect(page.locator('.panel-grammar .tool-result')).toHaveCount(30);
+ if(!deferIndex)await expect(page.locator('.panel-grammar .tool-result')).toHaveCount(30);
 }
 const rows=(page:Page)=>page.locator('.panel-grammar .tool-result');
 const scroll=(page:Page)=>page.locator('.panel-grammar .tool-scroll');
 async function bottom(page:Page){await scroll(page).evaluate(el=>{el.scrollTop=el.scrollHeight;});}
+
+test('grammar finishes loading while hidden and resumes its results on return',async()=>{
+ const page=await browser.newPage();try {
+  await setup(page,420,true);
+  await page.getByLabel('Playground',{exact:true}).selectOption('verbs');
+  await page.evaluate(()=>(window as any).releaseGrammarIndex());
+  await expect(rows(page)).toHaveCount(0);
+  await page.getByRole('tab',{name:'Word forms',exact:true}).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(rows(page)).toHaveCount(30);
+  await bottom(page);await expect(rows(page)).toHaveCount(60);
+ }finally{await page.close();}
+});
+
+test('keyboard switching into panel grammar focuses the visible playground picker',async()=>{
+ const page=await browser.newPage();try {
+  await setup(page);
+  await page.getByLabel('Playground',{exact:true}).selectOption('verbs');
+  await page.getByRole('tab',{name:'Word forms',exact:true}).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByLabel('Playground',{exact:true})).toBeFocused();
+ }finally{await page.close();}
+});
 
 test('panel automatically appends stable rows and restores the selected result and scroll',async()=>{
  const page=await browser.newPage();try {

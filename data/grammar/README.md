@@ -15,6 +15,14 @@ examples. Eighteen comparison families contain 41 complete authored sentence
 variants and 18 optional explanatory activities, in addition to the 2,541 lesson
 examples.
 
+The collection ships in Kō **1.4.0**, dated 1 November 2026. In Sentence Lens,
+highlighted grammar opens its role explanation and dotted vocabulary opens the
+local Dictionary tool. Reading-view results load in batches as you scroll, with
+Example/Usage/Compare sections and Previous/Next example navigation. The standalone
+catalog uses Show more. Browsing, comparisons, and activities make no external
+requests and save no study progress. Current software validation is recorded in
+the [1.4 release audit](../../docs/release-1.4-audit.md).
+
 The ten additional families cover ている / てある / ておく, ように / ために,
 ことにする / ことになる, はずだ / べきだ, たところ / たばかり, のに / ても,
 らしい / ようだ / みたいだ, わけではない / とは限らない, さえ / まで,

@@ -1,5 +1,11 @@
 # Chrome Web Store audit and release records
 
+## 1.4.0 · GitHub release · 1 November 2026
+
+The [1.4.0 GitHub release](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.4.0) adds offline Dictionary and Grammar playgrounds, 847 grammar points, 18 sentence-comparison families, and the Reading-view grammar browser. All 276 automated tests pass, including the native popup. See the [1.4 release audit](release-1.4-audit.md) for current package and verification evidence.
+
+`ko-japanese-reading-companion-1.4.0-chrome-web-store.zip` is the store-layout asset with `manifest.json` at its root. This GitHub release does not upload, submit, or publish a Chrome Web Store update. No current dashboard state is inferred from the dated records below. For a later store submission, use the [1.4 reviewer notes](store-assets/1.4/README.md), current [privacy policy](privacy-policy.md), and the checksums attached to the release. The existing manual-publication preference remains applicable.
+
 ## 1.3.0 · GitHub release · 22 October 2026
 
 The stable GitHub release includes the optional Kōくん companion, offline animation gallery, bundled English and Japanese definitions, updated privacy disclosures, and compiled runtime. See the [1.3 release audit](release-1.3-audit.md). The store-layout ZIP is prepared for submission; no Chrome Web Store submission or publication is part of this release. Records below describe dated earlier submissions, not live dashboard state.

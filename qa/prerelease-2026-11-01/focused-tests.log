@@ -1,0 +1,30 @@
+
+Running 23 tests using 1 worker
+
+(node:72097) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/grammar-panel.spec.ts:42:5 › grammar finishes loading while hidden and resumes its results on return (343ms)
+  ✓   2 tests/grammar-panel.spec.ts:55:5 › keyboard switching into panel grammar focuses the visible playground picker (250ms)
+  ✓   3 tests/grammar-panel.spec.ts:65:5 › panel automatically appends stable rows and restores the selected result and scroll (408ms)
+  ✓   4 tests/grammar-panel.spec.ts:83:5 › focused sections, examples, comparisons, dictionary returns and keyboard navigation retain state (530ms)
+  ✓   5 tests/grammar-panel.spec.ts:100:42 › actual reading panel grammar fits at 280px (422ms)
+  ✓   6 tests/grammar-panel.spec.ts:100:42 › actual reading panel grammar fits at 320px (454ms)
+  ✓   7 tests/grammar-panel.spec.ts:100:42 › actual reading panel grammar fits at 420px (411ms)
+  ✓   8 tests/grammar-panel.spec.ts:100:42 › actual reading panel grammar fits at 720px (413ms)
+  ✓   9 tests/grammar-panel.spec.ts:113:5 › all 847 points load by scrolling, hidden results pause, and filters reset the list (1.3s)
+  ✓  10 tests/grammar-panel.spec.ts:128:5 › composition defers search and late point responses cannot disturb restored results (334ms)
+  ✓  11 tests/grammar-panel.spec.ts:142:5 › tall panels fill automatically, point retry works, and points without comparisons omit Compare (442ms)
+  ✓  12 tests/playground-v14.spec.ts:14:5 › dictionary misses keep English and Japanese online lookups independent (354ms)
+  ✓  13 tests/playground-v14.spec.ts:38:5 › all ten new comparison families switch complete sentences and explain activities offline (3.0s)
+  ✓  14 tests/playground-v14.spec.ts:64:5 › three-variant comparison retains keyboard choice, activity, focus and scroll after dictionary return at 280px (1.1s)
+  ✓  15 tests/playground-v14.spec.ts:80:5 › comparison asset retry works and a late comparison cannot replace a newly opened point (473ms)
+  ✓  16 tests/playground-v14.spec.ts:100:5 › offline dictionary, all grammar levels, comparison activity and linked returns work in a real extension (950ms)
+  ✓  17 tests/playground-v14.spec.ts:117:5 › dictionary misses request external data only after the explicit language button (493ms)
+  ✓  18 tests/playground-v14.spec.ts:126:5 › four-tab keyboard navigation and narrow grammar details fit at 280px (198ms)
+  ✓  19 tests/playground-v14.spec.ts:134:5 › narrow playground container uses two tab rows inside a desktop viewport (130ms)
+  ✓  20 tests/playground-v14.spec.ts:142:5 › dictionary composition waits and late searches cannot replace fresh results (938ms)
+  ✓  21 tests/playground-v14.spec.ts:164:5 › recognized inflections offer verified dictionary forms (1.2s)
+  ✓  22 tests/playground-v14.spec.ts:170:5 › late hidden dictionary work cannot start analysis in the active Word forms tool (737ms)
+  ✓  23 tests/playground-v14.spec.ts:186:5 › unavailable grammar assets offer retry and a failed load is not cached (141ms)
+
+  23 passed (16.2s)

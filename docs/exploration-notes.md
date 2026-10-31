@@ -1,6 +1,39 @@
-# Kō 1.2 exploration notes
+# Kō 1.4 exploration notes
 
-Word-level tools operate on the reading panel's existing visible-text snapshot. The Playgrounds button also opens shared local dictionary-form word input and bundled mimetic examples. These tools do not extract additional document pages, fetch examples, make model requests, or save learning history. The original phrase stays visible above word-form experiments; generated forms are demonstrations rather than replacement document text.
+Word-level tools operate on the reading panel's existing visible-text snapshot. Playgrounds opens Dictionary, Word forms, Grammar, and Mimetics in Reading view or a standalone extension tab. Tools retain their session state; linked dictionary/form exploration returns to its source view. These tools do not extract additional document pages, fetch examples, make model requests, or save learning history. The original phrase stays visible above word-form experiments; generated forms are demonstrations rather than replacement document text.
+
+## Dictionary
+
+Search Japanese spellings, readings, or English meanings in bundled JMdict. Results
+load 30 at a time; entries preserve separate senses, spelling/reading restrictions,
+parts of speech, usage labels, and dictionary attribution. Local Japanese definitions
+appear where covered. Supported inflections offer verified dictionary-form searches,
+and recognized verbs/adjectives link to Word forms.
+
+Searches and local results make no external requests. Missing meanings offer separate
+English and Japanese online actions. Selecting one sends only its Japanese lookup
+term and any spelling-reference terms to that Wiktionary edition; it preserves the
+other language’s action and result. This explicit policy differs from Reading-view
+word cards and enabled Kōくん definitions, which retain automatic local-first fallback.
+
+## Grammar — Sentence Lens
+
+Browse 847 original N5–N1 points mapped to 848 coverage references, with three
+annotated examples per point. Search patterns, readings, romaji aliases, English
+purposes, or intention keywords; filter by level and meaning group. Levels are study
+references rather than an official exam syllabus. Highlighted constructions explain
+their role; dotted vocabulary opens Dictionary. Return restores the example and
+comparison. Formation, register, usage limits, and a common pitfall accompany each
+point.
+
+Eighteen comparison families contain 41 complete sentence variants and optional
+meaning activities. Switching variants updates the sentence, translation, and
+explanation together. Activities give feedback without scores or saved progress.
+In Reading view, results append as you scroll, and Example/Usage/Compare sections
+organize details. Previous/Next steps through examples. The standalone catalog uses
+Show more. Grammar browsing works entirely offline, including its examples and
+activities; external source links are optional navigation. Content provenance and
+review limits are described in the [grammar guide](../data/grammar/README.md).
 
 ## Verb Playground
 
@@ -47,9 +80,9 @@ References: Tae Kim's [potential forms](https://guidetojapanese.org/learn/comple
 
 ## Data flow and verification
 
-Part of speech, conjugation class/form, adjective dictionary alternatives, and dictionary reading are added to in-memory word metadata. Existing worker sender validation, extraction limits, and local storage formats remain in effect. Explicit playground tokenization has a separate purpose channel, with at most four nonempty strings of forty characters each. Cancellation is isolated by document and purpose, and caches by tab/purpose, so checking a typed word does not replace page readings. Closing or replacing an exploration invalidates pending results. Activating a reading-panel word automatically looks up its definitions on Wiktionary. Using word-level playground controls and the Playgrounds browser makes no additional definition requests. Reference links contact their destination only when followed.
+Part of speech, conjugation class/form, adjective dictionary alternatives, and dictionary reading are added to in-memory word metadata. Existing worker sender validation, extraction limits, and local storage formats remain in effect. Explicit playground tokenization has a separate purpose channel, with at most four nonempty strings of forty characters each. Cancellation is isolated by document and purpose, and caches by tab/purpose, so checking a typed word does not replace page readings. Closing or replacing an exploration invalidates pending results. Activating a reading-panel word automatically checks bundled English and Japanese dictionaries, with independent online Wiktionary fallback on local misses or load failures. Local word-form controls, mimetics, grammar, and Dictionary searches make no external definition requests. Dictionary Playground offers explicit language-specific online actions for missing meanings. Reference links contact their destination only when followed.
 
-Checks cover real bundled dictionary analysis, generated form round trips, false positives, exact source spans, role alternatives, all mimetic pairs, keyboard controls, reduced motion, narrow panels, offline operation, source preservation, manual corrections, and stale UI after edits. Lexical kana homographs such as いれる retain their forms while unsupported shortened potentials remain declined. A prior live smoke check on a public, read-only Google Doc also verified readings and both playgrounds without changing source annotations. Live editing was not exercised. The current [1.2 release audit](release-1.2-audit.md) records verification, including the native toolbar popup; the [1.1 audit](chrome-web-store-audit.md) retains historical evidence. Google's undocumented annotation surface can change.
+Checks cover real bundled dictionary analysis, generated form round trips, false positives, exact source spans, role alternatives, all mimetic pairs, keyboard controls, reduced motion, narrow panels, offline operation, source preservation, manual corrections, and stale UI after edits. Lexical kana homographs such as いれる retain their forms while unsupported shortened potentials remain declined. A prior live smoke check on a public, read-only Google Doc also verified readings and both playgrounds without changing source annotations. Live editing was not exercised. The current [1.4 release audit](release-1.4-audit.md) records 276 passing automated checks, including the native toolbar popup; the [1.2 audit](release-1.2-audit.md) records historical word-form verification; the [1.1 audit](chrome-web-store-audit.md) retains historical evidence. Google's undocumented annotation surface can change.
 
 ## Adjective forms in 1.2
 
@@ -57,9 +90,9 @@ The same Word forms input accepts dictionary-form い-adjectives and bare な-ad
 
 Basic predicates offer Past, Negative, and Polite. Before-a-noun, adverbial, and linking forms have no switches. Conditions (～ければ／～なら and ～たら) offer Negative. Become and Make use ～く／～に + なる／する; their switches conjugate the resulting verb. な predicates use だ／です, plain negatives ではない, and polite negatives ではありません. い polite negatives use ～くないです. Common source aliases such as じゃなかった or ～くありません preserve the exact original on Reset.
 
-Classification uses known dictionary entries, including alternatives for 嫌い and な-adjectives ending in い. いい／良い and supported lexical ～いい compounds have the よ stem; かわいい／可愛い remain regular. Attributive-only 大きな／小さな and unsupported longer constructions are excluded. These are grammatical demonstrations; context can make a generated construction unnatural or require changes to particles and participants. Appearance ～そう, degree, nominalization, quizzes, and learning history remain outside this release.
+Classification uses known dictionary entries, including alternatives for 嫌い and な-adjectives ending in い. いい／良い and supported lexical ～いい compounds have the よ stem; かわいい／可愛い remain regular. Attributive-only 大きな／小さな and unsupported longer constructions are excluded. These are grammatical demonstrations; context can make a generated construction unnatural or require changes to particles and participants. Appearance ～そう, degree, nominalization, adjective-specific quizzes, and learning history remain outside the Word forms tool.
 
-The catalog now contains 90 expressions in 45 comparisons: the original 30 comparisons plus six food/texture, five everyday-sound, and four daily-action comparisons. Reference pages were checked during release preparation; no runtime fetching is introduced. Current validation is recorded in the [1.2 audit](release-1.2-audit.md).
+The catalog now contains 90 expressions in 45 comparisons: the original 30 comparisons plus six food/texture, five everyday-sound, and four daily-action comparisons. Reference pages were checked during release preparation; no runtime fetching is introduced. Historical expansion validation is recorded in the [1.2 audit](release-1.2-audit.md); current release results are in the [1.4 audit](release-1.4-audit.md).
 
 ## Contextual command recovery
 

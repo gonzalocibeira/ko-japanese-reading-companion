@@ -1,6 +1,12 @@
 # Documentation screenshots
 
-The eight current README images were captured on 22 October 2026 with Kō 1.3.0 and approved by the project owner before inclusion.
+## Kō 1.4 Grammar preview
+
+[grammar-sentence-lens-1.4.png](grammar-sentence-lens-1.4.png) is a 1280 × 720 screenshot from the automated 1.4 browser checks on 1 November 2026. It shows the offline だけ / しか～ない Sentence Lens comparison and its meaning activity. It is an extension-page fixture capture, not a new live Google Docs capture. Narrow standalone and Reading-view previews are recorded in the [1.4 release audit](../release-1.4-audit.md).
+
+## Approved Kō 1.3 live-document captures
+
+The eight live-document README images were captured on 22 October 2026 with Kō 1.3.0 and approved by the project owner before inclusion.
 
 Reference: [日本語 — owner-provided Google Doc](https://docs.google.com/document/d/1ckvrIRrRtpgJKCsPf81XomxGdU3k0JFUMUEt90pyI8k/edit?usp=sharing).
 

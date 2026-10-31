@@ -141,11 +141,13 @@ export function renderDictionaryTool(options:ToolOptions,initialWord=''):Playgro
    if(!total) {
     view.status.textContent=japanese(value)?'No matching English dictionary entry in the bundled data.':'No matching English meaning. Try a shorter or different word.';
     if(japanese(value)) {
-     const local=node('section');view.results.append(local);
+     const local=node('section'),english=node('section');
+     local.append(node('h3','','Japanese definitions'));english.append(node('h3','','English definitions'));
+     view.results.append(local,english);
+     onlineButton(options,english,value,'en',()=>active() && id===sequence);
      const page=await options.data({op:'japanese',word:value},controller.signal);if(disposed || id!==sequence)return;
      if(page.status==='ok'){for(const definition of page.definitions)local.append(node('p','',definition));source(local,page,'ja',value);}
      else onlineButton(options,local,value,'ja',()=>active() && id===sequence);
-     onlineButton(options,local,value,'en',()=>active() && id===sequence);
     }
    }
    completedSequence=id;if(!append)void suggestions(value,id);
@@ -160,12 +162,15 @@ export function renderDictionaryTool(options:ToolOptions,initialWord=''):Playgro
  return {element:view.root,focus:()=>{formProbe?.();if(completedSequence===sequence)void suggestions(query,sequence);input.focus();},dispose:()=>{disposed=true;sequence++;detailVersion++;clearTimeout(timer);controller?.abort();}};
 }
 
+const grammarHint='Select highlighted grammar to see its role. Dotted words open the dictionary.';
+
 export function renderGrammarExample(example:GrammarExample,options:ToolOptions,lens:HTMLElement):HTMLElement {
  const wrap=node('div','grammar-example'),sentence=node('p','grammar-sentence');
+ // Decorate inline text, leaving the button's line height free to space wrapped ruby.
  for(const segment of example.segments) {
   const text=segment.reading?annotated(segment.text,segment.reading):document.createTextNode(segment.text);
-  if(segment.role){const part=button('',()=>{lens.textContent=segment.role!;if(options.presentation==='panel'){wrap.querySelectorAll('.grammar-highlight').forEach(el=>el.setAttribute('aria-pressed',String(el===part)));}},'grammar-highlight');if(options.presentation==='panel')part.setAttribute('aria-pressed','false');part.setAttribute('aria-label',`${segment.text}: explain construction`);part.append(text);sentence.append(part);}
-  else if(segment.lemma){const word=button('',()=>options.dictionary(segment.lemma!),'grammar-word');word.setAttribute('aria-label',`Look up ${segment.lemma}`);word.append(text);sentence.append(word);}
+  if(segment.role){const part=button('',()=>{lens.textContent=segment.role!;wrap.querySelectorAll('.grammar-highlight').forEach(el=>el.setAttribute('aria-pressed',String(el===part)));},'grammar-highlight'),mark=node('span','grammar-mark');part.setAttribute('aria-pressed','false');part.setAttribute('aria-label',`${segment.text}: explain construction`);mark.append(text);part.append(mark);sentence.append(part);}
+  else if(segment.lemma){const word=button('',()=>options.dictionary(segment.lemma!),'grammar-word'),mark=node('span','grammar-mark');word.setAttribute('aria-label',`Look up ${segment.lemma}`);mark.append(text);word.append(mark);sentence.append(word);}
   else sentence.append(text);
  }
  wrap.append(sentence,node('p','grammar-translation',example.translation),node('p','tool-source',example.note));return wrap;
@@ -214,7 +219,7 @@ export function renderGrammarTool(options:ToolOptions):PlaygroundTool {
   const id=++version,content=node('article');content.append(node('p','','Opening local grammar…'));view.show(content,origin);
   try {
    const point=await options.data({op:'grammar',id:summary.id});if(disposed || id!==version)return;
-   const lens=node('p','grammar-lens',panel?'Select an underlined construction to see its role.':'Select an outlined construction to see its role.');lens.setAttribute('role','status');
+   const lens=node('p','grammar-lens',grammarHint);lens.setAttribute('role','status');
    content.replaceChildren(node('p','tool-source',`${point.level} · study reference`),node('h2','tool-heading',point.pattern),node('p','grammar-purpose',point.purpose));
    content.append(renderGrammarExample(point.examples[0],options,lens),lens);
    const extra=node('details','grammar-examples');extra.append(node('summary','','More examples'));for(const example of point.examples.slice(1))extra.append(renderGrammarExample(example,options,lens));content.append(extra);
@@ -231,7 +236,7 @@ export function renderGrammarTool(options:ToolOptions):PlaygroundTool {
       comparison.setAttribute('aria-label',data.title);choices.setAttribute('role','group');choices.setAttribute('aria-label',`Compare: ${data.title}`);
       comparison.replaceChildren(node('h3','',`Compare: ${data.title}`),choices,output,explanation,clens);
       const buttons:HTMLButtonElement[]=[];
-      const choose=(n:number)=>{output.replaceChildren(renderGrammarExample(data.variants[n].example,options,clens));explanation.textContent=`What changed? ${data.variants[n].change}`;clens.textContent='Select the construction to inspect it.';buttons.forEach((b,i)=>b.setAttribute('aria-pressed',String(i===n)));};
+      const choose=(n:number)=>{output.replaceChildren(renderGrammarExample(data.variants[n].example,options,clens));explanation.textContent=`What changed? ${data.variants[n].change}`;clens.textContent=grammarHint;buttons.forEach((b,i)=>b.setAttribute('aria-pressed',String(i===n)));};
       data.variants.forEach((variant,n)=>{const b=button(variant.label,()=>choose(n));buttons.push(b);choices.append(b);});choose(0);
       const activity=node('details','grammar-activity'),feedback=node('p');feedback.setAttribute('role','status');activity.append(node('summary','','Choose the meaning'),node('p','',data.question));
       data.answers.forEach((answer,n)=>activity.append(button(answer,()=>{feedback.textContent=`${n===data.correct?'Yes.':'Try another interpretation.'} ${data.feedback}`;})));activity.append(feedback);comparison.append(activity);
@@ -255,7 +260,7 @@ export function renderGrammarTool(options:ToolOptions):PlaygroundTool {
   const previous=button('Previous',()=>showExample(selected-1)),next=button('Next',()=>showExample(selected+1));
   function showExample(n:number) {
    selected=n;exampleHost.replaceChildren(renderGrammarExample(point.examples[n],options,lens));
-   lens.textContent='Select an underlined construction to see its role.';
+   lens.textContent=grammarHint;
    count.textContent=`${n+1} / ${point.examples.length}`;previous.disabled=n===0;next.disabled=n===point.examples.length-1;
   }
   exampleNav.append(previous,count,next);example.append(purpose,exampleHost,lens,exampleNav);showExample(0);
@@ -292,7 +297,8 @@ export function renderGrammarTool(options:ToolOptions):PlaygroundTool {
   if(panel) {
    observer?.disconnect();rendered=0;view.scroller.scrollTop=0;
    filterSummary.textContent=`Filters · ${level.value==='All'?'All levels':level.value} · ${group.value || 'All meanings'}`;
-   appendBatch();view.catalog.append(sentinel);
+   // A first load may finish in a hidden tool; observe now so showing it starts the list.
+   view.catalog.append(sentinel);observer?.observe(sentinel);appendBatch();
   } else {
    for(const summary of matches.slice(0,limit))view.results.append(result(summary));
    if(matches.length>limit)view.results.append(button('Show more',()=>{limit+=30;render(false);}));
@@ -313,8 +319,8 @@ export const playgroundToolStyles=`
 .tool-search>button{margin:0}.tool-status{font-size:12px;color:var(--muted)}.tool-results{display:grid;gap:8px}.tool-result{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:12px!important;white-space:normal;overflow-wrap:anywhere;margin:0!important}
 .tool-result ruby,.tool-pattern{font-size:20px;font-weight:500;color:var(--accent)}.tool-sense-label,.tool-source{font-size:11px;color:var(--muted);font-weight:400}.tool-heading{font:700 25px/1.6 var(--body);margin:12px 0}.tool-reading{font-size:16px}.tool-back{margin:0!important;padding:5px 0!important;border:0!important;color:var(--accent);background:transparent!important}
 .tool-detail p{overflow-wrap:anywhere}.tool-detail details{margin:14px 0;padding:10px 0;border-block:1px solid var(--surface)}.tool-detail summary{cursor:pointer;font-weight:600}.dictionary-senses{padding-left:22px}.dictionary-senses li{padding-bottom:8px}.dictionary-senses p{margin:4px 0}.dictionary-japanese{border-top:1px solid var(--line);margin-top:18px}.dictionary-more ol{padding-left:22px}
-.grammar-filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grammar-purpose{font-size:15px}.grammar-sentence{font:22px/2.5 var(--body);overflow-wrap:anywhere}.grammar-sentence button{display:inline!important;font:inherit!important;padding:1px 2px!important;margin:0!important;white-space:normal!important;border:0;background:transparent;color:inherit}
-.grammar-sentence .grammar-highlight{outline:1px solid var(--seal);outline-offset:-1px;border-bottom:3px solid var(--seal);text-decoration:underline;text-underline-offset:5px;background:var(--surface)}.grammar-word{text-decoration:underline dotted;text-underline-offset:5px}.grammar-translation{font-size:14px}.grammar-lens{padding:10px;border-left:3px solid var(--accent);background:var(--surface);font-size:12px}.grammar-comparison{margin-top:24px;border-top:2px solid var(--line)}
+.grammar-filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grammar-purpose{font-size:15px}.grammar-sentence{font:22px/2.5 var(--body);overflow-wrap:anywhere}.grammar-sentence button{display:inline!important;font:inherit!important;padding:0!important;margin:0!important;white-space:normal!important;border:0;background:transparent;color:inherit;text-decoration:none}.grammar-mark{padding:1px 2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.grammar-highlight .grammar-mark{background:var(--surface)}.grammar-highlight[aria-pressed=true] .grammar-mark{box-shadow:inset 0 0 0 1px var(--seal)}.grammar-word .grammar-mark{text-decoration:underline dotted;text-decoration-thickness:1px;text-underline-offset:.18em}.grammar-translation{font-size:14px}.grammar-lens{padding:10px;border-left:3px solid var(--accent);background:var(--surface);font-size:12px}.grammar-comparison{margin-top:24px;border-top:2px solid var(--line)}
 .grammar-switches,.grammar-related{display:flex;gap:6px;flex-wrap:wrap}.grammar-switches button,.grammar-related button{margin:0!important}.grammar-switches [aria-pressed=true]{background:var(--accent);color:var(--paper)}.grammar-change{font-size:12px}.grammar-activity button{display:block;margin:8px 0!important;text-align:left}.playground-route-back{margin:0!important;padding:8px 16px!important;text-align:left;font-size:12px}
 .panel-playground-picker{display:flex;align-items:center;gap:10px;padding:6px 12px;border-bottom:1px solid var(--line);font-size:12px;flex:none}
 .panel-playground-picker select{flex:1;min-width:0;padding:6px;font:inherit;background:var(--paper);color:var(--ink);border:1px solid var(--line)}
@@ -333,8 +339,6 @@ export const playgroundToolStyles=`
 .panel-grammar button{min-height:32px}.panel-grammar .grammar-sentence button{min-height:0}
 .panel-grammar .grammar-example-nav{justify-content:space-between}.panel-grammar .grammar-example-nav button{margin:0}
 .panel-grammar .tool-detail{font-size:14px}.panel-grammar .grammar-sentence{font-size:20px;line-height:2.5;overflow-wrap:normal;line-break:strict;word-break:normal}
-.panel-grammar .grammar-sentence .grammar-highlight{outline:none;border-bottom:1px solid var(--seal);text-decoration:none;background:var(--surface)}
-.panel-grammar .grammar-sentence .grammar-highlight[aria-pressed=true]{background:var(--surface);box-shadow:inset 0 -3px var(--seal)}
 .panel-grammar .grammar-lens{font-size:14px}.panel-grammar .grammar-comparison{margin-top:12px;border-top:0}
 @container(min-width:740px){.has-detail .tool-scroll{overflow:hidden}.has-detail .tool-catalog{display:block;overflow:auto;overscroll-behavior:contain}.has-detail .tool-layout{height:100%;grid-template-columns:minmax(230px,1fr) minmax(0,1.8fr)}.has-detail .tool-detail{overflow:auto;overscroll-behavior:contain;border-left:1px solid var(--line);padding-left:20px}}
 @container(max-width:440px){.playground-tabs{display:grid;grid-template-columns:1fr 1fr}.grammar-filters{grid-template-columns:1fr}.grammar-sentence{font-size:20px}}

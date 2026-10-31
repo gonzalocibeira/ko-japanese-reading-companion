@@ -1,7 +1,38 @@
-# Kō 1.4 validation audit
+# Kō 1.4.0 release verification
 
-Local implementation prepared on 22 October 2026. Publication and store submission
-are separate actions; no external release is claimed here.
+Stable GitHub release dated **1 November 2026**, prepared from `master` for tag
+[`v1.4.0`](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.4.0).
+Both manifest version fields and the package version are `1.4.0`. Chrome Web Store
+submission and publication are separate and are not part of this release.
+
+## Final release verification · 1 November 2026
+
+- Three reproduced bugs are fixed: panel Grammar resumes after its first load
+  finishes while hidden; keyboard switching into Grammar focuses its visible
+  picker; online English and Japanese dictionary lookups preserve each other’s
+  controls and results.
+- Grammar markers use inline highlights and dotted dictionary links, including
+  wrapped ruby. Reading-view grammar offers automatic result loading,
+  Example/Usage/Compare sections, and Previous/Next example navigation.
+- All **276 automated tests** passed in 3.0 minutes, including the native toolbar
+  popup. Type checking, the build, and package validation passed on Node.js 26.12.1.
+  See the [pre-release report](../qa/prerelease-2026-11-01/REPORT.md), the final
+  [release test log](../qa/release-1.4/final-2026-11-01/full-tests.log), and
+  [package verification](../qa/release-1.4/final-2026-11-01/package-verification.log).
+- Both release ZIPs contain **1,599 byte-identical runtime files** in their
+  respective layouts. Root `SHA256SUMS` and
+  `qa/release-1.4/final-2026-11-01/packages.json` identify the final release archives.
+  The earlier `qa/release-1.4/packages.json` remains a historical candidate record.
+- Current documentation, release downloads, bundled About/changelog, popup
+  announcement, and privacy summary are updated for 1.4.0. The approved live-Docs
+  screenshots remain labeled 1.3; current 1.4 fixture previews are identified as such.
+- No manual live Google Docs editing or new native-speaker review was performed.
+  Automated Docs fixtures and structural/editorial content checks retain the scope
+  described below.
+
+The dated preparation records below are historical. Their WIP status, older test
+counts, native-popup focus failure, and candidate hashes do not describe this final
+release.
 
 ## WIP merge verification on 24 October 2026
 
@@ -78,6 +109,14 @@ builds use local pinned sources and perform no grammar or dictionary downloads.
 
 
 ## Preview captures
+
+Current 1 November release-pass captures:
+
+- [Standalone Sentence Lens](screenshots/grammar-sentence-lens-1.4.png)
+- [Reading-view Grammar at 280px](../qa/prerelease-2026-11-01/grammar-panel-280px.png)
+- [Standalone Grammar at 280px](../qa/prerelease-2026-11-01/grammar-standalone-280px.png)
+
+Earlier 22 October preparation captures:
 
 - [Expanded three-choice comparison](../qa/release-1.4/comparison-expansion.png)
 - [Expanded comparison at 280px](../qa/release-1.4/comparison-expansion-narrow.png)

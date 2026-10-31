@@ -1,0 +1,96 @@
+
+Running 3 tests using 1 worker
+
+(node:71567) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/grammar-panel.spec.ts:42:5 › grammar finishes loading while hidden and resumes its results on return (5.3s)
+(node:71613) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 tests/grammar-panel.spec.ts:54:5 › keyboard switching into panel grammar focuses the visible playground picker (5.3s)
+(node:71654) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 tests/playground-v14.spec.ts:14:5 › dictionary misses keep English and Japanese online lookups independent (3.3s)
+
+
+  1) tests/grammar-panel.spec.ts:42:5 › grammar finishes loading while hidden and resumes its results on return
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.panel-grammar .tool-result')
+    Expected: 30
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.panel-grammar .tool-result') with timeout 5000ms
+      - waiting for locator('.panel-grammar .tool-result')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      47 |   await expect(rows(page)).toHaveCount(0);
+      48 |   await page.getByRole('tab',{name:'Grammar',exact:true}).click();
+    > 49 |   await expect(rows(page)).toHaveCount(30);
+         |                            ^
+      50 |   await bottom(page);await expect(rows(page)).toHaveCount(60);
+      51 |  }finally{await page.close();}
+      52 | });
+        at /Users/turco/Documents/ChatGPT/FOB/tests/grammar-panel.spec.ts:49:28
+
+    Error Context: test-results/grammar-panel-grammar-fini-9175d-sumes-its-results-on-return/error-context.md
+
+    Error Context: test-results/grammar-panel-grammar-fini-9175d-sumes-its-results-on-return/error-context.md
+
+  2) tests/grammar-panel.spec.ts:54:5 › keyboard switching into panel grammar focuses the visible playground picker
+
+    Error: expect(locator).toBeFocused() failed
+
+    Locator:  getByLabel('Playground', { exact: true })
+    Expected: focused
+    Received: inactive
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeFocused" getByLabel('Playground', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Playground', { exact: true })
+        14 × locator resolved to <select class="" aria-label="Playground">…</select>
+           - unexpected value "inactive"
+
+
+      58 |   await page.getByRole('tab',{name:'Word forms',exact:true}).focus();
+      59 |   await page.keyboard.press('ArrowRight');
+    > 60 |   await expect(page.getByLabel('Playground',{exact:true})).toBeFocused();
+         |                                                            ^
+      61 |  }finally{await page.close();}
+      62 | });
+      63 |
+        at /Users/turco/Documents/ChatGPT/FOB/tests/grammar-panel.spec.ts:60:60
+
+    Error Context: test-results/grammar-panel-keyboard-swi-bd467-e-visible-playground-picker/error-context.md
+
+    Error Context: test-results/grammar-panel-keyboard-swi-bd467-e-visible-playground-picker/error-context.md
+
+  3) tests/playground-v14.spec.ts:14:5 › dictionary misses keep English and Japanese online lookups independent
+
+    TimeoutError: locator.click: Timeout 3000ms exceeded.
+    Call log:
+      - waiting for getByRole('tabpanel').visible().getByRole('button', { name: 'Look up Japanese online', exact: true })
+
+
+      28 |   await current(page).getByRole('button',{name:'Look up English online',exact:true}).click();
+      29 |   await expect(current(page)).toContainText('en result');
+    > 30 |   await current(page).getByRole('button',{name:'Look up Japanese online',exact:true}).click({timeout:3000});
+         |                                                                                       ^
+      31 |   await expect(current(page)).toContainText('ja result');
+      32 |   await expect(current(page)).toContainText('en result');
+      33 |  }finally{await page.close();}
+        at /Users/turco/Documents/ChatGPT/FOB/tests/playground-v14.spec.ts:30:87
+
+    Error Context: test-results/playground-v14-dictionary--acf05--online-lookups-independent/error-context.md
+
+    Error Context: test-results/playground-v14-dictionary--acf05--online-lookups-independent/error-context.md
+
+  3 failed
+    tests/grammar-panel.spec.ts:42:5 › grammar finishes loading while hidden and resumes its results on return
+    tests/grammar-panel.spec.ts:54:5 › keyboard switching into panel grammar focuses the visible playground picker
+    tests/playground-v14.spec.ts:14:5 › dictionary misses keep English and Japanese online lookups independent

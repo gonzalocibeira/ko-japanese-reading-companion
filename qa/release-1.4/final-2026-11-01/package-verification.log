@@ -1,0 +1,15 @@
+[
+  {
+    "name": "ko-japanese-reading-companion-1.4.0.zip",
+    "bytes": 122187109,
+    "files": 1599,
+    "sha256": "1ab1e3c850abedd06f97b9c2ef9d9dafbff6607c3bebdca595c702616dc84cf0"
+  },
+  {
+    "name": "ko-japanese-reading-companion-1.4.0-chrome-web-store.zip",
+    "bytes": 122170969,
+    "files": 1599,
+    "sha256": "5b5de02948a2f90f8e9167e42fd27544aee2d1d494e6e00006f355a0c25ebb67"
+  }
+]
+Both layouts match the same built runtime byte-for-byte; 90 mimetic strips and 56 mascot clips included.

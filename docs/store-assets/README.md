@@ -2,6 +2,8 @@
 
 These original Kō assets are retained with the source for store-listing maintenance. They are not included in the extension ZIPs and do not publish or change the Chrome Web Store listing.
 
+The current GitHub version is **1.4.0**, dated 1 November 2026. The [1.4 reviewer notes](1.4/README.md) cover its Dictionary and Grammar playgrounds, package, and privacy behavior. Existing 1.3 approved store artwork remains versioned evidence; it has not been replaced or uploaded as part of this GitHub release.
+
 ## PS1 promotional artwork
 
 The preferred Kōくん visual style is applied throughout the scene, logo treatment, and lettering in these promotional tiles:

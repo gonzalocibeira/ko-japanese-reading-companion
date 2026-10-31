@@ -1,6 +1,6 @@
 # Kō 1.2.0 release audit
 
-Announced launch date: **28 October 2026**. Prepared on **18 October 2026** from RC1 and published on GitHub that day under **v1.2.0**. The 1.2 release assets retain manifest and npm versions **1.2.0**. The primary branch now contains **1.3.0**; this audit and its hashes describe the historical 1.2 artifacts. Chrome Web Store upload and review are tracked separately below.
+Announced launch date: **28 October 2026**. Prepared on **18 October 2026** from RC1 and published on GitHub that day under **v1.2.0**. The 1.2 release assets retain manifest and npm versions **1.2.0**. The primary branch now contains **1.4.0**; this audit and its hashes describe the historical 1.2 artifacts. Chrome Web Store upload and review are tracked separately below.
 
 ## Scope
 
