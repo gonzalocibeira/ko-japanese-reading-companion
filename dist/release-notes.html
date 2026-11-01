@@ -1,4 +1,12 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kō release notes</title><style>body{max-width:800px;margin:40px auto;padding:0 24px;font:17px/1.65 system-ui;color:#242b2d;background:#f4ecd8}h1,h2,h3{line-height:1.3}h2{margin-top:36px;padding-top:20px;border-top:1px solid #625d50}li+li{margin-top:10px}a{color:#234e64;overflow-wrap:anywhere}code{overflow-wrap:anywhere}a:focus-visible{outline:3px solid #234e64;outline-offset:3px}</style><nav aria-label="About navigation"><a href="about.html#release-heading">Back to About Kō</a></nav><main><h1>Release notes</h1>
+<h2>1.4.1 · 1 November 2026</h2>
+<p>Hover over any character in multi-kanji words in Google Docs to see the complete word and its reading.</p>
+<ul>
+<li>Reconstruct adjacent canvas text runs before word lookup, including words exposed as one run per kanji. 洗濯機 now resolves as せんたくき from every character.</li>
+<li>Deduplicate repeated canvas tiles and preserve character positions. Missing, hidden, or ambiguous overlapping glyphs are kept out of reconstructed words.</li>
+<li>Verified with 25 companion and reading regression checks, additional final Docs browser checks, type checking, and a rebuilt extension. No permissions or dependencies changed.</li>
+<li>This patch includes the Dictionary and Grammar playgrounds from 1.4.0. Chrome Web Store review and publication are managed separately from GitHub.</li>
+</ul>
 <h2>1.4.0 · 1 November 2026</h2>
 <p>Explore Japanese words and N5–N1 grammar in two new offline playgrounds, with dictionary search and Sentence Lens comparisons.</p>
 <ul>

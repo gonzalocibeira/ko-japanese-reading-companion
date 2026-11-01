@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "Kō — Japanese Reading Companion",
   "short_name": "Kō",
-  "version": "1.4.0",
-  "version_name": "1.4.0",
+  "version": "1.4.1",
+  "version_name": "1.4.1",
   "description": "Offline Japanese readings, dictionary search, word forms, and N5–N1 grammar playgrounds for webpages and Google Docs.",
   "permissions": [
     "storage",

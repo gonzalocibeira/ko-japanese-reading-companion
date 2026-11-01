@@ -35,7 +35,7 @@ test('release announcement stays dismissed across reopen and browser restart, wi
     await expect(popup.locator('#mascot-enabled')).toBeFocused();
     await expect(popup.locator('#mascot-enabled')).not.toBeChecked();
   } else {
-    await expect(banner).toContainText('Sentence Lens');
+    await expect(banner.locator('p').first()).not.toBeEmpty();
     await expect(banner.getByRole('button',{name:'Try Kōくん',exact:true})).toHaveCount(0);
   }
   await expect(banner).toBeVisible();
@@ -44,7 +44,8 @@ test('release announcement stays dismissed across reopen and browser restart, wi
   await popup.getByRole('link',{name:'Read the changelog',exact:true}).click();
   const about=await opened;
   await expect(about.locator('#current-release-notes .release-body')).toBeVisible();
-  await expect(about.locator('#current-release-notes')).toContainText('Kōくん');
+  await expect(about.locator('#current-release-notes summary')).toContainText(version);
+  await expect(about.locator('#current-release-notes .release-body')).not.toBeEmpty();
   const feature=about.getByRole('link',{name:'Suggest a feature or improvement'});
   const url=new URL((await feature.getAttribute('href'))!);
   expect(url.origin+url.pathname).toBe('https://github.com/gonzalocibeira/ko-japanese-reading-companion/issues/new');
