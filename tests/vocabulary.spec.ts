@@ -15,7 +15,7 @@ test.beforeAll(async()=>{
 });
 
 test('dictionary compounds select the full noun from every kanji, including in sentences',()=>{
-  for(const [surface,reading] of [['近代化','きんだいか'],['国際化','こくさいか'],['少子高齢化','しょうしこうれいか'],['経済成長','けいざいせいちょう']]) {
+  for(const [surface,reading] of [['近代化','きんだいか'],['国際化','こくさいか'],['少子高齢化','しょうしこうれいか'],['経済成長','けいざいせいちょう'],['洗濯機','せんたくき'],['掃除機','そうじき'],['乾燥機','かんそうき']]) {
     for(const text of [surface,`${surface}が進む。`,`${surface}する`,`${surface}された`,`${surface} = example`]) {
       const tokens=joinNounCompounds(tokenizeVocabulary(tokenizer,text),text,compounds);
       expect(tokens[0].surface_form,text).toBe(surface);

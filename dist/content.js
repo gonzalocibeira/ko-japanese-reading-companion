@@ -5056,6 +5056,64 @@ ${mascotBubbleStyles}
     }
   });
 
+  // src/docs-hover.ts
+  function docsHoverTarget(root, x, y2, source2) {
+    const glyphs = /* @__PURE__ */ new Map();
+    let inspected = 0, measured = 0;
+    for (const element4 of root.querySelectorAll("svg rect[aria-label]")) {
+      if (++inspected > 4096) return;
+      const bounds = element4.getBoundingClientRect();
+      if (y2 < bounds.top || y2 > bounds.bottom || !element4.checkVisibility({ checkVisibilityCSS: true })) continue;
+      const run = source2(element4);
+      if (!run || run.text.length > 1e3) continue;
+      let offset2 = 0;
+      for (const char of run.text) {
+        if (++measured > 4e3) return;
+        const start = offset2, end = offset2 + char.length;
+        offset2 = end;
+        const rect = run.rect(start, end);
+        if (!rect) continue;
+        const key = [rect.left, rect.top, rect.right, rect.bottom].map((n) => Math.round(n * 10)).join(",");
+        const previous = glyphs.get(key);
+        if (previous && previous.text !== char) return;
+        glyphs.set(key, { text: char, rect, current: () => run.rect(start, end) });
+        if (glyphs.size > 1e3) return;
+      }
+    }
+    const pointed = [...glyphs.values()].find((g) => x >= g.rect.left && x <= g.rect.right && y2 >= g.rect.top && y2 <= g.rect.bottom);
+    if (!pointed) return;
+    const ordered = [...glyphs.values()].filter((g) => g.rect.top < pointed.rect.bottom && g.rect.bottom > pointed.rect.top).sort((a, b) => a.rect.left - b.rect.left);
+    const hit = ordered.indexOf(pointed);
+    const adjacent = (a, b) => b.rect.left - a.rect.right <= 2;
+    let first = hit, last = hit;
+    while (first > 0 && adjacent(ordered[first - 1], ordered[first])) first--;
+    while (last + 1 < ordered.length && adjacent(ordered[last], ordered[last + 1])) last++;
+    const parts = ordered.slice(first, last + 1);
+    if (parts.some((glyph, i) => i > 0 && glyph.rect.left < parts[i - 1].rect.right - 2)) return;
+    let text = "", offset = 0;
+    const spans = parts.map((glyph, i) => {
+      const start = text.length;
+      if (first + i === hit) offset = start;
+      text += glyph.text;
+      return { start, end: text.length, current: glyph.current };
+    });
+    if (text.length > 1e3) return;
+    return { text, offset, rects: (start, end) => {
+      const rects = [];
+      for (const part of spans) if (part.start < end && part.end > start) {
+        const rect = part.current();
+        if (!rect) return [];
+        rects.push(rect);
+      }
+      return rects;
+    } };
+  }
+  var init_docs_hover = __esm({
+    "src/docs-hover.ts"() {
+      "use strict";
+    }
+  });
+
   // src/content.ts
   var require_content = __commonJS({
     "src/content.ts"() {
@@ -5069,6 +5127,7 @@ ${mascotBubbleStyles}
       init_preferences();
       init_mascot_target();
       init_docs_selection();
+      init_docs_hover();
       function initializeContentScript() {
         if (document.contentType !== "text/html") return;
         const hostname = location.hostname || (location.ancestorOrigins[0] ? new URL(location.ancestorOrigins[0]).hostname : "");
@@ -5167,21 +5226,7 @@ ${mascotBubbleStyles}
             return x >= box.left && x <= box.right && y2 >= box.top && y2 <= box.bottom;
           });
           const root = page ?? document.querySelector(".kix-appview-editor") ?? document;
-          let inspected = 0;
-          for (const element4 of root.querySelectorAll("svg rect[aria-label]")) {
-            if (++inspected > 4096) break;
-            const box = element4.getBoundingClientRect();
-            if (x < box.left || x > box.right || y2 < box.top || y2 > box.bottom) continue;
-            const source2 = docsSource(element4, editor);
-            if (!source2 || source2.text.length > 1e3) continue;
-            for (let offset = 0; offset < source2.text.length; offset++) {
-              const rect = source2.rect(offset, offset + 1);
-              if (rect && x >= rect.left && x <= rect.right && y2 >= rect.top && y2 <= rect.bottom) return { text: source2.text, offset, rects: (start2, end) => {
-                const rect2 = source2.rect(start2, end);
-                return rect2 ? [rect2] : [];
-              } };
-            }
-          }
+          return docsHoverTarget(root, x, y2, (element4) => docsSource(element4, editor));
         }
         function ensureReader() {
           if (reader || !readingModeEnabled()) return;

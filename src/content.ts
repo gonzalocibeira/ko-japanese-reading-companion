@@ -10,6 +10,7 @@ import {mascotPreferences} from './mascot-preferences';
 import {updateMascotPosition} from './preferences';
 import {webTarget,type MascotTextTarget} from './mascot-target';
 import {docsSelectedTarget,docsSelectionSelector} from './docs-selection';
+import {docsHoverTarget} from './docs-hover';
 function initializeContentScript() {
 // SVG/XML documents cannot host the HTML UI created below. Content scripts
 // also run on direct image URLs, so stop before creating overlays or listeners.
@@ -89,17 +90,7 @@ function mascotTarget(x:number,y:number):MascotTextTarget|undefined {
   if(editor && (x<editor.left || x>editor.right || y<editor.top || y>editor.bottom))return;
   const page=[...visiblePages].find(element=>{const box=element.getBoundingClientRect();return x>=box.left && x<=box.right && y>=box.top && y<=box.bottom;});
   const root=page ?? document.querySelector('.kix-appview-editor') ?? document;
-  let inspected=0;
-  for(const element of root.querySelectorAll('svg rect[aria-label]')) {
-    if(++inspected>4096)break;
-    const box=element.getBoundingClientRect();
-    if(x<box.left || x>box.right || y<box.top || y>box.bottom)continue;
-    const source=docsSource(element,editor);if(!source || source.text.length>1000)continue;
-    for(let offset=0;offset<source.text.length;offset++) {
-      const rect=source.rect(offset,offset+1);
-      if(rect && x>=rect.left && x<=rect.right && y>=rect.top && y<=rect.bottom)return {text:source.text,offset,rects:(start,end)=>{const rect=source.rect(start,end);return rect?[rect]:[];}};
-    }
-  }
+  return docsHoverTarget(root,x,y,element=>docsSource(element,editor));
 }
 function ensureReader() {
   if(reader || !readingModeEnabled())return;

@@ -100,6 +100,37 @@ test('飲む and its inflected text show offline English definitions in the real
   }
   expect(requested).toEqual([]);
 });
+test('hovering every kanji of 洗濯機 resolves the full word on webpages and split Docs canvas runs',async()=>{
+  const page=await openPage();
+  await page.locator('#word').evaluate(el=>{el.textContent='洗濯機';});
+  await mascot({enabled:true,motion:'reduced',definitions:'en'});
+  const assertGlyphs=async(points:{x:number;y:number}[],reading='せんたくき',definition='washing machine')=>{
+    for(const point of points) {
+      await page.mouse.move(800,50);
+      await expect.poll(async()=>(await shadow(page,snapshot))?.open).toBe(false);
+      await page.mouse.move(point.x,point.y);
+      await expect.poll(async()=>(await shadow(page,snapshot))?.reading).toBe(reading);
+      await expect.poll(async()=>(await shadow(page,snapshot))?.text).toContain(definition);
+    }
+  };
+  await assertGlyphs(await page.locator('#word').evaluate(el=>Array.from({length:3},(_,i)=>{
+    const range=document.createRange();range.setStart(el.firstChild!,i);range.setEnd(el.firstChild!,i+1);
+    const r=range.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};
+  })));
+  await page.route('https://docs.google.com/document/d/appliances/edit',route=>route.fulfill({contentType:'text/html; charset=utf-8',body:`<!doctype html><style>body{margin:0}.kix-appview-editor{position:absolute;top:100px;width:900px;height:600px}</style><div class="kix-appview-editor"><svg width="900" height="600">${['洗','濯','機'].map((text,i)=>`<g data-font-css="24px system-ui"><rect x="${40+i*24}" y="60" width="24" height="28" aria-label="${text}" fill="transparent"/><text x="${40+i*24}" y="82" style="font:24px system-ui">${text}</text></g>`).join('')}</svg></div>`}));
+  await page.goto('https://docs.google.com/document/d/appliances/edit');
+  await assertGlyphs([52,76,100].map(x=>({x,y:175})));
+  // A repeated canvas tile must not duplicate the word or its reading.
+  await page.locator('.kix-appview-editor svg').evaluate(svg=>svg.append(svg.firstElementChild!.cloneNode(true)));
+  await assertGlyphs([100,76,52].map(x=>({x,y:175})));
+  for(const [word,reading,definition] of [['図書館','としょかん','library'],['学校','がっこう','school'],['日本語','にほんご','Japanese']]) {
+    await page.mouse.move(800,50);
+    await page.locator('.kix-appview-editor svg').evaluate((svg,word)=>{
+      svg.innerHTML=Array.from(word,(text,i)=>`<g data-font-css="24px system-ui"><rect x="${40+i*24}" y="60" width="24" height="28" aria-label="${text}" fill="transparent"/></g>`).join('');
+    },word);
+    await assertGlyphs(Array.from(word,(_,i)=>({x:52+i*24,y:175})),reading,definition);
+  }
+});
 test('Google Docs geometry and reading-view word hooks work with their independent settings',async()=>{
   const page=await context.newPage();await page.route('https://docs.google.com/document/d/mascot/edit',route=>route.fulfill({contentType:'text/html; charset=utf-8',body:'<!doctype html><meta charset="utf-8"><style>body{margin:0}.kix-appview-editor{position:absolute;top:100px;width:900px;height:600px}</style><div class="kix-appview-editor"><svg width="900" height="600"><g data-font-css="24px system-ui"><rect x="40" y="60" width="72" height="28" aria-label="日本語" fill="transparent"/><text x="40" y="82" style="font:24px system-ui">日本語</text></g></svg></div>'}));
   await page.goto('https://docs.google.com/document/d/mascot/edit');await mascot({enabled:true});await expect(page.locator('ko-mascot')).toBeVisible();
