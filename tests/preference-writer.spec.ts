@@ -3,9 +3,11 @@ import {build} from 'esbuild';
 import {runInNewContext} from 'node:vm';
 
 async function harness(initial:Record<string,any>={}) {
-  let state=structuredClone(initial),listener:Function=()=>{},failNextWrite=false;
+  let state=structuredClone({mascotOnDemandV1:true,...initial}),listener:Function=()=>{},failNextWrite=false;
   const id='a'.repeat(32),root=`chrome-extension://${id}/`;
-  const chrome={runtime:{id,getURL:(path:string)=>root+path,onMessage:{addListener:(fn:Function)=>listener=fn}},storage:{local:{
+  const event={addListener:()=>{}};
+  const chrome={runtime:{id,getURL:(path:string)=>root+path,onMessage:{addListener:(fn:Function)=>listener=fn}},
+    commands:{onCommand:event},tabs:{onRemoved:event},storage:{local:{
     get:async()=>structuredClone(state),
     set:async(values:Record<string,unknown>)=>{if(failNextWrite){failNextWrite=false;throw new Error('Storage failed');}state={...state,...structuredClone(values)};}
   }}};
@@ -81,7 +83,7 @@ test('the preference writer rejects unknown senders and malformed operations wit
     {id:h.id,tab:{id:1},frameId:0,url:'about:blank'}
   ])expect((await h.send(mutation,sender)).error).toContain('sender');
   for(const mutation of [null,[],{kind:'unknown'},{kind:'save-correction',word:17,reading:'とうきょう'},{kind:'reading-view',patch:{sites:{'bad.test':true}}},{kind:'site-appearance',hostname:'one.test',patch:{contrast:'bad'}}])expect((await h.send(mutation)).error).toBeTruthy();
-  expect(h.state()).toEqual({});
+  expect(h.state()).toEqual({mascotOnDemandV1:true});
   await h.a.saveCorrection('東京','とうきょう');expect(h.state().readingOverrides).toEqual({'東京':'とうきょう'});
 });
 

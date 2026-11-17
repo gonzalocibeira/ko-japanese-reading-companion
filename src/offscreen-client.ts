@@ -4,6 +4,6 @@ export async function ensureOffscreen() {
   if(contexts.length)return;
   if(!creating)creating=chrome.offscreen.createDocument({url:'offscreen.html',
     reasons:[chrome.offscreen.Reason.WORKERS,chrome.offscreen.Reason.DOM_PARSER],
-    justification:'Run the offline Japanese tokenizer and safely extract dictionary text.'}).finally(()=>{creating=undefined;});
+    justification:'Run offline Japanese and image workers and safely extract dictionary text.'}).finally(()=>{creating=undefined;});
   await creating;
 }

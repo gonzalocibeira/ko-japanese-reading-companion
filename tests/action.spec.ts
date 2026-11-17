@@ -26,12 +26,13 @@ async function toolbarHarness() {
   const messages=new Event(),updates=new Event(),activated=new Event(),removed=new Event(),changed=new Event(),installed=new Event(),startup=new Event();
   const icons:any[]=[],titles:any[]=[];
   const preferences:{enabled:boolean;excluded:string[]}={enabled:true,excluded:[]};
-  const tab={id:1,url:'https://example.com'};
+  const tab={id:1,windowId:1,url:'https://example.com'};
   let status=async()=>ready;
   const chrome={
-    runtime:{onMessage:messages,onInstalled:installed,onStartup:startup,sendMessage:async()=>({})},
-    storage:{onChanged:changed,local:{get:async()=>({...preferences})}},
-    tabs:{query:async()=>[{...tab}],get:async()=>({...tab}),sendMessage:()=>status(),onUpdated:updates,onActivated:activated,onRemoved:removed},
+    runtime:{id:'fixture',getURL:(path:string)=>'chrome-extension://fixture/'+path,onMessage:messages,onInstalled:installed,onStartup:startup,sendMessage:async()=>({})},
+    commands:{onCommand:new Event()},
+    storage:{onChanged:changed,local:{get:async()=>({...preferences,mascotOnDemandV1:true})},session:{remove:async()=>{}}},
+    tabs:{query:async()=>[{...tab}],get:async()=>({...tab}),sendMessage:()=>status(),onUpdated:updates,onActivated:activated,onRemoved:removed,onDetached:new Event()},
     action:{setIcon:async(value:unknown)=>{icons.push(value);},setTitle:async(value:unknown)=>{titles.push(value);}}
   };
   const source=await readFile('dist/background.js','utf8');

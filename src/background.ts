@@ -2,8 +2,19 @@ import {validOverrides} from './preferences';
 import './dictionary';
 import './playground-service';
 import './action';
+import './mascot-presence';
 import './preference-writer';
+import {startPhotoTabLookup} from './photo-tab-service';
 import {ensureOffscreen} from './offscreen-client';
+chrome.commands.onCommand.addListener((command,tab)=>{
+  if(command!=='photo-lookup')return;
+  void (async()=>{
+    const tabId=tab?.id ?? (await chrome.tabs.query({active:true,lastFocusedWindow:true}))[0]?.id;
+    if(tabId===undefined)return;
+    const result=await startPhotoTabLookup(tabId);
+    if(result.error)await chrome.tabs.create({url:chrome.runtime.getURL('playgrounds.html?tool=photo'),windowId:tab?.windowId});
+  })().catch(()=>{});
+});
 type TokenizePurpose = 'readings' | 'playground' | 'mascot';
 interface Job { overrides:Record<string,string>; texts:string[]; includeWords:boolean; requestId:string; owner:string; purpose:TokenizePurpose; jobId:string; cancelled:boolean; dispatched:boolean; respond:(result:unknown)=>void }
 interface Queue { jobs:Job[]; running:boolean; closed:boolean; active?:Job }

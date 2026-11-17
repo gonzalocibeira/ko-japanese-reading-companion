@@ -4,6 +4,7 @@ import type {PageStatus} from './action-state';
 import {setupUpdateBanner} from './update-banner';
 import {mascotPreferences,type MascotPatch} from './mascot-preferences';
 import {updateMascot,updateMascotPosition} from './preferences';
+import type {MascotVisitStatus} from './mascot-presence';
 const theme=document.createElement('style');theme.textContent=uiTheme;document.head.append(theme);
 document.querySelector('#extension-version')!.textContent=`v${chrome.runtime.getManifest().version}`;
 void setupUpdateBanner();
@@ -11,7 +12,73 @@ async function main() {
   const [tab] = await chrome.tabs.query({active:true, currentWindow:true});
   let hostname='';
   try { if (tab?.url && /^https?:/.test(tab.url)) hostname=new URL(tab.url).hostname; } catch { /* Unavailable tab URL. */ }
+  const lookUpTab=document.querySelector<HTMLButtonElement>('#photo-tab-start')!;
+  const openPhoto=document.querySelector<HTMLAnchorElement>('#photo-tab-open')!;
+  const photoFeedback=document.querySelector<HTMLElement>('#photo-tab-feedback')!;
+  const photoShortcut=document.querySelector<HTMLButtonElement>('#photo-tab-shortcut')!;
+  photoShortcut.onclick=()=>{void chrome.tabs.create({url:'chrome://extensions/shortcuts'});};
+  void chrome.commands.getAll().then(commands=>{
+    const shortcut=commands.find(command=>command.name==='photo-lookup')?.shortcut;
+    if(shortcut){photoShortcut.textContent=shortcut;photoShortcut.setAttribute('aria-label',`Change Photo Lookup shortcut (${shortcut})`);}
+  }).catch(()=>{});
+  lookUpTab.hidden=!hostname || tab?.id===undefined;
+  openPhoto.hidden=!lookUpTab.hidden;
+  lookUpTab.onclick=async()=>{
+    lookUpTab.disabled=true;
+    try {
+      const reply=await chrome.runtime.sendMessage({type:'photo-tab-start',tabId:tab?.id});
+      if(reply?.ok){window.close();return;}
+      throw new Error(reply?.error ?? 'Could not select an area on this tab.');
+    } catch(error) {
+      photoFeedback.textContent=error instanceof Error?error.message:'Could not select an area on this tab.';
+      openPhoto.hidden=false;
+    } finally {lookUpTab.disabled=false;}
+  };
+  await chrome.runtime.sendMessage({type:'mascot-preferences-ready'});
   const state = await chrome.storage.local.get({enabled:true, excluded:[],siteAppearance:{},readingOverrides:{},docsReadingView:{},readingView:null,mascot:null});
+  const mascotCall=document.querySelector<HTMLButtonElement>('#mascot-call')!;
+  const callFeedback=document.querySelector<HTMLElement>('#mascot-call-feedback')!;
+  const reloadTab=document.querySelector<HTMLButtonElement>('#mascot-reload')!;
+  const intro=document.querySelector<HTMLElement>('#mascot-intro')!;
+  void chrome.storage.local.get('dismissedMascotOnDemandIntro').then(value=>{intro.hidden=value.dismissedMascotOnDemandIntro===true;}).catch(()=>{});
+  document.querySelector<HTMLButtonElement>('#mascot-intro-dismiss')!.onclick=()=>{
+    void chrome.storage.local.set({dismissedMascotOnDemandIntro:true}).then(()=>{intro.hidden=true;}).catch(()=>{callFeedback.textContent='Could not save dismissal. Try again.';});
+  };
+  let mascotVisible=false;
+  let callPending=false;
+  async function mascotPresence(change=false) {
+    if(callPending)return;
+    if(!hostname || tab?.id===undefined) {
+      callFeedback.textContent='Kōくん is available on regular websites and Google Docs.';return;
+    }
+    callPending=true;mascotCall.disabled=true;
+    try {
+      const reply:MascotVisitStatus=await chrome.runtime.sendMessage({type:change?'mascot-visit-change':'mascot-visit-status',tabId:tab.id});
+      if(typeof reply?.visible!=='boolean')throw new Error(reply?.error);
+      mascotVisible=reply.visible;
+      mascotCall.textContent=mascotVisible?'Send Kōくん away':'Call Kōくん';
+      mascotCall.disabled=!reply.available && !reply.reload && !mascotVisible;
+      reloadTab.hidden=!reply.reload;
+      callFeedback.textContent=reply.error ?? 'Stays with this tab until you send him away or close it.';
+      if(change && reply.available)window.close();
+    } catch {
+      callFeedback.textContent='Could not update Kōくん. Reopen the menu and try again.';
+      mascotCall.disabled=false;
+    } finally {callPending=false;}
+  }
+  mascotCall.onclick=()=>void mascotPresence(true);
+  reloadTab.onclick=async()=>{
+    if(tab?.id===undefined)return;
+    try {await chrome.runtime.sendMessage({type:'mascot-visit-change',tabId:tab.id,visible:true});await chrome.tabs.reload(tab.id);window.close();}
+    catch {callFeedback.textContent='Could not reload the tab. Try reloading it in your browser.';}
+  };
+  void chrome.commands.getAll().then(commands=>{
+    const shortcut=commands.find(command=>command.name==='toggle-mascot')?.shortcut;
+    document.querySelector('#mascot-shortcut')!.textContent=shortcut || 'No shortcut assigned';
+  }).catch(()=>{document.querySelector('#mascot-shortcut')!.textContent='Shortcut unavailable';});
+  document.querySelector<HTMLButtonElement>('#mascot-shortcut-settings')!.onclick=()=>{
+    void chrome.tabs.create({url:'chrome://extensions/shortcuts'});
+  };
   const mascotEnabled=document.querySelector<HTMLInputElement>('#mascot-enabled')!;
   const mascotTrigger=document.querySelector<HTMLSelectElement>('#mascot-trigger')!;
   const mascotDefinitions=document.querySelector<HTMLSelectElement>('#mascot-definitions')!;
@@ -21,10 +88,10 @@ async function main() {
   const mascotFeedback=document.querySelector<HTMLElement>('#mascot-feedback')!;
   function renderMascot(value:unknown) {
     const m=mascotPreferences(value);mascotEnabled.checked=m.enabled;mascotTrigger.value=m.trigger;mascotDefinitions.value=m.definitions;mascotSize.value=String(m.size);mascotMotion.value=m.motion;
-    for(const input of [mascotTrigger,mascotDefinitions,mascotSize,mascotMotion])input.disabled=!m.enabled;
-    mascotReset.disabled=!hostname || !m.enabled;
+    mascotReset.disabled=!hostname;
   }
   renderMascot(state.mascot);
+  void mascotPresence();
   async function saveMascot(patch:MascotPatch) {
     try {renderMascot(await updateMascot(patch));mascotFeedback.textContent='Kōくん preference saved.';mascotFeedback.dataset.error='false';}
     catch {mascotFeedback.textContent='Could not save Kōくん preferences. Try again.';mascotFeedback.dataset.error='true';}
@@ -152,8 +219,10 @@ async function main() {
   };
   search.oninput=()=>renderCorrections(currentCorrections);
   chrome.storage.onChanged.addListener((changes,area)=>{
+    if(area==='session' && tab?.id!==undefined && changes[`mascotVisit:${tab.id}`])void mascotPresence();
     if(area!=='local')return;
-    if(changes.mascot)renderMascot(changes.mascot.newValue);
+    if(changes.mascot) {renderMascot(changes.mascot.newValue);void mascotPresence();}
+    if(changes.excluded)void mascotPresence();
     if(changes.enabled)enabled.checked=changes.enabled.newValue!==false;
     if(changes.excluded)excluded.checked=Array.isArray(changes.excluded.newValue) && changes.excluded.newValue.includes(hostname);
     if(changes.enabled || changes.excluded)changed();

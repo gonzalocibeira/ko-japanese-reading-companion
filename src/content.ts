@@ -11,6 +11,7 @@ import {updateMascotPosition} from './preferences';
 import {webTarget,type MascotTextTarget} from './mascot-target';
 import {docsSelectedTarget,docsSelectionSelector} from './docs-selection';
 import {docsHoverTarget} from './docs-hover';
+import {installPhotoTabOverlay} from './photo-tab-overlay';
 function initializeContentScript() {
 // SVG/XML documents cannot host the HTML UI created below. Content scripts
 // also run on direct image URLs, so stop before creating overlays or listeners.
@@ -36,12 +37,14 @@ let message = 'Starting offline furigana…';
 let statusState:PageStatus['state']='loading';
 let toolbarAvailability:ToolbarAvailability='unavailable';
 let contextInvalidated=false;
+let dismissPhotoLookup:(()=>void)|undefined;
 function invalidateContext() {
   if(contextInvalidated)return;
   contextInvalidated=true;
   revision++;window.clearTimeout(timer);activeRequest=undefined;
   mutationObserver?.disconnect();pageObserver.disconnect();
   clear();host.remove();reader?.loading(false,'');
+  dismissPhotoLookup?.();
   mascot?.destroy();mascot=undefined;
   message='Extension updated or reloaded. Reload this page to restore readings.';
   statusState='unavailable';toolbarAvailability='unavailable';
@@ -73,15 +76,31 @@ let legacyView:unknown;
 let rawView:unknown;
 let viewSettings=readingViewPreferences(undefined);
 const topFrame=window===window.top;
+if(topFrame)dismissPhotoLookup=installPhotoTabOverlay(sendToExtension,{
+  onCaptureVisibility:hidden=>mascot?.setCaptureHidden(hidden),
+  onRestoreMascotFocus:()=>mascot?.focusImageLookup(),
+  onInspectionPhase:phase=>mascot?.setImageInspection(phase),
+});
 const readingModeEnabled=()=>topFrame && panelEnabled(viewSettings,hostname);
 let reader:ReadingPanel|undefined;
 let mascot:Mascot|undefined;
 let mascotSettings=mascotPreferences(undefined);
+// The service worker owns this tab’s visit across documents.
+let mascotPresence:boolean|undefined;
+let mascotVisitRevision=0;
 function syncMascot() {
   if(!topFrame || contextInvalidated)return;
-  if(!mascotSettings.enabled) {mascot?.destroy();mascot=undefined;return;}
-  mascot ??= new Mascot({send:sendToExtension,savePosition:position=>updateMascotPosition(hostname,position),overrides:()=>overrides,target:mascotTarget,obstacle:()=>reader?.bounds()});
-  mascot.update(mascotSettings,excluded.includes(hostname),hostname);
+  if(!(mascotPresence ?? mascotSettings.enabled)) {mascot?.destroy();mascot=undefined;return;}
+  mascot ??= new Mascot({
+    send:sendToExtension,savePosition:position=>updateMascotPosition(hostname,position),overrides:()=>overrides,
+    target:mascotTarget,obstacle:()=>reader?.bounds(),
+    hide:()=>{void sendToExtension({type:'mascot-visit-change',visible:false}).catch(()=>{});},
+    lookUpImage:async()=>{
+      const reply=await sendToExtension({type:'photo-tab-mascot-start'});
+      if(!reply?.ok)throw new Error(reply?.error ?? 'Open Photo Lookup from the Kō toolbar to try again.');
+    },
+  });
+  mascot.update({...mascotSettings,enabled:true},mascotPresence===true?false:excluded.includes(hostname),hostname);
 }
 function mascotTarget(x:number,y:number):MascotTextTarget|undefined {
   if(!docs)return webTarget(x,y);
@@ -557,7 +576,15 @@ async function scan() {
     running = false; if (revision !== version && allowed()) {window.clearTimeout(timer);timer=window.setTimeout(()=>void scan(),Math.max(0,nextScanAt-performance.now()));}
   }
 }
-chrome.runtime.onMessage.addListener((request, _sender, respond) => { if (request?.type === 'status') respond({message,state:statusState,toolbarAvailability} satisfies PageStatus); });
+chrome.runtime.onMessage.addListener((request, _sender, respond) => {
+  if(request?.type==='status')respond({message,state:statusState,toolbarAvailability} satisfies PageStatus);
+  if(topFrame && request?.type==='mascot-render-status')respond({visible:mascot?.active ?? false});
+  if(topFrame && request?.type==='mascot-visit' && typeof request.visible==='boolean') {
+    mascotVisitRevision++;mascotPresence=request.visible;syncMascot();
+    if(request.visible && request.greet)mascot?.greet();
+    respond({ok:true});
+  }
+});
 chrome.storage.onChanged.addListener((changes, area) => {
   if(area==='local' && changes.mascot) {mascotSettings=mascotPreferences(changes.mascot.newValue);syncMascot();}
   if(area==='local' && changes.showLegacyAnimations)setMimeticLegacyAnimations(changes.showLegacyAnimations.newValue);
@@ -576,9 +603,22 @@ chrome.storage.onChanged.addListener((changes, area) => {
   }
   schedule(0);
 });
+window.addEventListener('pageshow',event=>{
+  if(!event.persisted || !topFrame)return;
+  const revision=mascotVisitRevision;
+  void sendToExtension({type:'mascot-visit-ready'}).then(visit=>{
+    if(revision!==mascotVisitRevision)return;
+    mascotPresence=visit?.visible;syncMascot();
+    if(visit?.greet)mascot?.greet();
+  }).catch(()=>{});
+});
 async function start() {
+  const visitRevision=mascotVisitRevision;
+  const visit=topFrame?await sendToExtension({type:'mascot-visit-ready'}):undefined;
   const state = await chrome.storage.local.get({enabled:true, excluded:[],siteAppearance:{},readingOverrides:{},docsReadingView:{},readingView:null,showLegacyAnimations:false,mascot:null}); enabled = state.enabled !== false; excluded = Array.isArray(state.excluded) ? state.excluded : [];
+  if(visitRevision===mascotVisitRevision)mascotPresence=visit?.visible;
   mascotSettings=mascotPreferences(state.mascot);syncMascot();
+  if(visitRevision===mascotVisitRevision && visit?.greet)mascot?.greet();
   setMimeticLegacyAnimations(state.showLegacyAnimations);
   readingAppearance=appearanceForSite(state.siteAppearance,hostname);overrides=validOverrides(state.readingOverrides);legacyView=state.docsReadingView;rawView=state.readingView;viewSettings=readingViewPreferences(rawView,legacyView);reader?.setOverrides(overrides);reader?.appearance(viewSettings,readingAppearance);
   if (docs) { registerPages(document); watchDocsInputs(document); }

@@ -34,8 +34,14 @@ test('Docs initialization rejects malformed IDs and stops accepting page events 
 });
 
 test('packaged executable JavaScript contains no string compilation or remote script loaders',async()=>{
-  for(const name of (await readdir('dist')).filter(name=>name.endsWith('.js'))) {
-    const code=await readFile(`dist/${name}`,'utf8');
+  for(const name of (await readdir('dist',{recursive:true})).filter(name=>name.endsWith('.js'))) {
+    let code=await readFile(`dist/${name}`,'utf8');
+    if(name==='photo-vision-worker.js') {
+      // Mirage uses one classic worker import with fixed paths on the worker's extension origin.
+      const localLoader='thread.importScripts(new URL("cactus.js", base).href)';
+      expect(code.replace(/\s+/g,' '),name).toContain('const base = new URL("vision/", thread.location.href); if (!thread.createCactus) '+localLoader+';');
+      code=code.replace(localLoader,'');
+    }
     expect(code,name).not.toMatch(/\b(?:eval|Function|importScripts)\s*\(/);
     expect(code,name).not.toMatch(/\b(?:WebSocket|EventSource)\s*\(/);
     expect(code,name).not.toContain('sendBeacon');

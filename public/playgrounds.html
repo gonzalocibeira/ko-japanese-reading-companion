@@ -5,18 +5,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Playgrounds — Kō</title>
 <style>
-html{height:100%;background:var(--surface,#e6d8b9)}
+html{height:100%;background:#ebdfc7}
 body{margin:0;height:100vh;height:100dvh;display:flex;flex-direction:column;color:var(--ink,#242b2d);font:15px/1.6 var(--body,system-ui)}
-header{display:flex;align-items:center;gap:16px;padding:18px 24px;border-bottom:3px solid var(--line);background:var(--paper)}
-header img{width:44px;height:44px;flex:none}header div{flex:1;min-width:0}h1{font:800 22px/1.3 var(--mono,monospace);margin:0}header p{font-size:12px;color:var(--muted);margin:4px 0 0}header a{font-size:12px;color:var(--accent);flex:none;text-underline-offset:3px}
-main{flex:1;min-height:0;width:100%;max-width:960px;margin:0 auto;background:var(--paper);border-inline:1px solid var(--line)}
+.playgrounds-banner{background:var(--paper,#f4ecd8);border-bottom:1px solid #b7aa92}
+.playgrounds-banner-content{display:flex;align-items:center;gap:12px;max-width:1120px;margin:auto;padding:14px clamp(14px,3vw,32px)}
+.playgrounds-banner img{width:36px;height:36px;flex:none}.playgrounds-brand{flex:1;min-width:0}.playgrounds-banner h1{font:800 20px/1.3 var(--mono,monospace);margin:0}.playgrounds-banner p{font-size:12px;color:var(--muted,#625d50);margin:2px 0 0}.playgrounds-banner a{font-size:12px;color:var(--accent,#234e64);flex:none;text-underline-offset:3px}
+main{flex:1;min-height:0;width:100%;max-width:1120px;margin:0 auto;background:var(--paper,#f4ecd8);border-inline:1px solid #d4c5ab}
 button{font:700 12px/1.4 var(--body);padding:8px 10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}button:hover{background:var(--surface)}
+.playground-browser.has-photo-tools .playground-tabs{gap:4px;border-color:#d4c5ab;padding:0 clamp(12px,3vw,32px)}
+.playground-browser.has-photo-tools .playground-tabs button{min-height:39px;padding:7px 4px;border:0;border-bottom:2px solid transparent;color:var(--muted,#625d50);background:transparent}
+.playground-browser.has-photo-tools .playground-tabs button:hover{color:var(--ink,#242b2d);background:#eee2cb}
+.playground-browser.has-photo-tools .playground-tabs [aria-selected=true]{color:var(--accent,#234e64);border-bottom-color:var(--seal,#9f3e2d);background:#efe2ca}
+.playground-browser.has-photo-tools .playground-tabs button:focus-visible{outline-offset:-3px}
 .playground-selection{width:100%;max-width:680px;margin-inline:auto}.loading{margin:24px}
-@media(max-width:440px){header{padding:14px;gap:10px}header img{width:32px;height:32px}h1{font-size:18px}header p{font-size:11px}header a{font-size:11px}main{border:0}}
+@media(max-width:440px){.playgrounds-banner-content{gap:9px}.playgrounds-banner img{width:30px;height:30px}.playgrounds-banner h1{font-size:17px}.playgrounds-banner p,.playgrounds-banner a{font-size:11px}main{border:0}}
 </style>
 </head>
 <body>
-<header><img src="icons/logo.svg" alt="Kō"><div><h1>Playgrounds</h1><p>Dictionary · Word forms · Grammar · Mimetics</p></div><a href="about.html" target="_blank" rel="noopener noreferrer">About Kō</a></header>
+<header class="playgrounds-banner"><div class="playgrounds-banner-content"><img src="icons/logo.svg" alt="Kō"><div class="playgrounds-brand"><h1>Playgrounds</h1><p>Offline Japanese reading tools</p></div><a href="about.html" target="_blank" rel="noopener noreferrer">About Kō</a></div></header>
 <main id="playground-host"><p class="loading" role="status">Opening playgrounds…</p></main>
 <script src="playgrounds.js"></script>
 </body>

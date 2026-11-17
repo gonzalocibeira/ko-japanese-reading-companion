@@ -1,21 +1,34 @@
 import {test,expect} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
 import {runInNewContext} from 'node:vm';
+
+const event={addListener:()=>{}};
+const extensionApis={
+  commands:{onCommand:event},
+  tabs:{onRemoved:event,onActivated:event,onUpdated:event,onDetached:event,query:async()=>[]},
+  storage:{onChanged:event,local:{get:async()=>({mascotOnDemandV1:true})}}
+};
+const runtimeApis={
+  id:'fixture',
+  getURL:(path:string)=>'chrome-extension://fixture/'+path,
+  ContextType:{OFFSCREEN_DOCUMENT:'offscreen'},
+  getContexts:async()=>[{}],
+  onInstalled:event,
+  onStartup:event
+};
+
 test('cancelled queued jobs never reach the worker; active cancellation stays isolated by document',async()=>{
   let listener:Function=()=>{},uuid=0;
   const sent:any[]=[],pending=new Map<string,Function>();
-  const event={addListener:()=>{}};
-  const chrome={
-    runtime:{ContextType:{OFFSCREEN_DOCUMENT:'offscreen'},getContexts:async()=>[{}],
+  const chrome={...extensionApis,
+    runtime:{...runtimeApis,
       onMessage:{addListener:(fn:Function)=>listener=fn},
-      onInstalled:event,onStartup:event,
       sendMessage:(message:any)=>{
         sent.push(message);
         if(message.type==='worker-job')return new Promise(resolve=>pending.set(message.jobId,resolve));
         if(message.type==='worker-cancel'){pending.get(message.jobId)?.({cancelled:true});pending.delete(message.jobId);}
         return Promise.resolve({ok:true});
-      }},tabs:{onRemoved:event,onActivated:event,onUpdated:event,query:async()=>[]},
-    storage:{onChanged:event}
+      }}
   };
   runInNewContext(await readFile('dist/background.js','utf8'),{chrome,crypto:{randomUUID:()=>`job-${++uuid}`}});
   const sender=(id:string)=>({tab:{id:1},documentId:id,frameId:0});
@@ -36,9 +49,9 @@ test('cancelled queued jobs never reach the worker; active cancellation stays is
 });
 
 test('mascot analysis and replacement never cancel a pending reading or playground request',async()=>{
-  let listener:Function=()=>{},uuid=0;const sent:any[]=[],pending=new Map<string,Function>(),event={addListener:()=>{}};
-  const chrome={runtime:{ContextType:{OFFSCREEN_DOCUMENT:'offscreen'},getContexts:async()=>[{}],onMessage:{addListener:(fn:Function)=>listener=fn},onInstalled:event,onStartup:event,
-    sendMessage:(message:any)=>{sent.push(message);if(message.type==='worker-job')return new Promise(resolve=>pending.set(message.jobId,resolve));if(message.type==='worker-cancel')pending.get(message.jobId)?.({cancelled:true});return Promise.resolve({ok:true});}},tabs:{onRemoved:event,onActivated:event,onUpdated:event,query:async()=>[]},storage:{onChanged:event}};
+  let listener:Function=()=>{},uuid=0;const sent:any[]=[],pending=new Map<string,Function>();
+  const chrome={...extensionApis,runtime:{...runtimeApis,onMessage:{addListener:(fn:Function)=>listener=fn},
+    sendMessage:(message:any)=>{sent.push(message);if(message.type==='worker-job')return new Promise(resolve=>pending.set(message.jobId,resolve));if(message.type==='worker-cancel')pending.get(message.jobId)?.({cancelled:true});return Promise.resolve({ok:true});}}};
   runInNewContext(await readFile('dist/background.js','utf8'),{chrome,crypto:{randomUUID:()=>`job-${++uuid}`}});
   const send=(message:any,frame=0)=>new Promise<any>(resolve=>listener(message,{tab:{id:1},documentId:'one',frameId:frame},resolve));
   const reading=send({type:'tokenize',requestId:'reading',texts:['日本語']});await expect.poll(()=>sent.filter(m=>m.type==='worker-job').length).toBe(1);

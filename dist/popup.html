@@ -19,12 +19,28 @@ footer{padding:0 18px 14px;color:var(--muted);font-size:10px;display:flex;flex-d
 <style>
 .update-banner{display:flex;align-items:flex-start;gap:10px;margin:0 0 10px;padding:10px 12px;border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--paper);font-size:11px;line-height:1.5}
 .update-banner[hidden]{display:none}.update-banner div{flex:1;min-width:0}.update-banner h2{font:700 12px/1.4 var(--mono);margin:0 0 4px}.update-banner p{margin:0 0 5px}.update-banner a{color:var(--accent);text-underline-offset:3px}.update-banner #dismiss-update{flex:none;border:0;padding:0;width:26px;height:26px;font:20px/1 var(--body);background:transparent}.update-banner #try-mascot{border:0;padding:0;background:transparent;color:var(--accent);font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.update-banner button:disabled{opacity:.5}.update-banner :focus-visible{outline:2px solid var(--accent);outline-offset:3px}#update-error{margin:6px 0 0;color:var(--seal)}
+.call-card{margin:0 0 10px;padding:10px 12px;border:2px solid var(--line);background:var(--paper)}#mascot-call{width:100%;min-height:40px;font-weight:750;background:var(--accent);color:var(--paper)}.call-detail{margin-top:5px;font-size:10px;color:var(--muted)}#mascot-shortcut-settings{border:0;background:transparent;color:var(--accent);font:inherit;padding:0;text-decoration:underline;cursor:pointer}.call-card .feedback{margin:5px 0 0;font-size:10px}.call-card button[hidden]{display:none}
+.photo-quick{margin:0 0 10px;padding:10px 12px;border:1px solid #ded0b1;border-inline-start:3px solid var(--seal);background:var(--paper)}
+.photo-quick-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}.photo-quick-action{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:34px;font:700 12px var(--body);color:var(--accent)}
+.photo-quick-icon{position:relative;display:inline-block;width:16px;height:12px;flex:none;border:1.5px solid currentColor;border-radius:2px;overflow:hidden}.photo-quick-icon::before{content:"";position:absolute;left:1px;bottom:-4px;width:10px;height:10px;border:1.5px solid currentColor;transform:rotate(45deg)}.photo-quick-icon::after{content:"";position:absolute;right:2px;top:2px;width:3px;height:3px;border-radius:50%;background:currentColor}.photo-quick a,.photo-quick .photo-shortcut{color:var(--accent);text-underline-offset:3px}.photo-quick .photo-shortcut{border:0;background:transparent;font:11px var(--body);text-decoration:underline;padding:5px 0}.photo-quick .feedback{margin:6px 0 0}
 </style>
 </head>
 <body>
 <header><img src="icons/logo.svg" alt=""><div><h1>Kō</h1><p>Japanese reading companion</p></div><a class="playgrounds-link" href="playgrounds.html" target="_blank" rel="noopener noreferrer" aria-label="Open Playgrounds">Playgrounds <span aria-hidden="true">↗</span></a></header>
 <main>
-<section id="update-banner" class="update-banner" aria-labelledby="update-heading" hidden><div><h2 id="update-heading">What’s new in Kō 1.4.1</h2><p>Hover over any character in multi-kanji words in Google Docs to see the complete word and its reading.</p><a id="update-notes-link" href="about.html#release-heading" target="_blank" rel="noopener noreferrer">Read the changelog</a><p id="update-error" role="status" hidden></p></div><button id="dismiss-update" type="button" aria-label="Dismiss update announcement">×</button></section>
+<section class="call-card" aria-label="Kōくん quick access">
+<button id="mascot-call" type="button" disabled>Call Kōくん</button>
+<div class="call-detail"><span id="mascot-shortcut">Checking shortcut…</span> · <button id="mascot-shortcut-settings" type="button">Change shortcut</button></div>
+<p id="mascot-call-feedback" class="feedback" role="status" aria-live="polite">Stays with this tab until you send him away or close it.</p>
+<div id="mascot-intro" hidden><p class="hint" style="margin:6px 0">New: call him here or use the shortcut. Pin Kō from your browser’s extensions menu for easy access.</p><button id="mascot-intro-dismiss" type="button">Got it</button></div>
+<button id="mascot-reload" type="button" hidden>Reload tab</button>
+</section>
+<section id="update-banner" class="update-banner" aria-labelledby="update-heading" hidden><div><h2 id="update-heading">What’s new in Kō 2.0.0</h2><p>Look up objects in photos and webpages, practice Japanese counters, and keep useful vocabulary in your Picture Diary.</p><a id="update-notes-link" href="about.html#release-heading" target="_blank" rel="noopener noreferrer">Read the changelog</a><p id="update-error" role="status" hidden></p></div><button id="dismiss-update" type="button" aria-label="Dismiss update announcement">×</button></section>
+<section class="photo-quick" aria-label="Photo Lookup quick access">
+<div class="photo-quick-row"><button class="photo-quick-action" id="photo-tab-start" type="button" hidden><span class="photo-quick-icon" aria-hidden="true"></span>Look up from this tab</button>
+<a id="photo-tab-open" href="playgrounds.html?tool=photo" target="_blank" rel="noopener noreferrer" hidden>Open Photo Lookup</a><button class="photo-shortcut" id="photo-tab-shortcut" type="button" aria-label="Set Photo Lookup shortcut">Set shortcut</button></div>
+<p id="photo-tab-feedback" class="feedback" role="status"></p>
+</section>
 <section id="status-card" class="status" data-state="loading" aria-label="Extension status"><span class="dot" aria-hidden="true"></span><div><p class="status-label" id="status-label">Getting ready</p><p id="status" role="status" aria-live="polite">Checking this page…</p></div></section>
 <section class="settings" aria-label="Reading preferences">
 <label class="setting"><span class="copy"><span class="title">Automatic readings</span><span class="detail">Show furigana as you browse.</span></span><span class="switch"><input id="enabled" type="checkbox" role="switch"><span class="track"></span></span></label>
@@ -33,13 +49,13 @@ footer{padding:0 18px 14px;color:var(--muted);font-size:10px;display:flex;flex-d
 
 <section class="preferences" aria-label="Reading customization">
 <details id="mascot-panel"><summary>Kōくん</summary><div class="panel">
-<label class="setting" style="padding:0 0 12px"><span class="copy"><span class="title">Show Kōくん</span><span class="detail">An animated companion while you browse. Off by default.</span></span><span class="switch"><input id="mascot-enabled" type="checkbox" role="switch"><span class="track"></span></span></label>
+<label class="setting" style="padding:0 0 12px"><span class="copy"><span class="title">Show automatically on websites</span><span class="detail">Off by default. Leave off to call him only when you want him.</span></span><span class="switch"><input id="mascot-enabled" type="checkbox" role="switch"><span class="track"></span></span></label>
 <div class="field"><label for="mascot-trigger">Word lookup</label><select id="mascot-trigger"><option value="hover">Hover</option><option value="highlight">Highlight a word</option></select></div>
 <div class="field"><label for="mascot-definitions">Definitions</label><select id="mascot-definitions"><option value="off">Off · readings only</option><option value="en">English</option><option value="ja">Japanese</option></select></div>
 <div class="field"><label for="mascot-size">Character size</label><select id="mascot-size"><option value="96">Small</option><option value="128">Default</option><option value="160">Large</option></select></div>
 <div class="field"><label for="mascot-motion">Motion</label><select id="mascot-motion"><option value="system">Follow system preference</option><option value="reduced">Still character</option></select></div>
 <button id="mascot-reset" type="button">Reset position on this site</button>
-<p class="hint" style="margin-top:10px">Drag Kōくん to move him, or focus him and use arrow keys. He remembers his position per site. His switch works with automatic readings off; Pause on this site hides him. Hover or highlight one Japanese word to see its reading. Hover bubbles close when you leave the word; he keeps moving. English and Japanese definitions use bundled dictionaries first. Missing meanings use Wiktionary online. In Google Docs, use Reading view if editor text is unavailable.</p>
+<p class="hint" style="margin-top:10px">Drag Kōくん to move him, or focus him and use arrow keys. He remembers his position per site. Calling him works even when readings are off or paused. Automatic visits respect site pauses. Hover or highlight one Japanese word to see its reading. Hover bubbles close when you leave the word; he keeps moving. English and Japanese definitions use bundled dictionaries first. Missing meanings use Wiktionary online. In Google Docs, use Reading view if editor text is unavailable.</p>
 <p id="mascot-feedback" class="feedback" role="status" aria-live="polite"></p>
 </div></details>
 <details id="view-reading-panel"><summary>Reading view</summary><div class="panel">

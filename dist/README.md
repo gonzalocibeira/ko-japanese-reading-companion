@@ -5,7 +5,7 @@
 <h1 align="center">Kō — Japanese Reading Companion</h1>
 <p align="center"><strong>Japanese reading companion.</strong></p>
 <p align="center">Automatic Japanese readings for webpages and Google Docs.<br>Furigana runs on your device. English and Japanese meanings use bundled dictionaries, with Wiktionary as online fallback.</p>
-<p align="center"><strong>1.4.0</strong> · Stable GitHub release · 1 November 2026</p>
+<p align="center"><strong>2.0.0</strong> · Repository build · 18 November 2026</p>
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok">Install from the Chrome Web Store</a> ·
   <a href="#see-it-in-action">See it in action</a> ·
@@ -41,6 +41,10 @@ This 1.4 fixture capture shows the offline Grammar comparison. The live Google D
 
 ## Release notes
 
+### 2.0.0 · 18 November 2026
+
+Look up objects in images, practice Japanese counters, and save lossless vocabulary crops in an offline Picture Diary. Kōくん brings out his loupe and follows the lookup from selection to discovery. See [Photo Lookup and Picture Diary](#photo-lookup-and-picture-diary) and the [full changelog](docs/release-notes.md).
+
 ### 1.4.0 · 1 November 2026
 
 - **Dictionary:** offline Japanese spelling/reading and English meaning search across bundled JMdict, with distinct senses, restrictions, usage labels, Japanese definitions, and links to Word forms. Optional English and Japanese online lookups keep their results independent.
@@ -52,7 +56,7 @@ All **276 automated tests** pass, including the native popup check. Type checkin
 
 ### 1.3.0 · 22 October 2026
 
-**Kōくん** is an optional browser companion. Enable him in the extension popup; he starts off. He blinks and breathes while idle, takes regular walks around his drop area, and waits at least three active minutes and three walking trips before he can sleep. Awake pauses last about 12–24 seconds; sleeping stays still. Special routines retain a 5–10 minute cooldown. **Click him to wake him for one minute**: he greets you and becomes more active, with 8–16 second rests between actions. Clicking again refreshes that minute; dragging does not wake him. Enter or Space also wakes him when focused. The minute expires even while his tab is in the background, and a routine already underway finishes its normal exit.
+**Kōくん** is an optional browser companion. He stays hidden by default. Click the extension icon and choose **Call Kōくん** at the top of the popup to bring him to the current page, or **Send Kōくん away** to hide him. Use **Alt+Shift+K** (**Option+Shift+K** on Mac) to call or hide him directly; the popup shows the assigned shortcut and lets you change it. A call stays with the tab through reloads and navigation until you send him away or close the tab. Other tabs stay hidden. Calling him works even when readings are paused, without changing your reading settings. His small Hide button appears on hover or keyboard focus. Browser restarts and extension reloads end visits. Updating to this experience switches automatic appearance off once, while preserving his other settings. You can adjust his settings while he is hidden. **Show automatically on websites** is an optional global switch; leave it off for on-demand visits. He blinks and breathes while idle, takes regular walks around his drop area, and waits at least three active minutes and three walking trips before he can sleep. Awake pauses last about 12–24 seconds; sleeping stays still. Special routines retain a 5–10 minute cooldown. **Click him to wake him for one minute**: he greets you and becomes more active, with 8–16 second rests between actions. Clicking again refreshes that minute; dragging does not wake him. Enter or Space also wakes him when focused. The minute expires even while his tab is in the background, and a routine already underway finishes its normal exit.
 
 His PS1-inspired design uses chunky cream polygons, vermilion markings, pixel textures, four limbs, and three tails. All 24 routines have been rebuilt as 56 transparent clips. [Preview the animation library](qa/ko-kun-animation/ps1-review.html).
 
@@ -62,7 +66,7 @@ Hover over a Japanese word for 600 ms to open his speech bubble, or choose **Hig
 
 Use Reading view when Google Docs does not expose enough editor text. Mascot lookups do not cover embedded frames, browser-protected pages, browser PDF viewers, or arbitrary image/canvas text. No needs, feeding, sound, or progression are included.
 
-The historical [Kō 1.3.0 release](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.3.0) remains available. For the current version, use the 1.4 downloads above and reload the extension and existing tabs. Existing settings and corrections remain compatible. The small popup invitation opens Kōくん settings and stays dismissed after closing it on this device. See the [1.3 release audit](docs/release-1.3-audit.md) and [full changelog](docs/release-notes.md).
+The historical [Kō 1.3.0 release](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v1.3.0) remains available. The small popup invitation opens Kōくん settings and stays dismissed after closing it on this device. See the [1.3 release audit](docs/release-1.3-audit.md) and [full changelog](docs/release-notes.md).
 
 English definitions now use 218,942 bundled JMdict entries; Japanese definitions use 124,195 Japanese Wiktionary headwords. Missing meanings fall back online. Dictionary-backed kanji compounds stay together in word details. Google Docs highlight lookup follows supported painted selections, and direct SVG/XML pages are skipped safely.
 
@@ -76,7 +80,7 @@ English definitions now use 218,942 bundled JMdict entries; Japanese definitions
 - **90 mimetic expressions in 45 illustrated comparisons**, with original examples, usage notes, references, and new ukiyo-e-inspired pixel animations. Scenes loop automatically; reduced motion shows a still pose. About → **Show legacy animations** restores the original line style.
 - **Release announcements:** a compact banner summarizes each version, links to the About changelog, and stays dismissed on this device after closing it. About also opens GitHub to **Suggest a feature or improvement**.
 
-Version 1.2.0 was published on GitHub on 18 October 2026 under `v1.2.0`; its announced launch date is 28 October. Chrome Web Store review and publication are managed separately. The 1.2 release remains available as a historical download; current downloads contain 1.4.0.
+Version 1.2.0 was published on GitHub on 18 October 2026 under `v1.2.0`. Its announced launch date was 28 October. The 1.2 release remains available as a historical download.
 
 RC1 verification: all **186 tests** and **3 prior release-audit regressions** passed. Final release preparation checks are recorded in the audit. See the [1.2 audit](docs/release-1.2-audit.md) for scope and limits.
 
@@ -104,7 +108,7 @@ Read the [full release notes](docs/release-notes.md) for details and update inst
 
 **[Install Kō from the Chrome Web Store](https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok).** Click **Add to Chrome**, confirm the installation, then reload your open tabs to start reading. Store installations receive updates automatically.
 
-**1.4.0 is available on GitHub**, including Dictionary and Grammar playgrounds, Kōくん, and bundled English and Japanese definitions. Chrome Web Store availability is managed separately; this release does not submit or publish a store update.
+**Kō 2.0 is available as a repository build.** Follow the manual installation steps below to try it. The Chrome Web Store listing carries its own published version.
 
 **Tip:** Pin **Kō — Japanese Reading Companion** from Chrome's puzzle-piece **Extensions** menu. Look for the warm-paper **考** (think) on a vermilion seal.
 
@@ -112,7 +116,7 @@ Read the [full release notes](docs/release-notes.md) for details and update inst
 
 You can also load the ready-to-use extension from [`dist/`](.). No Node.js, npm, or build step needed.
 
-1. **Download the [1.4.0 extension ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.4.0/ko-japanese-reading-companion-1.4.0.zip).** It contains the ready-to-load `dist` folder. You can also download the full source from [the repository](https://github.com/gonzalocibeira/ko-japanese-reading-companion) using **Code → Download ZIP**. Release assets include [SHA-256 checksums](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v1.4.0/SHA256SUMS).
+1. **Download the [repository ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/archive/refs/heads/master.zip).** It contains the ready-to-load `dist` folder.
 2. **Extract and keep the folder.** Put it somewhere permanent, such as `Documents/Ko`.
 3. **Open Chrome's extensions page.** Enter `chrome://extensions` in the address bar and turn on **Developer mode**.
 4. **Load the extension.** Click **Load unpacked** and select the extracted folder containing `manifest.json`. For a repository/source download, this is the **extension folder**. A `chrome-web-store.zip` package has `manifest.json` directly in its extracted root.
@@ -122,7 +126,7 @@ You can also load the ready-to-use extension from [`dist/`](.). No Node.js, npm,
 <summary><strong>Which folder should I select?</strong></summary>
 
 ```text
-ko-japanese-reading-companion-1.3.0/
+ko-japanese-reading-companion-master/
 └── dist/                  ← Select this folder in “Load unpacked”
     ├── manifest.json
     ├── content.js
@@ -133,7 +137,7 @@ ko-japanese-reading-companion-1.3.0/
 
 Select the extracted folder containing `manifest.json`, not the ZIP or repository root. Keep that folder in place and leave Developer mode enabled. Managed work or school browsers may restrict unpacked extensions.
 
-The manual-install ZIP and repository/source downloads both contain a `dist` folder. The separate `ko-japanese-reading-companion-1.3.0-chrome-web-store.zip` asset is intended for store submission and has `manifest.json` directly at its root; if loading that package manually, select its extracted root instead.
+The manual-install ZIP and repository/source downloads both contain a `dist` folder. A store-layout ZIP has `manifest.json` directly at its root. Select that extracted root if you are loading a store-layout package manually.
 
 See [Chrome's official instructions for loading unpacked extensions](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked).
 
@@ -234,6 +238,14 @@ Under **Local reading corrections**, search by word or hiragana/katakana reading
 For isolated vocabulary and translation lines such as `出口 = salida`, readings prefer a matching common-noun dictionary entry when the tokenizer selects a proper name. Saved corrections take priority; add one when you intend a standalone surname or another preferred reading.
 
 Readings shrink or are omitted when space is tight to preserve the original line spacing. Try a smaller reading size or the extra-space reading panel when you need more room.
+
+## Photo Lookup and Picture Diary
+
+**Photo Lookup** in standalone Playgrounds names objects from a pasted or dropped image using bundled Mirage and JMdict. Click an object for its Japanese word, reading, and English meaning, or select several in **Count** to see their Japanese counter. To inspect a webpage, choose **Look up from this tab** in the toolbar or reveal Kōくん’s controls and choose **Look up an image**. Drag around the area and confirm with **Look up selection**. Kōくん raises his loupe, scans, reacts to the result, and refocuses on the object you choose. The toolbar also lets you assign a Photo Lookup shortcut. Both modes process images on your device.
+
+Use **Save to Picture Diary** to keep a lossless crop and its vocabulary on this device. Open **Picture Diary** in Playgrounds to search, delete, export a ZIP backup, or import one. Import adds entries that are missing from the local diary.
+
+**Count** uses a bundled set of Japanese counters for everyday objects, people, animals, vehicles, and more. If a selection of inanimate objects has no shared counter, choose **Count as things** for the general count. For example, four cars are 四台（よんだい） and four things are 四つ（よっつ）. Kō's object mappings use the readings and categories documented by [Tokyo University of Foreign Studies](https://www.coelang.tufs.ac.jp/mt/ja/gmod/contents/explanation/017.html), [UT Austin's JOSHU](https://laits.utexas.edu/japanese/joshu/counters/counters_category.php), and the [Japan Foundation](https://www.kyozai.jpf.go.jp/kyozai/material/DNE00012/ja/render.do).
 
 ## Privacy and online lookups
 
@@ -351,6 +363,6 @@ Kō is source available under these terms. Earlier copies distributed under MIT,
 
 ### Third-party notices
 
-Bundled dependency licenses are included in [`dist/licenses/`](licenses/), including Kuromoji (Apache 2.0), IPADIC's notice, async, doublearray, zlibjs, lodash, and kamiya-codec (Unlicense). These dependencies retain their own licenses; the Kō No-Resale License does not replace them.
+Bundled dependency licenses are included in [`dist/licenses/`](licenses/), including Kuromoji, IPADIC, async, doublearray, zlibjs, lodash, kamiya-codec, Cactus and Mirage, jSquash and libwebp, and zip.js. These dependencies retain their own licenses.
 
 DotGothic16, the bundled Japanese pixel font for Kōくん dialogue, is by The DotGothic16 Project Authors and is distributed under its [SIL Open Font License](art/fonts/OFL.txt). It remains separate from Kō’s project license. Source: [Google Fonts](https://github.com/google/fonts/tree/main/ofl/dotgothic16).

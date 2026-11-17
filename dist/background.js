@@ -23,9 +23,9 @@
   };
   var __copyProps = (to, from, except, desc) => {
     if (from && typeof from === "object" || typeof from === "function") {
-      for (let key of __getOwnPropNames(from))
-        if (!__hasOwnProp.call(to, key) && key !== except)
-          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+      for (let key2 of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key2) && key2 !== except)
+          __defProp(to, key2, { get: () => from[key2], enumerable: !(desc = __getOwnPropDesc(from, key2)) || desc.enumerable });
     }
     return to;
   };
@@ -134,14 +134,14 @@
     return typeof chrome === "object" && chrome.runtime?.getURL ? chrome.runtime.getURL(path) : new URL(path, self.location.href).href;
   }
   async function loadDictionaryShard(dictionary, bucket) {
-    const key = `${dictionary}/${bucket}`;
-    const cached = shards.get(key);
+    const key2 = `${dictionary}/${bucket}`;
+    const cached = shards.get(key2);
     if (cached) {
-      shards.delete(key);
-      shards.set(key, cached);
+      shards.delete(key2);
+      shards.set(key2, cached);
       return cached.value;
     }
-    let job = loading.get(key);
+    let job = loading.get(key2);
     if (!job) {
       job = (async () => {
         const response = await fetch(bundledResourceURL(`dictionaries/${dictionary}/${bucket}.json.gz`));
@@ -149,16 +149,16 @@
         const text = await new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).text(), value = JSON.parse(text);
         if (!value.terms || !value.entries) throw new Error("Invalid dictionary shard");
         const bytes = text.length * 2;
-        shards.set(key, { value, bytes });
+        shards.set(key2, { value, bytes });
         retainedBytes += bytes;
         while (shards.size > 16 || retainedBytes > 8 * 1024 * 1024) {
-          const key2 = shards.keys().next().value;
-          retainedBytes -= shards.get(key2).bytes;
-          shards.delete(key2);
+          const key3 = shards.keys().next().value;
+          retainedBytes -= shards.get(key3).bytes;
+          shards.delete(key3);
         }
         return value;
-      })().finally(() => loading.delete(key));
-      loading.set(key, job);
+      })().finally(() => loading.delete(key2));
+      loading.set(key2, job);
     }
     return job;
   }
@@ -242,7 +242,7 @@
     if (!creating) creating = chrome.offscreen.createDocument({
       url: "offscreen.html",
       reasons: [chrome.offscreen.Reason.WORKERS, chrome.offscreen.Reason.DOM_PARSER],
-      justification: "Run the offline Japanese tokenizer and safely extract dictionary text."
+      justification: "Run offline Japanese and image workers and safely extract dictionary text."
     }).finally(() => {
       creating = void 0;
     });
@@ -258,7 +258,7 @@
   // src/dictionary.ts
   async function onlineDefinition(language, word) {
     const signal = AbortSignal.timeout(8e3);
-    const run = async () => {
+    const run2 = async () => {
       const visited = /* @__PURE__ */ new Set();
       let title = word;
       for (let hop = 0; hop <= 2; hop++) {
@@ -308,7 +308,7 @@
     let abort = () => {
     };
     try {
-      return await Promise.race([run(), new Promise((resolve) => {
+      return await Promise.race([run2(), new Promise((resolve) => {
         abort = () => resolve(failure("network"));
         signal.addEventListener("abort", abort, { once: true });
       })]);
@@ -322,14 +322,14 @@
     return onlineDefinition(language, word);
   }
   function lookupDefinition(language, word) {
-    const key = JSON.stringify([word, language]), stored = cache.get(key);
+    const key2 = JSON.stringify([word, language]), stored = cache.get(key2);
     if (stored && stored.expires > Date.now()) {
-      cache.delete(key);
-      cache.set(key, stored);
+      cache.delete(key2);
+      cache.set(key2, stored);
       return Promise.resolve(stored.page);
     }
-    cache.delete(key);
-    const active2 = pending.get(key);
+    cache.delete(key2);
+    const active2 = pending.get(key2);
     if (active2) return active2;
     if (pending.size >= 8) return Promise.resolve(failure("busy"));
     const job = (async () => {
@@ -340,12 +340,12 @@
       }
       page ??= await onlineDefinition(language, word);
       if (page.status !== "error") {
-        cache.set(key, { page, expires: page.status === "missing" ? Date.now() + 5 * 6e4 : Infinity });
+        cache.set(key2, { page, expires: page.status === "missing" ? Date.now() + 5 * 6e4 : Infinity });
         while (cache.size > 256) cache.delete(cache.keys().next().value);
       }
       return page;
-    })().finally(() => pending.delete(key));
-    pending.set(key, job);
+    })().finally(() => pending.delete(key2));
+    pending.set(key2, job);
     return job;
   }
   var pending, cache, failure;
@@ -418,7 +418,7 @@
           url = sender.url ? new URL(sender.url) : void 0;
         } catch {
         }
-        const standalone = sender.url === chrome.runtime.getURL("playgrounds.html");
+        const standalone = url?.protocol === "chrome-extension:" && url.hostname === chrome.runtime.id && url.pathname === "/playgrounds.html";
         const reading = sender.tab?.id !== void 0 && sender.frameId === 0 && url && ["http:", "https:"].includes(url.protocol);
         if (sender.id !== chrome.runtime.id || !standalone && !reading || !validPlaygroundQuery(message.query)) {
           respond({ error: "Invalid playground request" });
@@ -531,13 +531,111 @@
     }
   });
 
+  // src/mascot-presence.ts
+  function serial(tabId, work) {
+    const next = (pending2.get(tabId) ?? Promise.resolve()).catch(() => {
+    }).then(async () => {
+      await mascotMigration;
+      return work();
+    });
+    pending2.set(tabId, next);
+    void next.finally(() => {
+      if (pending2.get(tabId) === next) pending2.delete(tabId);
+    }).catch(() => {
+    });
+    return next;
+  }
+  async function visit(tabId) {
+    const value = (await chrome.storage.session.get(key(tabId)))[key(tabId)];
+    return value && typeof value.visible === "boolean" ? { visible: value.visible, greet: value.greet === true } : void 0;
+  }
+  async function status(tabId, override) {
+    const tab = await chrome.tabs.get(tabId);
+    if (!/^https?:/.test(tab.url ?? "")) return { visible: override?.visible ?? (await visit(tabId))?.visible ?? false, available: false, reload: false, error: "K\u014D\u304F\u3093 cannot appear on this browser-protected page. He can join you on a regular website." };
+    try {
+      const reply = await chrome.tabs.sendMessage(tabId, { type: "mascot-render-status" }, { frameId: 0 });
+      if (typeof reply?.visible !== "boolean") throw new Error("Old content script");
+      return { visible: reply.visible, available: true, reload: false };
+    } catch {
+      return { visible: override?.visible ?? (await visit(tabId))?.visible ?? false, available: false, reload: true, error: "Reload this tab to bring K\u014D\u304F\u3093 here. Some browser-protected pages cannot show him." };
+    }
+  }
+  function changeMascotVisit(tabId, visible) {
+    return serial(tabId, async () => {
+      const current = await status(tabId);
+      const next = { visible: visible ?? !current.visible, greet: false };
+      next.greet = next.visible;
+      await chrome.storage.session.set({ [key(tabId)]: next });
+      try {
+        const reply = await chrome.tabs.sendMessage(tabId, { type: "mascot-visit", visible: next.visible, greet: next.greet }, { frameId: 0 });
+        if (reply?.ok !== true) throw new Error("Content script unavailable");
+        await chrome.storage.session.set({ [key(tabId)]: { ...next, greet: false } });
+      } catch {
+      }
+      return status(tabId, next);
+    });
+  }
+  var key, mascotMigration, pending2;
+  var init_mascot_presence = __esm({
+    "src/mascot-presence.ts"() {
+      "use strict";
+      init_mascot_preferences();
+      key = (tabId) => `mascotVisit:${tabId}`;
+      mascotMigration = (async () => {
+        const state = await chrome.storage.local.get(["mascot", "mascotOnDemandV1"]);
+        if (state.mascotOnDemandV1 === true) return;
+        await chrome.storage.local.set({ mascot: { ...mascotPreferences(state.mascot), enabled: false }, mascotOnDemandV1: true });
+      })();
+      pending2 = /* @__PURE__ */ new Map();
+      chrome.runtime.onMessage.addListener((message, sender, respond) => {
+        const fromPage = sender.frameId === 0 && sender.tab?.id !== void 0 && /^https?:/.test(sender.url ?? "");
+        const fromExtension = sender.id === chrome.runtime.id && sender.url?.startsWith(chrome.runtime.getURL(""));
+        let job;
+        if (message?.type === "mascot-preferences-ready" && fromExtension) job = mascotMigration.then(() => ({ ok: true }));
+        else if (message?.type === "mascot-visit-ready" && fromPage) {
+          const tabId = sender.tab.id;
+          job = serial(tabId, async () => {
+            const current = await visit(tabId);
+            await chrome.action.setBadgeText({ tabId, text: "" });
+            if (current?.greet) await chrome.storage.session.set({ [key(tabId)]: { ...current, greet: false } });
+            return { visible: current?.visible, greet: current?.greet ?? false };
+          });
+        } else if (message?.type === "mascot-visit-change" && (fromPage || fromExtension)) {
+          const tabId = fromPage ? sender.tab.id : message.tabId;
+          if (Number.isInteger(tabId) && tabId >= 0 && (message.visible === void 0 || typeof message.visible === "boolean")) job = changeMascotVisit(tabId, message.visible);
+        } else if (message?.type === "mascot-visit-status" && fromExtension && Number.isInteger(message.tabId)) {
+          job = serial(message.tabId, () => status(message.tabId));
+        }
+        if (!job) return;
+        void job.then(respond, () => respond({ error: "Could not update K\u014D\u304F\u3093. Try again." }));
+        return true;
+      });
+      chrome.commands.onCommand.addListener((command, tab) => {
+        if (command !== "toggle-mascot") return;
+        void (async () => {
+          const target = tab?.id === void 0 ? (await chrome.tabs.query({ active: true, lastFocusedWindow: true }))[0] : tab;
+          if (target?.id === void 0) return;
+          const result = await changeMascotVisit(target.id);
+          await chrome.action.setBadgeText({ tabId: target.id, text: result.available ? "" : "!" });
+          if (!result.available) await chrome.action.setTitle({ tabId: target.id, title: `K\u014D\u304F\u3093 \u2014 ${result.error}` });
+        })().catch(() => {
+        });
+      });
+      chrome.tabs.onRemoved.addListener((tabId) => {
+        void serial(tabId, () => chrome.storage.session.remove(key(tabId))).catch(() => {
+        });
+      });
+    }
+  });
+
   // src/preference-writer.ts
   var require_preference_writer = __commonJS({
     "src/preference-writer.ts"() {
       "use strict";
       init_preferences();
       init_mascot_preferences();
-      var pending2 = Promise.resolve();
+      init_mascot_presence();
+      var pending3 = Promise.resolve();
       function string(value, limit) {
         if (typeof value !== "string" || value.length > limit) throw new Error("Invalid preference value.");
         return value;
@@ -552,11 +650,12 @@
         return value;
       }
       async function apply(mutation) {
+        await mascotMigration;
         switch (mutation.kind) {
           case "mascot": {
             const patch = record(mutation.patch);
             const choices = { enabled: [true, false], trigger: ["hover", "highlight"], definitions: ["off", "en", "ja"], size: [96, 128, 160], motion: ["system", "reduced"] };
-            if (Object.entries(patch).some(([key, value]) => !Object.hasOwn(choices, key) || !choices[key].includes(value))) throw new Error("Invalid K\u014D\u304F\u3093 preference.");
+            if (Object.entries(patch).some(([key2, value]) => !Object.hasOwn(choices, key2) || !choices[key2].includes(value))) throw new Error("Invalid K\u014D\u304F\u3093 preference.");
             const state = await chrome.storage.local.get("mascot");
             const next = mascotPreferences({ ...mascotPreferences(state.mascot), ...patch });
             await chrome.storage.local.set({ mascot: next });
@@ -574,7 +673,7 @@
           }
           case "reading-view": {
             const patch = record(mutation.patch);
-            if (Object.entries(patch).some(([key, value]) => !["spacing", "fontSize", "width"].includes(key) || typeof value !== "number" || !Number.isFinite(value))) throw new Error("Invalid reading panel preference.");
+            if (Object.entries(patch).some(([key2, value]) => !["spacing", "fontSize", "width"].includes(key2) || typeof value !== "number" || !Number.isFinite(value))) throw new Error("Invalid reading panel preference.");
             if (mutation.site) {
               hostname(mutation.site.hostname);
               if (typeof mutation.site.enabled !== "boolean") throw new Error("Invalid website preference.");
@@ -623,7 +722,7 @@
           }
           case "site-appearance": {
             const name = hostname(mutation.hostname), patch = record(mutation.patch);
-            if (Object.entries(patch).some(([key, value]) => key === "scale" ? typeof value !== "number" || !Number.isFinite(value) : key !== "contrast" || !["auto", "high"].includes(String(value)))) throw new Error("Invalid reading appearance.");
+            if (Object.entries(patch).some(([key2, value]) => key2 === "scale" ? typeof value !== "number" || !Number.isFinite(value) : key2 !== "contrast" || !["auto", "high"].includes(String(value)))) throw new Error("Invalid reading appearance.");
             const state = await chrome.storage.local.get({ siteAppearance: {} });
             const sites = state.siteAppearance && typeof state.siteAppearance === "object" && !Array.isArray(state.siteAppearance) ? { ...state.siteAppearance } : {};
             const next = appearance({ ...appearanceForSite(sites, name), ...patch });
@@ -651,11 +750,203 @@
           respond({ error: "Invalid preference operation." });
           return;
         }
-        const job = pending2.then(() => apply(message.mutation));
-        pending2 = job.then(() => {
+        const job = pending3.then(() => apply(message.mutation));
+        pending3 = job.then(() => {
         }, () => {
         });
         void job.then((value) => respond({ value }), (error) => respond({ error: error instanceof Error ? error.message : "Could not save the preference. Try again." }));
+        return true;
+      });
+    }
+  });
+
+  // src/photo-tab-protocol.ts
+  function validPhotoSize(value) {
+    if (!value || typeof value !== "object") return false;
+    const { width, height } = value;
+    return Number.isFinite(width) && width > 0 && width <= 32768 && Number.isFinite(height) && height > 0 && height <= 32768;
+  }
+  function validPhotoRectangle(value) {
+    if (!validPhotoSize(value)) return false;
+    const { x, y } = value;
+    return Number.isFinite(x) && x >= 0 && x <= 32768 && Number.isFinite(y) && y >= 0 && y <= 32768;
+  }
+  function validPhotoTabSelection(value) {
+    if (!value || typeof value !== "object") return false;
+    const { rect, viewport } = value;
+    return validPhotoRectangle(rect) && validPhotoSize(viewport) && rect.width >= 16 && rect.height >= 16 && rect.x + rect.width <= viewport.width && rect.y + rect.height <= viewport.height;
+  }
+  var photoTabUnavailable, photoTabExpired, photoTabMoved, photoTabNeedsGesture;
+  var init_photo_tab_protocol = __esm({
+    "src/photo-tab-protocol.ts"() {
+      "use strict";
+      photoTabUnavailable = "This tab is unavailable for Photo Lookup. Open Photo Lookup to paste or choose an image.";
+      photoTabExpired = "The selected area is no longer available. Choose it again from the toolbar.";
+      photoTabMoved = "The page moved. Select the area again.";
+      photoTabNeedsGesture = "To capture this tab, use Look up from this tab in the K\u014D toolbar menu, or your Photo Lookup browser shortcut.";
+    }
+  });
+
+  // src/photo-tab-service.ts
+  function clearCaptures(filter) {
+    for (const [windowId, capture2] of inFlight) {
+      if ((filter.windowId === void 0 || windowId === filter.windowId) && (filter.tabId === void 0 || capture2.tabId === filter.tabId) && capture2.tabId !== filter.exceptTabId) capture2.cancelled = true;
+    }
+    void chrome.runtime.sendMessage({ type: "photo-tab-private-invalidate", ...filter }).catch(() => {
+    });
+  }
+  function isIdentifier(value) {
+    return typeof value === "string" && /^[a-f0-9-]{36}$/i.test(value);
+  }
+  function validText(value, limit) {
+    return typeof value === "string" && value.trim().length > 0 && value.length <= limit;
+  }
+  async function startPhotoTabLookup(tabId, documentId) {
+    const tab = await chrome.tabs.get(tabId);
+    if (!tab.active || !tab.url || !/^https?:\/\//i.test(tab.url)) return { error: photoTabUnavailable };
+    const owner = { id: crypto.randomUUID(), tabId, windowId: tab.windowId };
+    await ensureOffscreen();
+    const registered = await chrome.runtime.sendMessage({ type: "photo-tab-private-register", owner, expectedDocumentId: documentId });
+    if (!registered?.ok) return { error: photoTabUnavailable };
+    try {
+      const current = await chrome.tabs.get(tabId);
+      if (!current.active || current.windowId !== owner.windowId) throw new Error(photoTabExpired);
+      const options = documentId ? { documentId } : { frameId: 0 };
+      const reply = await chrome.tabs.sendMessage(tabId, { type: "photo-tab-overlay-open", id: owner.id, fromMascot: !!documentId }, options);
+      if (reply?.ok) return { ok: true };
+    } catch {
+    }
+    await close(owner);
+    return { error: photoTabUnavailable };
+  }
+  function close(owner) {
+    const job = inFlight.get(owner.windowId);
+    if (job?.id === owner.id) job.cancelled = true;
+    return chrome.runtime.sendMessage({ type: "photo-tab-private-close", ...owner }).catch(() => {
+    });
+  }
+  async function documentError(owner, requestId) {
+    try {
+      const reply = await chrome.tabs.sendMessage(owner.tabId, { type: "photo-tab-overlay-check", id: owner.id, requestId }, { documentId: owner.documentId });
+      return reply?.ok ? void 0 : reply?.moved ? photoTabMoved : photoTabExpired;
+    } catch {
+      return photoTabExpired;
+    }
+  }
+  async function closeAfterNavigation(tabId, windowId) {
+    const reply = await chrome.runtime.sendMessage({ type: "photo-tab-private-tab-owner", tabId, windowId }).catch(() => void 0);
+    const owner = reply?.value;
+    if (owner?.documentId && await documentError(owner)) await close(owner);
+  }
+  async function getOwner(id, sender) {
+    if (sender.frameId !== 0 || sender.tab?.id === void 0 || !sender.documentId) return void 0;
+    const reply = await chrome.runtime.sendMessage({ type: "photo-tab-private-owner", id, windowId: sender.tab.windowId }).catch(() => void 0);
+    const owner = reply?.value;
+    return owner?.tabId === sender.tab.id && owner.documentId === sender.documentId ? owner : void 0;
+  }
+  async function capture(owner, requestId, selection) {
+    if (!validPhotoTabSelection(selection)) return { error: "Choose an area at least 16 by 16 pixels within this tab." };
+    const pending3 = inFlight.get(owner.windowId);
+    if (pending3) return { error: "A capture is already running in this window. Try again." };
+    const job = { tabId: owner.tabId, id: owner.id, cancelled: false };
+    inFlight.set(owner.windowId, job);
+    try {
+      const verify = async () => {
+        const current = await chrome.tabs.get(owner.tabId);
+        if (job.cancelled || !current.active || current.windowId !== owner.windowId) return photoTabExpired;
+        return documentError(owner, requestId);
+      };
+      const before = await verify();
+      if (before || job.cancelled) return { error: before ?? photoTabExpired };
+      let screenshot;
+      try {
+        screenshot = await chrome.tabs.captureVisibleTab(owner.windowId, { format: "png" });
+      } catch (error) {
+        if (/activeTab|permission/i.test(String(error))) return { error: photoTabNeedsGesture };
+        throw error;
+      }
+      const after = await verify();
+      if (after || job.cancelled) return { error: after ?? photoTabExpired };
+      if (screenshot.length > screenshotLimit) return { error: "This tab capture is too large. Paste a smaller image into Photo Lookup." };
+      void chrome.tabs.sendMessage(owner.tabId, { type: "photo-tab-overlay-captured", id: owner.id, requestId }, { documentId: owner.documentId }).catch(() => {
+      });
+      const request = chrome.runtime.sendMessage({ type: "photo-tab-private-capture", id: owner.id, windowId: owner.windowId, requestId, screenshot, selection });
+      screenshot = "";
+      const result = await request;
+      return job.cancelled ? { error: photoTabExpired } : result;
+    } finally {
+      if (inFlight.get(owner.windowId) === job) inFlight.delete(owner.windowId);
+    }
+  }
+  async function run(message, sender) {
+    if (message.type === "photo-tab-bind") {
+      const { id: tabId, windowId: windowId2 } = sender.tab;
+      const tab = await chrome.tabs.get(tabId);
+      if (!tab.active || tab.windowId !== windowId2) return { error: photoTabExpired };
+      return chrome.runtime.sendMessage({ type: "photo-tab-private-bind", id: message.id, tabId, windowId: windowId2, documentId: sender.documentId });
+    }
+    const owner = await getOwner(message.id, sender);
+    if (!owner) return { error: photoTabExpired };
+    if (message.type === "photo-tab-close") {
+      return close(owner);
+    }
+    const { id, windowId } = owner;
+    if (message.type === "photo-tab-standalone") {
+      await chrome.tabs.create({ url: chrome.runtime.getURL("playgrounds.html?tool=photo"), windowId });
+      return { value: true };
+    }
+    if (message.type === "photo-tab-dictionary") {
+      const hit = message.hit;
+      if (!hit || typeof hit.id !== "string" || !/^\d{1,12}$/.test(hit.id) || typeof hit.bucket !== "string" || !/^[a-f0-9]{2}$/.test(hit.bucket) || !validText(hit.headword, 80) || !validText(hit.reading, 80)) return { error: "This Dictionary entry is unavailable." };
+      const url = new URL(chrome.runtime.getURL("playgrounds.html"));
+      url.search = new URLSearchParams({ dictionaryId: hit.id, dictionaryBucket: hit.bucket, dictionaryWord: hit.headword, dictionaryReading: hit.reading }).toString();
+      await chrome.tabs.create({ url: url.href, windowId });
+      return { value: true };
+    }
+    if (message.type === "photo-tab-save") {
+      const { crop: crop2, word } = message;
+      if (!validPhotoRectangle(crop2) || !word || !validText(word.word, 100) || !validText(word.reading, 100) || !validText(word.meaning, 500)) return { error: "This selection is unavailable for saving." };
+      return chrome.runtime.sendMessage({ type: "photo-tab-private-save", id, windowId, crop: crop2, word });
+    }
+    if (!isIdentifier(message.requestId)) return { error: photoTabExpired };
+    const requestId = message.requestId;
+    if (message.type === "photo-tab-capture") return capture(owner, requestId, message.selection);
+    if (message.type === "photo-tab-abort") return chrome.runtime.sendMessage({ type: "photo-tab-private-abort", id, windowId, requestId });
+    const crop = message.crop;
+    if (crop !== void 0 && !validPhotoRectangle(crop)) return { error: "The selected crop is invalid." };
+    return chrome.runtime.sendMessage({ type: "photo-tab-private-analyze", id, windowId, requestId, crop });
+  }
+  var tabTypes, inFlight, screenshotLimit, popupUrl;
+  var init_photo_tab_service = __esm({
+    "src/photo-tab-service.ts"() {
+      "use strict";
+      init_offscreen_client();
+      init_photo_tab_protocol();
+      tabTypes = /* @__PURE__ */ new Set(["photo-tab-capture", "photo-tab-analyze", "photo-tab-abort", "photo-tab-save", "photo-tab-dictionary", "photo-tab-standalone", "photo-tab-bind", "photo-tab-close"]);
+      inFlight = /* @__PURE__ */ new Map();
+      screenshotLimit = 48 * 1024 * 1024;
+      popupUrl = chrome.runtime.getURL("popup.html");
+      chrome.tabs.onActivated.addListener(({ windowId, tabId }) => clearCaptures({ windowId, exceptTabId: tabId }));
+      chrome.tabs.onUpdated.addListener((tabId, change, tab) => {
+        if (change.status === "complete") void closeAfterNavigation(tabId, tab.windowId);
+      });
+      chrome.tabs.onRemoved.addListener((tabId) => clearCaptures({ tabId }));
+      chrome.tabs.onDetached.addListener((tabId) => clearCaptures({ tabId }));
+      chrome.runtime.onMessage.addListener((message, sender, respond) => {
+        if (sender.id !== chrome.runtime.id) return;
+        if (message?.type === "photo-tab-start") {
+          if (sender.tab || sender.url !== popupUrl || !Number.isSafeInteger(message.tabId) || message.tabId < 0) return;
+          void startPhotoTabLookup(message.tabId).then(respond, () => respond({ error: photoTabUnavailable }));
+          return true;
+        }
+        if (sender.frameId !== 0 || sender.tab?.id === void 0 || !sender.documentId) return;
+        if (sender.documentLifecycle && sender.documentLifecycle !== "active" && message?.type !== "photo-tab-close") return;
+        if (message?.type === "photo-tab-mascot-start") {
+          void startPhotoTabLookup(sender.tab.id, sender.documentId).then(respond, () => respond({ error: photoTabUnavailable }));
+          return true;
+        }
+        if (!tabTypes.has(message?.type) || !isIdentifier(message.id)) return;
+        void run(message, sender).then(respond, () => respond({ error: message.type === "photo-tab-capture" ? photoTabUnavailable : "Photo Lookup could not finish. Try again." }));
         return true;
       });
     }
@@ -668,8 +959,20 @@
       init_dictionary();
       init_playground_service();
       var import_action = __toESM(require_action());
+      init_mascot_presence();
       var import_preference_writer = __toESM(require_preference_writer());
+      init_photo_tab_service();
       init_offscreen_client();
+      chrome.commands.onCommand.addListener((command, tab) => {
+        if (command !== "photo-lookup") return;
+        void (async () => {
+          const tabId = tab?.id ?? (await chrome.tabs.query({ active: true, lastFocusedWindow: true }))[0]?.id;
+          if (tabId === void 0) return;
+          const result = await startPhotoTabLookup(tabId);
+          if (result.error) await chrome.tabs.create({ url: chrome.runtime.getURL("playgrounds.html?tool=photo"), windowId: tab?.windowId });
+        })().catch(() => {
+        });
+      });
       var queues = /* @__PURE__ */ new Map();
       function cancel(job) {
         if (job.cancelled) return;

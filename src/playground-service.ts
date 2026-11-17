@@ -21,7 +21,7 @@ let active=0;
 chrome.runtime.onMessage.addListener((message,sender,respond)=>{
  if(message?.type!=='playground-data')return;
  let url:URL|undefined;try {url=sender.url?new URL(sender.url):undefined;}catch {}
- const standalone=sender.url===chrome.runtime.getURL('playgrounds.html');
+ const standalone=url?.protocol==='chrome-extension:' && url.hostname===chrome.runtime.id && url.pathname==='/playgrounds.html';
  const reading=sender.tab?.id!==undefined && sender.frameId===0 && url && ['http:','https:'].includes(url.protocol);
  if(sender.id!==chrome.runtime.id || (!standalone && !reading) || !validPlaygroundQuery(message.query)) {respond({error:'Invalid playground request'});return;}
  if(active>=8){respond({error:'Playgrounds are busy. Try again.'});return;}

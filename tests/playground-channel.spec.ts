@@ -7,13 +7,15 @@ async function harness() {
   const sent:any[]=[],pending=new Map<string,Function>();
   const event={addListener:()=>{}};
   const chrome={runtime:{ContextType:{OFFSCREEN_DOCUMENT:'offscreen'},getContexts:async()=>[{}],
+    getURL:(path:string)=>`chrome-extension://fixture/${path}`,
     onMessage:{addListener:(fn:Function)=>listener=fn},onInstalled:event,onStartup:event,
     sendMessage:(message:any)=>{
       sent.push(message);
       if(message.type==='worker-job')return new Promise(resolve=>pending.set(message.jobId,resolve));
       if(message.type==='worker-cancel') {pending.get(message.jobId)?.({cancelled:true});pending.delete(message.jobId);}
       return Promise.resolve({ok:true});
-    }},tabs:{onRemoved:{addListener:(fn:Function)=>removed=fn},onActivated:event,onUpdated:event,query:async()=>[]},storage:{onChanged:event}};
+    }},tabs:{onRemoved:{addListener:(fn:Function)=>removed=fn},onActivated:event,onUpdated:event,onDetached:event,query:async()=>[]},
+    commands:{onCommand:event},storage:{onChanged:event,local:{get:async()=>({mascotOnDemandV1:true})}}};
   const bundle=await build({entryPoints:['src/background.ts'],bundle:true,write:false,platform:'browser',format:'iife'});
   runInNewContext(bundle.outputFiles[0].text,{chrome,crypto:{randomUUID:()=>`job-${++uuid}`}});
   const send=(message:any,document='a')=>new Promise<any>(resolve=>listener(message,{tab:{id:1},documentId:document,frameId:0},resolve));

@@ -1,5 +1,6 @@
 import {appearance,appearanceForSite,validOverrides,validateOverride,readingViewPreferences,mergeCorrectionBackup,correctionBackupLimit,type PreferenceMutation} from './preferences';
 import {mascotPreferences} from './mascot-preferences';
+import {mascotMigration} from './mascot-presence';
 
 // Runtime messages wake this single MV3 worker; keep each read/modify/write in
 // the same queue, including imports and deletions, so other clients cannot race it.
@@ -18,6 +19,7 @@ function record(value:unknown):Record<string,unknown> {
   return value as Record<string,unknown>;
 }
 async function apply(mutation:PreferenceMutation) {
+  await mascotMigration;
   switch(mutation.kind) {
     case 'mascot': {
       const patch=record(mutation.patch);

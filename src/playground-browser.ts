@@ -4,15 +4,22 @@ import {createVerbPlayground,dictionaryVerbCandidates,type VerbBase} from './ver
 import {mimeticEntries,normalizeMimetic,renderMimeticPlayground,type MimeticCategory} from './mimetic-playground';
 import {annotated,renderAdjectivePlayground,renderVerbPlayground,verifiedVerbInterpretations,type PlaygroundTokenizer,type VerbInterpretation} from './exploration';
 import {playgroundData,type PlaygroundDataProvider} from './playground-data';
-import {renderDictionaryTool,renderGrammarTool,playgroundToolStyles,node,button,type PlaygroundTool,type ToolOptions} from './playground-tools';
+import {renderDictionaryTool,renderGrammarTool,playgroundToolStyles,node,button,type DictionarySelection,type PlaygroundTool,type ToolOptions} from './playground-tools';
 
-export interface PlaygroundBrowserOptions {presentation?:'panel'|'page';tokenize:PlaygroundTokenizer;data?:PlaygroundDataProvider}
+export interface PlaygroundBrowserOptions {
+ presentation?:'panel'|'page';tokenize:PlaygroundTokenizer;data?:PlaygroundDataProvider;
+ photo?:{lookup:(dictionary:(entry:DictionarySelection)=>void)=>PlaygroundTool;diary:()=>PlaygroundTool};
+ initialTool?:'photo'|'diary';dictionaryEntry?:DictionarySelection;
+}
 export interface PlaygroundBrowser {element:HTMLElement;dispose():void;focus():void;suspend?():void}
 
 export const playgroundBrowserStyles=`
 .playground-browser{display:flex;flex-direction:column;height:100%;min-height:0;min-width:0;container-type:inline-size;font:13px/1.5 var(--body);overflow-wrap:break-word}
 .playground-tabs{display:flex;flex:none;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--paper)}
 .playground-tabs button{flex:1;min-width:0;margin:0;padding:9px;font:700 12px/1.4 var(--mono)}
+.has-photo-tools .playground-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}
+.has-photo-tools .playground-tabs button{padding:8px 5px;white-space:normal}
+@container(max-width:640px){.has-photo-tools .playground-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.has-photo-tools .playground-tabs button{font-size:11px}}
 .playground-tabs [aria-selected=true]{background:var(--accent);color:var(--paper)}
 .playground-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:16px}
 .playground-intro{margin:0 0 14px;color:var(--muted);font-size:12px}
@@ -193,10 +200,10 @@ function renderLegacyPlaygroundBrowser(options:PlaygroundBrowserOptions,initial:
   return {element:root,dispose,suspend:()=>{cancel();if(feedback.textContent==='Checking the bundled dictionary…')feedback.textContent='Check the word again to continue.';},focus:()=>{if(!disposed)(tab==='verbs'?input:search).focus();}};
 }
 
-type ToolName='dictionary'|'verbs'|'grammar'|'mimetics';
+type ToolName='dictionary'|'verbs'|'grammar'|'mimetics'|'photo'|'diary';
 /** Keep mounted tools for the session; linked exploration uses temporary views. */
 export function renderPlaygroundBrowser(options:PlaygroundBrowserOptions):PlaygroundBrowser {
- const root=node('section','playground-browser');root.setAttribute('aria-label','Playgrounds');
+ const root=node('section','playground-browser');root.setAttribute('aria-label','Playgrounds');root.classList.toggle('has-photo-tools',!!options.photo);
  const tabs=node('div','playground-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','Playground type');
  const host=node('div','playground-workspaces'),routeBack=button('← Return to previous playground',()=>goBack(),'playground-route-back');routeBack.hidden=true;
  const pickerLabel=node('label','panel-playground-picker','Playground'),picker=node('select');picker.setAttribute('aria-label','Playground');pickerLabel.hidden=true;pickerLabel.append(picker);
@@ -207,7 +214,12 @@ export function renderPlaygroundBrowser(options:PlaygroundBrowserOptions):Playgr
   const tool=renderLegacyPlaygroundBrowser(options);navigate(tool);
   const input=tool.element.querySelector<HTMLInputElement>('.playground-verb-input input')!;input.value=word;tool.element.querySelector<HTMLFormElement>('form')!.requestSubmit();
  }};
- function create(name:ToolName):PlaygroundTool {const tool=name==='dictionary'?renderDictionaryTool(toolOptions):name==='grammar'?renderGrammarTool(toolOptions):renderLegacyPlaygroundBrowser(options,name);tool.element.querySelector('.playground-pane')?.removeAttribute('role');return tool;}
+ function create(name:ToolName):PlaygroundTool {
+  if(name==='photo')return options.photo!.lookup(entry=>navigate(renderDictionaryTool(toolOptions,'',entry)));
+  if(name==='diary')return options.photo!.diary();
+  const tool=name==='dictionary'?renderDictionaryTool(toolOptions,'',options.dictionaryEntry):name==='grammar'?renderGrammarTool(toolOptions):renderLegacyPlaygroundBrowser(options,name);
+  tool.element.querySelector('.playground-pane')?.removeAttribute('role');return tool;
+ }
  function navigate(tool:PlaygroundTool) {
   if(disposed){tool.dispose();return;}history.push({tool:current,focus:(root.getRootNode() as Document|ShadowRoot).activeElement});current.element.hidden=true;current=tool;tool.element.setAttribute('role','tabpanel');tool.element.setAttribute('aria-label','Linked playground');tool.element.querySelector('.playground-pane')?.removeAttribute('role');host.append(tool.element);routeBack.hidden=false;tool.focus();
  }
@@ -218,15 +230,16 @@ export function renderPlaygroundBrowser(options:PlaygroundBrowserOptions):Playgr
   if(disposed)return;while(history.length)goBack();
   if(current){(current as PlaygroundBrowser).suspend?.();current.element.hidden=true;}tab=next;picker.value=next;pickerLabel.hidden=options.presentation!=='panel' || next!=='grammar';tabs.hidden=!pickerLabel.hidden;root.classList.toggle('panel-grammar-active',!pickerLabel.hidden);current=registry.get(next) ?? create(next);
   if(!registry.has(next)){registry.set(next,current);current.element.id=`${id}-${next}-pane`;current.element.setAttribute('role','tabpanel');current.element.setAttribute('aria-labelledby',`${id}-${next}`);host.append(current.element);}
-  current.element.hidden=false;for(const [name,b] of buttons){b.setAttribute('aria-selected',String(name===next));b.tabIndex=name===next?0:-1;}if(focus)current.focus();
+  current.element.hidden=false;current.activate?.();for(const [name,b] of buttons){b.setAttribute('aria-selected',String(name===next));b.tabIndex=name===next?0:-1;}if(focus)current.focus();
  }
- const tools:readonly [ToolName,string][]=[['dictionary','Dictionary'],['verbs','Word forms'],['grammar','Grammar'],['mimetics','Mimetics']];
+ const tools:[ToolName,string][]=[['dictionary','Dictionary'],['verbs','Word forms'],['grammar','Grammar'],['mimetics','Mimetics']];
+ if(options.photo)tools.push(['photo','Photo Lookup'],['diary','Picture Diary']);
  for(const [name,label] of tools) {
   const option=node('option','',label);option.value=name;picker.append(option);
   const b=button(label,()=>change(name));b.setAttribute('role','tab');b.id=`${id}-${name}`;b.setAttribute('aria-controls',`${id}-${name}-pane`);buttons.set(name,b);tabs.append(b);
   b.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const position=tools.findIndex(([name])=>name===tab),next=tools[event.key==='Home'?0:event.key==='End'?tools.length-1:(position+(event.key==='ArrowRight'?1:-1)+tools.length)%tools.length][0];change(next,false);if(pickerLabel.hidden)buttons.get(next)!.focus();else picker.focus();});
  }
  picker.onchange=()=>change(picker.value as ToolName);
- root.append(tabs,pickerLabel,routeBack,host);change('verbs',false);
+ root.append(tabs,pickerLabel,routeBack,host);change(options.dictionaryEntry?'dictionary':options.photo && options.initialTool?options.initialTool:'verbs',false);
  return {element:root,focus:()=>current.focus(),dispose:()=>{if(disposed)return;disposed=true;for(const tool of new Set([...registry.values(),...history.map(entry=>entry.tool),current]))tool.dispose();}};
 }

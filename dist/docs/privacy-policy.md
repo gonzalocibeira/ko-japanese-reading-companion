@@ -1,6 +1,6 @@
 # Kō — Japanese Reading Companion: Privacy Policy
 
-Effective date: 1 November 2026. Developer: Gonzalo Cibeira.
+Effective date: 18 November 2026. Developer: Gonzalo Cibeira.
 
 Kō adds Japanese readings to webpages and Google Docs, with an optional reading panel, local exploration tools, and local-first word definitions. It has no account system, advertising, analytics, telemetry, or developer-operated data server.
 
@@ -17,6 +17,12 @@ The Google Docs bridge sets Google's canvas annotation flag using the extension'
 Dictionary Playground searches Japanese words/readings and English meanings locally in bundled data. It does not automatically contact an online service. Only selecting a language-specific Look up online action sends the displayed Japanese lookup term to that Wiktionary edition. English search phrases and surrounding examples are not sent. These explicit lookups use the same credential-free, referrer-free requests described below.
 
 Grammar Playground uses bundled original lessons, examples, readings, and comparisons. Opening grammar, filtering, comparing, and using its activities makes no external requests. Following a vocabulary link performs a local Dictionary Playground search. Playground state remains in memory for the current session; no search history, scores, schedules, or study progress is stored.
+
+## Photo Lookup and Picture Diary
+
+Photo Lookup uses a bundled model and dictionary to identify objects in an image you choose. The toolbar capture uses temporary access to the active tab and takes one screenshot after you select an area. Kō crops the screenshot inside the extension and discards the full screenshot. Images, captures, and detections are processed on your device.
+
+When you choose Save to Picture Diary, Kō stores the selected lossless image crop, vocabulary, and save date in local browser storage. You can search or delete entries in Playgrounds. Export creates a ZIP on your device that contains the saved crops and vocabulary. Import reads the ZIP you choose and adds missing entries to the local diary. You control the export file and any copies separately from the diary. Kō does not upload or sync these images or diary records.
 
 ## Word definitions and online fallback
 
@@ -42,7 +48,7 @@ You can remove corrections in the extension popup and change site preferences th
 
 ## Permissions and control
 
-HTTP/HTTPS site access allows automatic readings without clicking the extension on every page and supports readings in embedded frames. The storage permission saves preferences, corrections, and update-announcement dismissals. The offscreen permission runs the bundled tokenizer in a worker. You can pause readings globally or by hostname in the popup, and restrict site access using Chrome's extension controls. The Docs initialization bridge can run before the saved pause setting is loaded; pausing stops Kō's reading analysis and display, but does not undo Google's already-initialized annotation surface. Restrict Docs site access and reload the document to prevent the bridge from running.
+HTTP/HTTPS site access allows automatic readings without clicking the extension on every page and supports readings in embedded frames. The storage permission saves preferences, corrections, and update-announcement dismissals. The offscreen permission runs the bundled tokenizer and image workers. The active-tab permission allows the one-time Photo Lookup capture after you confirm a region. You can pause readings globally or by hostname in the popup, and restrict site access using Chrome's extension controls. The Docs initialization bridge can run before the saved pause setting is loaded; pausing stops Kō's reading analysis and display, but does not undo Google's already-initialized annotation surface. Restrict Docs site access and reload the document to prevent the bridge from running.
 
 ## Use and sharing commitments
 
