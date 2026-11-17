@@ -44,6 +44,97 @@ test('off by default makes no asset requests; independent switch, live pause, an
   await settings({excluded:[]});await expect(page.locator('ko-mascot')).toHaveCount(1);
   await mascot({enabled:false});await expect(page.locator('ko-mascot')).toHaveCount(0);
 });
+test('quick call stays with one tab across reloads, sites and pauses; hide persists',async()=>{
+  const page=await openPage(),other=await openPage();
+  const popup=await context.newPage();await popup.setViewportSize({width:380,height:580});
+  await popup.addInitScript(()=>{window.close=()=>{document.body.dataset.closeRequested='true';};});
+  await page.bringToFront();await popup.goto(origin+'/popup.html');
+  await expect(popup.locator('#mascot-panel')).not.toHaveAttribute('open','');
+  await expect(popup.locator('#mascot-call')).toBeInViewport();
+  await expect(popup.locator('#mascot-call')).toBeEnabled();
+  await popup.screenshot({path:test.info().outputPath('quick-call.png')});
+  await popup.locator('#mascot-call').click();
+  await expect(popup.locator('body')).toHaveAttribute('data-close-requested','true');
+  await expect(page.locator('ko-mascot')).toHaveCount(1);
+  await expect(other.locator('ko-mascot')).toHaveCount(0);
+  await page.reload();await expect(page.locator('ko-mascot')).toHaveCount(1);
+  await page.route('https://visit.test/**',route=>route.fulfill({contentType:'text/html',body:fixture}));
+  await page.goto('https://visit.test/next');await expect(page.locator('ko-mascot')).toHaveCount(1);
+  await settings({excluded:['visit.test']});await expect(page.locator('ko-mascot')).toHaveCount(1);
+  await shadow(page,`function(){this.querySelector('.hide').focus();this.querySelector('.hide').click();return true}`);
+  await expect(page.locator('ko-mascot')).toHaveCount(0);
+  await page.reload();await expect(page.locator('ko-mascot')).toHaveCount(0);
+  await page.bringToFront();await popup.reload();
+  await popup.locator('#mascot-call').click();await expect(page.locator('ko-mascot')).toHaveCount(1);
+  expect(await context.serviceWorkers()[0].evaluate(async()=>(await chrome.storage.local.get(['mascot','excluded'])))).toMatchObject({mascot:{enabled:false},excluded:['visit.test']});
+  await popup.locator('#mascot-call').click();await expect(page.locator('ko-mascot')).toHaveCount(0);
+  await mascot({enabled:true});await expect(page.locator('ko-mascot')).toHaveCount(0);
+});
+
+test('session controller serializes calls, keeps new tabs quiet, and cleans up closed tabs',async()=>{
+  const page=await openPage();
+  const tabId=await context.serviceWorkers()[0].evaluate(async()=> (await chrome.tabs.query({url:'https://mascot.test/*'}))[0].id!);
+  const driver=await context.newPage();await driver.goto(origin+'/about.html');
+  const toggle=()=>driver.evaluate(tabId=>chrome.runtime.sendMessage({type:'mascot-visit-change',tabId}),tabId);
+  await Promise.all([toggle(),toggle(),toggle()]);await expect(page.locator('ko-mascot')).toHaveCount(1);
+  const other=await openPage();await expect(other.locator('ko-mascot')).toHaveCount(0);
+  const state=await context.serviceWorkers()[0].evaluate(async tabId=>(await chrome.storage.session.get(`mascotVisit:${tabId}`))[`mascotVisit:${tabId}`],tabId);
+  expect(state).toMatchObject({visible:true,greet:false});
+  await page.close();await expect.poll(()=>context.serviceWorkers()[0].evaluate(async tabId=>(await chrome.storage.session.get(`mascotVisit:${tabId}`))[`mascotVisit:${tabId}`],tabId)).toBeUndefined();
+});
+
+test('pending visits resume after protected pages and missing content scripts',async()=>{
+  const page=await context.newPage();await page.goto('about:blank');
+  const tabId=await context.serviceWorkers()[0].evaluate(async()=> (await chrome.tabs.query({active:true,currentWindow:true}))[0].id!);
+  const driver=await context.newPage();await driver.goto(origin+'/about.html');
+  const unavailable=await driver.evaluate(tabId=>chrome.runtime.sendMessage({type:'mascot-visit-change',tabId}),tabId);
+  expect(unavailable).toMatchObject({available:false,reload:false,visible:true});
+  await page.goto('https://mascot.test/');await expect(page.locator('ko-mascot')).toHaveCount(1);
+  await page.goto('about:blank');await expect(page.locator('ko-mascot')).toHaveCount(0);
+  await page.goto('https://mascot.test/next');await expect(page.locator('ko-mascot')).toHaveCount(1);
+  await page.route('https://mascot.test/unsupported.svg',route=>route.fulfill({contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg"/>'}));
+  await page.goto('https://mascot.test/unsupported.svg');
+  expect(await driver.evaluate(tabId=>chrome.runtime.sendMessage({type:'mascot-visit-change',tabId,visible:true}),tabId)).toMatchObject({available:false,reload:true,visible:true});
+  await page.goto('https://mascot.test/back');await expect(page.locator('ko-mascot')).toHaveCount(1);
+});
+
+test('visits survive worker restarts and on-demand migration runs only once',async()=>{
+  const page=await openPage(),driver=await context.newPage();await driver.goto(origin+'/about.html');
+  const tabId=await context.serviceWorkers()[0].evaluate(async()=> (await chrome.tabs.query({url:'https://mascot.test/*'}))[0].id!);
+  await driver.evaluate(tabId=>chrome.runtime.sendMessage({type:'mascot-visit-change',tabId}),tabId);
+  await expect(page.locator('ko-mascot')).toHaveCount(1);
+  await driver.evaluate(async()=>{
+    await chrome.storage.local.set({mascot:{enabled:true,size:160,motion:'reduced',definitions:'ja',positions:{'mascot.test':{x:.3,y:.4}}}});
+    await chrome.storage.local.remove('mascotOnDemandV1');
+  });
+  const restart=async()=>{
+    const browser=await context.browser()!.newBrowserCDPSession();
+    const targets=await browser.send('Target.getTargets');
+    const target=targets.targetInfos.find(t=>t.type==='service_worker' && t.url===origin+'/background.js');
+    expect(target).toBeDefined();
+    await browser.send('Target.closeTarget',{targetId:target!.targetId});await browser.detach();
+    await driver.evaluate(()=>chrome.runtime.sendMessage({type:'mascot-preferences-ready'}));
+  };
+  await restart();
+  expect(await driver.evaluate(async()=>(await chrome.storage.local.get('mascot')).mascot)).toMatchObject({enabled:false,size:160,motion:'reduced',definitions:'ja',positions:{'mascot.test':{x:.3,y:.4}}});
+  await page.reload();await expect(page.locator('ko-mascot')).toHaveCount(1);
+  await driver.goto(origin+'/popup.html');
+  const saved=await driver.evaluate(()=>chrome.runtime.sendMessage({type:'mutate-preferences',mutation:{kind:'mascot',patch:{enabled:true}}}));
+  expect(saved.value.enabled).toBe(true);
+  await restart();
+  expect(await driver.evaluate(async()=>(await chrome.storage.local.get('mascot')).mascot.enabled)).toBe(true);
+});
+
+test('popup handles unassigned shortcuts and keeps the quick action visible above the announcement',async()=>{
+  const page=await context.newPage();await page.setViewportSize({width:380,height:580});
+  await page.addInitScript(()=>{chrome.commands.getAll=async()=>[{name:'toggle-mascot',shortcut:''}];});
+  await page.goto(origin+'/popup.html');
+  await expect(page.locator('#mascot-shortcut')).toHaveText('No shortcut assigned');
+  await expect(page.locator('#mascot-call')).toBeInViewport();
+  await page.locator('#mascot-intro-dismiss').click();await page.reload();
+  await expect(page.locator('#mascot-intro')).toBeHidden();
+});
+
 test('hover resolves inline text, existing ruby, kana, and corrections without changing page content or contacting dictionaries',async()=>{
   const requested:string[]=[];await context.route('https://*.wiktionary.org/w/api.php*',route=>{requested.push(route.request().url());return route.abort();});
   const page=await openPage(),before=await page.locator('body').innerHTML();await mascot({enabled:true,motion:'reduced'});
@@ -81,6 +172,44 @@ test('drag and keyboard reposition persist per site, survive reload, clamp resiz
   const still=(await shadow(page,snapshot))!.pixels;await page.waitForTimeout(250);expect((await shadow(page,snapshot))?.pixels).toBe(still);
   await page.setViewportSize({width:380,height:320});const small=(await shadow(page,snapshot))!;expect(small.x).toBeGreaterThanOrEqual(0);expect(small.x+small.width).toBeLessThanOrEqual(380);
   await page.emulateMedia({media:'print'});await expect(page.locator('ko-mascot')).toBeHidden();await page.emulateMedia({media:'screen',reducedMotion:'reduce'});await expect(page.locator('ko-mascot')).toBeVisible();
+});
+const imageCue=`function(){const cue=this.querySelector('.inspect-cue');return {
+  active:getComputedStyle(cue).display==='block',
+  phase:this.querySelector('.sprite').dataset.inspection,
+  names:this.querySelector('.sprite').getAnimations({subtree:true}).map(animation=>animation.animationName),
+  label:this.activeElement?.getAttribute('aria-label'),
+};}`;
+test('mascot image lookup starts on keyboard activation and plays the photo-and-loupe cue',async()=>{
+  const page=await openPage();await mascot({enabled:true});
+  await expect.poll(async()=>(await shadow(page,snapshot))?.pixels).toBeGreaterThan(0);
+  const mascotPosition=await shadow(page,snapshot);
+  await page.mouse.move(mascotPosition.x+mascotPosition.width/2,mascotPosition.y+mascotPosition.height/2);
+  expect((await shadow(page,imageCue))?.active).toBe(false);
+  await expect(page.locator('ko-photo-lookup')).toHaveCount(0);
+  await shadow(page,`function(){this.querySelector('.sprite').focus();return true}`);
+  await page.keyboard.press('Tab');
+  expect((await shadow(page,imageCue))?.label).toBe('Look up an image');
+  await page.keyboard.press('Enter');
+  const activation=await shadow(page,imageCue);
+  expect(activation?.active).toBe(true);
+  expect(activation?.phase).toBe('aim');
+  expect(activation?.names).toEqual(expect.arrayContaining(['ko-mascot-inspect-lean','ko-mascot-inspect-photo','ko-mascot-inspect-loupe']));
+  await expect(page.locator('ko-photo-lookup')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('ko-photo-lookup')).toHaveCount(0);
+  await expect.poll(async()=>(await shadow(page,imageCue))?.label).toBe('Look up an image');
+  expect((await shadow(page,imageCue))?.names).toContain('ko-mascot-inspect-pocket');
+  await expect.poll(async()=>(await shadow(page,imageCue))?.active).toBe(false);
+});
+test('mascot image lookup still shows its cue with system reduced motion',async()=>{
+  const page=await openPage();await page.emulateMedia({reducedMotion:'reduce'});await mascot({enabled:true});
+  await expect.poll(async()=>(await shadow(page,snapshot))?.pixels).toBeGreaterThan(0);
+  const pixels=(await shadow(page,snapshot)).pixels;
+  await shadow(page,`function(){this.querySelector('.image-lookup').focus();return true}`);
+  await page.keyboard.press('Space');
+  await expect(page.locator('ko-photo-lookup')).toBeVisible();
+  expect(await shadow(page,imageCue)).toMatchObject({active:true,phase:'aim',names:[]});
+  expect((await shadow(page,snapshot)).pixels).toBe(pixels);
 });
 test('chosen-language definitions use local English lemmas without requests and preserve readings on online failure',async()=>{
   const requested:string[]=[];await context.route('https://*.wiktionary.org/w/api.php*',route=>{requested.push(route.request().url());return route.fulfill({json:{parse:{title:'食べる',text:'<h2>Japanese</h2><h3>Verb</h3><ol><li>to eat<img src="https://bad.test/tracker"><script>alert(1)</script></li></ol>'}}});});
@@ -191,7 +320,7 @@ test('Google Docs highlight follows canvas selection geometry without native sel
 });
 test('popup saves companion settings across reopen',async()=>{
   const page=await openPage();await page.bringToFront();const popup=await context.newPage();await popup.goto(origin+'/popup.html');await popup.locator('#mascot-panel summary').click();
-  await expect(popup.locator('#mascot-enabled')).not.toBeChecked();await expect(popup.locator('#mascot-trigger')).toBeDisabled();
+  await expect(popup.locator('#mascot-enabled')).not.toBeChecked();await expect(popup.locator('#mascot-trigger')).toBeEnabled();
   await popup.locator('#mascot-enabled').check();await popup.locator('#mascot-trigger').selectOption('highlight');await popup.locator('#mascot-definitions').selectOption('ja');await popup.locator('#mascot-size').selectOption('160');await popup.locator('#mascot-motion').selectOption('reduced');await popup.reload();await popup.locator('#mascot-panel summary').click();
   await expect(popup.locator('#mascot-enabled')).toBeChecked();await expect(popup.locator('#mascot-trigger')).toHaveValue('highlight');await expect(popup.locator('#mascot-definitions')).toHaveValue('ja');await expect(popup.locator('#mascot-size')).toHaveValue('160');
   await page.bringToFront();await page.screenshot({path:'qa/release-1.3/mascot-large.png'});
@@ -201,7 +330,7 @@ test('popup at its native preferred size stays readable and scrolls with Kōく�
   const page=await context.newPage();await page.setViewportSize({width:380,height:580});await page.goto(origin+'/popup.html');
   await page.locator('#dismiss-update').click();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(380);
-  const collapsed=await page.evaluate(()=>({height:document.body.clientHeight,scroll:document.body.scrollHeight}));expect(collapsed.height).toBe(580);expect(collapsed.scroll).toBeLessThanOrEqual(580);
+  const collapsed=await page.evaluate(()=>({height:document.body.clientHeight,scroll:document.body.scrollHeight}));expect(collapsed.height).toBe(580);expect(collapsed.scroll).toBeGreaterThan(580);await expect(page.locator('#mascot-call')).toBeInViewport();
   await page.locator('#mascot-panel summary').click();await page.locator('#mascot-enabled').check();
   await page.locator('#mascot-motion').scrollIntoViewIfNeeded();await expect(page.locator('#mascot-motion')).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(380);

@@ -218,7 +218,102 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
           if (tab?.url && /^https?:/.test(tab.url)) hostname = new URL(tab.url).hostname;
         } catch {
         }
+        const lookUpTab = document.querySelector("#photo-tab-start");
+        const openPhoto = document.querySelector("#photo-tab-open");
+        const photoFeedback = document.querySelector("#photo-tab-feedback");
+        const photoShortcut = document.querySelector("#photo-tab-shortcut");
+        photoShortcut.onclick = () => {
+          void chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+        };
+        void chrome.commands.getAll().then((commands) => {
+          const shortcut = commands.find((command) => command.name === "photo-lookup")?.shortcut;
+          if (shortcut) {
+            photoShortcut.textContent = shortcut;
+            photoShortcut.setAttribute("aria-label", `Change Photo Lookup shortcut (${shortcut})`);
+          }
+        }).catch(() => {
+        });
+        lookUpTab.hidden = !hostname || tab?.id === void 0;
+        openPhoto.hidden = !lookUpTab.hidden;
+        lookUpTab.onclick = async () => {
+          lookUpTab.disabled = true;
+          try {
+            const reply = await chrome.runtime.sendMessage({ type: "photo-tab-start", tabId: tab?.id });
+            if (reply?.ok) {
+              window.close();
+              return;
+            }
+            throw new Error(reply?.error ?? "Could not select an area on this tab.");
+          } catch (error) {
+            photoFeedback.textContent = error instanceof Error ? error.message : "Could not select an area on this tab.";
+            openPhoto.hidden = false;
+          } finally {
+            lookUpTab.disabled = false;
+          }
+        };
+        await chrome.runtime.sendMessage({ type: "mascot-preferences-ready" });
         const state = await chrome.storage.local.get({ enabled: true, excluded: [], siteAppearance: {}, readingOverrides: {}, docsReadingView: {}, readingView: null, mascot: null });
+        const mascotCall = document.querySelector("#mascot-call");
+        const callFeedback = document.querySelector("#mascot-call-feedback");
+        const reloadTab = document.querySelector("#mascot-reload");
+        const intro = document.querySelector("#mascot-intro");
+        void chrome.storage.local.get("dismissedMascotOnDemandIntro").then((value) => {
+          intro.hidden = value.dismissedMascotOnDemandIntro === true;
+        }).catch(() => {
+        });
+        document.querySelector("#mascot-intro-dismiss").onclick = () => {
+          void chrome.storage.local.set({ dismissedMascotOnDemandIntro: true }).then(() => {
+            intro.hidden = true;
+          }).catch(() => {
+            callFeedback.textContent = "Could not save dismissal. Try again.";
+          });
+        };
+        let mascotVisible = false;
+        let callPending = false;
+        async function mascotPresence(change = false) {
+          if (callPending) return;
+          if (!hostname || tab?.id === void 0) {
+            callFeedback.textContent = "K\u014D\u304F\u3093 is available on regular websites and Google Docs.";
+            return;
+          }
+          callPending = true;
+          mascotCall.disabled = true;
+          try {
+            const reply = await chrome.runtime.sendMessage({ type: change ? "mascot-visit-change" : "mascot-visit-status", tabId: tab.id });
+            if (typeof reply?.visible !== "boolean") throw new Error(reply?.error);
+            mascotVisible = reply.visible;
+            mascotCall.textContent = mascotVisible ? "Send K\u014D\u304F\u3093 away" : "Call K\u014D\u304F\u3093";
+            mascotCall.disabled = !reply.available && !reply.reload && !mascotVisible;
+            reloadTab.hidden = !reply.reload;
+            callFeedback.textContent = reply.error ?? "Stays with this tab until you send him away or close it.";
+            if (change && reply.available) window.close();
+          } catch {
+            callFeedback.textContent = "Could not update K\u014D\u304F\u3093. Reopen the menu and try again.";
+            mascotCall.disabled = false;
+          } finally {
+            callPending = false;
+          }
+        }
+        mascotCall.onclick = () => void mascotPresence(true);
+        reloadTab.onclick = async () => {
+          if (tab?.id === void 0) return;
+          try {
+            await chrome.runtime.sendMessage({ type: "mascot-visit-change", tabId: tab.id, visible: true });
+            await chrome.tabs.reload(tab.id);
+            window.close();
+          } catch {
+            callFeedback.textContent = "Could not reload the tab. Try reloading it in your browser.";
+          }
+        };
+        void chrome.commands.getAll().then((commands) => {
+          const shortcut = commands.find((command) => command.name === "toggle-mascot")?.shortcut;
+          document.querySelector("#mascot-shortcut").textContent = shortcut || "No shortcut assigned";
+        }).catch(() => {
+          document.querySelector("#mascot-shortcut").textContent = "Shortcut unavailable";
+        });
+        document.querySelector("#mascot-shortcut-settings").onclick = () => {
+          void chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+        };
         const mascotEnabled = document.querySelector("#mascot-enabled");
         const mascotTrigger = document.querySelector("#mascot-trigger");
         const mascotDefinitions = document.querySelector("#mascot-definitions");
@@ -233,10 +328,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
           mascotDefinitions.value = m.definitions;
           mascotSize.value = String(m.size);
           mascotMotion.value = m.motion;
-          for (const input of [mascotTrigger, mascotDefinitions, mascotSize, mascotMotion]) input.disabled = !m.enabled;
-          mascotReset.disabled = !hostname || !m.enabled;
+          mascotReset.disabled = !hostname;
         }
         renderMascot(state.mascot);
+        void mascotPresence();
         async function saveMascot(patch) {
           try {
             renderMascot(await updateMascot(patch));
@@ -447,8 +542,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
         };
         search.oninput = () => renderCorrections(currentCorrections);
         chrome.storage.onChanged.addListener((changes, area) => {
+          if (area === "session" && tab?.id !== void 0 && changes[`mascotVisit:${tab.id}`]) void mascotPresence();
           if (area !== "local") return;
-          if (changes.mascot) renderMascot(changes.mascot.newValue);
+          if (changes.mascot) {
+            renderMascot(changes.mascot.newValue);
+            void mascotPresence();
+          }
+          if (changes.excluded) void mascotPresence();
           if (changes.enabled) enabled.checked = changes.enabled.newValue !== false;
           if (changes.excluded) excluded.checked = Array.isArray(changes.excluded.newValue) && changes.excluded.newValue.includes(hostname);
           if (changes.enabled || changes.excluded) changed();

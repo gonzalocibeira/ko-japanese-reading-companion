@@ -2,9 +2,22 @@ import {uiTheme} from './ui-theme';
 import {explorationStyles,type PlaygroundTokenizer} from './exploration';
 import {playgroundBrowserStyles,renderPlaygroundBrowser} from './playground-browser';
 import {setMimeticLegacyAnimations} from './mimetic-playground';
+import {playgroundData} from './playground-data';
+import type {DictionarySelection} from './playground-tools';
+import {createPhotoVision} from './photo-vision';
+import {photoLookupStyles,renderPhotoLookup} from './photo-lookup';
+import {pictureDiaryStyles,renderPictureDiary} from './photo-diary-ui';
+import {saveDiaryEntry} from './photo-diary';
 import type {Word} from './shared';
 
-const style=document.createElement('style');style.textContent=uiTheme+explorationStyles+playgroundBrowserStyles;document.head.append(style);
+const style=document.createElement('style');style.textContent=uiTheme+explorationStyles+playgroundBrowserStyles+photoLookupStyles+pictureDiaryStyles;document.head.append(style);
+
+function linkedDictionary(params:URLSearchParams):DictionarySelection|undefined {
+  const id=params.get('dictionaryId') ?? '',bucket=params.get('dictionaryBucket') ?? '';
+  const headword=params.get('dictionaryWord') ?? '',reading=params.get('dictionaryReading') ?? '';
+  const validText=(value:string)=>value.length>0 && value.length<=80 && !/[\u0000-\u001f\u007f-\u009f]/u.test(value);
+  if(/^\d{1,12}$/.test(id) && /^[a-f0-9]{2}$/.test(bucket) && validText(headword) && validText(reading))return {id,bucket,headword,reading};
+}
 
 // A standalone extension page owns its lazy worker. Opening mimetics needs no
 // tokenizer, webpage access, reading-view setting, or service-worker channel.
@@ -45,10 +58,20 @@ chrome.storage.onChanged.addListener((changes,area)=>{
 });
 async function main() {
   try{const state=await chrome.storage.local.get({showLegacyAnimations:false});setMimeticLegacyAnimations(state.showLegacyAnimations);}catch{/* Use the new artwork if settings are temporarily unavailable. */}
-  const browser=renderPlaygroundBrowser({tokenize});document.querySelector('#playground-host')!.replaceChildren(browser.element);browser.focus();
+  const params=new URLSearchParams(location.search),tool=params.get('tool');
+  const vision=createPhotoVision();
+  let diary:ReturnType<typeof renderPictureDiary>|undefined;
+  const browser=renderPlaygroundBrowser({tokenize,dictionaryEntry:linkedDictionary(params),initialTool:tool==='photo' || tool==='diary'?tool:undefined,photo:{
+    lookup:dictionary=>renderPhotoLookup({data:playgroundData,dictionary,analyze:vision.analyze,save:async(image,crop,hit)=>{
+      await saveDiaryEntry(image,crop,{word:hit.headword,reading:hit.reading,meaning:hit.meaning});
+    }}),
+    diary:()=>{const view=renderPictureDiary();diary=view;return {...view,activate:()=>void view.refresh()};},
+  }});
+  document.querySelector('#playground-host')!.replaceChildren(browser.element);browser.focus();
+  window.addEventListener('focus',()=>{if(diary && !diary.element.hidden)void diary.refresh();});
   window.addEventListener('pagehide',event=>{
     if(event.persisted)return;
-    browser.dispose();worker?.terminate();
+    browser.dispose();vision.dispose();worker?.terminate();
     for(const job of pending.values()){job.cleanup();job.reject(new DOMException('Page closed','AbortError'));}pending.clear();
   });
 }

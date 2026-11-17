@@ -123,8 +123,9 @@ test('dictionary misses request external data only after the explicit language b
  await expect(current(page)).toContainText('No Japanese entry was found');await page.close();await context.unroute('https://**.wiktionary.org/**');
 });
 
-test('four-tab keyboard navigation and narrow grammar details fit at 280px',async()=>{
+test('standalone tab keyboard navigation and narrow grammar details fit at 280px',async()=>{
  const page=await context.newPage();await page.setViewportSize({width:280,height:850});await page.emulateMedia({reducedMotion:'reduce'});await page.goto(`${origin}/playgrounds.html`);
+ await expect(page.getByRole('tab')).toHaveCount(6);
  await page.getByRole('tab',{name:'Word forms',exact:true}).focus();await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Grammar',exact:true})).toBeFocused();
  await page.getByLabel('Search grammar').fill('dake');await current(page).locator('.tool-result').first().click();await expect(current(page).locator('.tool-detail')).toBeVisible();
  await current(page).locator('.grammar-highlight').first().click();await expect(current(page).locator('.grammar-lens').first()).toContainText('Limit');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -135,6 +136,7 @@ test('narrow playground container uses two tab rows inside a desktop viewport',a
  const page=await context.newPage();await page.setViewportSize({width:1280,height:900});await page.goto(`${origin}/playgrounds.html`);
  await page.locator('.playground-browser').evaluate(el=>{(el as HTMLElement).style.width='320px';});
  const rows=await page.getByRole('tab').evaluateAll(tabs=>tabs.map(tab=>Math.round(tab.getBoundingClientRect().top)));
+ await expect(page.getByRole('tab',{name:'Picture Diary',exact:true})).toBeVisible();
  expect(new Set(rows).size).toBe(2);await page.getByRole('tab',{name:'Grammar',exact:true}).click();await expect(current(page).locator('.tool-result').first()).toBeVisible();
  expect(await page.locator('.playground-browser').evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);await page.close();
 });

@@ -4,7 +4,7 @@ import {buildAdjectivePlayground,dictionaryAdjectiveCandidates} from './adjectiv
 import {definitionSource,type DefinitionLanguage,type DictionaryPage} from './definitions';
 import {grammarGroups,type DictionaryEntry,type DictionaryHit,type GrammarExample,type GrammarPoint,type GrammarSummary,type PlaygroundDataProvider} from './playground-data';
 
-export interface PlaygroundTool {element:HTMLElement;dispose():void;focus():void}
+export interface PlaygroundTool {element:HTMLElement;dispose():void;focus():void;activate?():void}
 export interface ToolOptions {presentation?:'panel'|'page';data:PlaygroundDataProvider;tokenize:PlaygroundTokenizer;dictionary:(word:string)=>void;forms:(word:string)=>void}
 export function node<K extends keyof HTMLElementTagNameMap>(tag:K,className='',text?:string):HTMLElementTagNameMap[K] {
  const el=document.createElement(tag);el.className=className;if(text!==undefined)el.textContent=text;return el;
@@ -54,15 +54,17 @@ function onlineButton(options:ToolOptions,target:HTMLElement,word:string,languag
  target.append(node('p','tool-source',`Sends “${word}” to ${language==='en'?'English':'Japanese'} Wiktionary only when selected.`),action);
 }
 
-export function renderDictionaryTool(options:ToolOptions,initialWord=''):PlaygroundTool {
+export type DictionarySelection=Pick<DictionaryHit,'id'|'bucket'|'headword'|'reading'>;
+
+export function renderDictionaryTool(options:ToolOptions,initialWord='',initialEntry?:DictionarySelection):PlaygroundTool {
  const view=workspace('Dictionary'),{wrap,input}=labelInput('Search dictionary','Japanese, reading, or English meaning');
  const form=node('form','tool-search');form.append(wrap,button('Search locally',()=>void search()));view.catalog.prepend(node('p','playground-intro','Search the bundled dictionaries. Online lookup is optional.'),form);
- input.value=initialWord;
+ input.value=initialEntry?.headword ?? initialWord;
  let disposed=false,composing=false,timer:ReturnType<typeof setTimeout>|undefined,sequence=0,detailVersion=0,total=0,hits:DictionaryHit[]=[],query='',controller:AbortController|undefined;
  let formProbe:(()=>void)|undefined,completedSequence=-1,suggestedSequence=-1;
  const active=()=>!disposed;
  const more=button('Show more',()=>void search(true));more.hidden=true;
- async function open(hit:DictionaryHit,origin:HTMLElement) {
+ async function open(hit:DictionarySelection,origin:HTMLElement) {
   const version=++detailVersion,content=node('article');formProbe=undefined;content.append(node('p','','Loading local entry…'));view.show(content,origin);
   try {
    const entry=await options.data({op:'entry',id:hit.id,bucket:hit.bucket});if(disposed || version!==detailVersion)return;
@@ -158,8 +160,9 @@ export function renderDictionaryTool(options:ToolOptions,initialWord=''):Playgro
  input.addEventListener('compositionstart',()=>{composing=true;clearTimeout(timer);controller?.abort();sequence++;});
  input.addEventListener('compositionend',()=>{composing=false;void search();});
  input.addEventListener('input',()=>{clearTimeout(timer);controller?.abort();sequence++;if(!composing)timer=setTimeout(()=>void search(),180);});
- if(initialWord)void search();else view.status.textContent='Enter a Japanese word, reading, or English meaning.';
- return {element:view.root,focus:()=>{formProbe?.();if(completedSequence===sequence)void suggestions(query,sequence);input.focus();},dispose:()=>{disposed=true;sequence++;detailVersion++;clearTimeout(timer);controller?.abort();}};
+ if(initialEntry){view.status.textContent='Search locally for more entries.';void open(initialEntry,input);}
+ else if(initialWord)void search();else view.status.textContent='Enter a Japanese word, reading, or English meaning.';
+ return {element:view.root,focus:()=>{formProbe?.();if(completedSequence===sequence)void suggestions(query,sequence);(initialEntry && !view.detail.hidden?view.detail:input).focus();},dispose:()=>{disposed=true;sequence++;detailVersion++;clearTimeout(timer);controller?.abort();}};
 }
 
 const grammarHint='Select highlighted grammar to see its role. Dotted words open the dictionary.';

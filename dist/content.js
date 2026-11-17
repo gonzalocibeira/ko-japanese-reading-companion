@@ -203,9 +203,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
   }
   function adjectiveConstruction(base, state) {
     const i = base.kind === "i", root = i ? stem(base.lemma, base) : base.lemma;
-    const rules = { simple: i ? "Keep \u3044 in the affirmative nonpast; otherwise replace it with \u304B\u3063\u305F, \u304F\u306A\u3044, or \u304F\u306A\u304B\u3063\u305F. Add \u3067\u3059 for polite speech." : "Add \u3060\uFF0F\u3067\u3059; use \u3060\u3063\u305F\uFF0F\u3067\u3057\u305F for past, and \u3067\u306F\u306A\u3044\uFF0F\u3067\u306F\u3042\u308A\u307E\u305B\u3093 for negatives.", prenominal: i ? "Keep the dictionary form before a noun." : "Add \u306A before a noun.", adverbial: i ? "Replace final \u3044 with \u304F to modify an action." : "Add \u306B to modify an action.", linking: i ? "Replace final \u3044 with \u304F\u3066 to connect descriptions." : "Add \u3067 to connect descriptions.", conditional: i ? "Replace final \u3044 with \u3051\u308C\u3070; for a negative condition use \u304F\u306A\u3051\u308C\u3070." : "Add \u306A\u3089; for a negative condition use \u3067\u306F\u306A\u3051\u308C\u3070.", conditionalTara: i ? "Replace final \u3044 with \u304B\u3063\u305F\u3089; for a negative condition use \u304F\u306A\u304B\u3063\u305F\u3089." : "Add \u3060\u3063\u305F\u3089; for a negative condition use \u3067\u306F\u306A\u304B\u3063\u305F\u3089.", become: i ? "Replace final \u3044 with \u304F and add \u306A\u308B. Conjugate \u306A\u308B for tense, negation, and politeness." : "Add \u306B and \u306A\u308B. Conjugate \u306A\u308B for tense, negation, and politeness.", make: i ? "Replace final \u3044 with \u304F and add \u3059\u308B. Conjugate \u3059\u308B for tense, negation, and politeness." : "Add \u306B and \u3059\u308B. Conjugate \u3059\u308B for tense, negation, and politeness." };
+    const rules2 = { simple: i ? "Keep \u3044 in the affirmative nonpast; otherwise replace it with \u304B\u3063\u305F, \u304F\u306A\u3044, or \u304F\u306A\u304B\u3063\u305F. Add \u3067\u3059 for polite speech." : "Add \u3060\uFF0F\u3067\u3059; use \u3060\u3063\u305F\uFF0F\u3067\u3057\u305F for past, and \u3067\u306F\u306A\u3044\uFF0F\u3067\u306F\u3042\u308A\u307E\u305B\u3093 for negatives.", prenominal: i ? "Keep the dictionary form before a noun." : "Add \u306A before a noun.", adverbial: i ? "Replace final \u3044 with \u304F to modify an action." : "Add \u306B to modify an action.", linking: i ? "Replace final \u3044 with \u304F\u3066 to connect descriptions." : "Add \u3067 to connect descriptions.", conditional: i ? "Replace final \u3044 with \u3051\u308C\u3070; for a negative condition use \u304F\u306A\u3051\u308C\u3070." : "Add \u306A\u3089; for a negative condition use \u3067\u306F\u306A\u3051\u308C\u3070.", conditionalTara: i ? "Replace final \u3044 with \u304B\u3063\u305F\u3089; for a negative condition use \u304F\u306A\u304B\u3063\u305F\u3089." : "Add \u3060\u3063\u305F\u3089; for a negative condition use \u3067\u306F\u306A\u304B\u3063\u305F\u3089.", become: i ? "Replace final \u3044 with \u304F and add \u306A\u308B. Conjugate \u306A\u308B for tense, negation, and politeness." : "Add \u306B and \u306A\u308B. Conjugate \u306A\u308B for tense, negation, and politeness.", make: i ? "Replace final \u3044 with \u304F and add \u3059\u308B. Conjugate \u3059\u308B for tense, negation, and politeness." : "Add \u306B and \u3059\u308B. Conjugate \u3059\u308B for tense, negation, and politeness." };
     const irregular = i && (base.reading === "\u3044\u3044" || base.goodCompound) && !["prenominal"].includes(state.family) && !(state.family === "simple" && !state.past && !state.negative);
-    return `${base.lemma} \u2192 ${render(base.lemma, base, state)}. ${irregular ? `\u3044\u3044 changes to the \u3088\u3044 stem (${root}). ` : ""}${rules[state.family]}`;
+    return `${base.lemma} \u2192 ${render(base.lemma, base, state)}. ${irregular ? `\u3044\u3044 changes to the \u3088\u3044 stem (${root}). ` : ""}${rules2[state.family]}`;
   }
   function createAdjectivePlayground(base, source2) {
     if (!valid(base)) throw new Error("Unsupported dictionary adjective");
@@ -1354,17 +1354,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     reference.rel = "noopener noreferrer";
     let selected = entry.initialVariant;
     const buttons = entry.variants.map((variant, index) => {
-      const button2 = element("button", "mimetic-choice", variant.term);
-      button2.type = "button";
-      button2.lang = "ja";
-      button2.addEventListener("click", () => update(index));
-      controls.append(button2);
-      return button2;
+      const button4 = element("button", "mimetic-choice", variant.term);
+      button4.type = "button";
+      button4.lang = "ja";
+      button4.addEventListener("click", () => update(index));
+      controls.append(button4);
+      return button4;
     });
     function update(index) {
       selected = index;
       const variant = entry.variants[index];
-      for (const [i, button2] of buttons.entries()) button2.setAttribute("aria-pressed", String(i === index));
+      for (const [i, button4] of buttons.entries()) button4.setAttribute("aria-pressed", String(i === index));
       term.textContent = variant.term;
       gloss.textContent = variant.gloss;
       example.textContent = variant.example;
@@ -1605,7 +1605,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const buttons = [];
     const select = (choice) => {
       const description = descriptions[choice];
-      for (const button2 of buttons) button2.setAttribute("aria-pressed", String(button2.dataset.function === choice));
+      for (const button4 of buttons) button4.setAttribute("aria-pressed", String(button4.dataset.function === choice));
       const label = element2("h4", "meaning-selected", description.label);
       const diagram = element2("div", "meaning-diagram");
       diagram.setAttribute("aria-hidden", "true");
@@ -1614,13 +1614,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       detail.replaceChildren(label, diagram, explanation);
     };
     for (const choice of forks.possibilities) {
-      const button2 = element2("button", "meaning-choice", descriptions[choice].label);
-      button2.type = "button";
-      button2.dataset.function = choice;
-      button2.setAttribute("aria-controls", detail.id);
-      button2.addEventListener("click", () => select(choice));
-      buttons.push(button2);
-      controls.append(button2);
+      const button4 = element2("button", "meaning-choice", descriptions[choice].label);
+      button4.type = "button";
+      button4.dataset.function = choice;
+      button4.setAttribute("aria-controls", detail.id);
+      button4.addEventListener("click", () => select(choice));
+      buttons.push(button4);
+      controls.append(button4);
     }
     root.append(controls, detail);
     root.append(element2("p", "meaning-note", "The diagram shows roles only. The source ending controls tense and negation. Context determines which function fits; other uses may exist."));
@@ -1787,10 +1787,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       for (const match of model2.sourceMatches) {
         if (seen.has(match.family)) continue;
         seen.add(match.family);
-        const button2 = document.createElement("button");
-        button2.type = "button";
-        button2.textContent = familyList.find((family) => family.id === match.family)?.label ?? match.family;
-        button2.addEventListener("click", () => {
+        const button4 = document.createElement("button");
+        button4.type = "button";
+        button4.textContent = familyList.find((family) => family.id === match.family)?.label ?? match.family;
+        button4.addEventListener("click", () => {
           Object.assign(state, match);
           chosen = true;
           pristine = true;
@@ -1798,7 +1798,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
           render2();
           select.focus();
         });
-        choices.append(button2);
+        choices.append(button4);
       }
     }
     const result = document.createElement("div");
@@ -1977,14 +1977,14 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
           prompt.textContent = "This word may be a potential form or its own dictionary entry. Choose which to explore.";
           choices.append(prompt);
           for (const interpretation of interpretations) {
-            const button2 = document.createElement("button");
-            button2.type = "button";
-            button2.textContent = interpretation.label;
-            button2.addEventListener("click", () => {
+            const button4 = document.createElement("button");
+            button4.type = "button";
+            button4.textContent = interpretation.label;
+            button4.addEventListener("click", () => {
               wrapper.replaceChildren(renderVerbPlayground(interpretation.model));
               wrapper.querySelector("select,button")?.focus();
             });
-            choices.append(button2);
+            choices.append(button4);
           }
           wrapper.replaceChildren(choices);
         }).catch(() => {
@@ -2013,7 +2013,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     const buttons = [];
     const choose = (index) => {
       cancel();
-      buttons.forEach((button2, i) => button2.setAttribute("aria-pressed", String(i === index)));
+      buttons.forEach((button4, i) => button4.setAttribute("aria-pressed", String(i === index)));
       const option = options[index];
       body.replaceChildren();
       if (option.source) {
@@ -2028,12 +2028,12 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
       body.append(option.render());
     };
     for (let i = 0; i < options.length; i++) {
-      const button2 = document.createElement("button");
-      button2.type = "button";
-      button2.textContent = options[i].label;
-      button2.addEventListener("click", () => choose(i));
-      buttons.push(button2);
-      tools.append(button2);
+      const button4 = document.createElement("button");
+      button4.type = "button";
+      button4.textContent = options[i].label;
+      button4.addEventListener("click", () => choose(i));
+      buttons.push(button4);
+      tools.append(button4);
     }
     if (options.length > 1) panel.append(tools);
     panel.append(body);
@@ -2131,10 +2131,10 @@ ${meaningForkStyles}
     detail.hidden = true;
     detail.tabIndex = -1;
     detail.setAttribute("aria-label", `${name} details`);
-    const status = node("p", "tool-status");
-    status.setAttribute("role", "status");
+    const status2 = node("p", "tool-status");
+    status2.setAttribute("role", "status");
     const results = node("div", "tool-results");
-    catalog.append(status, results);
+    catalog.append(status2, results);
     layout.append(catalog, detail);
     scroller.append(layout);
     root.append(scroller);
@@ -2172,7 +2172,7 @@ ${meaningForkStyles}
       p.setAttribute("role", "status");
       target.replaceChildren(p, button("Try again", retry));
     }
-    return { root, scroller, backButton, catalog, status, results, detail, show, back, error };
+    return { root, scroller, backButton, catalog, status: status2, results, detail, show, back, error };
   }
   function source(target, page, language, word) {
     const attribution = definitionSource(page, language, word), link = node("a", "tool-source", attribution.label);
@@ -2204,12 +2204,12 @@ ${meaningForkStyles}
     });
     target.append(node("p", "tool-source", `Sends \u201C${word}\u201D to ${language === "en" ? "English" : "Japanese"} Wiktionary only when selected.`), action);
   }
-  function renderDictionaryTool(options, initialWord = "") {
+  function renderDictionaryTool(options, initialWord = "", initialEntry) {
     const view = workspace("Dictionary"), { wrap, input } = labelInput("Search dictionary", "Japanese, reading, or English meaning");
     const form = node("form", "tool-search");
     form.append(wrap, button("Search locally", () => void search()));
     view.catalog.prepend(node("p", "playground-intro", "Search the bundled dictionaries. Online lookup is optional."), form);
-    input.value = initialWord;
+    input.value = initialEntry?.headword ?? initialWord;
     let disposed = false, composing = false, timer, sequence = 0, detailVersion = 0, total = 0, hits = [], query = "", controller;
     let formProbe, completedSequence = -1, suggestedSequence = -1;
     const active = () => !disposed;
@@ -2397,12 +2397,15 @@ ${meaningForkStyles}
       sequence++;
       if (!composing) timer = setTimeout(() => void search(), 180);
     });
-    if (initialWord) void search();
+    if (initialEntry) {
+      view.status.textContent = "Search locally for more entries.";
+      void open(initialEntry, input);
+    } else if (initialWord) void search();
     else view.status.textContent = "Enter a Japanese word, reading, or English meaning.";
     return { element: view.root, focus: () => {
       formProbe?.();
       if (completedSequence === sequence) void suggestions(query, sequence);
-      input.focus();
+      (initialEntry && !view.detail.hidden ? view.detail : input).focus();
     }, dispose: () => {
       disposed = true;
       sequence++;
@@ -2909,15 +2912,15 @@ ${meaningForkStyles}
     const confirm = (choices) => {
       confirmation.replaceChildren();
       for (const choice of choices) {
-        const button2 = element3("button", "", `Use ${choice.label}`);
-        button2.type = "button";
-        button2.addEventListener("click", () => {
+        const button4 = element3("button", "", `Use ${choice.label}`);
+        button4.type = "button";
+        button4.addEventListener("click", () => {
           if (disposed) return;
           cancel();
           feedback.textContent = "";
-          showVerb(choice, button2);
+          showVerb(choice, button4);
         });
-        confirmation.append(button2);
+        confirmation.append(button4);
       }
     };
     const check = async (value) => {
@@ -2956,9 +2959,9 @@ ${meaningForkStyles}
         feedback.textContent = !choices.length ? "That derived construction is outside the supported forms. Try its original dictionary verb." : choices.length > 1 ? "Choose the dictionary entry or interpretation you intend." : "Confirm the dictionary form, reading, and class to begin.";
         confirm(choices);
         for (const base of adjectives) {
-          const button2 = element3("button", "", `Use ${base.lemma} \xB7 ${base.reading} \xB7 ${base.kind === "i" ? "\u3044-adjective" : "\u306A-adjective"}`);
-          button2.type = "button";
-          button2.addEventListener("click", () => {
+          const button4 = element3("button", "", `Use ${base.lemma} \xB7 ${base.reading} \xB7 ${base.kind === "i" ? "\u3044-adjective" : "\u306A-adjective"}`);
+          button4.type = "button";
+          button4.addEventListener("click", () => {
             if (disposed) return;
             cancel();
             feedback.textContent = "";
@@ -2966,9 +2969,9 @@ ${meaningForkStyles}
             const original = element3("div", "playground-original");
             original.append(element3("p", "explore-source-label", "Original word"), annotated(model2.source, model2.sourceReading));
             panel.append(original, renderAdjectivePlayground(model2));
-            showSelection(panel, button2);
+            showSelection(panel, button4);
           });
-          confirmation.append(button2);
+          confirmation.append(button4);
         }
         if (adjectives.length) feedback.textContent = "Confirm the dictionary form, reading, and class to begin.";
       } catch {
@@ -2996,19 +2999,19 @@ ${meaningForkStyles}
         const values = [variant.term, ...variant.aliases, entry.sceneUse, variant.gloss, ...entry.keywords];
         if (!matches(normalizeMimetic(query), values)) continue;
         total++;
-        const button2 = element3("button", "playground-entry");
-        button2.type = "button";
-        button2.append(element3("span", "playground-term", variant.term), element3("span", "playground-gloss", variant.gloss));
-        button2.addEventListener("click", () => {
+        const button4 = element3("button", "playground-entry");
+        button4.type = "button";
+        button4.append(element3("span", "playground-term", variant.term), element3("span", "playground-gloss", variant.gloss));
+        button4.addEventListener("click", () => {
           if (disposed) return;
           cancel();
           confirmation.replaceChildren();
           feedback.textContent = "";
           const panel = element3("div", "explore-panel");
           panel.append(renderMimeticPlayground({ ...entry, initialVariant: index }));
-          showSelection(panel, button2);
+          showSelection(panel, button4);
         });
-        results.append(button2);
+        results.append(button4);
       }
       count.textContent = `${total} expressions`;
       if (!total) results.append(element3("p", "", "No matching expressions. Try another spelling, reading, or English word."));
@@ -3028,30 +3031,30 @@ ${meaningForkStyles}
       filters.hidden = count.hidden = results.hidden = next !== "mimetics";
       intro.textContent = next === "verbs" ? verbIntro : "Choose an expression to compare. Everything works offline.";
       pane.setAttribute("aria-labelledby", `${panelId}-${next}`);
-      for (const [key, button2] of tabButtons) {
-        button2.setAttribute("aria-selected", String(key === next));
-        button2.tabIndex = key === next ? 0 : -1;
+      for (const [key, button4] of tabButtons) {
+        button4.setAttribute("aria-selected", String(key === next));
+        button4.tabIndex = key === next ? 0 : -1;
       }
       renderResults();
     };
     for (const [id, label] of [["verbs", "Word forms"], ["mimetics", "Mimetics"]]) {
-      const button2 = element3("button", "", label);
-      button2.type = "button";
-      button2.setAttribute("role", "tab");
-      button2.setAttribute("aria-selected", String(id === tab));
-      button2.tabIndex = id === tab ? 0 : -1;
-      button2.id = `${panelId}-${id}`;
-      button2.setAttribute("aria-controls", panelId);
-      button2.addEventListener("click", () => changeTab(id));
-      button2.addEventListener("keydown", (event) => {
+      const button4 = element3("button", "", label);
+      button4.type = "button";
+      button4.setAttribute("role", "tab");
+      button4.setAttribute("aria-selected", String(id === tab));
+      button4.tabIndex = id === tab ? 0 : -1;
+      button4.id = `${panelId}-${id}`;
+      button4.setAttribute("aria-controls", panelId);
+      button4.addEventListener("click", () => changeTab(id));
+      button4.addEventListener("keydown", (event) => {
         if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
         event.preventDefault();
         const next = event.key === "Home" ? "verbs" : event.key === "End" ? "mimetics" : tab === "verbs" ? "mimetics" : "verbs";
         changeTab(next);
         tabButtons.get(next)?.focus();
       });
-      tabButtons.set(id, button2);
-      tabs.append(button2);
+      tabButtons.set(id, button4);
+      tabs.append(button4);
     }
     search.addEventListener("input", renderResults);
     category.addEventListener("change", renderResults);
@@ -3088,6 +3091,7 @@ ${meaningForkStyles}
   function renderPlaygroundBrowser(options) {
     const root = node("section", "playground-browser");
     root.setAttribute("aria-label", "Playgrounds");
+    root.classList.toggle("has-photo-tools", !!options.photo);
     const tabs = node("div", "playground-tabs");
     tabs.setAttribute("role", "tablist");
     tabs.setAttribute("aria-label", "Playground type");
@@ -3108,7 +3112,9 @@ ${meaningForkStyles}
       tool.element.querySelector("form").requestSubmit();
     } };
     function create(name) {
-      const tool = name === "dictionary" ? renderDictionaryTool(toolOptions) : name === "grammar" ? renderGrammarTool(toolOptions) : renderLegacyPlaygroundBrowser(options, name);
+      if (name === "photo") return options.photo.lookup((entry) => navigate(renderDictionaryTool(toolOptions, "", entry)));
+      if (name === "diary") return options.photo.diary();
+      const tool = name === "dictionary" ? renderDictionaryTool(toolOptions, "", options.dictionaryEntry) : name === "grammar" ? renderGrammarTool(toolOptions) : renderLegacyPlaygroundBrowser(options, name);
       tool.element.querySelector(".playground-pane")?.removeAttribute("role");
       return tool;
     }
@@ -3159,6 +3165,7 @@ ${meaningForkStyles}
         host.append(current.element);
       }
       current.element.hidden = false;
+      current.activate?.();
       for (const [name, b] of buttons) {
         b.setAttribute("aria-selected", String(name === next));
         b.tabIndex = name === next ? 0 : -1;
@@ -3166,6 +3173,7 @@ ${meaningForkStyles}
       if (focus) current.focus();
     }
     const tools = [["dictionary", "Dictionary"], ["verbs", "Word forms"], ["grammar", "Grammar"], ["mimetics", "Mimetics"]];
+    if (options.photo) tools.push(["photo", "Photo Lookup"], ["diary", "Picture Diary"]);
     for (const [name, label] of tools) {
       const option = node("option", "", label);
       option.value = name;
@@ -3187,7 +3195,7 @@ ${meaningForkStyles}
     }
     picker.onchange = () => change(picker.value);
     root.append(tabs, pickerLabel, routeBack, host);
-    change("verbs", false);
+    change(options.dictionaryEntry ? "dictionary" : options.photo && options.initialTool ? options.initialTool : "verbs", false);
     return { element: root, focus: () => current.focus(), dispose: () => {
       if (disposed) return;
       disposed = true;
@@ -3209,6 +3217,9 @@ ${meaningForkStyles}
 .playground-browser{display:flex;flex-direction:column;height:100%;min-height:0;min-width:0;container-type:inline-size;font:13px/1.5 var(--body);overflow-wrap:break-word}
 .playground-tabs{display:flex;flex:none;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--paper)}
 .playground-tabs button{flex:1;min-width:0;margin:0;padding:9px;font:700 12px/1.4 var(--mono)}
+.has-photo-tools .playground-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}
+.has-photo-tools .playground-tabs button{padding:8px 5px;white-space:normal}
+@container(max-width:640px){.has-photo-tools .playground-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.has-photo-tools .playground-tabs button{font-size:11px}}
 .playground-tabs [aria-selected=true]{background:var(--accent);color:var(--paper)}
 .playground-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:16px}
 .playground-intro{margin:0 0 14px;color:var(--muted);font-size:12px}
@@ -3275,11 +3286,11 @@ ${meaningForkStyles}
     return { word: { surface, lemma: corrected ? surface : token?.lemma || surface, reading: hiragana(reading) }, start, end };
   }
   function blocked(node2) {
-    let element4 = node2 instanceof Element ? node2 : node2.parentElement;
-    while (element4) {
-      if (element4.closest(ignored)) return true;
-      const root = element4.getRootNode();
-      element4 = root instanceof ShadowRoot ? root.host : null;
+    let element6 = node2 instanceof Element ? node2 : node2.parentElement;
+    while (element6) {
+      if (element6.closest(ignored)) return true;
+      const root = element6.getRootNode();
+      element6 = root instanceof ShadowRoot ? root.host : null;
     }
     return false;
   }
@@ -3314,16 +3325,16 @@ ${meaningForkStyles}
     } };
   }
   function webTarget(x, y2) {
-    let element4 = document.elementFromPoint(x, y2);
+    let element6 = document.elementFromPoint(x, y2);
     const shadows = [];
-    while (element4?.shadowRoot) {
-      const root = element4.shadowRoot;
+    while (element6?.shadowRoot) {
+      const root = element6.shadowRoot;
       shadows.push(root);
       const inner = root.elementFromPoint(x, y2);
-      if (!inner || inner === element4) break;
-      element4 = inner;
+      if (!inner || inner === element6) break;
+      element6 = inner;
     }
-    if (!element4 || blocked(element4)) return;
+    if (!element6 || blocked(element6)) return;
     const doc = document;
     const caret = doc.caretPositionFromPoint?.(x, y2, { shadowRoots: shadows }), range = caret ? void 0 : doc.caretRangeFromPoint?.(x, y2);
     const node2 = caret?.offsetNode ?? range?.startContainer, offset = caret?.offset ?? range?.startOffset;
@@ -3465,12 +3476,12 @@ ${playgroundBrowserStyles}
           this.content = this.root.querySelector(".content");
           this.status = this.root.querySelector(".status");
           this.content.addEventListener("pointerover", (event) => {
-            const button2 = event.target.closest(".word");
-            if (button2 && !(event.relatedTarget instanceof Node && button2.contains(event.relatedTarget))) this.mascotHooks?.hover({ surface: button2.dataset.surface, lemma: button2.dataset.word, reading: button2.dataset.reading }, (x, y2) => button2.isConnected && [...button2.getClientRects()].some((r) => x >= r.left && x <= r.right && y2 >= r.top && y2 <= r.bottom));
+            const button4 = event.target.closest(".word");
+            if (button4 && !(event.relatedTarget instanceof Node && button4.contains(event.relatedTarget))) this.mascotHooks?.hover({ surface: button4.dataset.surface, lemma: button4.dataset.word, reading: button4.dataset.reading }, (x, y2) => button4.isConnected && [...button4.getClientRects()].some((r) => x >= r.left && x <= r.right && y2 >= r.top && y2 <= r.bottom));
           });
           this.content.addEventListener("pointerout", (event) => {
-            const button2 = event.target.closest(".word");
-            if (button2 && !(event.relatedTarget instanceof Node && button2.contains(event.relatedTarget))) this.mascotHooks?.leave();
+            const button4 = event.target.closest(".word");
+            if (button4 && !(event.relatedTarget instanceof Node && button4.contains(event.relatedTarget))) this.mascotHooks?.leave();
           });
           document.addEventListener("selectionchange", () => {
             if (!this.mascotHooks || !this.host.isConnected) return;
@@ -3485,9 +3496,9 @@ ${playgroundBrowserStyles}
             else this.openPlaygrounds();
           });
           this.content.addEventListener("click", (event) => {
-            const button2 = event.target.closest(".word");
+            const button4 = event.target.closest(".word");
             const selection = this.root.getSelection?.() ?? window.getSelection();
-            if (button2 && (selection?.isCollapsed ?? true)) void this.define(button2);
+            if (button4 && (selection?.isCollapsed ?? true)) void this.define(button4);
           });
           this.root.addEventListener("keydown", (event) => {
             if (event.key === "Escape" && !this.definition.hidden) {
@@ -3549,8 +3560,8 @@ ${playgroundBrowserStyles}
           this.host.style.setProperty("--reader-top", `${Math.max(12, Math.min(top, innerHeight - 180))}px`);
           this.appearance(settings, appearance2);
           const lines = context === "web" ? runs.map((run) => ({ text: run.text, readings: run.readings, words: run.words })) : readingLines(runs), rendered = JSON.stringify([context, lines]);
-          const status = `${context === "web" ? "Visible webpage text" : context === "pageless" ? "Visible document text" : "Active page \xB7 visible text"} \xB7 Text-only view${limited ? " \xB7 View limit reached" : ""}.`;
-          if (this.status.textContent !== status) this.status.textContent = status;
+          const status2 = `${context === "web" ? "Visible webpage text" : context === "pageless" ? "Visible document text" : "Active page \xB7 visible text"} \xB7 Text-only view${limited ? " \xB7 View limit reached" : ""}.`;
+          if (this.status.textContent !== status2) this.status.textContent = status2;
           if (rendered === this.rendered) return;
           if (this.rendered !== void 0) this.scrollTop = this.content.scrollTop;
           if (this.rendered !== void 0 || !this.playground) this.dismissDefinition();
@@ -3591,9 +3602,9 @@ ${playgroundBrowserStyles}
             for (const word of words) {
               if (word.start < cursor || word.end > line.text.length) continue;
               append(p, cursor, word.start);
-              const button2 = document.createElement("button");
-              button2.type = "button";
-              button2.className = "word";
+              const button4 = document.createElement("button");
+              button4.type = "button";
+              button4.className = "word";
               const surface = line.text.slice(word.start, word.end);
               let pronunciation = "", position = word.start, unknown = false;
               for (const part of line.readings) {
@@ -3604,16 +3615,16 @@ ${playgroundBrowserStyles}
               }
               pronunciation += line.text.slice(position, word.end);
               if (unknown || /[\p{Script=Han}々]/u.test(pronunciation)) pronunciation = word.reading === "*" ? "" : word.reading;
-              button2.dataset.word = word.lemma;
-              button2.dataset.surface = surface;
-              button2.dataset.reading = pronunciation;
+              button4.dataset.word = word.lemma;
+              button4.dataset.surface = surface;
+              button4.dataset.reading = pronunciation;
               const originalIndex = (line.words ?? []).findIndex((entry) => entry.start === word.start);
-              if (originalIndex >= 0) this.wordContexts.set(button2, { text: line.text, words: line.words, index: originalIndex });
-              button2.setAttribute("aria-label", `Open details for ${surface}`);
-              button2.setAttribute("aria-pressed", "false");
-              button2.title = `${surface} \xB7 Word details`;
-              append(button2, word.start, word.end);
-              p.append(button2);
+              if (originalIndex >= 0) this.wordContexts.set(button4, { text: line.text, words: line.words, index: originalIndex });
+              button4.setAttribute("aria-label", `Open details for ${surface}`);
+              button4.setAttribute("aria-pressed", "false");
+              button4.title = `${surface} \xB7 Word details`;
+              append(button4, word.start, word.end);
+              p.append(button4);
               cursor = word.end;
             }
             append(p, cursor, line.text.length);
@@ -3791,12 +3802,12 @@ ${playgroundBrowserStyles}
           row.append(toggle);
           this.definition.append(form);
         }
-        define(button2) {
+        define(button4) {
           this.dismissDefinition();
           const version = this.lookupVersion;
-          this.selected = button2;
-          button2.setAttribute("aria-pressed", "true");
-          const word = button2.dataset.word, surface = button2.dataset.surface;
+          this.selected = button4;
+          button4.setAttribute("aria-pressed", "true");
+          const word = button4.dataset.word, surface = button4.dataset.surface;
           this.definition.hidden = false;
           this.definition.scrollTop = 0;
           const header = document.createElement("header"), title = document.createElement("h3");
@@ -3812,12 +3823,12 @@ ${playgroundBrowserStyles}
           const pronunciation = document.createElement("p");
           pronunciation.className = "pronunciation";
           pronunciation.lang = "ja";
-          pronunciation.textContent = [button2.dataset.reading, word !== surface ? `\u8F9E\u66F8\u5F62: ${word}` : ""].filter(Boolean).join(" \xB7 ");
+          pronunciation.textContent = [button4.dataset.reading, word !== surface ? `\u8F9E\u66F8\u5F62: ${word}` : ""].filter(Boolean).join(" \xB7 ");
           const pronunciationRow = document.createElement("div");
           pronunciationRow.className = "pronunciation-row";
           pronunciationRow.append(pronunciation);
           this.definition.append(pronunciationRow);
-          const context = this.wordContexts.get(button2);
+          const context = this.wordContexts.get(button4);
           if (context) {
             const models = wordExplorations(context.text, context.words, context.index, surface, this.overrides);
             if (models.verb || models.adjective || models.mimetic || models.meaning) {
@@ -3837,7 +3848,7 @@ ${playgroundBrowserStyles}
               this.definition.append(explore, panel);
             }
           }
-          if (/[\p{Script=Han}々]/u.test(surface)) this.correctionControls(surface, button2.dataset.reading ?? "", pronunciationRow);
+          if (/[\p{Script=Han}々]/u.test(surface)) this.correctionControls(surface, button4.dataset.reading ?? "", pronunciationRow);
           const body = document.createElement("div");
           body.className = "definition-body";
           this.definition.append(body);
@@ -4432,6 +4443,71 @@ ${playgroundBrowserStyles}
     }
   });
 
+  // src/mascot-inspection.ts
+  var mascotInspectionMarkup, mascotInspectionStyles;
+  var init_mascot_inspection = __esm({
+    "src/mascot-inspection.ts"() {
+      "use strict";
+      mascotInspectionMarkup = `
+<span class="inspect-cue" aria-hidden="true">
+  <span class="inspect-photo"><i class="inspect-picture"></i><i class="inspect-reticle"></i><i class="inspect-scanline"></i></span>
+  <span class="inspect-loupe"><i></i></span>
+  <span class="inspect-sparks"><i></i><i></i><i></i></span>
+</span>`;
+      mascotInspectionStyles = `
+.inspect-cue{display:none;position:absolute;left:62%;top:54%;width:35%;height:28%;pointer-events:none;--inspect-dir:1}
+.sprite.face-left .inspect-cue{left:3%;--inspect-dir:-1}
+.sprite[data-inspection] .inspect-cue{display:block}
+.inspect-photo{position:absolute;inset:8% 10% 16% 1%;overflow:hidden;border:2px solid #30283a;background:#fff1c8;box-shadow:2px 2px #30283a80;transform:rotate(calc(-8deg * var(--inspect-dir)));transform-origin:bottom center}
+.inspect-picture{position:absolute;inset:13% 9% 20%;background:linear-gradient(145deg,#7691ab,#c6c3ad 78%);overflow:hidden}
+.inspect-picture::before,.inspect-picture::after{content:'';position:absolute}
+.inspect-picture::before{left:10%;top:10%;width:19%;height:26%;background:#f5c47e}
+.inspect-picture::after{inset:7% 0 0;background:linear-gradient(130deg,#ede7ce 34%,#76887f 36%,#35516a 75%);clip-path:polygon(0 100%,0 80%,26% 49%,34% 57%,57% 4%,82% 76%,91% 59%,100% 87%,100% 100%)}
+.inspect-reticle{position:absolute;inset:18% 16% 25%;border:1px solid #fff4c4;box-shadow:0 0 1px #352633;opacity:0}
+.inspect-reticle::after{content:'';position:absolute;left:44%;top:39%;width:14%;height:18%;background:#fff4c4}
+.inspect-scanline{position:absolute;top:14%;left:9%;right:9%;height:2px;background:#f0bf70;box-shadow:0 1px 3px #ffdda0;opacity:0}
+.inspect-loupe{position:absolute;left:48%;top:-8%;width:52%;aspect-ratio:1;border:3px solid #30283a;border-radius:50%;background:#ddeecc50;box-shadow:1px 1px #fae5ac;transform-origin:75% 85%}
+.inspect-loupe::after{content:'';position:absolute;left:72%;top:87%;width:68%;height:30%;background:linear-gradient(#583843 42%,#30283a 42%);transform:rotate(48deg);transform-origin:left}
+.inspect-loupe i{position:absolute;top:14%;left:14%;width:35%;height:28%;border-block-start:2px solid #fff8dc;border-radius:50%;transform:rotate(-27deg)}
+.sprite.face-left .inspect-loupe{left:6%}.sprite.face-left .inspect-loupe::after{left:auto;right:72%;transform:rotate(-48deg);transform-origin:right}
+.inspect-sparks{position:absolute;inset:-13% -6% 32%;visibility:hidden}
+.inspect-sparks i{position:absolute;width:8%;aspect-ratio:1;background:#fae5ac;box-shadow:1px 1px #76523d;transform:rotate(45deg)}
+.inspect-sparks i:nth-child(1){left:24%;top:18%}.inspect-sparks i:nth-child(2){left:58%;top:0}.inspect-sparks i:nth-child(3){left:79%;top:31%}
+.sprite[data-inspection] canvas{--inspect-dir:1;transform-origin:62.5% 85%}
+.sprite.face-left[data-inspection] canvas{--inspect-dir:-1;transform-origin:37.5% 85%}
+.sprite[data-inspection=aim] canvas{animation:ko-mascot-inspect-lean 440ms both}
+.sprite[data-inspection=aim] .inspect-cue{animation:ko-mascot-inspect-photo 390ms cubic-bezier(.2,.72,.29,1) both}
+.sprite[data-inspection=aim] .inspect-loupe{animation:ko-mascot-inspect-loupe 530ms cubic-bezier(.18,.68,.26,1) both}
+.sprite[data-inspection=scan] canvas{animation:ko-mascot-inspect-track 1280ms ease-in-out 2 both}
+.sprite[data-inspection=scan] .inspect-loupe{animation:ko-mascot-inspect-sweep 1280ms ease-in-out 2 both}
+.sprite[data-inspection=scan] .inspect-scanline{animation:ko-mascot-inspect-line 1280ms steps(12) 2 both}
+.sprite[data-inspection=reveal] .inspect-photo{animation:ko-mascot-inspect-develop 780ms ease-out both}
+.sprite[data-inspection=reveal] .inspect-reticle{animation:ko-mascot-inspect-lock 780ms ease-out both}
+.sprite[data-inspection=reveal] .inspect-sparks{visibility:visible;animation:ko-mascot-inspect-sparks 780ms steps(7) both}
+.sprite[data-inspection=focus] canvas{animation:ko-mascot-inspect-confirm 630ms ease-out both}
+.sprite[data-inspection=focus] .inspect-loupe{animation:ko-mascot-inspect-refocus 630ms cubic-bezier(.22,.74,.22,1) both}
+.sprite[data-inspection=focus] .inspect-reticle{animation:ko-mascot-inspect-lock 630ms ease-out both}
+.sprite[data-inspection=ready] .inspect-reticle,.sprite[data-inspection=focus] .inspect-reticle{opacity:1}
+.sprite[data-inspection=put-away] .inspect-cue{animation:ko-mascot-inspect-pocket 350ms ease-in both}
+.sprite.inspect-still :is(canvas,.inspect-cue,.inspect-photo,.inspect-loupe,.inspect-reticle,.inspect-scanline,.inspect-sparks){animation:none!important}
+.sprite.inspect-still:is([data-inspection=scan],[data-inspection=reveal],[data-inspection=focus],[data-inspection=ready]) .inspect-reticle{opacity:1}
+.sprite.inspect-still .inspect-sparks{visibility:hidden}
+@keyframes ko-mascot-inspect-lean{0%{transform:none}42%{transform:rotate(calc(8deg * var(--inspect-dir))) scale(1.01,.9)}100%{transform:rotate(calc(4deg * var(--inspect-dir))) scale(1,.97)}}
+@keyframes ko-mascot-inspect-photo{0%{opacity:0;transform:translate(-10%,26%) rotate(-12deg) scale(.68)}58%{opacity:1;transform:translateY(-9%) scale(1.04)}100%{transform:none}}
+@keyframes ko-mascot-inspect-loupe{0%{opacity:0;transform:translate(calc(-52% * var(--inspect-dir)),43%) rotate(-18deg) scale(.65)}58%{opacity:1;transform:translateY(-13%) rotate(9deg)}100%{transform:none}}
+@keyframes ko-mascot-inspect-track{0%,100%{transform:rotate(calc(3deg * var(--inspect-dir))) scale(1,.97)}50%{transform:rotate(calc(8deg * var(--inspect-dir))) scale(1.02,.91)}}
+@keyframes ko-mascot-inspect-sweep{0%,100%{transform:translateX(calc(-48% * var(--inspect-dir))) rotate(-13deg)}25%{transform:translate(calc(-17% * var(--inspect-dir)),16%) rotate(-4deg)}62%{transform:translate(calc(29% * var(--inspect-dir)),25%) rotate(13deg)}87%{transform:translateY(5%)}}
+@keyframes ko-mascot-inspect-line{0%,100%{opacity:0;transform:translateY(0)}12%{opacity:.95}72%{opacity:.95;transform:translateY(600%)}87%{opacity:0;transform:translateY(600%)}}
+@keyframes ko-mascot-inspect-develop{0%{background:#ffedb7;filter:brightness(1.28)}29%{transform:translateY(-9%) rotate(calc(-13deg * var(--inspect-dir)))}100%{filter:none}}
+@keyframes ko-mascot-inspect-lock{0%{opacity:0;scale:1.45}31%{opacity:1;scale:.88}55%,100%{opacity:1;scale:1}}
+@keyframes ko-mascot-inspect-sparks{0%{opacity:0;transform:translateY(12%) scale(.64)}28%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-37%) scale(1.11)}}
+@keyframes ko-mascot-inspect-confirm{0%,100%{transform:none}37%{transform:rotate(calc(5deg * var(--inspect-dir))) scale(1,.94)}68%{transform:rotate(calc(2deg * var(--inspect-dir)))}}
+@keyframes ko-mascot-inspect-refocus{0%,100%{transform:none}36%{transform:translate(calc(-37% * var(--inspect-dir)),23%) scale(1.13) rotate(-12deg)}66%{transform:translate(calc(-29% * var(--inspect-dir)),19%) scale(1.03)}}
+@keyframes ko-mascot-inspect-pocket{0%{opacity:1;transform:none}100%{opacity:0;transform:translate(calc(-30% * var(--inspect-dir)),24%) rotate(-13deg) scale(.56)}}
+`;
+    }
+  });
+
   // src/mascot.ts
   var asset, Mascot;
   var init_mascot = __esm({
@@ -4441,6 +4517,7 @@ ${playgroundBrowserStyles}
       init_mascot_motion();
       init_mascot_bubble();
       init_mascot_lookup();
+      init_mascot_inspection();
       asset = (file) => chrome.runtime.getURL(`art/ko-kun/${file}`);
       Mascot = class {
         constructor(options) {
@@ -4448,9 +4525,22 @@ ${playgroundBrowserStyles}
           this.root.innerHTML = `<style>
 :host{all:initial!important;position:fixed!important;inset:0!important;z-index:2147483647!important;pointer-events:none!important;contain:strict!important;color-scheme:light!important;display:block!important}
 :host([hidden]){display:none!important}*{box-sizing:border-box}.sprite{position:absolute;display:block;margin:0;padding:0;border:0;background:transparent;box-shadow:none;pointer-events:auto;cursor:grab;touch-action:none;user-select:none;line-height:0}.sprite:active{cursor:grabbing}.sprite:focus-visible{outline:2px solid #294c66;outline-offset:2px;border-radius:12px}canvas{width:100%;height:100%;pointer-events:none}
+.tools{position:absolute;display:flex;gap:4px;pointer-events:none;opacity:0}.sprite:hover~.tools,.sprite:focus-visible~.tools,.tools:hover,.tools:focus-within{opacity:1;pointer-events:auto}
+.tools button{display:grid;place-items:center;padding:0;border:1px solid #294c66;border-radius:6px;background:#fff8e8;color:#15232b;width:32px;height:32px;font:20px/1 system-ui;cursor:pointer}.tools button[hidden]{display:none}.tools button:focus-visible{outline:2px solid #294c66;outline-offset:2px}
+.inspect-status{position:absolute;pointer-events:none;width:max-content;max-width:min(248px,calc(100% - 16px));margin:0;padding:8px;border:1px solid #294c66;background:#fff8e8;color:#15232b;font:12px/1.4 system-ui;overflow-wrap:anywhere;box-shadow:2px 2px 0 #15232b37}.inspect-status:empty{padding:0;border:0;box-shadow:none}
+.photo-icon{position:relative;width:17px;height:13px;border:2px solid currentColor;border-radius:2px;overflow:hidden}.photo-icon:before,.photo-icon:after{content:'';position:absolute;background:currentColor}.photo-icon:before{width:3px;height:3px;top:1px;right:2px}.photo-icon:after{inset:3px 0 0;clip-path:polygon(0 100%,0 74%,32% 22%,54% 62%,75% 39%,100% 83%,100% 100%)}
+${mascotInspectionStyles}
 ${mascotBubbleStyles}
 @media print{:host{display:none!important}}
-</style><button class="sprite" type="button" aria-label="K\u014D\u304F\u3093. Click to wake for a minute. Drag to move, or use arrow keys when focused." title="Click to wake K\u014D\u304F\u3093 for a minute; drag to move him"><canvas width="256" height="256" aria-hidden="true"></canvas></button>`;
+</style><button class="sprite" type="button" aria-label="K\u014D\u304F\u3093. Click to wake for a minute. Drag to move, or use arrow keys when focused." title="Click to wake K\u014D\u304F\u3093 for a minute; drag to move him"><canvas width="256" height="256" aria-hidden="true"></canvas>${mascotInspectionMarkup}</button><div class="tools"><button class="image-lookup" type="button" aria-label="Look up an image" title="Look up an image"><span class="photo-icon" aria-hidden="true"></span></button><button class="hide" type="button" aria-label="Hide K\u014D\u304F\u3093" title="Hide K\u014D\u304F\u3093">\xD7</button></div><p class="inspect-status" role="status"></p>`;
+          this.controls = this.root.querySelector(".tools");
+          this.inspectStatus = this.root.querySelector(".inspect-status");
+          const hide = this.root.querySelector(".hide");
+          this.imageButton = this.root.querySelector(".image-lookup");
+          hide.hidden = !options.hide;
+          hide.onclick = () => options.hide?.();
+          this.imageButton.hidden = !options.lookUpImage;
+          this.imageButton.onclick = () => this.startImageLookup();
           this.sprite = this.root.querySelector("button");
           this.canvas = this.root.querySelector("canvas");
           this.context = this.canvas.getContext("2d");
@@ -4465,6 +4555,8 @@ ${mascotBubbleStyles}
             if (e.button !== 0) return;
             e.preventDefault();
             this.lookup?.close();
+            this.endInspection();
+            this.inspectStatus.textContent = "";
             this.ignoreClick = false;
             this.drag = { pointer: e.pointerId, x: e.clientX, y: e.clientY, origin: this.displayPosition(), moved: false };
             this.sprite.setPointerCapture(e.pointerId);
@@ -4552,6 +4644,9 @@ ${mascotBubbleStyles}
         host = document.createElement("ko-mascot");
         root = this.host.attachShadow({ mode: "closed" });
         sprite;
+        controls;
+        imageButton;
+        inspectStatus;
         canvas;
         context;
         bubble;
@@ -4590,6 +4685,11 @@ ${mascotBubbleStyles}
         stepCreep = 0;
         motionCancelled = false;
         printing = false;
+        captureHidden = false;
+        inspection;
+        inspectOpenTimer = 0;
+        inspectCueTimer = 0;
+        inspectPending = false;
         ignoreClick = false;
         drag;
         painting = "";
@@ -4601,6 +4701,45 @@ ${mascotBubbleStyles}
         }
         get active() {
           return this.visible;
+        }
+        setCaptureHidden(hidden) {
+          this.captureHidden = hidden;
+          this.syncPlayback();
+        }
+        setImageInspection(phase) {
+          if (!this.visible || this.disposed) return;
+          if (!phase) {
+            if (!this.inspection) return;
+            if (this.reduced || this.host.hidden) {
+              this.endInspection();
+              this.syncPlayback();
+              return;
+            }
+            this.showInspection("put-away", 350);
+            return;
+          }
+          if (this.inspection === phase) return;
+          const starting = !this.inspection;
+          this.showInspection(phase, phase === "reveal" ? 780 : phase === "focus" ? 630 : 0);
+          if (starting) this.lookup?.close();
+          if (this.manifest && !this.failed && !this.reduced) {
+            this.position.x = this.displayPosition().x;
+            this.destination = void 0;
+            this.journey = void 0;
+            this.offsetX = this.hoverTime = this.flightHeight = 0;
+            this.motionCancelled = false;
+            this.suspend();
+            const routine = phase === "aim" || phase === "scan" ? "think" : phase === "reveal" ? "insight" : "seated-watch";
+            this.state = "seated";
+            this.step = void 0;
+            this.queue = routineSteps(this.manifest, "seated", routine, 0);
+            this.beginStep();
+            this.draw();
+          }
+          this.syncPlayback();
+        }
+        focusImageLookup() {
+          if (this.visible && !this.host.hidden && !this.imageButton.hidden) this.imageButton.focus({ preventScroll: true });
         }
         get reduced() {
           return this.settings.motion === "reduced" || this.media.matches;
@@ -4614,6 +4753,8 @@ ${mascotBubbleStyles}
           }
           this.visible = settings.enabled && !paused;
           if (!this.visible) {
+            this.endInspection();
+            this.inspectStatus.textContent = "";
             this.lookup?.destroy();
             this.lookup = void 0;
             this.host.remove();
@@ -4622,7 +4763,7 @@ ${mascotBubbleStyles}
             return;
           }
           if (!this.host.isConnected) document.documentElement.append(this.host);
-          if (!this.lookup) this.lookup = new MascotLookup({ send: this.options.send, settings: () => this.settings, overrides: this.options.overrides, owns: (e) => this.owns(e), paused: () => !this.visible || !!this.drag || document.hidden || !!document.fullscreenElement, target: this.options.target, show: (word) => this.showWord(word), close: () => {
+          if (!this.lookup) this.lookup = new MascotLookup({ send: this.options.send, settings: () => this.settings, overrides: this.options.overrides, owns: (e) => this.owns(e), paused: () => !this.visible || !!this.drag || !!this.inspection || document.hidden || !!document.fullscreenElement, target: this.options.target, show: (word) => this.showWord(word), close: () => {
             this.bubble.hide();
             this.syncPlayback();
           } });
@@ -4670,6 +4811,60 @@ ${mascotBubbleStyles}
             this.draw();
           }
         }
+        startImageLookup() {
+          const open = this.options.lookUpImage;
+          if (!open || !this.visible || this.host.hidden || this.drag || this.inspectOpenTimer || this.inspectPending) return;
+          this.endInspection();
+          this.inspectStatus.textContent = "";
+          this.lookup?.close();
+          this.setImageInspection("aim");
+          if (this.reduced) {
+            void this.openImageLookup(open);
+            return;
+          }
+          this.inspectOpenTimer = window.setTimeout(() => {
+            this.inspectOpenTimer = 0;
+            if (this.visible && !this.host.hidden && !this.disposed) void this.openImageLookup(open);
+          }, 420);
+        }
+        async openImageLookup(open) {
+          this.inspectPending = true;
+          try {
+            await open();
+          } catch (error) {
+            this.endInspection();
+            this.syncPlayback();
+            if (this.disposed || !this.visible || this.host.hidden) return;
+            this.inspectStatus.textContent = error instanceof Error ? error.message : "Could not start Photo Lookup. Try again.";
+            this.place();
+          } finally {
+            this.inspectPending = false;
+          }
+        }
+        showInspection(phase, duration = 0) {
+          clearTimeout(this.inspectCueTimer);
+          this.inspectCueTimer = 0;
+          this.inspection = phase;
+          this.sprite.dataset.inspection = phase;
+          this.sprite.classList.toggle("inspect-still", this.reduced);
+          if (!duration) return;
+          this.inspectCueTimer = window.setTimeout(() => {
+            this.inspectCueTimer = 0;
+            if (phase === "put-away") {
+              this.endInspection();
+              this.syncPlayback();
+            } else this.showInspection("ready");
+          }, duration);
+        }
+        endInspection() {
+          clearTimeout(this.inspectCueTimer);
+          this.inspectCueTimer = 0;
+          clearTimeout(this.inspectOpenTimer);
+          this.inspectOpenTimer = 0;
+          this.inspection = void 0;
+          delete this.sprite.dataset.inspection;
+          this.sprite.classList.remove("inspect-still");
+        }
         bounds() {
           const vv = window.visualViewport, width = vv?.width ?? innerWidth, height = vv?.height ?? innerHeight, left = vv?.offsetLeft ?? 0, top = vv?.offsetTop ?? 0;
           this.size = Math.max(16, Math.min(this.settings.size, width - 16, height - 16));
@@ -4710,7 +4905,21 @@ ${mascotBubbleStyles}
           }
           const anchor = this.step?.clip.groundAnchor ?? [160, 218], scale = this.size / 256;
           const displayed = this.displayPosition();
-          this.sprite.style.cssText = `width:${this.size}px;height:${this.size}px;left:${displayed.x - (this.mirrored ? 256 - anchor[0] : anchor[0]) * scale}px;top:${displayed.y - anchor[1] * scale}px`;
+          const spriteLeft = displayed.x - (this.mirrored ? 256 - anchor[0] : anchor[0]) * scale, spriteTop = displayed.y - anchor[1] * scale;
+          this.sprite.style.cssText = `width:${this.size}px;height:${this.size}px;left:${spriteLeft}px;top:${spriteTop}px`;
+          this.sprite.classList.toggle("face-left", this.mirrored);
+          const vv = window.visualViewport;
+          const width = this.options.lookUpImage && this.options.hide ? 68 : 32;
+          const left = vv?.offsetLeft ?? 0, top = vv?.offsetTop ?? 0, right = left + (vv?.width ?? innerWidth), bottom = top + (vv?.height ?? innerHeight);
+          const controlsLeft = Math.max(left, Math.min(right - width - 4, spriteLeft + this.size - width));
+          const controlsTop = Math.max(top, Math.min(bottom - 36, spriteTop));
+          this.controls.style.left = `${controlsLeft}px`;
+          this.controls.style.top = `${controlsTop}px`;
+          if (this.inspectStatus.textContent) {
+            const status2 = this.inspectStatus.getBoundingClientRect();
+            this.inspectStatus.style.left = `${Math.max(left + 8, Math.min(controlsLeft, right - status2.width - 8))}px`;
+            this.inspectStatus.style.top = `${Math.max(top + 8, controlsTop + 36 + status2.height <= bottom - 8 ? controlsTop + 36 : controlsTop - status2.height - 4)}px`;
+          }
           if (this.bubble.open) this.positionBubble();
         }
         displayPosition() {
@@ -4823,8 +5032,13 @@ ${mascotBubbleStyles}
           const holdMs = this.scheduler.isAwake(performance.now()) ? 9600 : 14400;
           this.queue = [...posePath(this.manifest.clips, from, "standing").map((clip) => ({ clip, duration: clip.durationMs })), ...routineSteps(this.manifest, "standing", "attentive-idle", holdMs).map((step) => ({ ...step, rest: step.clip.loop, duration: step.clip.loop ? holdMs : step.duration }))];
         }
+        greet() {
+          void this.load().then(() => {
+            if (!this.disposed) this.wake();
+          });
+        }
         wake() {
-          if (!this.visible || this.reduced || this.failed || !this.manifest || document.hidden || document.fullscreenElement || this.printing) return;
+          if (!this.visible || this.inspection || this.reduced || this.failed || !this.manifest || document.hidden || document.fullscreenElement || this.printing) return;
           this.suspend();
           this.scheduler.wake(performance.now());
           this.lookup?.close();
@@ -4849,7 +5063,10 @@ ${mascotBubbleStyles}
         }
         syncPlayback() {
           if (this.disposed) return;
-          this.host.hidden = document.hidden || !!document.fullscreenElement || this.printing;
+          const unavailable = document.hidden || !!document.fullscreenElement || this.printing;
+          this.host.hidden = unavailable || this.captureHidden;
+          if (unavailable) this.endInspection();
+          if (this.inspection) this.sprite.classList.toggle("inspect-still", this.reduced);
           if (!this.visible || this.host.hidden || this.drag) {
             this.suspend();
             if (this.reduced || this.failed || !this.manifest) this.fallback();
@@ -4864,6 +5081,10 @@ ${mascotBubbleStyles}
         }
         plan() {
           if (!this.manifest) return;
+          if (this.inspection) {
+            this.queue = routineSteps(this.manifest, this.state, "seated-watch", 9600);
+            return;
+          }
           const next = this.scheduler.choose(this.activeTime, performance.now()), b = this.bounds();
           this.motionCancelled = false;
           this.journey = void 0;
@@ -4947,7 +5168,7 @@ ${mascotBubbleStyles}
         }
         tick(now) {
           this.raf = 0;
-          if (!this.visible || document.hidden || document.fullscreenElement || this.printing || this.reduced || this.drag || this.failed) return;
+          if (!this.visible || this.captureHidden || document.hidden || document.fullscreenElement || this.printing || this.reduced || this.drag || this.failed) return;
           const delta = this.last ? Math.min(this.step?.rest && this.step.clip.routine === "sleep" ? 1e3 : 100, now - this.last) : 0;
           this.last = now;
           this.activeTime += delta;
@@ -4997,6 +5218,7 @@ ${mascotBubbleStyles}
         }
         destroy() {
           this.disposed = true;
+          this.endInspection();
           this.suspend();
           this.lookup?.destroy();
           this.abort.abort();
@@ -5019,11 +5241,11 @@ ${mascotBubbleStyles}
     if (boxes.some((r) => r.top >= row.bottom || r.bottom <= row.top || r.top < Math.max(0, clip.top) || r.bottom > Math.min(innerHeight, clip.bottom) || r.left < clip.left || r.right > clip.right)) return;
     const glyphs = /* @__PURE__ */ new Map();
     let inspected = 0;
-    for (const element4 of editor.querySelectorAll("svg rect[aria-label]")) {
+    for (const element6 of editor.querySelectorAll("svg rect[aria-label]")) {
       if (++inspected > 4096) return;
-      const bounds = element4.getBoundingClientRect();
+      const bounds = element6.getBoundingClientRect();
       if (!boxes.some((r) => bounds.left < r.right && bounds.right > r.left && bounds.top < r.bottom && bounds.bottom > r.top)) continue;
-      const run = source2(element4, clip);
+      const run = source2(element6, clip);
       if (!run) return;
       let offset = 0;
       for (const char of run.text) {
@@ -5060,11 +5282,11 @@ ${mascotBubbleStyles}
   function docsHoverTarget(root, x, y2, source2) {
     const glyphs = /* @__PURE__ */ new Map();
     let inspected = 0, measured = 0;
-    for (const element4 of root.querySelectorAll("svg rect[aria-label]")) {
+    for (const element6 of root.querySelectorAll("svg rect[aria-label]")) {
       if (++inspected > 4096) return;
-      const bounds = element4.getBoundingClientRect();
-      if (y2 < bounds.top || y2 > bounds.bottom || !element4.checkVisibility({ checkVisibilityCSS: true })) continue;
-      const run = source2(element4);
+      const bounds = element6.getBoundingClientRect();
+      if (y2 < bounds.top || y2 > bounds.bottom || !element6.checkVisibility({ checkVisibilityCSS: true })) continue;
+      const run = source2(element6);
       if (!run || run.text.length > 1e3) continue;
       let offset2 = 0;
       for (const char of run.text) {
@@ -5114,6 +5336,1426 @@ ${mascotBubbleStyles}
     }
   });
 
+  // src/photo-vision.ts
+  var maxPhotoBytes;
+  var init_photo_vision = __esm({
+    "src/photo-vision.ts"() {
+      "use strict";
+      maxPhotoBytes = 32 * 1024 * 1024;
+    }
+  });
+
+  // src/photo-vocabulary.ts
+  function normalizePhotoLabel(label) {
+    return label.normalize("NFKC").toLowerCase().replace(/[‐‑–—-]/g, " ").replace(/\s+/g, " ").trim();
+  }
+  function singularPhotoLabel(label) {
+    if (label.endsWith("ies")) return label.slice(0, -3) + "y";
+    if (/(?:[sxz]|ch|sh)es$/.test(label)) return label.slice(0, -2);
+    if (/[^sui]s$/.test(label)) return label.slice(0, -1);
+    return label;
+  }
+  function stripQualifiers(gloss) {
+    while (/\([^()]*\)/.test(gloss)) gloss = gloss.replace(/\([^()]*\)/g, "");
+    return normalizePhotoLabel(gloss).replace(/^(?:a|an|the) /, "");
+  }
+  function noun(hit) {
+    return hit.pos.some((pos) => pos.startsWith("noun (common)"));
+  }
+  function matchingGloss(hit, labels) {
+    return hit.meaning.split(";").map((gloss) => gloss.trim()).find((gloss) => labels.includes(normalizePhotoLabel(gloss)) || labels.includes(stripQualifiers(gloss)));
+  }
+  async function photoVocabulary(data, rawLabel, signal) {
+    const label = normalizePhotoLabel(rawLabel);
+    if (!label || label.length > 80) return [];
+    const labels = [.../* @__PURE__ */ new Set([label, singularPhotoLabel(label)])];
+    const guesses = labels.flatMap((value) => Object.hasOwn(preferred, value) ? preferred[value] : []);
+    const fixed = [];
+    for (const { query, glosses, display } of guesses) {
+      const { hits } = await data({ op: "search", query, offset: 0 }, signal);
+      const exact = hits.find((hit) => (hit.headword === query || hit.reading === query) && noun(hit) && matchingGloss(hit, glosses ?? labels));
+      if (exact) fixed.push({ ...exact, headword: display ?? exact.headword, meaning: matchingGloss(exact, glosses ?? labels) });
+    }
+    if (fixed.length) return fixed;
+    for (const query of labels) {
+      const { hits } = await data({ op: "search", query, offset: 0 }, signal);
+      const exact = hits.flatMap((hit) => {
+        if (!noun(hit)) return [];
+        const meaning = matchingGloss(hit, labels);
+        return meaning ? [{ hit: { ...hit, meaning }, first: hit.meaning.startsWith(meaning) }] : [];
+      });
+      const first = exact.filter((candidate) => candidate.first);
+      const pool = first.length ? first : exact;
+      const common = pool.filter((candidate) => candidate.hit.common);
+      if (pool.length) return (common.length ? common : pool).slice(0, 4).map((candidate) => candidate.hit);
+    }
+    return [];
+  }
+  var preferred;
+  var init_photo_vocabulary = __esm({
+    "src/photo-vocabulary.ts"() {
+      "use strict";
+      preferred = {
+        umbrella: [{ query: "\u5098" }],
+        book: [{ query: "\u672C" }],
+        notebook: [{ query: "\u30CE\u30FC\u30C8" }],
+        bottle: [{ query: "\u74F6" }, { query: "\u30DC\u30C8\u30EB" }],
+        "water bottle": [{ query: "\u6C34\u7B52", glosses: ["water bottle", "canteen"] }, { query: "\u30DA\u30C3\u30C8\u30DC\u30C8\u30EB", glosses: ["plastic bottle", "pet bottle"] }],
+        "plastic bottle": [{ query: "\u30DA\u30C3\u30C8\u30DC\u30C8\u30EB", glosses: ["plastic bottle", "pet bottle"] }],
+        cup: [{ query: "\u30AB\u30C3\u30D7" }, { query: "\u30B3\u30C3\u30D7", glosses: ["glass", "tumbler"], display: "\u30B3\u30C3\u30D7" }],
+        mug: [{ query: "\u30DE\u30B0\u30AB\u30C3\u30D7" }],
+        cat: [{ query: "\u732B" }],
+        dog: [{ query: "\u72AC" }],
+        rabbit: [{ query: "\u514E" }],
+        table: [{ query: "\u30C6\u30FC\u30D6\u30EB" }],
+        chair: [{ query: "\u6905\u5B50" }],
+        plant: [{ query: "\u690D\u7269" }],
+        lamp: [{ query: "\u30E9\u30F3\u30D7" }],
+        pen: [{ query: "\u30DA\u30F3" }],
+        pencil: [{ query: "\u925B\u7B46" }],
+        keyboard: [{ query: "\u30AD\u30FC\u30DC\u30FC\u30C9" }],
+        mouse: [{ query: "\u30DE\u30A6\u30B9" }, { query: "\u9F20" }],
+        "computer mouse": [{ query: "\u30DE\u30A6\u30B9", glosses: ["(computer) mouse"] }],
+        apple: [{ query: "\u6797\u6A8E", display: "\u308A\u3093\u3054" }],
+        ball: [{ query: "\u30DC\u30FC\u30EB" }],
+        photograph: [{ query: "\u5199\u771F" }],
+        photo: [{ query: "\u5199\u771F" }],
+        plate: [{ query: "\u76BF" }],
+        "rice bowl": [{ query: "\u8336\u7897" }],
+        mountain: [{ query: "\u5C71" }],
+        tree: [{ query: "\u6728" }],
+        tower: [{ query: "\u5854" }],
+        building: [{ query: "\u5EFA\u7269" }],
+        sign: [{ query: "\u770B\u677F" }, { query: "\u6A19\u8B58" }],
+        fence: [{ query: "\u67F5" }],
+        "stop sign": [{ query: "\u4E00\u6642\u505C\u6B62\u6A19\u8B58" }, { query: "\u6A19\u8B58", glosses: ["sign", "marker"] }]
+      };
+    }
+  });
+
+  // src/photo-counters.ts
+  function normalizedKind(raw) {
+    const original = normalizePhotoLabel(raw);
+    if (knownLabels.has(original) || generalObjects.has(original) || uncountableLabels.has(original)) return original;
+    const label = original.replace(visualModifiers, "");
+    if (knownLabels.has(label) || generalObjects.has(label) || uncountableLabels.has(label)) return label;
+    const pair = label.replace(/^pairs of /, "pair of ");
+    return irregularLabels.get(label) ?? (knownLabels.has(pair) ? pair : singularPhotoLabel(label));
+  }
+  function numberParts(count) {
+    const tens = Math.floor(count / 10), ones = count % 10;
+    const word = (tens ? (tens === 1 ? "" : digitWords[tens - 1]) + "\u5341" : "") + (ones ? digitWords[ones - 1] : "");
+    const prefix = tens ? (tens === 1 ? "" : digitReadings[tens]) + "\u3058\u3085\u3046" : "";
+    return { tens, ones, word, prefix };
+  }
+  function specificCount(count, counter) {
+    const { tens, ones, word, prefix } = numberParts(count);
+    if (counter === "\u4EBA" && count <= 2) return { kind: "word", word: word + counter, reading: count === 1 ? "\u3072\u3068\u308A" : "\u3075\u305F\u308A" };
+    const rule = rules[counter];
+    const changes = rule.changes ?? {};
+    const reading = ones ? prefix + (changes[ones] ?? digitReadings[ones] + rule.reading) : (tens === 1 ? "" : digitReadings[tens]) + (changes[10] ?? "\u3058\u3085\u3046" + rule.reading);
+    return { kind: "word", word: word + counter, reading };
+  }
+  function countPhotoObjects(labels, useGeneral = false) {
+    const count = labels.length;
+    if (!count) return { kind: "empty" };
+    if (count > 99) return { kind: "out-of-range" };
+    const kinds = labels.map(normalizedKind), counters = kinds.map((kind) => knownLabels.get(kind));
+    const first = counters[0];
+    if (first && counters.every((counter) => counter === first)) return specificCount(count, first);
+    if (counters.some((counter) => counter && animateCounters.has(counter))) return { kind: "mixed" };
+    if (kinds.some((kind) => uncountableLabels.has(kind))) return { kind: "unsupported" };
+    if (!useGeneral && !kinds.every((kind) => generalObjects.has(kind))) return { kind: "offer-general" };
+    const { word, prefix, ones } = numberParts(count);
+    return {
+      kind: "general",
+      word: count < 10 ? word + "\u3064" : word,
+      reading: count <= 10 ? nativeReadings[count - 1] : prefix + digitReadings[ones]
+    };
+  }
+  var photoCounterGuide, rules, knownLabels, animateCounters, generalObjects, uncountableLabels, irregularLabels, digitWords, digitReadings, nativeReadings, visualModifiers;
+  var init_photo_counters = __esm({
+    "src/photo-counters.ts"() {
+      "use strict";
+      init_photo_vocabulary();
+      photoCounterGuide = "https://www.coelang.tufs.ac.jp/mt/ja/gmod/contents/explanation/017.html";
+      rules = {
+        \u672C: { reading: "\u307B\u3093", changes: { 1: "\u3044\u3063\u307D\u3093", 3: "\u3055\u3093\u307C\u3093", 6: "\u308D\u3063\u307D\u3093", 8: "\u306F\u3063\u307D\u3093", 10: "\u3058\u3085\u3063\u307D\u3093" }, labels: [
+          "bottle",
+          "water bottle",
+          "plastic bottle",
+          "glass bottle",
+          "wine bottle",
+          "beer bottle",
+          "pen",
+          "pencil",
+          "marker",
+          "umbrella",
+          "straw",
+          "candle",
+          "carrot",
+          "banana",
+          "cucumber",
+          "screwdriver",
+          "pole",
+          "tree",
+          "branch",
+          "stick",
+          "log",
+          "cable",
+          "rope",
+          "skewer"
+        ] },
+        \u518A: { reading: "\u3055\u3064", changes: { 1: "\u3044\u3063\u3055\u3064", 8: "\u306F\u3063\u3055\u3064", 10: "\u3058\u3085\u3063\u3055\u3064" }, labels: [
+          "book",
+          "notebook",
+          "magazine",
+          "textbook",
+          "comic book",
+          "dictionary",
+          "booklet",
+          "photo album",
+          "cookbook",
+          "sketchbook",
+          "journal"
+        ] },
+        \u679A: { reading: "\u307E\u3044", labels: [
+          "paper",
+          "sheet of paper",
+          "leaf",
+          "picture",
+          "photograph",
+          "photo",
+          "card",
+          "plate",
+          "ticket",
+          "sticker",
+          "postcard",
+          "stamp",
+          "sheet",
+          "towel",
+          "handkerchief",
+          "shirt",
+          "t shirt",
+          "banknote",
+          "poster",
+          "painting",
+          "disc",
+          "cd",
+          "dvd"
+        ] },
+        \u5339: { reading: "\u3072\u304D", changes: { 1: "\u3044\u3063\u3074\u304D", 3: "\u3055\u3093\u3073\u304D", 6: "\u308D\u3063\u3074\u304D", 8: "\u306F\u3063\u3074\u304D", 10: "\u3058\u3085\u3063\u3074\u304D" }, labels: [
+          "animal",
+          "pet",
+          "cat",
+          "kitten",
+          "dog",
+          "puppy",
+          "rabbit",
+          "fish",
+          "goldfish",
+          "hamster",
+          "mouse",
+          "rat",
+          "squirrel",
+          "frog",
+          "toad",
+          "turtle",
+          "lizard",
+          "snake",
+          "insect",
+          "butterfly",
+          "beetle",
+          "bee",
+          "ant",
+          "spider",
+          "crab",
+          "shrimp",
+          "lobster",
+          "snail",
+          "squid",
+          "octopus",
+          "monkey",
+          "fox",
+          "raccoon"
+        ] },
+        \u500B: { reading: "\u3053", changes: { 1: "\u3044\u3063\u3053", 6: "\u308D\u3063\u3053", 8: "\u306F\u3063\u3053", 10: "\u3058\u3085\u3063\u3053" }, labels: [
+          "ball",
+          "apple",
+          "orange",
+          "egg",
+          "cup",
+          "glass",
+          "mug",
+          "bowl",
+          "bean",
+          "stone",
+          "box",
+          "cookie",
+          "onion",
+          "tomato",
+          "potato",
+          "peach",
+          "pear",
+          "strawberry",
+          "lemon",
+          "lime",
+          "rock",
+          "coin",
+          "button",
+          "dice",
+          "die",
+          "block",
+          "brick",
+          "doughnut",
+          "donut",
+          "bun",
+          "sandwich",
+          "candy",
+          "bead",
+          "battery",
+          "can"
+        ] },
+        \u53F0: { reading: "\u3060\u3044", labels: [
+          "car",
+          "sports car",
+          "passenger car",
+          "truck",
+          "pickup truck",
+          "bus",
+          "van",
+          "minivan",
+          "taxi",
+          "motorcycle",
+          "motorbike",
+          "bicycle",
+          "bike",
+          "scooter",
+          "tractor",
+          "ambulance",
+          "police car",
+          "fire truck",
+          "forklift",
+          "excavator",
+          "machine",
+          "computer",
+          "laptop",
+          "tablet",
+          "phone",
+          "mobile phone",
+          "smartphone",
+          "television",
+          "tv",
+          "monitor",
+          "camera",
+          "printer",
+          "refrigerator",
+          "fridge",
+          "microwave",
+          "washing machine",
+          "vacuum cleaner",
+          "air conditioner",
+          "fan",
+          "piano"
+        ] },
+        \u4EBA: { reading: "\u306B\u3093", changes: { 4: "\u3088\u306B\u3093" }, labels: [
+          "person",
+          "human",
+          "man",
+          "woman",
+          "adult",
+          "child",
+          "boy",
+          "girl",
+          "baby",
+          "toddler",
+          "teenager",
+          "student",
+          "teacher",
+          "worker",
+          "pedestrian",
+          "rider",
+          "driver",
+          "cyclist",
+          "runner",
+          "player",
+          "athlete",
+          "tourist",
+          "customer",
+          "passenger",
+          "chef",
+          "waiter",
+          "nurse",
+          "doctor",
+          "police officer",
+          "firefighter",
+          "skateboarder",
+          "skier",
+          "surfer"
+        ] },
+        \u982D: { reading: "\u3068\u3046", changes: { 1: "\u3044\u3063\u3068\u3046", 8: "\u306F\u3063\u3068\u3046", 10: "\u3058\u3085\u3063\u3068\u3046" }, labels: [
+          "horse",
+          "cow",
+          "bull",
+          "cattle",
+          "ox",
+          "donkey",
+          "elephant",
+          "giraffe",
+          "zebra",
+          "bear",
+          "lion",
+          "tiger",
+          "hippopotamus",
+          "rhinoceros",
+          "rhino",
+          "camel",
+          "buffalo",
+          "sheep",
+          "goat",
+          "deer",
+          "whale"
+        ] },
+        \u7FBD: { reading: "\u308F", labels: [
+          "bird",
+          "chicken",
+          "rooster",
+          "hen",
+          "duck",
+          "goose",
+          "swan",
+          "pigeon",
+          "dove",
+          "sparrow",
+          "crow",
+          "raven",
+          "eagle",
+          "hawk",
+          "owl",
+          "parrot",
+          "penguin",
+          "flamingo",
+          "seagull"
+        ] },
+        \u8ED2: { reading: "\u3051\u3093", changes: { 1: "\u3044\u3063\u3051\u3093", 3: "\u3055\u3093\u3052\u3093", 6: "\u308D\u3063\u3051\u3093", 8: "\u306F\u3063\u3051\u3093", 10: "\u3058\u3085\u3063\u3051\u3093" }, labels: [
+          "house",
+          "home",
+          "cottage",
+          "shop",
+          "store",
+          "convenience store",
+          "restaurant",
+          "cafe",
+          "coffee shop",
+          "bakery",
+          "bookstore",
+          "movie theater",
+          "cinema"
+        ] },
+        \u8DB3: { reading: "\u305D\u304F", changes: { 1: "\u3044\u3063\u305D\u304F", 3: "\u3055\u3093\u305E\u304F", 8: "\u306F\u3063\u305D\u304F", 10: "\u3058\u3085\u3063\u305D\u304F" }, labels: [
+          "pair of shoes",
+          "pair of boots",
+          "pair of socks",
+          "pair of sandals",
+          "pair of slippers",
+          "pair of sneakers"
+        ] },
+        \u7740: { reading: "\u3061\u3083\u304F", changes: { 1: "\u3044\u3063\u3061\u3083\u304F", 8: "\u306F\u3063\u3061\u3083\u304F", 10: "\u3058\u3085\u3063\u3061\u3083\u304F" }, labels: [
+          "coat",
+          "jacket",
+          "dress",
+          "suit",
+          "kimono",
+          "uniform",
+          "outfit",
+          "raincoat",
+          "swimsuit",
+          "costume"
+        ] },
+        \u96BB: { reading: "\u305B\u304D", changes: { 1: "\u3044\u3063\u305B\u304D", 8: "\u306F\u3063\u305B\u304D", 10: "\u3058\u3085\u3063\u305B\u304D" }, labels: [
+          "ship",
+          "ferry",
+          "cargo ship",
+          "cruise ship",
+          "warship",
+          "tanker",
+          "container ship",
+          "battleship",
+          "aircraft carrier"
+        ] },
+        \u811A: { reading: "\u304D\u3083\u304F", changes: { 1: "\u3044\u3063\u304D\u3083\u304F", 6: "\u308D\u3063\u304D\u3083\u304F", 8: "\u306F\u3063\u304D\u3083\u304F", 10: "\u3058\u3085\u3063\u304D\u3083\u304F" }, labels: [
+          "chair",
+          "stool",
+          "office chair",
+          "dining chair"
+        ] },
+        \u4E21: { reading: "\u308A\u3087\u3046", labels: ["train car", "train carriage", "railcar", "railway carriage", "subway car"] },
+        \u6A5F: { reading: "\u304D", changes: { 1: "\u3044\u3063\u304D", 6: "\u308D\u3063\u304D", 8: "\u306F\u3063\u304D", 10: "\u3058\u3085\u3063\u304D" }, labels: [
+          "airplane",
+          "aeroplane",
+          "plane",
+          "aircraft",
+          "airliner",
+          "helicopter",
+          "jet plane",
+          "fighter jet"
+        ] },
+        \u676F: { reading: "\u306F\u3044", changes: { 1: "\u3044\u3063\u3071\u3044", 3: "\u3055\u3093\u3070\u3044", 6: "\u308D\u3063\u3071\u3044", 8: "\u306F\u3063\u3071\u3044", 10: "\u3058\u3085\u3063\u3071\u3044" }, labels: [
+          "cup of coffee",
+          "cup of tea",
+          "cup of water",
+          "glass of water",
+          "glass of wine",
+          "glass of beer",
+          "mug of beer",
+          "bowl of soup",
+          "bowl of rice",
+          "bowl of noodles"
+        ] }
+      };
+      knownLabels = /* @__PURE__ */ new Map();
+      for (const counter of Object.keys(rules)) {
+        for (const label of rules[counter].labels) knownLabels.set(label, counter);
+      }
+      animateCounters = /* @__PURE__ */ new Set(["\u4EBA", "\u5339", "\u982D", "\u7FBD"]);
+      generalObjects = /* @__PURE__ */ new Set(["bag", "backpack", "handbag", "purse", "wallet", "suitcase", "luggage tag", "pillow", "cushion", "blanket", "toy", "gift", "container", "basket", "bucket", "park", "parcel", "package", "shelf"]);
+      uncountableLabels = /* @__PURE__ */ new Set(["sky", "snow", "sand", "grass", "water", "ground", "paved ground", "dirt", "soil", "smoke", "fog", "mist", "rain", "crowd", "flock", "herd", "group of people"]);
+      irregularLabels = /* @__PURE__ */ new Map([
+        ["people", "person"],
+        ["men", "man"],
+        ["women", "woman"],
+        ["children", "child"],
+        ["mice", "mouse"],
+        ["geese", "goose"],
+        ["oxen", "ox"],
+        ["shelves", "shelf"],
+        ["cups of coffee", "cup of coffee"],
+        ["cups of tea", "cup of tea"],
+        ["cups of water", "cup of water"],
+        ["glasses of water", "glass of water"],
+        ["glasses of wine", "glass of wine"],
+        ["glasses of beer", "glass of beer"]
+      ]);
+      digitWords = "\u4E00\u4E8C\u4E09\u56DB\u4E94\u516D\u4E03\u516B\u4E5D";
+      digitReadings = ["", "\u3044\u3061", "\u306B", "\u3055\u3093", "\u3088\u3093", "\u3054", "\u308D\u304F", "\u306A\u306A", "\u306F\u3061", "\u304D\u3085\u3046"];
+      nativeReadings = ["\u3072\u3068\u3064", "\u3075\u305F\u3064", "\u307F\u3063\u3064", "\u3088\u3063\u3064", "\u3044\u3064\u3064", "\u3080\u3063\u3064", "\u306A\u306A\u3064", "\u3084\u3063\u3064", "\u3053\u3053\u306E\u3064", "\u3068\u304A"];
+      visualModifiers = /^(?:(?:black|white|red|blue|green|yellow|orange|brown|gray|grey|pink|purple|beige|silver|golden|large|small|tiny) )+/;
+    }
+  });
+
+  // src/photo-lookup.ts
+  function element4(tag, className, content) {
+    const node2 = document.createElement(tag);
+    if (className) node2.className = className;
+    if (content !== void 0) node2.textContent = content;
+    return node2;
+  }
+  function button2(label, action) {
+    const el = element4("button", "", label);
+    el.type = "button";
+    el.addEventListener("click", action);
+    return el;
+  }
+  function svgElement(tag) {
+    return document.createElementNS("http://www.w3.org/2000/svg", tag);
+  }
+  function status(className) {
+    const feedback = element4("p", className);
+    feedback.setAttribute("role", "status");
+    return feedback;
+  }
+  function formatWord(word, reading) {
+    const japanese5 = element4("span");
+    japanese5.lang = "ja";
+    japanese5.textContent = word === reading || !reading ? word : `${word}\uFF08${reading}\uFF09`;
+    return japanese5;
+  }
+  function polygonContains(point, polygon) {
+    let inside = false;
+    for (let i = 0, j2 = polygon.length - 1; i < polygon.length; j2 = i++) {
+      const [x, y2] = polygon[i], [previousX, previousY] = polygon[j2];
+      if (y2 > point.y !== previousY > point.y && point.x < (previousX - x) * (point.y - y2) / (previousY - y2) + x) inside = !inside;
+    }
+    return inside;
+  }
+  function hitTest(point, detection) {
+    if (detection.polygons?.length) return detection.polygons.some((polygon) => polygonContains(point, polygon));
+    const { x, y: y2, width, height } = detection.box;
+    return point.x >= x && point.x <= x + width && point.y >= y2 && point.y <= y2 + height;
+  }
+  function renderPhotoResults(options) {
+    const root = element4("section", `photo-lookup-results${options.detachStage ? " is-detached" : ""}`);
+    root.setAttribute("aria-label", "Object lookup");
+    const stage = element4("div", `photo-lookup-stage${options.detachStage ? " is-detached" : ""}`);
+    if (options.source) stage.append(options.source.preview);
+    const svg = svgElement("svg"), overlays = svgElement("g"), drawn = svgElement("rect");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("preserveAspectRatio", "none");
+    drawn.classList.add("photo-lookup-drawn-crop");
+    drawn.style.display = "none";
+    svg.append(overlays, drawn);
+    stage.append(svg);
+    const actions = element4("div", "photo-lookup-actions"), feedback = status("photo-lookup-feedback");
+    const countOutput = status("photo-lookup-count"), objects = element4("div", "photo-lookup-objects");
+    countOutput.tabIndex = -1;
+    const countGuide = element4("a", "", "Counter guide");
+    countGuide.href = photoCounterGuide;
+    countGuide.target = "_blank";
+    countGuide.rel = "noopener noreferrer";
+    const overlaps = element4("div", "photo-lookup-choices"), card = element4("div", "photo-lookup-card");
+    objects.setAttribute("role", "group");
+    objects.setAttribute("aria-label", "Detected objects");
+    overlaps.setAttribute("role", "group");
+    overlaps.setAttribute("aria-label", "Overlapping objects");
+    card.setAttribute("aria-label", "Selected object");
+    let disposed = false, counting = false, useGeneralCount = false, cropping = false, busy = false, stageAvailable = true;
+    let width = options.source?.width ?? 0, height = options.source?.height ?? 0;
+    let detections = [];
+    let active, selection = /* @__PURE__ */ new Set();
+    let analysis, lookup;
+    let retryRegion;
+    let crop, drag;
+    const editedLabels = /* @__PURE__ */ new Map();
+    const numbers = /* @__PURE__ */ new Map();
+    const words = /* @__PURE__ */ new Map();
+    const items = /* @__PURE__ */ new Map();
+    const shapes = /* @__PURE__ */ new Map();
+    const countButton = button2("Count", () => {
+      counting = !counting;
+      useGeneralCount = false;
+      countButton.setAttribute("aria-pressed", String(counting));
+      selection = new Set(counting && active ? [active.id] : []);
+      refreshSelections();
+    });
+    countButton.setAttribute("aria-pressed", "false");
+    const drawButton = button2("Crop and retry", () => setCropping(true));
+    const runCrop = button2("Analyze crop", () => {
+      if (!crop) return;
+      const region = crop;
+      setCropping(false);
+      void analyze(region);
+    });
+    const cancelCrop = button2("Cancel crop", () => setCropping(false));
+    const retry = button2("Try again", () => void analyze(retryRegion));
+    runCrop.classList.add("photo-primary");
+    runCrop.hidden = cancelCrop.hidden = retry.hidden = true;
+    countButton.hidden = true;
+    drawButton.disabled = !width || !height;
+    actions.append(countButton, drawButton, runCrop, cancelCrop, retry);
+    const controls = element4("div", "photo-lookup-controls");
+    controls.append(element4("h3", "", "Objects"), actions);
+    const inspector = element4("aside", "photo-lookup-inspector");
+    inspector.append(controls, feedback, countOutput, overlaps, card, objects);
+    if (!options.detachStage) {
+      const media = element4("figure", "photo-lookup-media");
+      media.append(stage);
+      root.append(media);
+    }
+    root.append(inspector);
+    const labelFor = (object) => editedLabels.get(object.id) ?? object.label;
+    const displayObject = (object) => numbers.has(object.id) ? `${labelFor(object)} ${numbers.get(object.id)}` : labelFor(object);
+    function dimensions(nextWidth, nextHeight) {
+      width = nextWidth;
+      height = nextHeight;
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      stage.style.setProperty("--photo-aspect", `${width} / ${height}`);
+      stage.style.setProperty("--photo-limit", `calc(62vh * ${width / height})`);
+    }
+    function refreshSelections() {
+      for (const [id, item] of items) {
+        const selected = counting ? selection.has(id) : active?.id === id;
+        item.setAttribute("aria-pressed", String(selected));
+        shapes.get(id)?.classList.toggle("is-active", selected);
+      }
+      countOutput.replaceChildren();
+      if (!counting) return;
+      const labels = detections.filter((object) => selection.has(object.id)).map(labelFor);
+      const japanese5 = countPhotoObjects(labels, useGeneralCount);
+      const tools = element4("div", "photo-lookup-count-tools");
+      if (japanese5.kind === "empty") {
+        countOutput.textContent = "Select objects to see their Japanese counter.";
+      } else {
+        countOutput.append(`${labels.length} selected`);
+        if (japanese5.kind === "word" || japanese5.kind === "general") {
+          countOutput.append(" \xB7 ", formatWord(japanese5.word, japanese5.reading));
+          if (japanese5.kind === "general") countOutput.append(element4("small", "", "General count for things."));
+        } else {
+          const hint = {
+            mixed: "Choose objects that share a counter.",
+            unsupported: "Counter unavailable for this selection.",
+            "out-of-range": "Select up to 99 objects to see the Japanese count.",
+            "offer-general": "Use the general count for inanimate objects."
+          }[japanese5.kind];
+          countOutput.append(element4("small", "", hint));
+          if (japanese5.kind === "offer-general") tools.append(button2("Count as things", () => {
+            useGeneralCount = true;
+            refreshSelections();
+            countOutput.focus({ preventScroll: true });
+          }));
+        }
+      }
+      tools.append(countGuide);
+      countOutput.append(tools);
+    }
+    function markHover(id) {
+      for (const [key, shape] of shapes) shape.classList.toggle("is-hovered", key === id);
+    }
+    function setCropping(value) {
+      if (value && !stageAvailable) return;
+      cropping = value;
+      stage.classList.toggle("is-cropping", value);
+      crop = void 0;
+      drag = void 0;
+      drawn.style.display = "none";
+      runCrop.hidden = cancelCrop.hidden = !value;
+      drawButton.hidden = value || !stageAvailable;
+      runCrop.disabled = true;
+      overlaps.replaceChildren();
+      feedback.textContent = value ? "Drag a rectangle around the object, then choose Analyze crop." : "";
+      if (!value && stageAvailable) drawButton.focus({ preventScroll: true });
+    }
+    function select(object) {
+      overlaps.replaceChildren();
+      feedback.textContent = "";
+      useGeneralCount = false;
+      if (counting && selection.has(object.id)) {
+        selection.delete(object.id);
+        if (active?.id === object.id) {
+          active = detections.find((item) => selection.has(item.id));
+          if (active) void lookupObject(active);
+          else {
+            lookup?.abort();
+            card.replaceChildren();
+          }
+        }
+      } else {
+        if (counting) selection.add(object.id);
+        if (active?.id !== object.id) options.onObjectSelect?.();
+        active = object;
+        void lookupObject(object);
+      }
+      refreshSelections();
+    }
+    function selectAt(point) {
+      const matches2 = detections.filter((object) => hitTest(point, object));
+      if (matches2.length === 1) {
+        select(matches2[0]);
+        return;
+      }
+      overlaps.replaceChildren();
+      if (!matches2.length) {
+        feedback.textContent = "No detected object here. You can draw a smaller crop and retry.";
+        return;
+      }
+      feedback.textContent = "Choose the object you meant.";
+      for (const object of matches2) overlaps.append(button2(displayObject(object), () => {
+        select(object);
+        items.get(object.id)?.focus({ preventScroll: true });
+      }));
+      overlaps.firstElementChild.focus({ preventScroll: true });
+    }
+    function labelEditor(object) {
+      const form = element4("form", "photo-lookup-edit"), label = element4("label", "", "English label");
+      const input = element4("input");
+      input.value = labelFor(object);
+      input.maxLength = 80;
+      input.required = true;
+      input.autocomplete = "off";
+      label.append(input);
+      const submit = element4("button", "", "Update label");
+      submit.type = "submit";
+      form.append(label, submit, button2("Cancel", () => void lookupObject(object)));
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const corrected = input.value.trim();
+        if (!corrected || !new RegExp("\\p{Script=Latin}", "u").test(corrected)) {
+          input.setCustomValidity("Enter an English object label.");
+          input.reportValidity();
+          return;
+        }
+        editedLabels.set(object.id, corrected);
+        useGeneralCount = false;
+        const item = items.get(object.id);
+        if (item) item.textContent = displayObject(object);
+        refreshSelections();
+        void lookupObject(object);
+      });
+      input.addEventListener("input", () => input.setCustomValidity(""));
+      card.querySelector(".photo-lookup-edit")?.remove();
+      card.append(form);
+      input.focus();
+      input.select();
+    }
+    async function lookupObject(object) {
+      lookup?.abort();
+      const controller = new AbortController();
+      lookup = controller;
+      const label = labelFor(object);
+      const controls2 = element4("div", "photo-lookup-actions"), edit = button2("Edit label", () => labelEditor(object));
+      edit.classList.add("photo-lookup-edit-button");
+      controls2.append(edit);
+      const meaning = element4("div"), result = status("photo-lookup-feedback");
+      const modelLabel = element4("p", "photo-lookup-label", label);
+      card.replaceChildren(modelLabel, meaning, controls2, result);
+      result.textContent = "Looking up Japanese\u2026";
+      const current = () => !disposed && !controller.signal.aborted;
+      function showHit(hit, focus = false) {
+        const name = element4("p", "photo-lookup-word");
+        name.lang = "ja";
+        name.append(element4("span", "", hit.headword));
+        if (hit.reading && hit.reading !== hit.headword) name.append(element4("small", "", hit.reading));
+        const gloss = element4("p", "photo-lookup-gloss", hit.meaning);
+        const save = button2("Save to Picture Diary", () => {
+          save.disabled = true;
+          result.textContent = "Saving crop\u2026";
+          void options.save(object.box, hit).then(() => {
+            if (current()) result.textContent = "Saved to Picture Diary.";
+          }, (error) => {
+            if (!current()) return;
+            save.disabled = false;
+            result.textContent = error instanceof Error ? error.message : "Could not save the crop. Try again.";
+          });
+        });
+        save.classList.add("photo-primary");
+        const dictionary = button2("Open Dictionary", () => options.dictionary(hit));
+        modelLabel.hidden = normalizePhotoLabel(hit.meaning).split(" (")[0] === normalizePhotoLabel(label);
+        meaning.replaceChildren(name, gloss);
+        controls2.replaceChildren(save, dictionary, edit);
+        result.textContent = "";
+        if (focus) dictionary.focus({ preventScroll: true });
+      }
+      try {
+        const key = normalizePhotoLabel(label);
+        const hits = words.get(key) ?? await photoVocabulary(options.data, label, controller.signal);
+        if (!current()) return;
+        if (!words.has(key)) words.set(key, hits);
+        result.textContent = "";
+        if (hits.length === 1) {
+          showHit(hits[0]);
+          return;
+        }
+        if (!hits.length) {
+          result.textContent = "No reliable match in the local Japanese dictionary.";
+          return;
+        }
+        const choices = element4("div", "photo-lookup-choices");
+        choices.setAttribute("role", "group");
+        choices.setAttribute("aria-label", "Japanese word choices");
+        for (const hit of hits) {
+          const choice = button2("", () => showHit(hit, true));
+          choice.append(formatWord(hit.headword, hit.reading), ` \xB7 ${hit.meaning}`);
+          choices.append(choice);
+        }
+        meaning.append(element4("p", "", "Choose the Japanese word that fits."), choices);
+      } catch {
+        if (!current()) return;
+        result.textContent = "The local dictionary could not finish.";
+        controls2.append(button2("Retry lookup", () => void lookupObject(object)));
+      }
+    }
+    function applyAnalysis(result) {
+      dimensions(result.width, result.height);
+      lookup?.abort();
+      detections = result.detections;
+      active = void 0;
+      selection.clear();
+      numbers.clear();
+      editedLabels.clear();
+      items.clear();
+      shapes.clear();
+      objects.replaceChildren();
+      overlays.replaceChildren();
+      overlaps.replaceChildren();
+      card.replaceChildren();
+      const groups = /* @__PURE__ */ new Map();
+      for (const detection of detections) {
+        const list = groups.get(detection.label) ?? [];
+        list.push(detection);
+        groups.set(detection.label, list);
+      }
+      for (const group of groups.values()) {
+        if (group.length > 1) group.forEach((detection, index) => numbers.set(detection.id, index + 1));
+      }
+      for (const detection of detections) {
+        const item = button2(displayObject(detection), () => select(detection)), shape = svgElement("g");
+        item.addEventListener("focus", () => markHover(detection.id));
+        item.addEventListener("blur", () => markHover());
+        item.addEventListener("pointerenter", () => markHover(detection.id));
+        item.addEventListener("pointerleave", () => markHover());
+        if (detection.polygons?.length) {
+          for (const polygon of detection.polygons) {
+            const outline = svgElement("polygon");
+            outline.setAttribute("points", polygon.map((point) => point.join(",")).join(" "));
+            outline.classList.add("photo-lookup-shape");
+            shape.append(outline);
+          }
+        } else {
+          const box = svgElement("rect");
+          box.classList.add("photo-lookup-shape");
+          for (const [key, value] of Object.entries(detection.box)) box.setAttribute(key, String(value));
+          shape.append(box);
+        }
+        objects.append(item);
+        overlays.append(shape);
+        items.set(detection.id, item);
+        shapes.set(detection.id, shape);
+      }
+      countButton.hidden = !detections.length;
+      drawButton.disabled = false;
+      refreshSelections();
+      feedback.textContent = detections.length ? "Select an object in the image or list." : "No objects detected. Try a clearer photo or a tighter crop.";
+    }
+    async function analyze(region) {
+      if (disposed) return;
+      analysis?.abort();
+      const controller = new AbortController();
+      analysis = controller;
+      busy = true;
+      drawButton.disabled = true;
+      retry.hidden = true;
+      feedback.textContent = "Looking for objects on this device\u2026";
+      try {
+        const result = await options.analyze(region, controller.signal);
+        if (!disposed && !controller.signal.aborted) applyAnalysis(result);
+      } catch (error) {
+        if (disposed || controller.signal.aborted) return;
+        retryRegion = region;
+        retry.hidden = false;
+        feedback.textContent = error instanceof Error ? error.message : "Photo Lookup could not analyze the image.";
+      } finally {
+        if (analysis === controller) {
+          busy = false;
+          drawButton.disabled = !width || !height;
+        }
+      }
+    }
+    function stagePoint(event) {
+      const bounds = stage.getBoundingClientRect();
+      return {
+        x: Math.min(width, Math.max(0, (event.clientX - bounds.left) * width / bounds.width)),
+        y: Math.min(height, Math.max(0, (event.clientY - bounds.top) * height / bounds.height))
+      };
+    }
+    function drawTo(point) {
+      if (!drag) return;
+      const x = Math.floor(Math.min(drag.start.x, point.x)), y2 = Math.floor(Math.min(drag.start.y, point.y));
+      crop = { x, y: y2, width: Math.ceil(Math.max(drag.start.x, point.x)) - x, height: Math.ceil(Math.max(drag.start.y, point.y)) - y2 };
+      drawn.style.display = "";
+      for (const [key, value] of Object.entries(crop)) drawn.setAttribute(key, String(value));
+      runCrop.disabled = crop.width < 4 || crop.height < 4;
+    }
+    stage.addEventListener("pointerdown", (event) => {
+      if (!cropping || event.button !== 0) return;
+      event.preventDefault();
+      drag = { start: stagePoint(event), pointer: event.pointerId };
+      stage.setPointerCapture(event.pointerId);
+      drawTo(drag.start);
+    });
+    stage.addEventListener("pointermove", (event) => {
+      if (!cropping && !busy || cropping && drag?.pointer === event.pointerId) {
+        const point = stagePoint(event);
+        if (cropping) drawTo(point);
+        else markHover(detections.find((object) => hitTest(point, object))?.id);
+      }
+    });
+    stage.addEventListener("pointerup", (event) => {
+      if (!cropping || drag?.pointer !== event.pointerId) return;
+      drawTo(stagePoint(event));
+      drag = void 0;
+    });
+    stage.addEventListener("pointercancel", () => {
+      if (!drag) return;
+      drag = void 0;
+      crop = void 0;
+      drawn.style.display = "none";
+      runCrop.disabled = true;
+    });
+    stage.addEventListener("pointerleave", () => markHover());
+    stage.addEventListener("click", (event) => {
+      if (!cropping && !busy && width && height) selectAt(stagePoint(event));
+    });
+    root.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && cropping) {
+        event.preventDefault();
+        event.stopPropagation();
+        setCropping(false);
+      }
+    });
+    if (width && height) dimensions(width, height);
+    if (options.initialAnalysis) applyAnalysis(options.initialAnalysis);
+    else queueMicrotask(() => void analyze(void 0));
+    return {
+      element: root,
+      stage,
+      focus: () => {
+        const first = items.values().next().value;
+        (first ?? drawButton).focus({ preventScroll: true });
+      },
+      setStageAvailable: (available) => {
+        stageAvailable = available;
+        if (!available && cropping) setCropping(false);
+        drawButton.hidden = !available || cropping;
+      },
+      dispose: () => {
+        disposed = true;
+        analysis?.abort();
+        lookup?.abort();
+      }
+    };
+  }
+  var photoLookupStyles;
+  var init_photo_lookup = __esm({
+    "src/photo-lookup.ts"() {
+      "use strict";
+      init_photo_vision();
+      init_photo_counters();
+      init_photo_vocabulary();
+      photoLookupStyles = `
+.photo-lookup,.photo-lookup-results{--photo-line:#d4c5ab;--photo-card:#faf3e4;--photo-faint:#eee2cb;--photo-radius:4px;color:var(--ink,#242b2d);font:14px/1.5 var(--body,system-ui);min-width:0;overflow-wrap:anywhere}
+.photo-lookup[hidden],.photo-lookup [hidden],.photo-lookup-results [hidden],.photo-lookup-stage [hidden]{display:none}
+.photo-lookup-scroll{overflow:auto;min-height:0;flex:1;padding:clamp(14px,3vw,32px);overscroll-behavior:contain}
+.photo-lookup-heading{display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;padding-bottom:17px}
+.photo-lookup-heading h2{margin:0;font:750 clamp(24px,3vw,31px)/1.22 var(--body,system-ui);letter-spacing:-.03em}
+.photo-lookup-results,.photo-lookup-empty{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(255px,1fr);align-items:start;gap:clamp(12px,2vw,22px)}
+.photo-lookup-results.is-detached{display:block}
+.photo-lookup-input{display:grid;place-content:center;justify-items:center;gap:10px;min-height:clamp(200px,42vh,380px);padding:22px;background:var(--photo-card);border:1px dashed #a89b83;border-radius:var(--photo-radius);text-align:center}
+.photo-lookup-scroll.is-dragging .photo-lookup-input{background:var(--photo-faint);border-color:var(--seal,#9f3e2d);outline:2px solid var(--seal,#9f3e2d);outline-offset:-3px}
+.photo-lookup-scroll.is-dragging .photo-lookup-media{outline:2px solid var(--seal,#9f3e2d);outline-offset:2px}
+.photo-lookup-input p{margin:0;color:var(--muted,#625d50);font-size:13px}
+.photo-lookup-source{display:inline-flex;position:relative;max-width:100%}
+.photo-lookup-source input{clip-path:inset(50%);width:1px;height:1px;position:absolute;overflow:hidden;white-space:nowrap}
+.photo-lookup-source span,.photo-lookup-results button{display:inline-block;color:var(--ink,#242b2d);background:transparent;border:1px solid var(--photo-line);border-radius:var(--photo-radius);padding:7px 10px;font:650 12px/1.4 var(--body,system-ui);margin:0;cursor:pointer;text-align:start}
+.photo-lookup-source span{background:var(--photo-card);border-color:#b7aa92;padding:8px 12px}
+.photo-lookup-input .photo-lookup-source span,.photo-lookup-results button.photo-primary{background:var(--seal,#9f3e2d);color:var(--paper,#f4ecd8);border-color:var(--seal,#9f3e2d)}
+.photo-lookup-source:hover span,.photo-lookup-results button:hover:not(:disabled){background:var(--photo-faint)}
+.photo-lookup-input .photo-lookup-source:hover span,.photo-lookup-results button.photo-primary:hover:not(:disabled){background:#813225;border-color:#813225}
+.photo-lookup-source input:focus-visible + span,.photo-lookup-results button:focus-visible,.photo-lookup-results input:focus-visible{outline:2px solid var(--accent,#234e64);outline-offset:2px}
+.photo-lookup-results button:disabled{opacity:.55;cursor:default}
+.photo-lookup-inspector{display:grid;gap:12px;align-content:start;min-width:0;min-height:138px;padding:15px;background:var(--photo-card);border:1px solid var(--photo-line);border-radius:var(--photo-radius)}
+.photo-lookup-results.is-detached .photo-lookup-inspector{border:0;background:transparent;padding:0;min-height:0;gap:10px}
+.photo-lookup-inspector h3{margin:0;font:750 15px/1.4 var(--body,system-ui)}
+.photo-lookup-inspector p,.photo-lookup-heading p{margin:0}
+.photo-lookup-controls{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.photo-lookup-actions,.photo-lookup-choices{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.photo-lookup-results button[aria-pressed=true]{color:var(--paper,#f4ecd8);background:var(--accent,#234e64);border-color:var(--accent,#234e64)}
+.photo-lookup-results button[aria-pressed=true]:hover{background:#17394b}
+.photo-lookup-objects{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,110px),1fr));gap:6px}
+.photo-lookup-objects button{min-width:0;overflow-wrap:anywhere}
+.photo-lookup-choices:not(:empty){margin-top:6px}
+.photo-lookup-media{display:grid;place-items:center;min-width:0;min-height:clamp(200px,48vh,530px);margin:0;background:#262928;border-radius:var(--photo-radius);border:1px solid #262928;overflow:hidden}
+.photo-lookup-stage{position:relative;width:100%;margin:0;overflow:hidden;aspect-ratio:var(--photo-aspect,1);max-width:min(100%,var(--photo-limit,100%));cursor:crosshair;touch-action:none;user-select:none}
+.photo-lookup-stage.is-detached{height:100%;max-width:none;aspect-ratio:auto;background:transparent}
+.photo-lookup-stage canvas,.photo-lookup-stage svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.photo-lookup-stage canvas{display:block}
+.photo-lookup-shape{fill:none;stroke:#fff3da;stroke-width:1px;stroke-opacity:.42;vector-effect:non-scaling-stroke}
+.photo-lookup-stage.is-detached .photo-lookup-shape{stroke:#234e64;stroke-opacity:.56}
+.photo-lookup-stage .is-active .photo-lookup-shape{fill:#d48a5d24;stroke:#ffbd8e;stroke-width:2.5px;stroke-opacity:1}
+.photo-lookup-stage.is-detached .is-active .photo-lookup-shape{stroke:#9f3e2d;fill:#9f3e2d26}
+.photo-lookup-stage .is-hovered .photo-lookup-shape{stroke:#ffe2ba;stroke-width:2px;stroke-opacity:1}
+.photo-lookup-stage.is-detached .is-hovered .photo-lookup-shape{stroke:#9f3e2d;stroke-opacity:1}
+.photo-lookup-drawn-crop{fill:#fff3da22;stroke:#ffe2ba;stroke-width:2px;stroke-dasharray:5 3;vector-effect:non-scaling-stroke}
+.photo-lookup-stage.is-detached .photo-lookup-drawn-crop{stroke:#9f3e2d}
+.photo-lookup-card{display:grid;min-width:0;gap:9px;border:1px solid var(--photo-line);border-inline-start:3px solid var(--seal,#9f3e2d);border-radius:var(--photo-radius);background:#fff9ed;padding:12px}
+.photo-lookup-card:empty,.photo-lookup-feedback:empty,.photo-lookup-count:empty,.photo-lookup-choices:empty,.photo-lookup-objects:empty{display:none}
+.photo-lookup-label{font:700 13px/1.4 var(--body,system-ui);color:var(--muted,#625d50)}
+.photo-lookup-feedback{color:var(--muted,#625d50);font-size:13px}
+.photo-lookup-scroll>.photo-lookup-feedback:not(:empty){margin:0 0 12px}
+.photo-lookup-word{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 8px;color:var(--accent,#234e64);font:750 30px/1.34 var(--body,system-ui);letter-spacing:-.02em}
+.photo-lookup-word small{font:600 14px/1.45 var(--body,system-ui);color:var(--muted,#625d50);letter-spacing:normal}
+.photo-lookup-gloss{font-size:14px;color:var(--ink,#242b2d)}
+.photo-lookup-results .photo-lookup-edit-button{border-color:transparent;color:var(--muted,#625d50);text-decoration:underline;text-underline-offset:2px}
+.photo-lookup-count{padding:7px 9px;background:#e6ebea;border-radius:var(--photo-radius);color:var(--accent,#234e64);font-weight:650}
+.photo-lookup-count small{display:block;margin-top:3px;font-size:12px;font-weight:400;color:var(--muted,#625d50)}
+.photo-lookup-count-tools{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;margin-top:5px}
+.photo-lookup-count-tools a{font:600 12px/1.4 var(--body,system-ui);color:var(--accent,#234e64);text-underline-offset:2px}
+.photo-lookup-edit{display:flex;flex-wrap:wrap;gap:6px;align-items:end;margin:0}
+.photo-lookup-edit label{display:grid;gap:3px;min-width:0;flex:1 1 120px;font-size:12px}
+.photo-lookup-edit input{min-width:0;width:100%;padding:6px;color:var(--ink,#242b2d);background:var(--paper,#f4ecd8);border:1px solid var(--photo-line);border-radius:var(--photo-radius);font:inherit}
+@container(max-width:690px){.photo-lookup-results,.photo-lookup-empty{grid-template-columns:minmax(0,1fr)}.photo-lookup-media{min-height:0}.photo-lookup-inspector{min-height:0}}
+@media(max-width:540px){.photo-lookup-results,.photo-lookup-empty{grid-template-columns:minmax(0,1fr)}.photo-lookup-media{min-height:0}}
+`;
+    }
+  });
+
+  // src/photo-tab-protocol.ts
+  function validPhotoSize(value) {
+    if (!value || typeof value !== "object") return false;
+    const { width, height } = value;
+    return Number.isFinite(width) && width > 0 && width <= 32768 && Number.isFinite(height) && height > 0 && height <= 32768;
+  }
+  function validPhotoRectangle(value) {
+    if (!validPhotoSize(value)) return false;
+    const { x, y: y2 } = value;
+    return Number.isFinite(x) && x >= 0 && x <= 32768 && Number.isFinite(y2) && y2 >= 0 && y2 <= 32768;
+  }
+  function validPhotoTabSelection(value) {
+    if (!value || typeof value !== "object") return false;
+    const { rect, viewport } = value;
+    return validPhotoRectangle(rect) && validPhotoSize(viewport) && rect.width >= 16 && rect.height >= 16 && rect.x + rect.width <= viewport.width && rect.y + rect.height <= viewport.height;
+  }
+  var photoTabExpired, photoTabMoved;
+  var init_photo_tab_protocol = __esm({
+    "src/photo-tab-protocol.ts"() {
+      "use strict";
+      photoTabExpired = "The selected area is no longer available. Choose it again from the toolbar.";
+      photoTabMoved = "The page moved. Select the area again.";
+    }
+  });
+
+  // src/photo-tab-overlay-style.ts
+  var photoTabOverlayStyles;
+  var init_photo_tab_overlay_style = __esm({
+    "src/photo-tab-overlay-style.ts"() {
+      "use strict";
+      photoTabOverlayStyles = `
+:host{all:initial!important;position:fixed!important;inset:0!important;display:block!important;pointer-events:none!important;z-index:2147483647!important;font:14px/1.5 var(--body)!important;color:var(--ink)!important}
+:host([hidden]){display:none!important}
+.photo-tab-surface{position:absolute;inset:0;overflow:hidden;pointer-events:auto;cursor:crosshair;touch-action:none}
+.photo-tab-surface:has(.photo-tab-rectangle[hidden]){background:#151b275e}
+.photo-tab-rectangle,.photo-tab-stage{position:absolute;box-sizing:border-box;pointer-events:none}
+.photo-tab-rectangle{--corner:linear-gradient(#fff,#fff);border:1px solid #fff9;outline:1px solid #25394a;box-shadow:0 0 0 100vmax #151b276f;background:
+  var(--corner) left top/13px 2px,var(--corner) left top/2px 13px,
+  var(--corner) right top/13px 2px,var(--corner) right top/2px 13px,
+  var(--corner) left bottom/13px 2px,var(--corner) left bottom/2px 13px,
+  var(--corner) right bottom/13px 2px,var(--corner) right bottom/2px 13px;
+  background-repeat:no-repeat}
+.photo-tab-stage{outline:1px solid #234e64;outline-offset:1px}
+.photo-tab-stage>*{width:100%;height:100%;pointer-events:auto}
+.photo-tab-panel{--photo-panel-edge:#d7c9ac;position:absolute;inset:16px 16px auto auto;width:min(356px,calc(100% - 32px));
+  max-height:calc(100% - 32px);overflow:auto;pointer-events:auto;border:1px solid var(--photo-panel-edge);border-block-start:3px solid var(--seal);
+  border-radius:7px;background:var(--paper);box-shadow:0 14px 32px #19233336,0 2px 5px #19233326;overscroll-behavior:contain;scrollbar-width:thin}
+.photo-tab-panel.is-left{left:16px;right:auto}
+.photo-tab-panel>header{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 13px;border-bottom:1px solid var(--photo-panel-edge);background:var(--paper)}
+.photo-tab-panel>header strong{font:750 15px/1.4 var(--body);color:var(--accent)}
+.photo-tab-panel>header button{font-size:12px;min-height:30px}
+.photo-tab-panel>div{padding:12px 13px 14px}
+.photo-tab-panel>div>p{margin:0 0 10px;color:var(--muted)}
+.photo-tab-panel .photo-tab-feedback:empty{display:none}
+.photo-tab-panel button{border:1px solid var(--photo-panel-edge);border-radius:4px;padding:6px 9px;min-height:32px;background:#fff9ec;color:var(--ink);font:700 12px/1.4 var(--body);cursor:pointer}
+.photo-tab-panel button:hover:not(:disabled){background:#e9ddc2}
+.photo-tab-panel button[aria-pressed=true],.photo-tab-panel .photo-tab-primary:not(:disabled){background:var(--accent);border-color:var(--accent);color:#fff9ec}
+.photo-tab-panel .photo-tab-primary:hover:not(:disabled){background:var(--ink)}
+.photo-tab-actions{display:flex;flex-wrap:wrap;gap:7px}
+.photo-tab-panel .photo-lookup-results{margin-top:10px}
+@media(max-width:520px){.photo-tab-panel,.photo-tab-panel.is-left{inset:auto 10px 10px;width:auto;max-height:min(48vh,calc(100% - 20px))}}
+@media print{:host{display:none!important}}
+`;
+    }
+  });
+
+  // src/photo-tab-overlay.ts
+  function element5(tag, css, text) {
+    const node2 = document.createElement(tag);
+    if (css) node2.className = css;
+    if (text) node2.textContent = text;
+    return node2;
+  }
+  function button3(text, click) {
+    const node2 = element5("button", "", text);
+    node2.type = "button";
+    node2.addEventListener("click", click);
+    return node2;
+  }
+  function place(node2, { x, y: y2, width, height }) {
+    Object.assign(node2.style, { left: `${x}px`, top: `${y2}px`, width: `${width}px`, height: `${height}px` });
+  }
+  function openOverlay(id, send, onClose, options, fromMascot) {
+    const listeners = new AbortController();
+    const { signal } = listeners;
+    const previouslyFocused = document.activeElement;
+    const host = document.createElement("ko-photo-lookup");
+    const shadow = host.attachShadow({ mode: "closed" });
+    const style = element5("style");
+    style.textContent = uiTheme + photoLookupStyles + photoTabOverlayStyles;
+    const surface = element5("div", "photo-tab-surface");
+    const rectangle = element5("div", "photo-tab-rectangle");
+    rectangle.hidden = true;
+    const stage = element5("div", "photo-tab-stage");
+    stage.hidden = true;
+    const panel = element5("section", "photo-tab-panel");
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-label", "Photo Lookup");
+    const header = element5("header");
+    header.append(element5("strong", "", "Photo Lookup"), button3("Close", close));
+    const body = element5("div");
+    panel.append(header, body);
+    surface.append(rectangle);
+    shadow.append(style, surface, stage, panel);
+    document.documentElement.append(host);
+    let currentRect;
+    let drag;
+    let result;
+    let recording;
+    let capturedHidden = false, geometry = pageGeometry();
+    function setCaptureHidden(hidden) {
+      if (capturedHidden === hidden) return;
+      capturedHidden = hidden;
+      host.hidden = hidden;
+      options.onCaptureVisibility?.(hidden);
+    }
+    function close() {
+      if (signal.aborted) return;
+      const restore = shadow.activeElement !== null;
+      listeners.abort();
+      result?.dispose();
+      setCaptureHidden(false);
+      host.remove();
+      onClose();
+      options.onInspectionPhase?.(void 0);
+      if (restore && !document.hidden) {
+        if (fromMascot && options.onRestoreMascotFocus) options.onRestoreMascotFocus();
+        else if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus({ preventScroll: true });
+      }
+      void send({ type: "photo-tab-close", id }).catch(() => {
+      });
+    }
+    async function ask(type, fields = {}) {
+      if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
+      const reply = await send({ type, id, ...fields });
+      if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
+      if (!reply || reply.error) throw new Error(reply?.error ?? photoTabExpired);
+      return reply.value;
+    }
+    const feedback = element5("p", "photo-tab-feedback");
+    feedback.setAttribute("role", "status");
+    const instructions = element5("p", "", "Drag around the part of the page you want to look up.");
+    const selectionActions = element5("div", "photo-tab-actions");
+    const useArea = button3("Look up selection", () => void capture());
+    useArea.classList.add("photo-tab-primary");
+    const visibleArea = button3("Select visible area", () => setRect({ x: 0, y: 0, width: innerWidth, height: innerHeight }));
+    selectionActions.append(visibleArea, useArea);
+    const selectAgain = button3("Choose another area", () => showSelection());
+    const openPhoto = button3("Open Photo Lookup", () => {
+      void ask("photo-tab-standalone").catch((error) => {
+        feedback.textContent = error.message;
+      });
+    });
+    function setRect(rect) {
+      currentRect = rect;
+      rectangle.hidden = !rect;
+      if (rect) place(rectangle, rect);
+      useArea.disabled = !rect || !validPhotoTabSelection({ rect, viewport: { width: innerWidth, height: innerHeight } });
+      feedback.textContent = rect && useArea.disabled ? "Select an area at least 16 by 16 pixels." : "";
+    }
+    function showSelection() {
+      options.onInspectionPhase?.("aim");
+      result?.dispose();
+      result = void 0;
+      stage.replaceChildren();
+      stage.hidden = true;
+      surface.hidden = false;
+      panel.classList.remove("is-left");
+      setRect(void 0);
+      body.replaceChildren(instructions, selectionActions, feedback);
+      visibleArea.focus({ preventScroll: true });
+    }
+    function updateDrag(event) {
+      if (drag?.pointerId !== event.pointerId) return;
+      const x = Math.min(innerWidth, Math.max(0, event.clientX));
+      const y2 = Math.min(innerHeight, Math.max(0, event.clientY));
+      setRect({ x: Math.min(drag.x, x), y: Math.min(drag.y, y2), width: Math.abs(drag.x - x), height: Math.abs(drag.y - y2) });
+    }
+    surface.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0 || drag) return;
+      event.preventDefault();
+      surface.setPointerCapture(event.pointerId);
+      drag = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+      updateDrag(event);
+    }, { signal });
+    surface.addEventListener("pointermove", updateDrag, { signal });
+    surface.addEventListener("pointerup", (event) => {
+      if (drag?.pointerId !== event.pointerId) return;
+      updateDrag(event);
+      drag = void 0;
+      if (!useArea.disabled) useArea.focus({ preventScroll: true });
+    }, { signal });
+    surface.addEventListener("pointercancel", () => {
+      drag = void 0;
+      setRect(void 0);
+    }, { signal });
+    surface.addEventListener("wheel", (event) => event.preventDefault(), { passive: false, signal });
+    async function capture() {
+      const selection = currentRect && { rect: currentRect, viewport: { width: innerWidth, height: innerHeight } };
+      if (recording || !selection || !validPhotoTabSelection(selection)) return;
+      const request = { requestId: crypto.randomUUID(), geometry: pageGeometry(), moved: false };
+      recording = request;
+      setCaptureHidden(true);
+      try {
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+        const analysis = await ask("photo-tab-capture", { selection, requestId: request.requestId });
+        setCaptureHidden(false);
+        if (!signal.aborted) showResults(selection.rect, analysis, request.moved || request.geometry !== pageGeometry());
+      } catch (error) {
+        if (signal.aborted) return;
+        setCaptureHidden(false);
+        const message = error instanceof Error ? error.message : "Could not look up this area.";
+        if (message === photoTabMoved) {
+          showSelection();
+          feedback.textContent = message;
+          return;
+        }
+        feedback.textContent = message;
+        options.onInspectionPhase?.(void 0);
+        const actions = element5("div", "photo-tab-actions");
+        actions.append(selectAgain, openPhoto);
+        body.replaceChildren(feedback, actions);
+        surface.hidden = true;
+        selectAgain.focus({ preventScroll: true });
+      } finally {
+        recording = void 0;
+        setCaptureHidden(false);
+      }
+    }
+    function captured(capturedId, requestId) {
+      if (capturedId !== id || signal.aborted || !recording || recording.requestId !== requestId) return;
+      surface.hidden = true;
+      feedback.textContent = "Identifying objects\u2026";
+      body.replaceChildren(feedback);
+      setCaptureHidden(false);
+      options.onInspectionPhase?.("scan");
+    }
+    function hideMisalignedStage() {
+      stage.hidden = true;
+      result?.setStageAvailable(false);
+      feedback.textContent = "The page moved. Use the object list, or choose another area.";
+    }
+    function showResults(rect, initialAnalysis, moved) {
+      options.onInspectionPhase?.(initialAnalysis.detections.length ? "reveal" : "aim");
+      surface.hidden = true;
+      stage.hidden = false;
+      place(stage, rect);
+      panel.classList.toggle("is-left", rect.x > panel.clientWidth + 12 && rect.x + rect.width > innerWidth - panel.clientWidth - 12);
+      result = renderPhotoResults({
+        data: playgroundData,
+        initialAnalysis,
+        detachStage: true,
+        onObjectSelect: () => options.onInspectionPhase?.("focus"),
+        analyze: async (crop, cancel) => {
+          const requestId = crypto.randomUUID();
+          const stop = () => void ask("photo-tab-abort", { requestId }).catch(() => {
+          });
+          if (cancel.aborted) throw new DOMException("Cancelled", "AbortError");
+          cancel.addEventListener("abort", stop, { once: true });
+          options.onInspectionPhase?.("scan");
+          try {
+            const recrop = await ask("photo-tab-analyze", { requestId, crop });
+            if (!cancel.aborted) options.onInspectionPhase?.(recrop.detections.length ? "reveal" : "aim");
+            return recrop;
+          } catch (error) {
+            if (!signal.aborted && !cancel.aborted) options.onInspectionPhase?.("aim");
+            throw error;
+          } finally {
+            cancel.removeEventListener("abort", stop);
+          }
+        },
+        save: async (crop, hit) => {
+          await ask("photo-tab-save", { crop, word: { word: hit.headword, reading: hit.reading, meaning: hit.meaning } });
+        },
+        dictionary: (hit) => {
+          void ask("photo-tab-dictionary", { hit }).catch((error) => {
+            feedback.textContent = error.message;
+          });
+        }
+      });
+      feedback.textContent = "";
+      stage.append(result.stage);
+      body.replaceChildren(selectAgain, feedback, result.element);
+      if (moved) hideMisalignedStage();
+      selectAgain.focus({ preventScroll: true });
+    }
+    function pageGeometry() {
+      const view = window.visualViewport;
+      return [innerWidth, innerHeight, scrollX, scrollY, view?.width, view?.height, view?.offsetLeft, view?.offsetTop, view?.scale].join("/");
+    }
+    function viewportChanged(event) {
+      const target = event.target;
+      const nested = event.isTrusted && event.type === "scroll" && target instanceof Element && target !== host && target !== document.documentElement && target !== document.body && target.getRootNode() !== shadow;
+      const next = pageGeometry();
+      if (geometry === next && !nested) return;
+      geometry = next;
+      if (recording) {
+        recording.moved = true;
+        return;
+      }
+      if (result) {
+        hideMisalignedStage();
+        return;
+      }
+      if (!currentRect) return;
+      drag = void 0;
+      setRect(void 0);
+      feedback.textContent = photoTabMoved;
+    }
+    function check(expectedId, requestId) {
+      if (expectedId !== id || signal.aborted || document.hidden || !host.isConnected) return { ok: false };
+      if (requestId === void 0) return { ok: true };
+      if (!recording || requestId !== recording.requestId) return { ok: false };
+      if (recording.moved || recording.geometry !== pageGeometry()) return { ok: false, moved: true };
+      return { ok: true };
+    }
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !event.defaultPrevented) {
+        event.preventDefault();
+        close();
+      }
+    }, { signal });
+    window.addEventListener("pagehide", close, { signal });
+    window.addEventListener("resize", viewportChanged, { signal });
+    window.addEventListener("scroll", viewportChanged, { signal, capture: true });
+    for (const type of ["resize", "scroll"]) window.visualViewport?.addEventListener(type, viewportChanged, { signal });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) close();
+    }, { signal });
+    showSelection();
+    return { close, captured, check };
+  }
+  function installPhotoTabOverlay(send, options = {}) {
+    let active;
+    let pendingId;
+    chrome.runtime.onMessage.addListener((message, sender, respond) => {
+      if (sender.id !== chrome.runtime.id || sender.tab || sender.url !== chrome.runtime.getURL("background.js")) return;
+      if (message?.type === "photo-tab-overlay-check") {
+        respond(active?.check(message.id, message.requestId) ?? { ok: pendingId === message.id && message.requestId === void 0 && !document.hidden });
+        return;
+      }
+      if (message?.type === "photo-tab-overlay-captured") {
+        active?.captured(message.id, message.requestId);
+        return;
+      }
+      if (message?.type !== "photo-tab-overlay-open" || typeof message.id !== "string" || !document.documentElement || document.hidden) return;
+      active?.close();
+      const id = String(message.id);
+      pendingId = id;
+      void send({ type: "photo-tab-bind", id }).then((reply) => {
+        if (!reply?.value || pendingId !== id || document.hidden) {
+          respond({ ok: false });
+          return;
+        }
+        active = openOverlay(id, send, () => {
+          active = void 0;
+        }, options, message.fromMascot === true);
+        respond({ ok: true });
+      }, () => respond({ ok: false })).finally(() => {
+        if (pendingId === id) pendingId = void 0;
+      });
+      return true;
+    });
+    return () => {
+      pendingId = void 0;
+      active?.close();
+    };
+  }
+  var init_photo_tab_overlay = __esm({
+    "src/photo-tab-overlay.ts"() {
+      "use strict";
+      init_playground_data();
+      init_photo_lookup();
+      init_photo_tab_protocol();
+      init_ui_theme();
+      init_photo_tab_overlay_style();
+    }
+  });
+
   // src/content.ts
   var require_content = __commonJS({
     "src/content.ts"() {
@@ -5128,6 +6770,7 @@ ${mascotBubbleStyles}
       init_mascot_target();
       init_docs_selection();
       init_docs_hover();
+      init_photo_tab_overlay();
       function initializeContentScript() {
         if (document.contentType !== "text/html") return;
         const hostname = location.hostname || (location.ancestorOrigins[0] ? new URL(location.ancestorOrigins[0]).hostname : "");
@@ -5155,6 +6798,7 @@ ${mascotBubbleStyles}
         let statusState = "loading";
         let toolbarAvailability = "unavailable";
         let contextInvalidated = false;
+        let dismissPhotoLookup;
         function invalidateContext() {
           if (contextInvalidated) return;
           contextInvalidated = true;
@@ -5166,6 +6810,7 @@ ${mascotBubbleStyles}
           clear();
           host.remove();
           reader?.loading(false, "");
+          dismissPhotoLookup?.();
           mascot?.destroy();
           mascot = void 0;
           message = "Extension updated or reloaded. Reload this page to restore readings.";
@@ -5203,30 +6848,51 @@ ${mascotBubbleStyles}
         let rawView;
         let viewSettings = readingViewPreferences(void 0);
         const topFrame = window === window.top;
+        if (topFrame) dismissPhotoLookup = installPhotoTabOverlay(sendToExtension, {
+          onCaptureVisibility: (hidden) => mascot?.setCaptureHidden(hidden),
+          onRestoreMascotFocus: () => mascot?.focusImageLookup(),
+          onInspectionPhase: (phase) => mascot?.setImageInspection(phase)
+        });
         const readingModeEnabled = () => topFrame && panelEnabled(viewSettings, hostname);
         let reader;
         let mascot;
         let mascotSettings = mascotPreferences(void 0);
+        let mascotPresence;
+        let mascotVisitRevision = 0;
         function syncMascot() {
           if (!topFrame || contextInvalidated) return;
-          if (!mascotSettings.enabled) {
+          if (!(mascotPresence ?? mascotSettings.enabled)) {
             mascot?.destroy();
             mascot = void 0;
             return;
           }
-          mascot ??= new Mascot({ send: sendToExtension, savePosition: (position) => updateMascotPosition(hostname, position), overrides: () => overrides, target: mascotTarget, obstacle: () => reader?.bounds() });
-          mascot.update(mascotSettings, excluded.includes(hostname), hostname);
+          mascot ??= new Mascot({
+            send: sendToExtension,
+            savePosition: (position) => updateMascotPosition(hostname, position),
+            overrides: () => overrides,
+            target: mascotTarget,
+            obstacle: () => reader?.bounds(),
+            hide: () => {
+              void sendToExtension({ type: "mascot-visit-change", visible: false }).catch(() => {
+              });
+            },
+            lookUpImage: async () => {
+              const reply = await sendToExtension({ type: "photo-tab-mascot-start" });
+              if (!reply?.ok) throw new Error(reply?.error ?? "Open Photo Lookup from the K\u014D toolbar to try again.");
+            }
+          });
+          mascot.update({ ...mascotSettings, enabled: true }, mascotPresence === true ? false : excluded.includes(hostname), hostname);
         }
         function mascotTarget(x, y2) {
           if (!docs) return webTarget(x, y2);
           const editor = document.querySelector(".kix-appview-editor")?.getBoundingClientRect();
           if (editor && (x < editor.left || x > editor.right || y2 < editor.top || y2 > editor.bottom)) return;
-          const page = [...visiblePages].find((element4) => {
-            const box = element4.getBoundingClientRect();
+          const page = [...visiblePages].find((element6) => {
+            const box = element6.getBoundingClientRect();
             return x >= box.left && x <= box.right && y2 >= box.top && y2 <= box.bottom;
           });
           const root = page ?? document.querySelector(".kix-appview-editor") ?? document;
-          return docsHoverTarget(root, x, y2, (element4) => docsSource(element4, editor));
+          return docsHoverTarget(root, x, y2, (element6) => docsSource(element6, editor));
         }
         function ensureReader() {
           if (reader || !readingModeEnabled()) return;
@@ -5420,12 +7086,12 @@ ${mascotBubbleStyles}
           }
         }
         const measure = document.createElement("canvas").getContext("2d");
-        function docsSource(element4, clip = editorClip) {
-          const text = element4.getAttribute("aria-label") ?? "";
+        function docsSource(element6, clip = editorClip) {
+          const text = element6.getAttribute("aria-label") ?? "";
           if (!text || text.length > 2e3) return;
-          const box = element4.getBoundingClientRect();
+          const box = element6.getBoundingClientRect();
           if (!visible(box)) return;
-          const font = element4.closest("[data-font-css]")?.getAttribute("data-font-css");
+          const font = element6.closest("[data-font-css]")?.getAttribute("data-font-css");
           if (!font) return;
           measure.font = font;
           const fullMetrics = measure.measureText(text);
@@ -5443,13 +7109,13 @@ ${mascotBubbleStyles}
           };
           const size = Number(font.match(/([\d.]+)px/)?.[1]);
           if (!size) return;
-          const localHeight = element4 instanceof SVGRectElement ? element4.height.baseVal.value : box.height;
+          const localHeight = element6 instanceof SVGRectElement ? element6.height.baseVal.value : box.height;
           const scaleY = localHeight > 0 ? box.height / localHeight : 1;
-          const svg = element4.closest("svg")?.getBoundingClientRect();
+          const svg = element6.closest("svg")?.getBoundingClientRect();
           if (clip && (box.bottom <= clip.top || box.top >= clip.bottom || box.right <= clip.left || box.left >= clip.right)) return;
           if (svg && (box.bottom <= svg.top || box.top >= svg.bottom)) return;
           return { text, orderBox: box, fontSize: size * scaleY, color: "#15232b", background: "white", rect(start2, end) {
-            if (!element4.isConnected) return;
+            if (!element6.isConnected) return;
             const r = box;
             measure.font = font;
             const left = prefixWidth(start2) / width * r.width;
@@ -5517,19 +7183,19 @@ ${mascotBubbleStyles}
           let inspected = 0;
           const dx = Math.max(64, Math.ceil(innerWidth / 16)), dy = Math.max(16, Math.ceil(innerHeight / 100));
           for (let y2 = 4; y2 < innerHeight; y2 += dy) for (let x = 4; x < innerWidth; x += dx) {
-            let element4 = panelMode ? document.elementsFromPoint(x, y2).find((element5) => element5 !== host && !reader?.ownsNode(element5)) ?? null : document.elementFromPoint(x, y2);
-            while (element4?.shadowRoot) {
-              observeShadow(element4.shadowRoot);
-              const inner = element4.shadowRoot.elementFromPoint(x, y2);
-              if (!inner || inner === element4) break;
-              element4 = inner;
+            let element6 = panelMode ? document.elementsFromPoint(x, y2).find((element7) => element7 !== host && !reader?.ownsNode(element7)) ?? null : document.elementFromPoint(x, y2);
+            while (element6?.shadowRoot) {
+              observeShadow(element6.shadowRoot);
+              const inner = element6.shadowRoot.elementFromPoint(x, y2);
+              if (!inner || inner === element6) break;
+              element6 = inner;
             }
             yield void 0;
-            if (!element4 || element4 === host || seeds.has(element4) || seeds.size >= 512) continue;
-            if (element4.closest('ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) continue;
-            seeds.add(element4);
+            if (!element6 || element6 === host || seeds.has(element6) || seeds.size >= 512) continue;
+            if (element6.closest('ruby,rt,input,textarea,select,[contenteditable]:not([contenteditable="false"])')) continue;
+            seeds.add(element6);
             let local = 0;
-            for (const source2 of sources(element4, panelMode)) {
+            for (const source2 of sources(element6, panelMode)) {
               if (++local > 128 || ++inspected > 4096) break;
               if (source2?.identity) {
                 let offsets = seen.get(source2.identity);
@@ -5899,6 +7565,14 @@ ${mascotBubbleStyles}
         }
         chrome.runtime.onMessage.addListener((request, _sender, respond) => {
           if (request?.type === "status") respond({ message, state: statusState, toolbarAvailability });
+          if (topFrame && request?.type === "mascot-render-status") respond({ visible: mascot?.active ?? false });
+          if (topFrame && request?.type === "mascot-visit" && typeof request.visible === "boolean") {
+            mascotVisitRevision++;
+            mascotPresence = request.visible;
+            syncMascot();
+            if (request.visible && request.greet) mascot?.greet();
+            respond({ ok: true });
+          }
         });
         chrome.storage.onChanged.addListener((changes, area) => {
           if (area === "local" && changes.mascot) {
@@ -5927,12 +7601,27 @@ ${mascotBubbleStyles}
           }
           schedule(0);
         });
+        window.addEventListener("pageshow", (event) => {
+          if (!event.persisted || !topFrame) return;
+          const revision2 = mascotVisitRevision;
+          void sendToExtension({ type: "mascot-visit-ready" }).then((visit) => {
+            if (revision2 !== mascotVisitRevision) return;
+            mascotPresence = visit?.visible;
+            syncMascot();
+            if (visit?.greet) mascot?.greet();
+          }).catch(() => {
+          });
+        });
         async function start() {
+          const visitRevision = mascotVisitRevision;
+          const visit = topFrame ? await sendToExtension({ type: "mascot-visit-ready" }) : void 0;
           const state = await chrome.storage.local.get({ enabled: true, excluded: [], siteAppearance: {}, readingOverrides: {}, docsReadingView: {}, readingView: null, showLegacyAnimations: false, mascot: null });
           enabled = state.enabled !== false;
           excluded = Array.isArray(state.excluded) ? state.excluded : [];
+          if (visitRevision === mascotVisitRevision) mascotPresence = visit?.visible;
           mascotSettings = mascotPreferences(state.mascot);
           syncMascot();
+          if (visitRevision === mascotVisitRevision && visit?.greet) mascot?.greet();
           setMimeticLegacyAnimations(state.showLegacyAnimations);
           readingAppearance = appearanceForSite(state.siteAppearance, hostname);
           overrides = validOverrides(state.readingOverrides);
@@ -5952,10 +7641,10 @@ ${mascotBubbleStyles}
             for (const record of records) {
               if (record.target === host || host.contains(record.target) || mascot?.ownsNode(record.target) || reader?.ownsNode(record.target)) continue;
               if (record.type === "childList" && [...record.addedNodes, ...record.removedNodes].every((node2) => node2 instanceof Element && node2.localName === "ko-mascot")) continue;
-              const element4 = record.target instanceof Element ? record.target : record.target.parentElement;
-              if (docs && (element4?.closest(docsSelectionSelector) || record.type === "childList" && [...record.addedNodes, ...record.removedNodes].some((node2) => node2 instanceof Element && (node2.matches(docsSelectionSelector) || node2.querySelector(docsSelectionSelector))))) selectionChanged = true;
-              if (docs && element4?.closest(`.kix-cursor,${docsSelectionSelector}`)) continue;
-              if (docs && record.type !== "childList" && element4?.closest(".kix-page") && element4.closest(".kix-page") !== activePage) continue;
+              const element6 = record.target instanceof Element ? record.target : record.target.parentElement;
+              if (docs && (element6?.closest(docsSelectionSelector) || record.type === "childList" && [...record.addedNodes, ...record.removedNodes].some((node2) => node2 instanceof Element && (node2.matches(docsSelectionSelector) || node2.querySelector(docsSelectionSelector))))) selectionChanged = true;
+              if (docs && element6?.closest(`.kix-cursor,${docsSelectionSelector}`)) continue;
+              if (docs && record.type !== "childList" && element6?.closest(".kix-page") && element6.closest(".kix-page") !== activePage) continue;
               relevant = true;
               if (docs) {
                 for (const node2 of record.addedNodes) if (node2 instanceof Element) {

@@ -1,6 +1,11 @@
 "use strict";
 (() => {
+  var __create = Object.create;
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
   var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __getProtoOf = Object.getPrototypeOf;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
   var __esm = (fn, res, err) => function __init() {
     if (err) throw err[0];
     try {
@@ -16,6 +21,22 @@
       throw mod = 0, e;
     }
   };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+    mod
+  ));
 
   // src/wiktionary-parser.ts
   function parseWiktionary(html, language) {
@@ -90,10 +111,347 @@
     }
   });
 
+  // src/photo-diary.ts
+  function validDiaryWord(value) {
+    const valid = (text, limit) => typeof text === "string" && text.trim().length > 0 && text.length <= limit;
+    return valid(value.word, 256) && valid(value.reading, 256) && valid(value.meaning, 1024);
+  }
+  function openDatabase() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(databaseName, 1);
+      let blocked = false;
+      request.onupgradeneeded = () => request.result.createObjectStore(storeName, { keyPath: "id" });
+      request.onerror = () => reject(request.error);
+      request.onblocked = () => {
+        blocked = true;
+        reject(new Error("Close other Picture Diary tabs and try again."));
+      };
+      request.onsuccess = () => {
+        request.result.onversionchange = () => request.result.close();
+        if (blocked) request.result.close();
+        else resolve(request.result);
+      };
+    });
+  }
+  async function transaction(mode, operation) {
+    const db = await openDatabase();
+    try {
+      const transaction2 = db.transaction(storeName, mode);
+      const finished = new Promise((resolve, reject) => {
+        transaction2.oncomplete = () => resolve();
+        transaction2.onabort = () => reject(transaction2.error ?? new Error("Picture Diary storage was interrupted."));
+      });
+      try {
+        const [value] = await Promise.all([operation(transaction2.objectStore(storeName)), finished]);
+        return value;
+      } catch (error) {
+        try {
+          transaction2.abort();
+        } catch {
+        }
+        await finished.catch(() => {
+        });
+        throw error;
+      }
+    } finally {
+      db.close();
+    }
+  }
+  function requestValue(request) {
+    return new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+  function encodeCrop(image, crop) {
+    return new Promise((resolve, reject) => {
+      const worker = new Worker(chrome.runtime.getURL("photo-diary-worker.js"), { type: "module" });
+      const timer = setTimeout(() => {
+        worker.terminate();
+        reject(new Error("The crop took too long to save. Try a smaller crop."));
+      }, 3e4);
+      const cleanup = () => {
+        clearTimeout(timer);
+        worker.terminate();
+      };
+      worker.onmessage = ({ data }) => {
+        cleanup();
+        if ("error" in data) reject(new Error(data.error));
+        else resolve(data);
+      };
+      worker.onerror = () => {
+        cleanup();
+        reject(new Error("Could not save the image crop. Try again."));
+      };
+      try {
+        worker.postMessage({ image, crop });
+      } catch (error) {
+        cleanup();
+        reject(error);
+      }
+    });
+  }
+  async function saveDiaryEntry(image, crop, word) {
+    if (!validDiaryWord(word)) throw new Error("Choose a Japanese word before saving.");
+    const encoded = await encodeCrop(image, crop);
+    const entry = {
+      ...encoded,
+      id: crypto.randomUUID(),
+      createdAt: Date.now(),
+      word: word.word.trim(),
+      reading: word.reading.trim(),
+      meaning: word.meaning.trim()
+    };
+    await transaction("readwrite", async (store) => requestValue(store.add(entry)));
+    return entry;
+  }
+  var databaseName, storeName;
+  var init_photo_diary = __esm({
+    "src/photo-diary.ts"() {
+      "use strict";
+      databaseName = "ko-picture-diary";
+      storeName = "entries";
+    }
+  });
+
+  // src/photo-vision.ts
+  function createPhotoVision() {
+    const pending = /* @__PURE__ */ new Map();
+    let worker, sequence = 0, disposed = false;
+    function stop(error) {
+      worker?.terminate();
+      worker = void 0;
+      for (const job of pending.values()) {
+        job.cleanup();
+        job.reject(error);
+      }
+      pending.clear();
+    }
+    function start() {
+      if (worker) return worker;
+      const thread = new Worker(chrome.runtime.getURL("photo-vision-worker.js"));
+      worker = thread;
+      thread.onmessage = ({ data }) => {
+        if (thread !== worker) return;
+        const job = pending.get(data.id);
+        if (!job) return;
+        pending.delete(data.id);
+        job.cleanup();
+        if (data.analysis) job.resolve(data.analysis);
+        else job.reject(new Error(data.error ?? "Photo Lookup could not finish. Try again."));
+      };
+      const failed = () => {
+        if (thread === worker) stop(new Error("The local image worker stopped. Try again."));
+      };
+      thread.onerror = failed;
+      thread.onmessageerror = failed;
+      return thread;
+    }
+    function analyze(source, crop, signal) {
+      if (disposed || signal?.aborted) return Promise.reject(new DOMException("Photo lookup cancelled", "AbortError"));
+      if (pending.size >= 4) return Promise.reject(new Error("Photo Lookup is busy. Try again shortly."));
+      return new Promise((resolve, reject) => {
+        const thread = start(), id = ++sequence;
+        const abort = () => {
+          thread.postMessage({ cancel: id });
+          pending.delete(id);
+          cleanup();
+          reject(new DOMException("Photo lookup cancelled", "AbortError"));
+        };
+        const timer = setTimeout(() => stop(new Error("Local image analysis took too long. Try a smaller crop.")), 6e4);
+        const cleanup = () => {
+          clearTimeout(timer);
+          signal?.removeEventListener("abort", abort);
+        };
+        pending.set(id, { resolve, reject, cleanup });
+        signal?.addEventListener("abort", abort, { once: true });
+        try {
+          thread.postMessage({ id, source, crop });
+        } catch (error) {
+          pending.delete(id);
+          cleanup();
+          reject(error);
+        }
+      });
+    }
+    return { analyze, dispose: () => {
+      disposed = true;
+      stop(new DOMException("Photo lookup closed", "AbortError"));
+    } };
+  }
+  var maxPhotoBytes;
+  var init_photo_vision = __esm({
+    "src/photo-vision.ts"() {
+      "use strict";
+      maxPhotoBytes = 32 * 1024 * 1024;
+    }
+  });
+
+  // src/photo-tab-protocol.ts
+  function screenshotCrop(selection, bitmap) {
+    const { rect, viewport } = selection;
+    const xScale = bitmap.width / viewport.width, yScale = bitmap.height / viewport.height;
+    const x = Math.floor(rect.x * xScale), y = Math.floor(rect.y * yScale);
+    const right = Math.min(bitmap.width, Math.ceil((rect.x + rect.width) * xScale));
+    const bottom = Math.min(bitmap.height, Math.ceil((rect.y + rect.height) * yScale));
+    return { x, y, width: right - x, height: bottom - y };
+  }
+  var photoTabExpired;
+  var init_photo_tab_protocol = __esm({
+    "src/photo-tab-protocol.ts"() {
+      "use strict";
+      photoTabExpired = "The selected area is no longer available. Choose it again from the toolbar.";
+    }
+  });
+
+  // src/photo-tab-offscreen.ts
+  var require_photo_tab_offscreen = __commonJS({
+    "src/photo-tab-offscreen.ts"() {
+      "use strict";
+      init_photo_diary();
+      init_photo_vision();
+      init_photo_tab_protocol();
+      var sessions = /* @__PURE__ */ new Map();
+      function remove(session) {
+        sessions.delete(session.owner.windowId);
+        session.request?.controller.abort();
+        session.vision?.dispose();
+        session.source = void 0;
+      }
+      async function cropScreenshot(screenshot, selection) {
+        const prefix = "data:image/png;base64,";
+        if (!screenshot.startsWith(prefix)) throw new Error("The tab capture could not be decoded.");
+        const decoding = decodeScreenshot(screenshot.slice(prefix.length));
+        screenshot = "";
+        const bitmap = await decoding;
+        let canvas;
+        try {
+          const { x, y, width, height } = screenshotCrop(selection, bitmap);
+          canvas = new OffscreenCanvas(width, height);
+          const context = canvas.getContext("2d");
+          if (!context) throw new Error("The selected area could not be decoded.");
+          context.drawImage(bitmap, x, y, width, height, 0, 0, width, height);
+        } finally {
+          bitmap.close();
+        }
+        return canvas.convertToBlob({ type: "image/png" });
+      }
+      function decodeScreenshot(encoded) {
+        const binary = atob(encoded);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return createImageBitmap(new Blob([bytes], { type: "image/png" }));
+      }
+      function startAnalysis(session, id) {
+        session.request?.controller.abort();
+        const request = { id, controller: new AbortController() };
+        session.request = request;
+        return request;
+      }
+      async function analyze(session, request, crop) {
+        if (!session.source || request.controller.signal.aborted) throw new DOMException("Cancelled", "AbortError");
+        session.vision ??= createPhotoVision();
+        const result = await session.vision.analyze(session.source, crop, request.controller.signal);
+        if (request.controller.signal.aborted) throw new DOMException("Cancelled", "AbortError");
+        return result;
+      }
+      async function capture(session, request, view) {
+        session.source = void 0;
+        const crop = await view;
+        if (request.controller.signal.aborted) throw new DOMException("Cancelled", "AbortError");
+        session.source = crop;
+        return analyze(session, request);
+      }
+      var privateTypes = /* @__PURE__ */ new Set([
+        "photo-tab-private-register",
+        "photo-tab-private-invalidate",
+        "photo-tab-private-owner",
+        "photo-tab-private-tab-owner",
+        "photo-tab-private-bind",
+        "photo-tab-private-close",
+        "photo-tab-private-capture",
+        "photo-tab-private-analyze",
+        "photo-tab-private-abort",
+        "photo-tab-private-save"
+      ]);
+      chrome.runtime.onMessage.addListener((message, sender, respond) => {
+        if (!privateTypes.has(message?.type) || sender.id !== chrome.runtime.id || sender.tab || sender.url !== chrome.runtime.getURL("background.js")) return;
+        if (message.type === "photo-tab-private-register") {
+          const previous = sessions.get(message.owner.windowId);
+          if (previous) remove(previous);
+          sessions.set(message.owner.windowId, { owner: message.owner, expectedDocumentId: message.expectedDocumentId });
+          respond({ ok: true });
+          return;
+        }
+        if (message.type === "photo-tab-private-invalidate") {
+          for (const [windowId, session2] of sessions) {
+            if ((message.windowId === void 0 || windowId === message.windowId) && (message.tabId === void 0 || session2.owner.tabId === message.tabId) && session2.owner.tabId !== message.exceptTabId) remove(session2);
+          }
+          respond({ ok: true });
+          return;
+        }
+        const session = sessions.get(message.windowId);
+        if (message.type === "photo-tab-private-tab-owner") {
+          respond({ value: session?.owner.tabId === message.tabId ? session.owner : void 0 });
+          return;
+        }
+        if (!session || session.owner.id !== message.id) {
+          respond({ error: photoTabExpired });
+          return;
+        }
+        if (message.type === "photo-tab-private-bind") {
+          const documentId = session.owner.documentId ?? session.expectedDocumentId;
+          if (session.owner.tabId !== message.tabId || documentId && documentId !== message.documentId) {
+            respond({ error: photoTabExpired });
+            return;
+          }
+          session.owner.documentId = message.documentId;
+          respond({ value: true });
+          return;
+        }
+        if (message.type === "photo-tab-private-owner") {
+          respond({ value: session.owner });
+          return;
+        }
+        if (message.type === "photo-tab-private-close") {
+          remove(session);
+          respond({ value: true });
+          return;
+        }
+        if (message.type === "photo-tab-private-abort") {
+          if (message.requestId === session.request?.id) session.request.controller.abort();
+          respond({ value: true });
+          return;
+        }
+        if (message.type === "photo-tab-private-save") {
+          if (!session.source) {
+            respond({ error: photoTabExpired });
+            return;
+          }
+          void saveDiaryEntry(session.source, message.crop, message.word).then(() => respond({ value: true }), (error) => respond({ error: error instanceof Error ? error.message : "Could not save to Picture Diary." }));
+          return true;
+        }
+        if (message.type !== "photo-tab-private-capture" && message.type !== "photo-tab-private-analyze") return;
+        const request = startAnalysis(session, message.requestId);
+        let job;
+        if (message.type === "photo-tab-private-capture") {
+          const view = cropScreenshot(message.screenshot, message.selection);
+          message.screenshot = "";
+          job = capture(session, request, view);
+        } else job = analyze(session, request, message.crop);
+        void job.then((value) => respond({ value }), (error) => respond({ error: error instanceof Error ? error.message : "Could not identify objects in this area." })).finally(() => {
+          if (session.request === request) session.request = void 0;
+        });
+        return true;
+      });
+    }
+  });
+
   // src/offscreen.ts
   var require_offscreen = __commonJS({
     "src/offscreen.ts"() {
       init_wiktionary_parser();
+      var import_photo_tab_offscreen = __toESM(require_photo_tab_offscreen());
       var worker = new Worker(chrome.runtime.getURL("tokenizer.js"));
       var dataWorker;
       var dataSequence = 0;

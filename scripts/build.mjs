@@ -4,17 +4,27 @@ import {buildIcons} from './icons.mjs';
 import {mkdir,cp,rm,readFile,writeFile,rename} from 'node:fs/promises';
 import {prepareReleaseNotes} from './release-notes.mjs';
 import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 const {version}=JSON.parse(await readFile('public/manifest.json','utf8'));
 const releaseNotes=prepareReleaseNotes(await readFile('docs/release-notes.md','utf8'),version);
 const aboutTemplate=await readFile('public/about.html','utf8');
 const popupTemplate=await readFile('public/popup.html','utf8');
 if(popupTemplate.split('<!-- KO_UPDATE_BANNER -->').length!==2)throw new Error('Popup must contain one update-banner placeholder');
 if(aboutTemplate.split('<!-- KO_RELEASE_NOTES -->').length!==2)throw new Error('About page must contain one release-notes placeholder');
+const visionAssets={
+  'cactus.js':'bb61bcf0c48712bfb9cd0ade8f0748889dfde9944ac308220f42afbc605f82bc',
+  'cactus.wasm':'4198b30795ded7739fe6c9e80bf26d5a844767c081574d40c8dc0487cde8b4b6',
+  'mirage.cact':'4249a0f7515272ff76b9414bec17d7e7daf84b15b66c7fb4f17fce1e66f9f237',
+};
+await Promise.all(Object.entries(visionAssets).map(async ([name,checksum])=>{
+  const asset=await readFile(`public/vision/${name}`);
+  if(createHash('sha256').update(asset).digest('hex')!==checksum)throw new Error(`Bundled vision asset failed checksum verification: ${name}`);
+}));
 await rm('dist',{recursive:true,force:true});
 await mkdir('dist',{recursive:true});
 // Embed the shared logo in the panel without exposing extension resources to pages.
 const panelLogo=await readFile('public/icons/logo.svg','utf8');
-await build({entryPoints:['src/background.ts','src/content.ts','src/docs-bridge.ts','src/offscreen.ts','src/tokenizer.ts','src/popup.ts','src/about.ts','src/animations.ts','src/playgrounds.ts','src/playground-data-worker.ts'],outdir:'dist',bundle:true,platform:'browser',target:'chrome116',format:'iife',sourcemap:true,alias:{path:'./src/path-shim.ts'},define:{__KO_LOGO_SVG__:JSON.stringify(panelLogo)},plugins:[{
+await build({entryPoints:['src/background.ts','src/content.ts','src/docs-bridge.ts','src/offscreen.ts','src/tokenizer.ts','src/popup.ts','src/about.ts','src/animations.ts','src/playgrounds.ts','src/playground-data-worker.ts','src/photo-vision-worker.ts'],outdir:'dist',bundle:true,platform:'browser',target:'chrome116',format:'iife',sourcemap:true,alias:{path:'./src/path-shim.ts'},define:{__KO_LOGO_SVG__:JSON.stringify(panelLogo)},plugins:[{
   name:'csp-safe-async-global',setup(build) {
     // async 2 embeds a legacy lodash global-object fallback. Chrome 116 has
     // globalThis; remove string compilation without modifying node_modules.
@@ -26,6 +36,8 @@ await build({entryPoints:['src/background.ts','src/content.ts','src/docs-bridge.
     });
   }
 }]});
+await build({entryPoints:['src/photo-diary-worker.ts'],outdir:'dist',bundle:true,platform:'browser',target:'chrome116',format:'esm',sourcemap:true});
+await cp('node_modules/@jsquash/webp/codec/enc/webp_enc.wasm','dist/photo-diary-webp.wasm');
 // Ship the production mascot strips; QA previews and source artwork stay outside public/.
 await cp('public','dist',{recursive:true});
 // Chrome Web Store treats every manifest.json as an extension manifest.
@@ -56,6 +68,12 @@ for (const [pkg,license] of [['async','LICENSE'],['doublearray','LICENSE.txt'],[
   await cp(`node_modules/${pkg}/${license}`,`dist/licenses/${pkg}-LICENSE`);
 }
 await cp('node_modules/kamiya-codec/UNLICENSE','dist/licenses/kamiya-codec-UNLICENSE');
+await cp('data/mirage/LICENSE','dist/licenses/cactus-mirage-LICENSE');
+await cp('data/mirage/README.md','dist/licenses/cactus-mirage-source.md');
+await cp('data/mirage/libwebp-PATENTS','dist/licenses/libwebp-PATENTS');
+await cp('node_modules/@jsquash/webp/LICENSE','dist/licenses/jsquash-LICENSE');
+await cp('node_modules/@jsquash/webp/codec/LICENSE.codec.md','dist/licenses/libwebp-LICENSE');
+await cp('node_modules/@zip.js/zip.js/LICENSE','dist/licenses/zip.js-LICENSE');
 // Pinned local source: ordinary builds never fetch dictionaries or licence files.
 execFileSync('python3',['scripts/import-jmdict.py'],{stdio:'inherit'});
 execFileSync('python3',['scripts/build-dictionary-search.py'],{stdio:'inherit'});

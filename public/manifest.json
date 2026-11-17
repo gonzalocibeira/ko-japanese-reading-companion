@@ -2,13 +2,23 @@
   "manifest_version": 3,
   "name": "Kō — Japanese Reading Companion",
   "short_name": "Kō",
-  "version": "1.4.1",
-  "version_name": "1.4.1",
-  "description": "Offline Japanese readings, dictionary search, word forms, and N5–N1 grammar playgrounds for webpages and Google Docs.",
+  "version": "2.0.0",
+  "version_name": "2.0.0",
+  "description": "Offline Japanese readings, dictionary, grammar, and image lookup for webpages and Google Docs.",
   "permissions": [
     "storage",
-    "offscreen"
+    "offscreen",
+    "activeTab"
   ],
+  "commands": {
+    "toggle-mascot": {
+      "suggested_key": {"default":"Alt+Shift+K","mac":"Alt+Shift+K"},
+      "description":"Call or hide Kōくん in this tab"
+    },
+    "photo-lookup": {
+      "description":"Look up an image from this tab"
+    }
+  },
   "options_ui": {
     "page": "about.html",
     "open_in_tab": true
@@ -71,7 +81,7 @@
     "https://*/*"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'self' https://en.wiktionary.org https://ja.wiktionary.org; worker-src 'self'"
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; connect-src 'self' https://en.wiktionary.org https://ja.wiktionary.org; worker-src 'self'"
   },
   "icons": {
     "16": "icons/icon-16.png",

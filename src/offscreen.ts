@@ -1,4 +1,5 @@
 import {parseWiktionary} from './wiktionary-parser';
+import './photo-tab-offscreen';
 const worker = new Worker(chrome.runtime.getURL('tokenizer.js'));
 let dataWorker:Worker|undefined,dataSequence=0;
 const dataPending=new Map<number,{resolve:(result:unknown)=>void;timer:ReturnType<typeof setTimeout>}>();

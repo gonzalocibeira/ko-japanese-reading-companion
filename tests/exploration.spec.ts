@@ -150,7 +150,9 @@ test('all local tools work offline and an edit clears the old exploration',async
     expect(await reader(page,`function(){return this.querySelector('.explore-panel')}`)).toBeNull();
     expect(requests).toEqual(wordRequests);
     const saved=await context.serviceWorkers()[0].evaluate(async()=>chrome.storage.local.get(null));
-    expect(Object.keys(saved).sort()).toEqual(['enabled','excluded','readingOverrides','readingView']);
+    expect(Object.keys(saved).sort()).toEqual(['enabled','excluded','mascot','mascotOnDemandV1','readingOverrides','readingView']);
+    expect(saved.mascotOnDemandV1).toBe(true);
+    expect(saved.mascot.enabled).toBe(false);
   } finally {await context.setOffline(false);await page.close();}
 });
 
@@ -221,7 +223,9 @@ test('typed fused potential offers a verified base choice and a page edit dismis
     await expect.poll(()=>reader(page,`function(){return this.querySelector('.definition').hidden}`)).toBe(true);
     expect(await reader(page,`function(){return this.querySelector('.playground-browser')}`)).toBeNull();
     const saved=await context.serviceWorkers()[0].evaluate(async()=>chrome.storage.local.get(null));
-    expect(Object.keys(saved).sort()).toEqual(['enabled','excluded','readingOverrides','readingView']);
+    expect(Object.keys(saved).sort()).toEqual(['enabled','excluded','mascot','mascotOnDemandV1','readingOverrides','readingView']);
+    expect(saved.mascotOnDemandV1).toBe(true);
+    expect(saved.mascot.enabled).toBe(false);
   } finally {await page.close();}
 });
 

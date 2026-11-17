@@ -3,6 +3,7 @@ import {MascotScheduler,posePath,routineSteps,nearbyDestination,loopSeamMix,moti
 import {MascotBubble,mascotBubbleStyles} from './mascot-bubble';
 import {MascotLookup} from './mascot-lookup';
 import type {MascotTextTarget,MascotWord} from './mascot-target';
+import {mascotInspectionMarkup,mascotInspectionStyles,type ImageInspectionPhase,type MascotInspectionPose} from './mascot-inspection';
 const asset=(file:string)=>chrome.runtime.getURL(`art/ko-kun/${file}`);
 interface MascotOptions {
   send:(request:unknown)=>Promise<any>;
@@ -10,11 +11,16 @@ interface MascotOptions {
   overrides:()=>Record<string,string>;
   target?:(x:number,y:number)=>MascotTextTarget|undefined;
   obstacle:()=>DOMRect|undefined;
+  hide?:()=>void;
+  lookUpImage?:()=>void|Promise<void>;
 }
 export class Mascot {
   readonly host=document.createElement('ko-mascot');
   private root=this.host.attachShadow({mode:'closed'});
   private sprite:HTMLButtonElement;
+  private controls:HTMLDivElement;
+  private imageButton:HTMLButtonElement;
+  private inspectStatus:HTMLParagraphElement;
   private canvas:HTMLCanvasElement;
   private context:CanvasRenderingContext2D;
   private bubble:MascotBubble;
@@ -53,6 +59,11 @@ export class Mascot {
   private stepCreep=0;
   private motionCancelled=false;
   private printing=false;
+  private captureHidden=false;
+  private inspection?:MascotInspectionPose;
+  private inspectOpenTimer=0;
+  private inspectCueTimer=0;
+  private inspectPending=false;
   private ignoreClick=false;
   private drag?:{pointer:number;x:number;y:number;origin:MascotPosition;moved:boolean};
   private painting='';
@@ -60,15 +71,29 @@ export class Mascot {
     this.root.innerHTML=`<style>
 :host{all:initial!important;position:fixed!important;inset:0!important;z-index:2147483647!important;pointer-events:none!important;contain:strict!important;color-scheme:light!important;display:block!important}
 :host([hidden]){display:none!important}*{box-sizing:border-box}.sprite{position:absolute;display:block;margin:0;padding:0;border:0;background:transparent;box-shadow:none;pointer-events:auto;cursor:grab;touch-action:none;user-select:none;line-height:0}.sprite:active{cursor:grabbing}.sprite:focus-visible{outline:2px solid #294c66;outline-offset:2px;border-radius:12px}canvas{width:100%;height:100%;pointer-events:none}
+.tools{position:absolute;display:flex;gap:4px;pointer-events:none;opacity:0}.sprite:hover~.tools,.sprite:focus-visible~.tools,.tools:hover,.tools:focus-within{opacity:1;pointer-events:auto}
+.tools button{display:grid;place-items:center;padding:0;border:1px solid #294c66;border-radius:6px;background:#fff8e8;color:#15232b;width:32px;height:32px;font:20px/1 system-ui;cursor:pointer}.tools button[hidden]{display:none}.tools button:focus-visible{outline:2px solid #294c66;outline-offset:2px}
+.inspect-status{position:absolute;pointer-events:none;width:max-content;max-width:min(248px,calc(100% - 16px));margin:0;padding:8px;border:1px solid #294c66;background:#fff8e8;color:#15232b;font:12px/1.4 system-ui;overflow-wrap:anywhere;box-shadow:2px 2px 0 #15232b37}.inspect-status:empty{padding:0;border:0;box-shadow:none}
+.photo-icon{position:relative;width:17px;height:13px;border:2px solid currentColor;border-radius:2px;overflow:hidden}.photo-icon:before,.photo-icon:after{content:'';position:absolute;background:currentColor}.photo-icon:before{width:3px;height:3px;top:1px;right:2px}.photo-icon:after{inset:3px 0 0;clip-path:polygon(0 100%,0 74%,32% 22%,54% 62%,75% 39%,100% 83%,100% 100%)}
+${mascotInspectionStyles}
 ${mascotBubbleStyles}
 @media print{:host{display:none!important}}
-</style><button class="sprite" type="button" aria-label="Kōくん. Click to wake for a minute. Drag to move, or use arrow keys when focused." title="Click to wake Kōくん for a minute; drag to move him"><canvas width="256" height="256" aria-hidden="true"></canvas></button>`;
+</style><button class="sprite" type="button" aria-label="Kōくん. Click to wake for a minute. Drag to move, or use arrow keys when focused." title="Click to wake Kōくん for a minute; drag to move him"><canvas width="256" height="256" aria-hidden="true"></canvas>${mascotInspectionMarkup}</button><div class="tools"><button class="image-lookup" type="button" aria-label="Look up an image" title="Look up an image"><span class="photo-icon" aria-hidden="true"></span></button><button class="hide" type="button" aria-label="Hide Kōくん" title="Hide Kōくん">×</button></div><p class="inspect-status" role="status"></p>`;
+    this.controls=this.root.querySelector<HTMLDivElement>('.tools')!;
+    this.inspectStatus=this.root.querySelector<HTMLParagraphElement>('.inspect-status')!;
+    const hide=this.root.querySelector<HTMLButtonElement>('.hide')!;
+    this.imageButton=this.root.querySelector<HTMLButtonElement>('.image-lookup')!;
+    hide.hidden=!options.hide;
+    hide.onclick=()=>options.hide?.();
+    this.imageButton.hidden=!options.lookUpImage;
+    this.imageButton.onclick=()=>this.startImageLookup();
     this.sprite=this.root.querySelector('button')!;this.canvas=this.root.querySelector('canvas')!;this.context=this.canvas.getContext('2d')!;
     this.bubble=new MascotBubble(options.send,()=>this.lookup?.close());this.root.append(this.bubble.element);
     const resize=new ResizeObserver(()=>{if(this.bubble.open)this.positionBubble();});resize.observe(this.bubble.element);
     this.abort.signal.addEventListener('abort',()=>resize.disconnect(),{once:true});
     this.sprite.addEventListener('pointerdown',e=>{
       if(e.button!==0)return;e.preventDefault();this.lookup?.close();
+      this.endInspection();this.inspectStatus.textContent='';
       this.ignoreClick=false;
       this.drag={pointer:e.pointerId,x:e.clientX,y:e.clientY,origin:this.displayPosition(),moved:false};this.sprite.setPointerCapture(e.pointerId);this.syncPlayback();
     });
@@ -111,6 +136,32 @@ ${mascotBubbleStyles}
   ownsNode(node:Node) {return node===this.host || this.host.contains(node);}
   owns(event:Event) {return event.composedPath().includes(this.host);}
   get active() {return this.visible;}
+  setCaptureHidden(hidden:boolean) {this.captureHidden=hidden;this.syncPlayback();}
+  setImageInspection(phase:ImageInspectionPhase|undefined) {
+    if(!this.visible || this.disposed)return;
+    if(!phase) {
+      if(!this.inspection)return;
+      if(this.reduced || this.host.hidden) {this.endInspection();this.syncPlayback();return;}
+      this.showInspection('put-away',350);
+      return;
+    }
+    if(this.inspection===phase)return;
+    const starting=!this.inspection;
+    this.showInspection(phase,phase==='reveal'?780:phase==='focus'?630:0);
+    if(starting)this.lookup?.close();
+    if(this.manifest && !this.failed && !this.reduced) {
+      this.position.x=this.displayPosition().x;
+      this.destination=undefined;this.journey=undefined;
+      this.offsetX=this.hoverTime=this.flightHeight=0;this.motionCancelled=false;
+      this.suspend();
+      const routine=phase==='aim' || phase==='scan'?'think':phase==='reveal'?'insight':'seated-watch';
+      this.state='seated';this.step=undefined;
+      this.queue=routineSteps(this.manifest,'seated',routine,0);
+      this.beginStep();this.draw();
+    }
+    this.syncPlayback();
+  }
+  focusImageLookup() {if(this.visible && !this.host.hidden && !this.imageButton.hidden)this.imageButton.focus({preventScroll:true});}
   private get reduced() {return this.settings.motion==='reduced' || this.media.matches;}
   update(settings:MascotPreferences,paused:boolean,hostname:string) {
     const previous=this.settings,old=previous.positions[hostname],next=settings.positions[hostname];
@@ -118,10 +169,10 @@ ${mascotBubbleStyles}
     if(JSON.stringify(old)!==JSON.stringify(next) || !this.initialized) {this.restore(next);this.initialized=true;}
     this.visible=settings.enabled && !paused;
     if(!this.visible) {
-      this.lookup?.destroy();this.lookup=undefined;this.host.remove();this.suspend();this.bubble.hide();return;
+      this.endInspection();this.inspectStatus.textContent='';this.lookup?.destroy();this.lookup=undefined;this.host.remove();this.suspend();this.bubble.hide();return;
     }
     if(!this.host.isConnected)document.documentElement.append(this.host);
-    if(!this.lookup)this.lookup=new MascotLookup({send:this.options.send,settings:()=>this.settings,overrides:this.options.overrides,owns:e=>this.owns(e),paused:()=>!this.visible || !!this.drag || document.hidden || !!document.fullscreenElement,target:this.options.target,show:word=>this.showWord(word),close:()=>{this.bubble.hide();this.syncPlayback();}});
+    if(!this.lookup)this.lookup=new MascotLookup({send:this.options.send,settings:()=>this.settings,overrides:this.options.overrides,owns:e=>this.owns(e),paused:()=>!this.visible || !!this.drag || !!this.inspection || document.hidden || !!document.fullscreenElement,target:this.options.target,show:word=>this.showWord(word),close:()=>{this.bubble.hide();this.syncPlayback();}});
     if(previous.trigger!==settings.trigger || previous.definitions!==settings.definitions)this.lookup.close();
     this.place();void this.load();this.syncPlayback();
   }
@@ -146,6 +197,49 @@ ${mascotBubbleStyles}
       clearTimeout(this.restTimer);this.restTimer=0;this.last=0;
       this.beginStep();this.draw();
     }
+  }
+  private startImageLookup() {
+    const open=this.options.lookUpImage;
+    if(!open || !this.visible || this.host.hidden || this.drag || this.inspectOpenTimer || this.inspectPending)return;
+    this.endInspection();
+    this.inspectStatus.textContent='';
+    this.lookup?.close();
+    this.setImageInspection('aim');
+    if(this.reduced) {void this.openImageLookup(open);return;}
+    // Finish the first visible lean before the page selection overlay dims it.
+    this.inspectOpenTimer=window.setTimeout(()=>{
+      this.inspectOpenTimer=0;
+      if(this.visible && !this.host.hidden && !this.disposed)void this.openImageLookup(open);
+    },420);
+  }
+  private async openImageLookup(open:()=>void|Promise<void>) {
+    this.inspectPending=true;
+    try {await open();}
+    catch(error) {
+      this.endInspection();this.syncPlayback();
+      if(this.disposed || !this.visible || this.host.hidden)return;
+      this.inspectStatus.textContent=error instanceof Error?error.message:'Could not start Photo Lookup. Try again.';
+      this.place();
+    } finally {this.inspectPending=false;}
+  }
+  private showInspection(phase:MascotInspectionPose,duration=0) {
+    clearTimeout(this.inspectCueTimer);this.inspectCueTimer=0;
+    this.inspection=phase;
+    this.sprite.dataset.inspection=phase;
+    this.sprite.classList.toggle('inspect-still',this.reduced);
+    if(!duration)return;
+    this.inspectCueTimer=window.setTimeout(()=>{
+      this.inspectCueTimer=0;
+      if(phase==='put-away'){this.endInspection();this.syncPlayback();}
+      else this.showInspection('ready');
+    },duration);
+  }
+  private endInspection() {
+    clearTimeout(this.inspectCueTimer);this.inspectCueTimer=0;
+    clearTimeout(this.inspectOpenTimer);this.inspectOpenTimer=0;
+    this.inspection=undefined;
+    delete this.sprite.dataset.inspection;
+    this.sprite.classList.remove('inspect-still');
   }
   private bounds() {
     const vv=window.visualViewport,width=vv?.width ?? innerWidth,height=vv?.height ?? innerHeight,left=vv?.offsetLeft ?? 0,top=vv?.offsetTop ?? 0;
@@ -174,7 +268,20 @@ ${mascotBubbleStyles}
     }
     const anchor=this.step?.clip.groundAnchor ?? [160,218],scale=this.size/256;
     const displayed=this.displayPosition();
-    this.sprite.style.cssText=`width:${this.size}px;height:${this.size}px;left:${displayed.x-(this.mirrored?256-anchor[0]:anchor[0])*scale}px;top:${displayed.y-anchor[1]*scale}px`;
+    const spriteLeft=displayed.x-(this.mirrored?256-anchor[0]:anchor[0])*scale,spriteTop=displayed.y-anchor[1]*scale;
+    this.sprite.style.cssText=`width:${this.size}px;height:${this.size}px;left:${spriteLeft}px;top:${spriteTop}px`;
+    this.sprite.classList.toggle('face-left',this.mirrored);
+    const vv=window.visualViewport;
+    const width=this.options.lookUpImage && this.options.hide?68:32;
+    const left=vv?.offsetLeft ?? 0,top=vv?.offsetTop ?? 0,right=left+(vv?.width ?? innerWidth),bottom=top+(vv?.height ?? innerHeight);
+    const controlsLeft=Math.max(left,Math.min(right-width-4,spriteLeft+this.size-width));
+    const controlsTop=Math.max(top,Math.min(bottom-36,spriteTop));
+    this.controls.style.left=`${controlsLeft}px`;this.controls.style.top=`${controlsTop}px`;
+    if(this.inspectStatus.textContent) {
+      const status=this.inspectStatus.getBoundingClientRect();
+      this.inspectStatus.style.left=`${Math.max(left+8,Math.min(controlsLeft,right-status.width-8))}px`;
+      this.inspectStatus.style.top=`${Math.max(top+8,controlsTop+36+status.height<=bottom-8?controlsTop+36:controlsTop-status.height-4)}px`;
+    }
     if(this.bubble.open)this.positionBubble();
   }
   private displayPosition() {
@@ -238,8 +345,12 @@ ${mascotBubbleStyles}
     const holdMs=this.scheduler.isAwake(performance.now())?9600:14400;
     this.queue=[...posePath(this.manifest.clips,from,'standing').map(clip=>({clip,duration:clip.durationMs})),...routineSteps(this.manifest,'standing','attentive-idle',holdMs).map(step=>({...step,rest:step.clip.loop,duration:step.clip.loop?holdMs:step.duration}))];
   }
+  greet() {
+    // Asset loading must not delay the still character or steal focus.
+    void this.load().then(()=>{if(!this.disposed)this.wake();});
+  }
   private wake() {
-    if(!this.visible || this.reduced || this.failed || !this.manifest || document.hidden || document.fullscreenElement || this.printing)return;
+    if(!this.visible || this.inspection || this.reduced || this.failed || !this.manifest || document.hidden || document.fullscreenElement || this.printing)return;
     this.suspend();this.scheduler.wake(performance.now());this.lookup?.close();
     this.destination=undefined;this.journey=undefined;
     const from=this.step?.clip.to ?? this.state;
@@ -251,13 +362,20 @@ ${mascotBubbleStyles}
   private suspend() {cancelAnimationFrame(this.raf);clearTimeout(this.restTimer);this.restTimer=0;this.raf=0;this.last=0;this.lookup?.cancel();}
   private syncPlayback() {
     if(this.disposed)return;
-    this.host.hidden=document.hidden || !!document.fullscreenElement || this.printing;
+    const unavailable=document.hidden || !!document.fullscreenElement || this.printing;
+    this.host.hidden=unavailable || this.captureHidden;
+    if(unavailable)this.endInspection();
+    if(this.inspection)this.sprite.classList.toggle('inspect-still',this.reduced);
     if(!this.visible || this.host.hidden || this.drag) {this.suspend();if(this.reduced || this.failed || !this.manifest)this.fallback();return;}
     if(this.reduced || this.failed || !this.manifest) {this.suspend();this.fallback();return;}
     if(!this.raf && !this.restTimer)this.raf=requestAnimationFrame(now=>this.tick(now));
   }
   private plan() {
     if(!this.manifest)return;
+    if(this.inspection) {
+      this.queue=routineSteps(this.manifest,this.state,'seated-watch',9600);
+      return;
+    }
     const next=this.scheduler.choose(this.activeTime,performance.now()),b=this.bounds();
     this.motionCancelled=false;this.journey=undefined;
     if(['walk','trot','floating-travel'].includes(next.id)) {
@@ -321,7 +439,7 @@ ${mascotBubbleStyles}
   }
   private tick(now:number) {
     this.raf=0;
-    if(!this.visible || document.hidden || document.fullscreenElement || this.printing || this.reduced || this.drag || this.failed)return;
+    if(!this.visible || this.captureHidden || document.hidden || document.fullscreenElement || this.printing || this.reduced || this.drag || this.failed)return;
     const delta=this.last?Math.min(this.step?.rest && this.step.clip.routine==='sleep'?1000:100,now-this.last):0;this.last=now;this.activeTime+=delta;
     if(!this.step)this.beginStep();
     if(this.step && this.image) {
@@ -348,5 +466,5 @@ ${mascotBubbleStyles}
     if(mix) {const [a,b,c,d]=clip.frameRectangles[0];this.context.globalAlpha=mix;this.context.globalCompositeOperation='lighter';this.context.drawImage(this.image,a,b,c,d,0,0,256,256);}
     this.context.restore();
   }
-  destroy() {this.disposed=true;this.suspend();this.lookup?.destroy();this.abort.abort();this.host.remove();this.cache.clear();this.decoded.clear();}
+  destroy() {this.disposed=true;this.endInspection();this.suspend();this.lookup?.destroy();this.abort.abort();this.host.remove();this.cache.clear();this.decoded.clear();}
 }

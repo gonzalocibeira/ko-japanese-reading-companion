@@ -13,6 +13,8 @@ test('native toolbar popup opens at full height and wheel-scrolls to footer link
   });
   try {
     const worker=context.serviceWorkers()[0] ?? await context.waitForEvent('serviceworker');
+    await context.route('https://native.test/**',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><p>日本語</p>'}));
+    await context.pages()[0].goto('https://native.test/');
     await context.pages()[0].bringToFront();
     await worker.evaluate(async()=>{
       await chrome.storage.local.set({enabled:false});
@@ -52,8 +54,9 @@ test('native toolbar popup opens at full height and wheel-scrolls to footer link
     await evaluate('document.querySelector("#dismiss-update").click()');
     await expect.poll(()=>evaluate('document.querySelector("#update-banner").hidden')).toBe(true);
     const footerVisible=`Array.from(document.querySelectorAll('footer a')).every(a=>{const r=a.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;})`;
+    expect(await evaluate('(()=>{const r=document.querySelector("#mascot-call").getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;})()')).toBe(true);
+    await send('Input.dispatchMouseEvent',{type:'mouseWheel',x:350,y:400,deltaX:0,deltaY:10000});
     await expect.poll(()=>evaluate(footerVisible)).toBe(true);
-    expect(await evaluate('document.body.scrollHeight <= document.body.clientHeight')).toBe(true);
     const collapsed=await send('Page.captureScreenshot');
     await writeFile(test.info().outputPath('native-popup-collapsed.png'),Buffer.from(collapsed.data,'base64'));
     await evaluate("document.querySelectorAll('details').forEach(d=>d.open=true)");
@@ -64,5 +67,8 @@ test('native toolbar popup opens at full height and wheel-scrolls to footer link
     expect(await evaluate('innerHeight')).toBe(580);
     const shot=await send('Page.captureScreenshot');
     await writeFile(test.info().outputPath('native-popup-footer.png'),Buffer.from(shot.data,'base64'));
+    await evaluate('document.querySelector("#mascot-call").click()');
+    await expect.poll(async()=>(await browser.send('Target.getTargets')).targetInfos.some(t=>t.targetId===target!.targetId)).toBe(false);
+    await expect(context.pages()[0].locator('ko-mascot')).toHaveCount(1);
   } finally {await context.close();await rm(profile,{recursive:true,force:true});}
 });

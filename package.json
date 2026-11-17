@@ -1,7 +1,7 @@
 {
   "name": "ko-japanese-reading-companion",
-  "version": "1.4.1",
-  "description": "Kō — offline Japanese readings, dictionary search, word forms, and N5–N1 grammar playgrounds.",
+  "version": "2.0.0",
+  "description": "Kō — offline Japanese readings, dictionary, grammar, and image lookup.",
   "scripts": {
     "build": "node scripts/build.mjs",
     "pretypecheck": "node scripts/check-node.mjs",
@@ -16,6 +16,8 @@
   "license": "SEE LICENSE IN LICENSE",
   "type": "commonjs",
   "dependencies": {
+    "@jsquash/webp": "1.5.0",
+    "@zip.js/zip.js": "2.25.0",
     "kamiya-codec": "4.16.1",
     "kuromoji": "^0.1.2"
   },
