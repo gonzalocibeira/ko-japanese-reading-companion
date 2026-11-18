@@ -52,7 +52,7 @@ HTTP/HTTPS site access allows automatic readings without clicking the extension 
 
 ## Use and sharing commitments
 
-Kō uses user data only to provide its Japanese reading features. The developer does not receive, sell, rent, or use it for advertising, credit decisions, profiling, or unrelated purposes, and does not allow humans to read it through the extension. The only third-party data requests made by Kō are word-definition lookups triggered by reading-panel activation, by Kōくん when you enable its definitions, or by an explicit language-specific online action in Dictionary Playground, as described above. Kō's use of user data complies with the Chrome Web Store User Data Policy, including its Limited Use requirements.
+Kō uses user data only to provide its Japanese reading and vocabulary features. The developer does not receive, sell, rent, or use it for advertising, credit decisions, profiling, or unrelated purposes, and does not allow humans to read it through the extension. The only third-party data requests made by Kō are word-definition lookups triggered by reading-panel activation, by Kōくん when you enable its definitions, or by an explicit language-specific online action in Dictionary Playground, as described above. Kō's use of user data complies with the Chrome Web Store User Data Policy, including its Limited Use requirements.
 
 ## Changes and contact
 
