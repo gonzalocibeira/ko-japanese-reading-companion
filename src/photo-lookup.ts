@@ -232,22 +232,30 @@ export function renderPhotoResults(options:PhotoResultOptions):PlaygroundTool & 
       countOutput.textContent='Select objects to see their Japanese counter.';
     } else {
       countOutput.append(`${labels.length} selected`);
-      if(japanese.kind==='word' || japanese.kind==='general') {
+      if('word' in japanese) {
         countOutput.append(' · ',formatWord(japanese.word,japanese.reading));
-        if(japanese.kind==='general')countOutput.append(element('small','','General count for things.'));
+        if(japanese.kind!=='word') {
+          const units=labels.length===1?'thing':'things';
+          const meaning=`“${labels.length} ${units}”`;
+          const detail=japanese.kind==='offer-general'
+            ? `${meaning} if all selected objects are inanimate.`
+            : `${meaning} using the general counter.`;
+          countOutput.append(element('small','',detail));
+        }
+        if(japanese.kind==='offer-general') {
+          tools.append(button('Count as things',()=>{
+            useGeneralCount=true;
+            refreshSelections();
+            countOutput.focus({preventScroll:true});
+          }));
+        }
       } else {
         const hint={
           mixed:'Choose objects that share a counter.',
           unsupported:'Counter unavailable for this selection.',
           'out-of-range':'Select up to 99 objects to see the Japanese count.',
-          'offer-general':'Use the general count for inanimate objects.',
         }[japanese.kind];
         countOutput.append(element('small','',hint));
-        if(japanese.kind==='offer-general')tools.append(button('Count as things',()=>{
-          useGeneralCount=true;
-          refreshSelections();
-          countOutput.focus({preventScroll:true});
-        }));
       }
     }
     tools.append(countGuide);
