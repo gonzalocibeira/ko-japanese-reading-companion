@@ -8,4 +8,12 @@ Look up objects in photos and webpages, practice Japanese counters, and keep use
 - **Picture Diary** saves lossless object crops and vocabulary on your device. Search by word, kana, or English. ZIP backups preserve images and merge entries by ID when imported.
 - **Tab capture** starts only after you confirm a selection. Same-document URL changes preserve the lookup. If the page scrolls after capture, the vocabulary remains available in the object list.
 
-Load the repository’s `dist` folder to try the build. Reload the extension and refresh existing tabs after updating. See the [privacy policy](https://github.com/gonzalocibeira/ko-japanese-reading-companion/blob/master/docs/privacy-policy.md) for image processing, the diary, and the active-tab permission.
+### Downloads and updating
+
+Extract the [manual-install ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v2.0.0/ko-japanese-reading-companion-2.0.0.zip) and load its `dist` folder in Chrome. The [store-layout ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v2.0.0/ko-japanese-reading-companion-2.0.0-chrome-web-store.zip) places `manifest.json` at the archive root. See [SHA256SUMS](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v2.0.0/SHA256SUMS) to verify either archive. Keep your existing installation to retain settings and Picture Diary entries. Reload the extension and refresh existing tabs after updating.
+
+### Privacy and verification
+
+Photo Lookup adds temporary active-tab access for user-confirmed captures. The Mirage runtime and model are included in the package. See the [privacy policy](https://github.com/gonzalocibeira/ko-japanese-reading-companion/blob/master/docs/privacy-policy.md) for how image processing and diary storage work.
+
+All 302 automated tests passed on the 2.0.0 runtime. Real Mirage inference was verified offline in Chromium. The suite also covered the mascot animation and reduced motion, counters, screenshot alignment, and lossless diary backup and restore. Both package layouts contain the same 1,611 runtime files.

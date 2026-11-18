@@ -1,0 +1,28 @@
+Kō helps you read Japanese on webpages and in Google Docs and learn vocabulary from photos. Furigana, dictionary search, grammar, and image lookup work on your device.
+
+LOOK UP WHAT YOU SEE
+• Paste, drop, or choose a photo in Playgrounds → Photo Lookup. Select an object for its Japanese word, reading, and English meaning, or open the Dictionary entry.
+• From the toolbar, choose Look up from this tab, draw a rectangle, and confirm to identify objects in the visible area of a webpage.
+• Select objects in Count to practice Japanese counters. Four cars are 四台（よんだい）.
+• Save a lossless crop and its vocabulary to your local Picture Diary. Search entries by Japanese, kana, or English. Export or restore your diary with a ZIP.
+
+READ JAPANESE WHERE YOU BROWSE
+• Automatic furigana above kanji on webpages and in supported Google Docs views. Kō preserves the original document text and formatting.
+• Reading view offers extra spacing, adjustable text and panel width, and English and Japanese word meanings.
+• Save preferred pronunciations for words and names, back up your corrections, and pause readings on individual websites.
+
+EXPLORE JAPANESE OFFLINE
+• Dictionary searches Japanese spellings, readings, and English meanings in bundled JMdict.
+• Grammar — Sentence Lens offers 847 N5–N1 grammar points with readings, English translations, usage notes, and sentence comparisons.
+• Word forms explains verb and adjective endings. Meaning Forks compares interpretations of supported forms. Mimetics shows 90 expressions with examples and animations.
+
+MEET KŌくん
+• Call the optional PS1-inspired fox from the toolbar. He can show readings on the page and bring out a loupe to inspect images.
+• Drag him to reposition him, choose his size, or use a still character. Kō respects system reduced motion.
+
+PRIVACY
+Image recognition and vocabulary matching run locally with a bundled model and dictionary. Kō crops confirmed tab captures on your device and discards the full screenshot. Saved diary crops, settings, and corrections stay on your device. Kō has no analytics, ads, or extension account.
+
+Reading view and optional companion definitions use local dictionaries first. If a definition is missing, only the lookup term and any spelling-reference terms go to Wiktionary. Dictionary Playground contacts Wiktionary only when you choose an online lookup.
+
+Kō is source-available. Free use, modification, and sharing are permitted under the Kō No-Resale License 1.0.

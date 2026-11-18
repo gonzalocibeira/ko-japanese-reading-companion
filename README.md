@@ -5,7 +5,7 @@
 <h1 align="center">Kō — Japanese Reading Companion</h1>
 <p align="center"><strong>Japanese reading companion.</strong></p>
 <p align="center">Automatic Japanese readings for webpages and Google Docs.<br>Furigana runs on your device. English and Japanese meanings use bundled dictionaries, with Wiktionary as online fallback.</p>
-<p align="center"><strong>2.0.0</strong> · Repository build · 18 November 2026</p>
+<p align="center"><strong>2.0.0</strong> · 18 November 2026 · <a href="https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v2.0.0">GitHub release</a></p>
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok">Install from the Chrome Web Store</a> ·
   <a href="#see-it-in-action">See it in action</a> ·
@@ -43,7 +43,7 @@ This 1.4 fixture capture shows the offline Grammar comparison. The live Google D
 
 ### 2.0.0 · 18 November 2026
 
-Look up objects in images, practice Japanese counters, and save lossless vocabulary crops in an offline Picture Diary. Kōくん brings out his loupe and follows the lookup from selection to discovery. See [Photo Lookup and Picture Diary](#photo-lookup-and-picture-diary) and the [full changelog](docs/release-notes.md).
+Look up objects in images, practice Japanese counters, and save lossless vocabulary crops in an offline Picture Diary. Kōくん brings out his loupe and follows the lookup from selection to discovery. See [Photo Lookup and Picture Diary](#photo-lookup-and-picture-diary) and the [full changelog](docs/release-notes.md#200--18-november-2026).
 
 ### 1.4.0 · 1 November 2026
 
@@ -108,7 +108,7 @@ Read the [full release notes](docs/release-notes.md) for details and update inst
 
 **[Install Kō from the Chrome Web Store](https://chromewebstore.google.com/detail/khhdlbblmannlpbkmhmppakldpjhaiok).** Click **Add to Chrome**, confirm the installation, then reload your open tabs to start reading. Store installations receive updates automatically.
 
-**Kō 2.0 is available as a repository build.** Follow the manual installation steps below to try it. The Chrome Web Store listing carries its own published version.
+**Get Kō 2.0 from [GitHub Releases](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/tag/v2.0.0).** The Chrome Web Store listing shows the version currently available through Chrome.
 
 **Tip:** Pin **Kō — Japanese Reading Companion** from Chrome's puzzle-piece **Extensions** menu. Look for the warm-paper **考** (think) on a vermilion seal.
 
@@ -116,17 +116,17 @@ Read the [full release notes](docs/release-notes.md) for details and update inst
 
 You can also load the ready-to-use extension from [`dist/`](dist/). No Node.js, npm, or build step needed.
 
-1. **Download the [repository ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/archive/refs/heads/master.zip).** It contains the ready-to-load `dist` folder.
+1. **Download the [2.0.0 manual-install ZIP](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v2.0.0/ko-japanese-reading-companion-2.0.0.zip).** It contains the ready-to-load `dist` folder. Use the [SHA-256 checksums](https://github.com/gonzalocibeira/ko-japanese-reading-companion/releases/download/v2.0.0/SHA256SUMS) to verify the download.
 2. **Extract and keep the folder.** Put it somewhere permanent, such as `Documents/Ko`.
 3. **Open Chrome's extensions page.** Enter `chrome://extensions` in the address bar and turn on **Developer mode**.
-4. **Load the extension.** Click **Load unpacked** and select the extracted folder containing `manifest.json`. For a repository/source download, this is the **`dist` folder**. A `chrome-web-store.zip` package has `manifest.json` directly in its extracted root.
+4. **Load the extension.** Click **Load unpacked** and select the extracted folder containing `manifest.json`. In the manual-install or source ZIP, this is the **`dist` folder**. A `chrome-web-store.zip` package has `manifest.json` directly in its extracted root.
 5. **Reload your tabs and read.** Furigana starts automatically. The first page may take a moment while the bundled reading dictionary loads.
 
 <details>
 <summary><strong>Which folder should I select?</strong></summary>
 
 ```text
-ko-japanese-reading-companion-master/
+ko-japanese-reading-companion-2.0.0/
 └── dist/                  ← Select this folder in “Load unpacked”
     ├── manifest.json
     ├── content.js
