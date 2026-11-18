@@ -3095,10 +3095,10 @@ ${meaningForkStyles}
     if (first && counters.every((counter) => counter === first)) return specificCount(count, first);
     if (counters.some((counter) => counter && animateCounters.has(counter))) return { kind: "mixed" };
     if (kinds.some((kind) => uncountableLabels.has(kind))) return { kind: "unsupported" };
-    if (!useGeneral && !kinds.every((kind) => generalObjects.has(kind))) return { kind: "offer-general" };
+    const generalKind = useGeneral || kinds.every((kind) => generalObjects.has(kind)) ? "general" : "offer-general";
     const { word, prefix, ones } = numberParts(count);
     return {
-      kind: "general",
+      kind: generalKind,
       word: count < 10 ? word + "\u3064" : word,
       reading: count <= 10 ? nativeReadings[count - 1] : prefix + digitReadings[ones]
     };
@@ -3606,22 +3606,28 @@ ${meaningForkStyles}
         countOutput.textContent = "Select objects to see their Japanese counter.";
       } else {
         countOutput.append(`${labels.length} selected`);
-        if (japanese4.kind === "word" || japanese4.kind === "general") {
+        if ("word" in japanese4) {
           countOutput.append(" \xB7 ", formatWord(japanese4.word, japanese4.reading));
-          if (japanese4.kind === "general") countOutput.append(element3("small", "", "General count for things."));
+          if (japanese4.kind !== "word") {
+            const units = labels.length === 1 ? "thing" : "things";
+            const meaning = `\u201C${labels.length} ${units}\u201D`;
+            const detail = japanese4.kind === "offer-general" ? `${meaning} if all selected objects are inanimate.` : `${meaning} using the general counter.`;
+            countOutput.append(element3("small", "", detail));
+          }
+          if (japanese4.kind === "offer-general") {
+            tools.append(button2("Count as things", () => {
+              useGeneralCount = true;
+              refreshSelections();
+              countOutput.focus({ preventScroll: true });
+            }));
+          }
         } else {
           const hint = {
             mixed: "Choose objects that share a counter.",
             unsupported: "Counter unavailable for this selection.",
-            "out-of-range": "Select up to 99 objects to see the Japanese count.",
-            "offer-general": "Use the general count for inanimate objects."
+            "out-of-range": "Select up to 99 objects to see the Japanese count."
           }[japanese4.kind];
           countOutput.append(element3("small", "", hint));
-          if (japanese4.kind === "offer-general") tools.append(button2("Count as things", () => {
-            useGeneralCount = true;
-            refreshSelections();
-            countOutput.focus({ preventScroll: true });
-          }));
         }
       }
       tools.append(countGuide);

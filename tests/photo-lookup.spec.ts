@@ -55,7 +55,7 @@ test('the general count is available for things and stays separate from animate 
   expect(countPhotoObjects(['backpack','backpack','backpack','backpack'])).toEqual({kind:'general',word:'四つ',reading:'よっつ'});
   expect(countPhotoObjects(Array(10).fill('backpack'))).toEqual({kind:'general',word:'十',reading:'とお'});
   expect(countPhotoObjects(Array(12).fill('backpack'))).toEqual({kind:'general',word:'十二',reading:'じゅうに'});
-  expect(countPhotoObjects(['bottle','book','statue'])).toEqual({kind:'offer-general'});
+  expect(countPhotoObjects(['bottle','book','statue'])).toEqual({kind:'offer-general',word:'三つ',reading:'みっつ'});
   expect(countPhotoObjects(['bottle','book','statue'],true)).toEqual({kind:'general',word:'三つ',reading:'みっつ'});
   expect(countPhotoObjects(['car','person'],true)).toEqual({kind:'mixed'});
   expect(countPhotoObjects(['sky'],true)).toEqual({kind:'unsupported'});
@@ -155,7 +155,7 @@ test.describe('Photo Lookup interaction',()=>{
     } finally {await page.close();}
   });
 
-  test('four cars show 四台 in current-tab lookup and general counts require a choice for mixed things',async()=>{
+  test('current-tab lookup shows specific counts and previews the general count for mixed things',async()=>{
     const page=await browser.newPage();
     try {
       const carDetections=initial.detections.map(detection=>({...detection,label:'car'}));
@@ -170,12 +170,17 @@ test.describe('Photo Lookup interaction',()=>{
       await expect(page.getByRole('link',{name:'Counter guide'})).toHaveAttribute('href',photoCounterGuide);
       for(let index=1;index<=4;index++)await objects.getByRole('button',{name:`car ${index}`,exact:true}).click();
       await expect(count).toContainText('4 selected · 四台（よんだい）');
+      await objects.getByRole('button',{name:'car 3',exact:true}).click();
+      await objects.getByRole('button',{name:'car 4',exact:true}).click();
       await objects.getByRole('button',{name:'statue'}).click();
-      await expect(count).toContainText('5 selected');
+      await expect(count).toContainText('3 selected · 三つ（みっつ）');
+      await expect(count.locator('small')).toHaveText('“3 things” if all selected objects are inanimate.');
       await page.getByRole('button',{name:'Count as things'}).click();
-      await expect(count).toContainText('5 selected · 五つ（いつつ）');
+      await expect(count).toContainText('3 selected · 三つ（みっつ）');
+      await expect(count.locator('small')).toHaveText('“3 things” using the general counter.');
       await objects.getByRole('button',{name:'person'}).click();
       await expect(count).toContainText('Choose objects that share a counter.');
+      await expect(count.locator('[lang=ja]')).toHaveCount(0);
       await expect(page.getByRole('button',{name:'Count as things'})).toHaveCount(0);
     } finally {await page.close();}
   });

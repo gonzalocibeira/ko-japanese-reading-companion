@@ -119,8 +119,8 @@ function specificCount(count:number,counter:Counter):PhotoCount {
 }
 
 type PhotoCount=
-  | {kind:'word'|'general';word:string;reading:string}
-  | {kind:'empty'|'mixed'|'unsupported'|'out-of-range'|'offer-general'};
+  | {kind:'word'|'general'|'offer-general';word:string;reading:string}
+  | {kind:'empty'|'mixed'|'unsupported'|'out-of-range'};
 
 export function countPhotoObjects(labels:readonly string[],useGeneral=false):PhotoCount {
   const count=labels.length;
@@ -132,10 +132,10 @@ export function countPhotoObjects(labels:readonly string[],useGeneral=false):Pho
   if(counters.some(counter=>counter && animateCounters.has(counter)))return {kind:'mixed'};
   if(kinds.some(kind=>uncountableLabels.has(kind)))return {kind:'unsupported'};
   // Unknown model labels need an explicit choice before using the counter for things.
-  if(!useGeneral && !kinds.every(kind=>generalObjects.has(kind)))return {kind:'offer-general'};
+  const generalKind=useGeneral || kinds.every(kind=>generalObjects.has(kind))?'general':'offer-general';
   const {word,prefix,ones}=numberParts(count);
   return {
-    kind:'general',word:count<10?word+'つ':word,
+    kind:generalKind,word:count<10?word+'つ':word,
     reading:count<=10?nativeReadings[count-1]:prefix+digitReadings[ones],
   };
 }
